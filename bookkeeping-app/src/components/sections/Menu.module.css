@@ -1,0 +1,101 @@
+.mainContainer {
+    width: 100%;
+    height: 100%;
+
+    background-color: rgb(20, 20, 20);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.seperatorV {
+    width: 1px;
+    height: 2.5rem;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+
+    background-color: rgba(128, 128, 128, 0.5);
+}
+
+.seperatorH {
+    width: 80%;
+    height: 1px;
+    margin-bottom: 1.5rem;
+
+    background-color: rgba(128, 128, 128, 0.5);
+}
+
+.logoSection {
+    width: 100%;
+    height: 15%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logoSection > p {
+    color: white;
+    font-size: 1.4rem;
+    font-weight: 300;
+}
+
+.logo {
+    width: 2.5rem;
+    height: 2.5rem;
+
+    background-color: rgb(42, 42, 209);
+    border-radius: 50%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo p {
+    color: white;
+    font-size: 2rem;
+    font-weight: 800;
+}
+
+.itemsSection {
+    width: 100%;
+    height: 80%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* .profileSection {
+    height: 10%;
+
+    display: flex;
+}
+
+.profilePicture {
+    width: 2.5rem;
+    height: 2.5rem;
+
+    background-color: grey;
+    border-radius: 50%;;
+}
+
+.profileInfo {
+    height: 2.5rem;
+    margin-left: 1rem;
+}
+
+.profileInfo p {
+    height: 1.25rem;
+}
+
+.profileName {
+    color: white;
+}
+
+.profileDate {
+    color: grey;
+    font-size: 0.7rem;
+} */

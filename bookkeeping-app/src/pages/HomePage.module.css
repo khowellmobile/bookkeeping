@@ -1,0 +1,13 @@
+.mainContainer {
+    width: 100vw;
+    height: 100vh;
+
+    display: flex;
+}
+
+.menuContainer {
+    width: 15%;
+    height: 100%;
+
+    outline: 1px solid red;
+}
