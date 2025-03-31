@@ -1,16 +1,16 @@
 import classes from "./AccountListItem.module.css";
 
-const AccountListItem = () => {
+const AccountListItem = ({ name, balance, date }) => {
     return (
         <div className={`${classes.taskItemContainer}`}>
             <div>
-                <p>Hunt 0574</p>
+                <p>{name}</p>
             </div>
             <div>
-                <p>24,000</p>
+                <p>{balance}</p>
             </div>
             <div>
-                <p>3/31/2025</p>
+                <p>{date}</p>
             </div>
         </div>
     );

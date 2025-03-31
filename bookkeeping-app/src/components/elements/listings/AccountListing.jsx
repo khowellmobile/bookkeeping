@@ -6,7 +6,6 @@ const AccountListing = () => {
         <div className={classes.mainContainer}>
             <section className={classes.header}>
                 <h2>Chart of Accounts</h2>
-                <div className={classes.headerTools}></div>
             </section>
             <section className={classes.columnNames}>
                 <div>
@@ -20,7 +19,17 @@ const AccountListing = () => {
                 </div>
             </section>
             <section className={classes.items}>
-                <AccountListItem />
+                <AccountListItem name="Hunt 1234" balance="24,500" date="3/31/25" />
+                <AccountListItem name="Hunt 1234" balance="24,500" date="3/31/25" />
+                <AccountListItem name="Hunt 1234" balance="24,500" date="3/31/25" />
+                <AccountListItem name="Hunt 1234" balance="24,500" date="3/31/25" />
+                <AccountListItem name="Hunt 1234" balance="24,500" date="3/31/25" />
+                <AccountListItem name="Hunt 1234" balance="24,500" date="3/31/25" />
+                <AccountListItem name="Hunt 1234" balance="24,500" date="3/31/25" />
+                <AccountListItem name="Hunt 1234" balance="24,500" date="3/31/25" />
+                <AccountListItem name="Hunt 1234" balance="24,500" date="3/31/25" />
+                <AccountListItem name="Hunt 1234" balance="24,500" date="3/31/25" />
+                <AccountListItem name="Hunt 1234" balance="24,500" date="3/31/25" />
             </section>
         </div>
     );

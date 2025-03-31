@@ -32,10 +32,18 @@
     height: 90%;
 
     outline: 1px solid green;
+
+    display: flex;
 }
 
-.temp {
+.temp1 {
+    width: 20%;
+    height: 35%;
+    padding: 0.5rem;
+}
+
+.temp2 {
     width: 50%;
-    height: 50%;
+    height: 35%;
     padding: 0.5rem;
 }
