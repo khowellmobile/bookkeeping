@@ -1,6 +1,8 @@
 import AccountListing from "../components/elements/listings/AccountListing";
 import Shortcuts from "../components/elements/misc/Shortcuts";
 import Menu from "../components/sections/Menu";
+import Header from "../components/sections/Header";
+
 import classes from "./HomePage.module.css";
 
 const HomePage = () => {
@@ -10,7 +12,9 @@ const HomePage = () => {
                 <Menu />
             </div>
             <div className={classes.contentContainer}>
-                <div className={classes.headerContainer}></div>
+                <div className={classes.headerContainer}>
+                    <Header />
+                </div>
                 <div className={classes.featuresContainer}>
                     <div className={classes.temp1}>
                        <Shortcuts />

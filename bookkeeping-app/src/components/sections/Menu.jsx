@@ -14,10 +14,10 @@ const Menu = () => {
             </section>
             <section className={classes.itemsSection}>
                 <MenuLineItem itemName="Dashboard" />
-                <MenuLineItem itemName="Schedule" />
-                <MenuLineItem itemName="Tasks" />
-                <MenuLineItem itemName="Priority" />
-                <MenuLineItem itemName="Clients" />
+                <MenuLineItem itemName="Transactions" />
+                <MenuLineItem itemName="Accounts" />
+                <MenuLineItem itemName="Journals" />
+                <MenuLineItem itemName="Reports" />
                 <div className={classes.seperatorH}></div>
                 <MenuLineItem itemName="Support" />
                 <MenuLineItem itemName="Settings" />
