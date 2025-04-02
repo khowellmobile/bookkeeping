@@ -2,7 +2,7 @@ import classes from "./AccountListItem.module.css";
 
 const AccountListItem = ({ name, balance, date }) => {
     return (
-        <div className={`${classes.taskItemContainer}`}>
+        <div className={`${classes.mainContainer}`}>
             <div>
                 <p>{name}</p>
             </div>

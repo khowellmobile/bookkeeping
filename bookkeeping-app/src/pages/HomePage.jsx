@@ -4,6 +4,7 @@ import Menu from "../components/sections/Menu";
 import Header from "../components/sections/Header";
 
 import classes from "./HomePage.module.css";
+import PropertyListing from "../components/elements/listings/PropertyListing";
 
 const HomePage = () => {
     return (
@@ -21,6 +22,9 @@ const HomePage = () => {
                     </div>
                     <div className={classes.temp2}>
                         <AccountListing />
+                    </div>
+                    <div className={classes.temp3}>
+                        <PropertyListing />
                     </div>
                 </div>
             </div>
