@@ -1,5 +1,14 @@
 import classes from "./Menu.module.css";
 
+import AccountsIcon from "../../assets/accounts-icon.svg";
+import DashIcon from "../../assets/dashboard-icon.svg";
+import TransactionIcon from "../../assets/transaction-icon.svg";
+import JournalIcon from "../../assets/journal-icon.svg";
+import ReportsIcon from "../../assets/reports-icon.svg";
+import SettingsIcon from "../../assets/settings-icon.svg";
+import SupportIcon from "../../assets/support-icon.svg";
+import UserIcon from "../../assets/user-icon.svg";
+
 import MenuLineItem from "../elements/items/MenuLineItem";
 
 const Menu = () => {
@@ -13,14 +22,14 @@ const Menu = () => {
                 <p>Dashboard</p>
             </section>
             <section className={classes.itemsSection}>
-                <MenuLineItem itemName="Dashboard" />
-                <MenuLineItem itemName="Transactions" />
-                <MenuLineItem itemName="Accounts" />
-                <MenuLineItem itemName="Journals" />
-                <MenuLineItem itemName="Reports" />
+                <MenuLineItem itemName="Dashboard" icon={<img src={DashIcon} alt="Icon" />} />
+                <MenuLineItem itemName="Transactions" icon={<img src={TransactionIcon} alt="Icon" />}/>
+                <MenuLineItem itemName="Accounts" icon={<img src={AccountsIcon} alt="Icon" />}/>
+                <MenuLineItem itemName="Journals" icon={<img src={JournalIcon} alt="Icon" />}/>
+                <MenuLineItem itemName="Reports" icon={<img src={ReportsIcon} alt="Icon" />}/>
                 <div className={classes.seperatorH}></div>
-                <MenuLineItem itemName="Support" />
-                <MenuLineItem itemName="Settings" />
+                <MenuLineItem itemName="Support" icon={<img src={SupportIcon} alt="Icon" />}/>
+                <MenuLineItem itemName="Settings" icon={<img src={SettingsIcon} alt="Icon" />}/>
             </section>
             {/* <section className={classes.profileSection}>
                 <div className={classes.profilePicture}></div>
@@ -29,7 +38,7 @@ const Menu = () => {
                     <p className={classes.profileDate}>August 3rd, 2024 10:32am</p>
                 </div>
             </section> */}
-            <MenuLineItem className={classes.logoutItem} itemName="Logout" />
+            <MenuLineItem className={classes.logoutItem} itemName="Logout" icon={<img src={UserIcon} alt="Icon" />}/>
         </div>
     );
 };

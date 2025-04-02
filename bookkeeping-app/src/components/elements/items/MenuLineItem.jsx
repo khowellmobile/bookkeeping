@@ -1,11 +1,9 @@
 import classes from "./MenuLineItem.module.css";
 
-const MenuLineItem = ({ itemName, navPath = null, logo = null }) => {
+const MenuLineItem = ({ itemName, navPath = null, icon = null}) => {
     return (
         <div className={classes.mainContainer}>
-            <div className={classes.logoContainer}>
-                <div className={classes.svgPH}></div>
-            </div>
+            <div className={classes.logoContainer}>{icon && <div className={classes.icon}>{icon}</div>}</div>
             <div className={classes.nameContainer}>
                 <p>{itemName}</p>
             </div>
