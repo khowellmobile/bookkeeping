@@ -1,10 +1,11 @@
-import AccountListing from "../components/elements/listings/AccountListing";
+import classes from "./HomePage.module.css";
+
 import Shortcuts from "../components/elements/misc/Shortcuts";
 import Menu from "../components/sections/Menu";
 import Header from "../components/sections/Header";
+import DashBlock from "../components/elements/misc/DashBlock";
 
-import classes from "./HomePage.module.css";
-import PropertyListing from "../components/elements/listings/PropertyListing";
+import { AccountListing, PropertyListing, ReportListing } from "../components/elements/listings/DashListings";
 
 const HomePage = () => {
     return (
@@ -17,14 +18,33 @@ const HomePage = () => {
                     <Header />
                 </div>
                 <div className={classes.featuresContainer}>
-                    <div className={classes.temp1}>
-                       <Shortcuts />
+                    <div className={classes.featuresSubOne}>
+                        <div className={classes.temp1}>
+                            <Shortcuts />
+                        </div>
+                        <div className={classes.temp2}>
+                            <AccountListing />
+                        </div>
+                        <div className={classes.temp3}>
+                            <PropertyListing />
+                        </div>
                     </div>
-                    <div className={classes.temp2}>
-                        <AccountListing />
-                    </div>
-                    <div className={classes.temp3}>
-                        <PropertyListing />
+                    <div className={classes.featuresSubTwo}>
+                        <div className={classes.subTwoLeft}>
+                            <div className={classes.subTwoLeftTop}>
+                                <DashBlock />
+                                <DashBlock />
+                                <DashBlock />
+                            </div>
+                            <div className={classes.subTwoLeftBot}>
+                                <div className={classes.shortWideBlock}>
+                                    <ReportListing />
+                                </div>
+                            </div>
+                        </div>
+                        <div className={classes.subTwoRight}>
+                            <div className={classes.largeBlock}></div>
+                        </div>
                     </div>
                 </div>
             </div>

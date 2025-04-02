@@ -34,22 +34,77 @@
     outline: 1px solid green;
 
     display: flex;
+    flex-direction: column;
+}
+
+.featuresSubOne {
+    width: 100%;
+    height: 35%;
+
+    display: flex;
 }
 
 .temp1 {
     width: 20%;
-    height: 35%;
+    height: 100%;
     padding: 0.5rem;
 }
 
 .temp2 {
     width: 50%;
-    height: 35%;
+    height: 100%;
     padding: 0.5rem;
 }
 
 .temp3 {
     width: 30%;
-    height: 35%;
+    height: 100%;
     padding: 0.5rem;
+}
+
+.featuresSubTwo {
+    width: 100%;
+    height: 100%;
+    padding: 0.5rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.subTwoLeft {
+    width: 50%;
+    height: 100%;
+}
+
+.subTwoLeftTop {
+    width: 100%;
+    height: 50%;
+
+    display: flex;
+    justify-content: space-between;
+}
+
+.subTwoLeftBot {
+    width: 100%;
+    height: 50%;
+}
+
+.shortWideBlock {
+    width: 100%;
+    height: 100%;
+}
+
+.subTwoRight {
+    width: 50%;
+    height: 100%;
+    padding-left: 1rem;
+}
+
+.largeBlock {
+    width: 100%;
+    height: 100%;
+
+    border-radius: 0.25rem;
+    outline: 1px solid rgba(128, 128, 128, 0.301);
 }
