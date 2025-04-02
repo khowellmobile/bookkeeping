@@ -1,8 +1,6 @@
 import classes from "./DashListings.module.css";
 
-import AccountListItem from "../items/AccountListItem";
-import PropertyListItem from "../items/PropertyListItem.jsx";
-import ReportListItem from "../items/ReportListItem.jsx";
+import { AccountListItem, PropertyListItem, ReportListItem } from "../items/DashListItems.jsx";
 
 const AccountListing = () => {
     return (
