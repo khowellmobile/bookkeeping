@@ -8,6 +8,9 @@ import DashBlock from "../components/elements/misc/DashBlock";
 import { AccountListing, PropertyListing, ReportListing } from "../components/elements/listings/DashListings";
 
 const HomePage = () => {
+    const exampleText =
+        "Your contractors W2s are ready for download! Head to the journals page to print them out right away!";
+
     return (
         <div className={classes.mainContainer}>
             <div className={classes.menuContainer}>
@@ -32,9 +35,9 @@ const HomePage = () => {
                     <div className={classes.featuresSubTwo}>
                         <div className={classes.subTwoLeft}>
                             <div className={classes.subTwoLeftTop}>
-                                <DashBlock />
-                                <DashBlock />
-                                <DashBlock />
+                                <DashBlock title="Notification" text={exampleText} link="/journals/" />
+                                <DashBlock title="Notification" text={exampleText} link="/journals/" />
+                                <DashBlock title="Notification" text={exampleText} link="/journals/" />
                             </div>
                             <div className={classes.subTwoLeftBot}>
                                 <div className={classes.shortWideBlock}>
@@ -43,7 +46,9 @@ const HomePage = () => {
                             </div>
                         </div>
                         <div className={classes.subTwoRight}>
-                            <div className={classes.largeBlock}></div>
+                            <div className={classes.largeBlock}>
+                                <p>What goes here?</p>
+                            </div>
                         </div>
                     </div>
                 </div>
