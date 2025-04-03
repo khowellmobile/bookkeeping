@@ -7,7 +7,7 @@ import JournalIcon from "../../assets/journal-icon.svg";
 import ReportsIcon from "../../assets/reports-icon.svg";
 import SettingsIcon from "../../assets/settings-icon.svg";
 import SupportIcon from "../../assets/support-icon.svg";
-import UserIcon from "../../assets/user-icon.svg";
+import UserIcon from "../../assets/user-icon-white.svg";
 
 import MenuLineItem from "../elements/items/MenuLineItem";
 

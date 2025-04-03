@@ -5,6 +5,9 @@ import Menu from "../components/sections/Menu";
 import Header from "../components/sections/Header";
 import DashBlock from "../components/elements/misc/DashBlock";
 
+import NotificationIcon from "../assets/notification-icon.svg";
+import UserIcon from "../assets/user-icon-black.svg";
+
 import { AccountListing, PropertyListing, ReportListing } from "../components/elements/listings/DashListings";
 
 const HomePage = () => {
@@ -19,6 +22,15 @@ const HomePage = () => {
             <div className={classes.contentContainer}>
                 <div className={classes.headerContainer}>
                     <Header />
+                    <div className={classes.headerTools}>
+                        <div>
+                            <img className={classes.icon} src={NotificationIcon} alt="Icon" />
+                        </div>
+                        <div>
+                            <p className={classes.userEmail}>Exampleemail@gmail.com</p>
+                            <img className={classes.icon} src={UserIcon} alt="Icon" />
+                        </div>
+                    </div>
                 </div>
                 <div className={classes.featuresContainer}>
                     <div className={classes.featuresSubOne}>
