@@ -23,13 +23,13 @@ const Menu = () => {
             </section>
             <section className={classes.itemsSection}>
                 <MenuLineItem itemName="Dashboard" link="/" icon={<img src={DashIcon} alt="Icon" />} />
-                <MenuLineItem itemName="Transactions" icon={<img src={TransactionIcon} alt="Icon" />} />
+                <MenuLineItem itemName="Transactions" link="/transactions" icon={<img src={TransactionIcon} alt="Icon" />} />
                 <MenuLineItem itemName="Accounts" link="/accounts" icon={<img src={AccountsIcon} alt="Icon" />} />
-                <MenuLineItem itemName="Journals" icon={<img src={JournalIcon} alt="Icon" />} />
-                <MenuLineItem itemName="Reports" icon={<img src={ReportsIcon} alt="Icon" />} />
+                <MenuLineItem itemName="Journals" link="/journals" icon={<img src={JournalIcon} alt="Icon" />} />
+                <MenuLineItem itemName="Reports" link="/reports" icon={<img src={ReportsIcon} alt="Icon" />} />
                 <div className={classes.seperatorH}></div>
-                <MenuLineItem itemName="Support" icon={<img src={SupportIcon} alt="Icon" />} />
-                <MenuLineItem itemName="Settings" icon={<img src={SettingsIcon} alt="Icon" />} />
+                <MenuLineItem itemName="Support" link="/support" icon={<img src={SupportIcon} alt="Icon" />} />
+                <MenuLineItem itemName="Settings" link="/settings" icon={<img src={SettingsIcon} alt="Icon" />} />
             </section>
             {/* <section className={classes.profileSection}>
                 <div className={classes.profilePicture}></div>

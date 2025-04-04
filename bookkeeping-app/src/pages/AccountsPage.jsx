@@ -3,7 +3,7 @@ import classes from "./AccountsPage.module.css";
 const AccountsPage = () => {
     return (
         <div>
-            <p>Hello</p>
+            <p>AccountsPage</p>
         </div>
     );
 };
