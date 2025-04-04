@@ -1,0 +1,62 @@
+.layoutContainer {
+    width: 100vw;
+    height: 100vh;
+
+    display: flex;
+}
+
+.menuContainer {
+    width: 15%;
+    height: 100%;
+}
+
+.layoutContainer > div:nth-child(2) {
+    height: 100%;
+    width: 85%;
+}
+
+.headerContainer {
+    width: 100%;
+    height: 10%;
+
+    outline: 1px solid blue;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.headerTools {
+    height: 100%;
+    padding: 0.5rem;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.headerTools > div {
+    height: 3rem;
+    margin-left: 2rem;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.headerTools > div > .icon {
+    height: 2rem;
+    width: 2rem;
+}
+
+.headerTools > div > .userEmail {
+    margin-right: 0.25rem;
+
+    color: rgb(58, 58, 58);
+    font-size: 0.9rem;
+}
+
+.contentContainer {
+    width: 100%;
+    height: 90%;
+}
