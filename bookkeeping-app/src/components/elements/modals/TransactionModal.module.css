@@ -14,8 +14,7 @@
 }
 
 .mainContainer {
-    width: 50rem;
-    min-height: 25rem;
+    width: 55rem;
     padding: 1.5rem;
 
     background-color: white;
@@ -23,7 +22,27 @@
 
     display: flex;
     flex-direction: column;
+}
+
+.mainContainer > h2 {
+    font-weight: 400;
+}
+
+.mainContainer > div:nth-child(5) {
+    display: flex;
     justify-content: space-between;
+}
+
+.seperatorH {
+    width: 100%;
+    height: 1px;
+    margin-bottom: 1rem;
+
+    background-color: grey;
+}
+
+.cluster {
+    margin-bottom: 1rem;
 }
 
 .dateCluster > input[type="date"] {
@@ -42,18 +61,29 @@
     font-size: 0.8rem;
 }
 
-.textCluster > p {
+.memoCluster > p,
+.amountCluster > p {
     color: rgb(53, 53, 53);
     font-size: 0.8rem;
 }
 
-.textCluster > input[type="text"] {
+.memoCluster > input[type="text"],
+.amountCluster > input[type="text"] {
     padding: 0.25rem 0.5rem;
 
     font-family: "poppins";
     border-radius: 0.25rem;
     border: none;
     outline: 1px solid grey;
+}
+
+.amountCluster > input[type="text"] {
+    height: 2rem;
+    font-size: 1rem;
+}
+
+.memoCluster > input[type="text"] {
+    width: 100%;
 }
 
 .closeModalButton {

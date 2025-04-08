@@ -25,28 +25,32 @@ const TransactionModal = ({ vals, handleCloseModal }) => {
     return (
         <div className={classes.modalOverlay}>
             <div className={classes.mainContainer}>
-                <div className={classes.dateCluster}>
+                <h2>Edit Transaction</h2>
+                <div className={classes.seperatorH} />
+                <div className={`${classes.cluster} ${classes.dateCluster}`}>
                     <input type="date" value={transDate} onChange={handleDateChange} />
                 </div>
-                <div className={classes.dropdownCluster}>
-                    <p>Payee</p>
-                    <PayeeDropdown initalVal={transPayee}/>
-                </div>
-                <div className={classes.dropdownCluster}>
+                <div className={`${classes.cluster} ${classes.dropdownCluster}`}>
                     <p>Account</p>
-                    <AccountDropdown initalVal={transAccount}/>
+                    <AccountDropdown initalVal={transAccount} />
                 </div>
-                <div className={classes.textCluster}>
+                <div>
+                    <div className={`${classes.cluster} ${classes.dropdownCluster}`}>
+                        <p>Payee</p>
+                        <PayeeDropdown initalVal={transPayee} />
+                    </div>
+                    <div className={`${classes.cluster} ${classes.amountCluster}`}>
+                        <p>Amount</p>
+                        <input type="text" value={transAmount} onChange={handleAmountChange} />
+                    </div>
+                </div>
+                <div className={`${classes.cluster} ${classes.memoCluster}`}>
                     <p>Memo</p>
                     <input type="text" value={transMemo} onChange={handleMemoChange} />
                 </div>
-                <div className={classes.textCluster}>
-                    <p>Amount</p>
-                    <input type="text" value={transAmount} onChange={handleAmountChange} />
-                </div>
                 <p>{vals[5] == 1 ? "☑️" : "❌"}</p>
                 <button className={classes.closeModalButton} onClick={handleCloseModal}>
-                    close
+                    Close
                 </button>
             </div>
         </div>

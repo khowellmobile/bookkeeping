@@ -1,5 +1,4 @@
 import TransactionItem from "../components/elements/items/TransactionItem";
-import TransactionModal from "../components/elements/modals/TransactionModal";
 import classes from "./TransactionsPage.module.css";
 
 import { useState } from "react";
