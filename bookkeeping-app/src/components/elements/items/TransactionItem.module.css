@@ -1,0 +1,32 @@
+.mainContainer {
+    height: 3rem;
+
+    cursor: pointer;
+
+    display: grid;
+    grid-template-columns: 0.5fr 1.25fr 1.25fr 1.75fr 0.75fr 0.5fr;
+    align-items: center;
+}
+
+.mainContainer:hover {
+    background-color: rgba(214, 214, 214, 0.178);
+}
+
+.mainContainer > p {
+    height: 100%;
+    width: 100%;
+
+    padding-left: 0.5rem;
+
+    color: rgb(53, 53, 53);
+    font-size: 0.9rem;
+    border-left: 1px dashed rgba(128, 128, 128, 0.411);
+    border-bottom: 1px solid rgba(128, 128, 128, 0.411);
+
+    display: flex;
+    align-items: center;
+}
+
+.mainContainer > p:hover {
+    background-color: rgba(214, 214, 214, 0.26);
+}

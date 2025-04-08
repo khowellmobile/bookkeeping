@@ -34,7 +34,12 @@ const AccountsPage = () => {
                 <h2>Accounts</h2>
                 <div className={classes.tools}>
                     <div>
-                    <input type="text" className={classes.accountSearch} placeholder="Search..." spellCheck="false"></input>
+                        <input
+                            type="text"
+                            className={classes.accountSearch}
+                            placeholder="Search..."
+                            spellCheck="false"
+                        ></input>
                     </div>
                     <div>
                         <button>Add Account</button>
