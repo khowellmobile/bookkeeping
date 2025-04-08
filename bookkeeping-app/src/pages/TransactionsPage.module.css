@@ -16,16 +16,19 @@
 .tools {
     width: 100%;
     height: 3rem;
-    padding-bottom: 1rem;
 
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
+.tools > div {
+    display: flex;
+}
+
 .transactionsSearch {
     width: 15rem;
-    height: 1.5rem;
+    height: 2rem;
     padding: 0.25rem;
 
     font-family: "poppins";

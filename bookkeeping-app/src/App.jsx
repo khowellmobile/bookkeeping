@@ -1,7 +1,9 @@
 import "./App.css";
 import Layout from "./components/layout/Layout";
 
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
+
+import { BkpgContextProvider } from "./components/contexts/BkpgContext";
 
 import HomePage from "./pages/HomePage";
 import TransactionsPage from "./pages/TransactionsPage";
@@ -13,17 +15,19 @@ import SettingsPage from "./pages/SettingsPage";
 
 function App() {
     return (
-        <Layout>
-            <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/transactions" element={<TransactionsPage />} />
-                <Route path="/accounts" element={<AccountsPage />} />
-                <Route path="/journals" element={<JournalsPage />} />
-                <Route path="/reports" element={<ReportsPage />} />
-                <Route path="/support" element={<SupportPage />} />
-                <Route path="/settings" element={<SettingsPage />} />
-            </Routes>
-        </Layout>
+        <BkpgContextProvider>
+            <Layout>
+                <Routes>
+                    <Route path="/" element={<HomePage />} />
+                    <Route path="/transactions" element={<TransactionsPage />} />
+                    <Route path="/accounts" element={<AccountsPage />} />
+                    <Route path="/journals" element={<JournalsPage />} />
+                    <Route path="/reports" element={<ReportsPage />} />
+                    <Route path="/support" element={<SupportPage />} />
+                    <Route path="/settings" element={<SettingsPage />} />
+                </Routes>
+            </Layout>
+        </BkpgContextProvider>
     );
 }
 

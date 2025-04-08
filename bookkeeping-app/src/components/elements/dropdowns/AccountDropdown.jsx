@@ -2,7 +2,7 @@ import classes from "./AccountDropdown.module.css";
 
 import { useState, useEffect, useRef } from "react";
 
-const AccountDropdown = ({ initalVal }) => {
+const AccountDropdown = ({ initalVal, onChange }) => {
     const [activeAccount, setActiveAccount] = useState(initalVal);
     const [isExpanded, setIsExpanded] = useState(false);
 
@@ -34,6 +34,7 @@ const AccountDropdown = ({ initalVal }) => {
     const clickAccountHandler = (val) => {
         setActiveAccount(val);
         setIsExpanded(false);
+        onChange(val)
     };
 
     useEffect(() => {

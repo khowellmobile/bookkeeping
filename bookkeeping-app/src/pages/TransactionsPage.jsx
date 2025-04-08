@@ -1,9 +1,14 @@
+import AccountDropdown from "../components/elements/dropdowns/AccountDropdown";
 import TransactionItem from "../components/elements/items/TransactionItem";
 import classes from "./TransactionsPage.module.css";
 
-import { useState } from "react";
+import BkpgContext from "../components/contexts/BkpgContext";
+
+import { useState, useContext } from "react";
 
 const TransactionsPage = () => {
+    const { ctxActiveAccount, changeCtxActiveAccount } = useContext(BkpgContext);
+
     const [transactions, setTransactions] = useState([
         ["2024-01-24", "Paul Blart", "Huntington 0456", "Payment for services", 12157, 1],
         ["2023-11-10", "Starbucks", "Equity", "Transfer to savings", 2500, 0],
@@ -34,6 +39,7 @@ const TransactionsPage = () => {
                     <h2>Transactions</h2>
                     <div className={classes.tools}>
                         <div>
+                            <AccountDropdown initalVal={ctxActiveAccount} onChange={changeCtxActiveAccount}/>
                             <input
                                 type="text"
                                 className={classes.transactionsSearch}
