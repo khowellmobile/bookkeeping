@@ -1,8 +1,14 @@
 import classes from "./AccountsPage.module.css";
 
-import { useState } from "react";
+import BkpgContext from "../components/contexts/BkpgContext";
+
+import { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 
 const AccountsPage = () => {
+    const { changeCtxActiveAccount } = useContext(BkpgContext);
+    const navigate = useNavigate();
+
     const data = [
         ["Huntington 1234", "Expense", "Opened 2024/01/24", "$12,157", "Actions"],
         ["Wells Fargo 5678", "Income", "Opened 2023/11/10", "$2,500", "Actions"],
@@ -27,6 +33,11 @@ const AccountsPage = () => {
     ];
 
     const [accounts, setAccounts] = useState(data);
+
+    const accountClickHandler = (val) => {
+        changeCtxActiveAccount(val);
+        navigate("/transactions");
+    };
 
     return (
         <div className={classes.mainContainer}>
@@ -57,7 +68,7 @@ const AccountsPage = () => {
                 <div className={classes.listingItems}>
                     {accounts.map((account, index) => (
                         <div key={index}>
-                            <p>{account[0]}</p>
+                            <p onClick={() => accountClickHandler(account[0])}>{account[0]}</p>
                             <p>{account[1]}</p>
                             <p>{account[2]}</p>
                             <p>{account[3]}</p>
