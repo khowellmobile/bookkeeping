@@ -1,0 +1,202 @@
+.mainContainer {
+    width: 100%;
+    height: 100%;
+    padding: 0.5rem;
+}
+
+.reportsHeader {
+    width: 100%;
+}
+
+.reportsHeader > h2 {
+    height: 2rem;
+    font-weight: 400;
+}
+
+.tools {
+    width: 100%;
+    height: 3rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.reportSearch {
+    width: 15rem;
+    height: 1.5rem;
+    padding: 0.25rem;
+
+    font-family: "poppins";
+    font-size: 0.8rem;
+    line-height: 1.5rem;
+    border: 1px solid rgba(143, 140, 140, 0.644);
+    border-radius: 0.15rem;
+    outline: none;
+}
+
+.tools > div > button {
+    padding: 0.5rem;
+    margin-right: 0.5rem;
+
+    background-color: rgb(42, 42, 209);
+    color: white;
+    cursor: pointer;
+    font-family: "poppins";
+    font-weight: 600;
+    border-radius: 0.25rem;
+    border: none;
+    outline: none;
+
+    transition: all ease 0.25s;
+}
+
+.tools > div > button:hover {
+    transform: translateY(-1px);
+}
+
+.tools > div > button:active {
+    transform: translateY(1px);
+}
+
+.reportContainer {
+    width: 100%;
+    height: calc(100% - 5rem);
+
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+}
+
+.small {
+    width: calc(75% - 0.5rem);
+    margin-left: calc(25% + 0.5rem);
+}
+
+.large {
+    width: 100%;
+}
+
+.reportHistory {
+    width: 25%;
+    height: 100%;
+
+    border-radius: 0.25rem;
+    border: 1px solid rgba(143, 140, 140, 0.644);
+
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    z-index: 0;
+
+    transition: all ease 0.5s;
+}
+
+.historyHeader {
+    height: 2rem;
+
+    border-bottom: 1px solid rgba(143, 140, 140, 0.644);
+}
+
+.historyHeader > h3 {
+    padding-left: 0.5rem;
+    font-weight: 400;
+}
+
+.columnNames {
+    width: 100%;
+    height: 5%;
+
+    border-bottom: 1px solid rgba(128, 128, 128, 0.301);
+    grid-template-columns: 0.5fr 1.5fr;
+
+    display: grid;
+}
+
+.columnNames > div {
+    padding-left: 0.5rem;
+
+    border-left: 1px dashed rgba(128, 128, 128, 0.411);
+
+    display: flex;
+    align-items: center;
+}
+
+.columnNames > div:nth-child(1) {
+    border-left: none;
+}
+
+.columnNames div > p {
+    color: grey;
+    font-size: 0.9rem;
+}
+
+.items {
+    width: 100%;
+    height: 84%;
+
+    background-color: white;
+
+    overflow-y: scroll;
+}
+
+.historyEntry {
+    width: 100%;
+
+    background-color: white;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.411);
+    cursor: pointer;
+
+    display: grid;
+    grid-template-columns: 0.5fr 1.5fr;
+}
+
+.historyEntry:hover {
+    background-color: rgba(214, 214, 214, 0.26);
+}
+
+.historyEntry > p {
+    height: 100%;
+    padding: 0.25rem 0 0.25rem 0.5rem;
+
+    border-left: 1px dashed rgba(128, 128, 128, 0.411);
+    color: rgb(53, 53, 53);
+    font-size: 0.9rem;
+}
+
+.historyEntry > p:nth-child(1) {
+    border-left: none;
+}
+
+.reportContent {
+    height: 100%;
+
+    border-radius: 0.25rem;
+
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+
+    transition: all ease 0.5s;
+}
+
+.subTools {
+    width: 100%;
+    height: calc(2rem + 1px);
+
+    background-color: rgb(51, 51, 51);
+    border-radius: 0.25rem 0.25rem 0 0;
+
+    display: flex;
+    justify-content: end;
+    align-items: center;
+}
+
+.report {
+    width: 100%;
+    height: calc(100% - 2rem);
+
+    background-color: white;
+    border: 1px solid rgba(143, 140, 140, 0.644);
+    border-top: none;
+}
