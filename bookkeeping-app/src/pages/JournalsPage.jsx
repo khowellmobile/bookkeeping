@@ -15,13 +15,13 @@ const JournalsPage = () => {
     const [journalItems, setJournalItems] = useState([
         ["Cash", 1000.0, 0.0, "Initial deposit"],
         ["Accounts Receivable", 0.0, 500.0, "Sale of goods"],
-        ["Service Revenue", 0.0, -500.0, "Revenue from consulting"],
+        ["Service Revenue", 0.0, 500.0, "Revenue from consulting"],
         ["Office Supplies", 200.0, 0.0, "Purchased office supplies"],
         ["Accounts Payable", 0.0, 200.0, "Paid for office supplies"],
         ["Bank Loan", 5000.0, 0.0, "Loan disbursement"],
         ["Interest Expense", 50.0, 0.0, "Accrued interest on loan"],
-        ["Capital Contribution", 0.0, -3000.0, "Owner's contribution"],
-        ["Inventory", -300.0, 0.0, "Purchased inventory"],
+        ["Capital Contribution", 0.0, 3000.0, "Owner's contribution"],
+        ["Inventory", 300.0, 0.0, "Purchased inventory"],
         ["Sales Revenue", 0.0, 300.0, "Sales made from inventory"],
         ["", "", "", ""],
         ["", "", "", ""],
@@ -67,10 +67,6 @@ const JournalsPage = () => {
 
     return (
         <div className={classes.mainContainer}>
-            <div className={classes.journalHeader}>
-                <h2>Journal Entry</h2>
-                <div className={classes.tools}></div>
-            </div>
             <div className={classes.journalContent}>
                 <div className={classes.journalHistory}>
                     <section className={classes.header}>
