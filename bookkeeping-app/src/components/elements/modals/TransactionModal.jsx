@@ -22,6 +22,7 @@ const TransactionModal = ({ vals, handleCloseModal }) => {
     const handleAmountChange = (event) => {
         setTransAmount(event.target.value);
     };
+    
     return (
         <div className={classes.modalOverlay}>
             <div className={classes.mainContainer}>
