@@ -1,3 +1,4 @@
+import SupportTicket from "../components/elements/misc/SupportTicket";
 import classes from "./SupportPage.module.css";
 
 import { useState } from "react";
@@ -20,7 +21,9 @@ const SupportPage = () => {
                 <section className={classes.contentHeader}>
                     <h2>{activeGroup}</h2>
                 </section>
-                <section className={classes.content}></section>
+                <section className={classes.content}>
+                    <SupportTicket />
+                </section>
             </div>
         </div>
     );
