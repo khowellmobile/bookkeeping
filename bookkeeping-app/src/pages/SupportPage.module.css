@@ -1,0 +1,72 @@
+.mainContainer {
+    width: 100%;
+    height: 100%;
+    padding: 0.5rem;
+
+    display: flex;
+    justify-content: space-between;
+}
+
+.groupList {
+    width: 25%;
+    height: 9rem;
+
+    border-radius: 0.25rem;
+    outline: 1px solid rgba(128, 128, 128, 0.301);
+
+    display: flex;
+    flex-direction: column;
+}
+
+.supportGroup {
+    width: 100%;
+    height: 3rem;
+    padding-left: 0.5rem;
+
+    background-color: white;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.411);
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+}
+
+.supportGroup:last-child {
+    border-bottom: none;
+}
+
+.supportGroup:hover {
+    background-color: rgba(214, 214, 214, 0.26);
+}
+
+.supportGroup > p {
+    font-size: 0.9rem;
+}
+
+.groupContent {
+    width: calc(75% - 0.5rem);
+    height: 100%;
+
+    border-radius: 0.25rem;
+    outline: 1px solid rgba(128, 128, 128, 0.301);
+}
+
+.contentHeader {
+    width: 100%;
+    height: 3rem;
+    padding-left: 0.5rem;
+
+    border-bottom: 1px solid rgba(128, 128, 128, 0.301);
+
+    display: flex;
+    align-items: center;
+}
+
+.contentHeader > h2 {
+    font-weight: 400;
+}
+
+.content {
+    height: calc(100% - 3rem);
+    width: 100%;
+}
