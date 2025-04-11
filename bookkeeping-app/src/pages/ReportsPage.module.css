@@ -183,13 +183,31 @@
 .subTools {
     width: 100%;
     height: calc(2rem + 1px);
+    padding: 0rem 0.5rem;
 
     background-color: rgb(51, 51, 51);
     border-radius: 0.25rem 0.25rem 0 0;
 
     display: flex;
-    justify-content: end;
+    justify-content: space-between;
     align-items: center;
+}
+
+.subTools > div:first-child {
+    display: flex;
+    align-items: center;
+}
+
+.subTools > div:last-child {
+    display: flex;
+    align-items: center;
+}
+
+.icon {
+    height: 1.5rem;
+    width: 1.5rem;
+
+    cursor: pointer;
 }
 
 .report {

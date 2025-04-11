@@ -5,6 +5,7 @@
     border-radius: 0.25rem;
 
     display: flex;
+    z-index: 1000;
 }
 
 .display {

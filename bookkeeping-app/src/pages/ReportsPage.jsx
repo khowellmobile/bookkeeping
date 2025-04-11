@@ -1,5 +1,9 @@
 import classes from "./ReportsPage.module.css";
 
+import PrintIcon from "../assets/print-icon.svg";
+import ArrowLeftIcon from "../assets/arrow-left-icon.svg";
+import ArrowRightIcon from "../assets/arrow-right-icon.svg";
+
 import { useState } from "react";
 
 const ReportsPage = () => {
@@ -27,7 +31,7 @@ const ReportsPage = () => {
                         ></input>
                     </div>
                     <div>
-                        <button onClick={() => setHistoryOpen((prev) => !prev)}>Run Report</button>
+                        <button>Run Report</button>
                     </div>
                 </div>
             </div>
@@ -56,7 +60,28 @@ const ReportsPage = () => {
                     </div>
                 }
                 <div className={`${classes.reportContent} ${historyOpen ? classes.small : classes.large}`}>
-                    <div className={classes.subTools}></div>
+                    <div className={classes.subTools}>
+                        <div>
+                            {historyOpen ? (
+                                <img
+                                    className={classes.icon}
+                                    src={ArrowLeftIcon}
+                                    alt="Icon"
+                                    onClick={() => setHistoryOpen(false)}
+                                />
+                            ) : (
+                                <img
+                                    className={classes.icon}
+                                    src={ArrowRightIcon}
+                                    alt="Icon"
+                                    onClick={() => setHistoryOpen(true)}
+                                />
+                            )}
+                        </div>
+                        <div>
+                            <img className={classes.icon} src={PrintIcon} alt="Icon" />
+                        </div>
+                    </div>
                     <div className={classes.report}></div>
                 </div>
             </div>
