@@ -14,13 +14,13 @@ const TransactionItem = ({ vals }) => {
         <>
             {isModalOpen && <TransactionModal vals={vals} handleCloseModal={handleCloseModal} />}
 
-            <div className={classes.mainContainer} onClick={() => (setIsModalOpen(true))}>
-                <p>{vals[0]}</p>
-                <p>{vals[1]}</p>
-                <p>{vals[2]}</p>
-                <p>{vals[3]}</p>
-                <p>{vals[4]}</p>
-                <p>{vals[5]}</p>
+            <div className={classes.mainContainer} onClick={() => setIsModalOpen(true)}>
+                <p>{vals.date}</p>
+                <p>{vals.payee}</p>
+                <p>{/* {vals} */} not handled yet</p>
+                <p>{vals.memo}</p>
+                <p>{vals.amount}</p>
+                <p>{vals.isReconciled ? "yes" : "no"}</p>
             </div>
         </>
     );

@@ -15,5 +15,8 @@ class Transaction(models.Model):
     )
     date = models.DateField()
     amount = models.DecimalField(max_digits=10, decimal_places=2)
+    payee = models.CharField(max_length=255, blank=True, null=True)
+    memo = models.TextField(blank=True, null=True)
+    isReconciled = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
