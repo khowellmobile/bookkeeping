@@ -5,11 +5,11 @@ import AccountDropdown from "../dropdowns/AccountDropdown.jsx";
 import PayeeDropdown from "../dropdowns/PayeeDropdown.jsx";
 
 const TransactionModal = ({ vals, handleCloseModal }) => {
-    const [transDate, setTransDate] = useState(vals[0]);
-    const [transPayee, setTransPayee] = useState(vals[1]); // State variable most likely not needed here
-    const [transAccount, setTransAccount] = useState(vals[2]); // State variable most likely not needed here
-    const [transMemo, setTransMemo] = useState(vals[3]);
-    const [transAmount, setTransAmount] = useState(vals[4]);
+    const [transDate, setTransDate] = useState(vals.date);
+    const [transPayee, setTransPayee] = useState(vals.payee); // State variable most likely not needed here
+    const [transAccount, setTransAccount] = useState("Not prepared"); // State variable most likely not needed here
+    const [transMemo, setTransMemo] = useState(vals.memo);
+    const [transAmount, setTransAmount] = useState(vals.amount);
 
     const handleDateChange = (event) => {
         setTransDate(event.target.value);
@@ -22,7 +22,7 @@ const TransactionModal = ({ vals, handleCloseModal }) => {
     const handleAmountChange = (event) => {
         setTransAmount(event.target.value);
     };
-    
+
     return (
         <div className={classes.modalOverlay}>
             <div className={classes.mainContainer}>
@@ -49,7 +49,7 @@ const TransactionModal = ({ vals, handleCloseModal }) => {
                     <p>Memo</p>
                     <input type="text" value={transMemo} onChange={handleMemoChange} />
                 </div>
-                <p>{vals[5] == 1 ? "☑️" : "❌"}</p>
+                <p>{vals.isReconciled ? "☑️" : "❌"}</p>
                 <button className={classes.closeModalButton} onClick={handleCloseModal}>
                     Close
                 </button>
