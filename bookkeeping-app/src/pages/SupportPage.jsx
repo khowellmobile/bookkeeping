@@ -6,7 +6,7 @@ import { useState } from "react";
 const SupportPage = () => {
     const [activeGroup, setACtiveGroup] = useState("General");
 
-    const supportGroups = ["Q & A", "Email Us", "Submit a Ticket"];
+    const supportGroups = ["Q & A", "Contact Us", "Submit a Ticket"];
 
     return (
         <div className={classes.mainContainer}>
@@ -22,7 +22,7 @@ const SupportPage = () => {
                     <h2>{activeGroup}</h2>
                 </section>
                 <section className={classes.content}>
-                    <SupportTicket />
+                    {activeGroup == "Submit a Ticket" ? <SupportTicket /> : <p>Group not made</p>}
                 </section>
             </div>
         </div>
