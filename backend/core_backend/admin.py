@@ -6,6 +6,7 @@ from .models import Transaction, Account
 class DatabaseConnectionsAdmin(admin.ModelAdmin):
     list_display = [
         "user",
+        "account",
         "type",
         "date",
         "amount",

@@ -9,6 +9,7 @@ class TransactionSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "user",
+            "account",
             "type",
             "date",
             "amount",
