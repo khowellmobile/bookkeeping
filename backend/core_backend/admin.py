@@ -12,7 +12,7 @@ class DatabaseConnectionsAdmin(admin.ModelAdmin):
         "amount",
         "payee",
         "memo",
-        "isReconciled",
+        "is_reconciled",
         "is_deleted",
         "created_at",
         "updated_at",

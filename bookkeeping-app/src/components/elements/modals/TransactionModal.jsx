@@ -7,7 +7,7 @@ import PayeeDropdown from "../dropdowns/PayeeDropdown.jsx";
 const TransactionModal = ({ vals, handleCloseModal }) => {
     const [transDate, setTransDate] = useState(vals.date);
     const [transPayee, setTransPayee] = useState(vals.payee); // State variable most likely not needed here
-    const [transAccount, setTransAccount] = useState("Not prepared"); // State variable most likely not needed here
+    const [transAccount, setTransAccount] = useState(cancelIdleCallback.account_name); // State variable most likely not needed here
     const [transMemo, setTransMemo] = useState(vals.memo);
     const [transAmount, setTransAmount] = useState(vals.amount);
 
@@ -49,7 +49,7 @@ const TransactionModal = ({ vals, handleCloseModal }) => {
                     <p>Memo</p>
                     <input type="text" value={transMemo} onChange={handleMemoChange} />
                 </div>
-                <p>{vals.isReconciled ? "☑️" : "❌"}</p>
+                <p>{vals.is_reconciled ? "☑️" : "❌"}</p>
                 <button className={classes.closeModalButton} onClick={handleCloseModal}>
                     Close
                 </button>
