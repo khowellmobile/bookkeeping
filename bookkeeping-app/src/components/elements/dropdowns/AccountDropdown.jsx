@@ -2,39 +2,17 @@ import classes from "./AccountDropdown.module.css";
 
 import { useState, useEffect, useRef } from "react";
 
-const AccountDropdown = ({ initalVal, onChange }) => {
+const AccountDropdown = ({ initalVal, onChange, accountList }) => {
     const [activeAccount, setActiveAccount] = useState(initalVal);
     const [isExpanded, setIsExpanded] = useState(false);
+    const [accounts, setAccounts] = useState(accountList); // Might not need useState here
 
     const dropdownRef = useRef(null);
 
-    const accounts = [
-        "Cash",
-        "Accounts Receivable",
-        "Accounts Payable",
-        "Sales Revenue",
-        "Cost of Goods Sold",
-        "Inventory",
-        "Bank",
-        "Equity",
-        "Retained Earnings",
-        "Loans Payable",
-        "Office Expenses",
-        "Salaries Expense",
-        "Utilities Expense",
-        "Income Tax Expense",
-        "Depreciation Expense",
-        "Prepaid Expenses",
-        "Accrued Liabilities",
-        "Sales Tax Payable",
-        "Advertising Expense",
-        "Interest Expense",
-    ];
-
-    const clickAccountHandler = (val) => {
-        setActiveAccount(val);
+    const clickAccountHandler = (accountName) => {
+        setActiveAccount(accountName);
         setIsExpanded(false);
-        onChange(val)
+        onChange(accountName);
     };
 
     useEffect(() => {
@@ -66,10 +44,10 @@ const AccountDropdown = ({ initalVal, onChange }) => {
                         <p>All Accounts</p>
                         <div className={classes.separatorH}></div>
                         <div className={classes.clientListing}>
-                            {accounts.map((val, index) => {
+                            {accounts.map((account, index) => {
                                 return (
-                                    <p key={index} onClick={() => clickAccountHandler(val)}>
-                                        {val}
+                                    <p key={index} onClick={() => clickAccountHandler(account.name)}>
+                                        {account.name}
                                     </p>
                                 );
                             })}

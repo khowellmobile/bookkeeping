@@ -10,6 +10,7 @@ const TransactionsPage = () => {
     const { ctxActiveAccount, changeCtxActiveAccount } = useContext(BkpgContext);
 
     const [transactions, setTransactions] = useState([]);
+    const [accounts, setAccounts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -24,7 +25,6 @@ const TransactionsPage = () => {
                 }
                 const data = await response.json();
                 setTransactions(data);
-                console.log(data)
             } catch (e) {
                 setError(e.message);
             } finally {
@@ -35,12 +35,34 @@ const TransactionsPage = () => {
         fetchTransactions();
     }, []);
 
+    useEffect(() => {
+        const fetchAccounts = async () => {
+            setLoading(true);
+            setError(null);
+            try {
+                const response = await fetch("http://127.0.0.1:8000/api/accounts/");
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+
+                setAccounts(data);
+            } catch (e) {
+                setError(e.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchAccounts();
+    }, []);
+
     if (loading) {
         return <div>Loading transactions...</div>;
     }
 
     if (error) {
-        return <div>Error loading transactions: {error}</div>;
+        return <div>Error loading things: {error}</div>;
     }
 
     return (
@@ -50,7 +72,11 @@ const TransactionsPage = () => {
                     <h2>Transactions</h2>
                     <div className={classes.tools}>
                         <div>
-                            <AccountDropdown initalVal={ctxActiveAccount} onChange={changeCtxActiveAccount} />
+                            <AccountDropdown
+                                initalVal={ctxActiveAccount}
+                                onChange={changeCtxActiveAccount}
+                                accountList={accounts}
+                            />
                             <input
                                 type="text"
                                 className={classes.transactionsSearch}
