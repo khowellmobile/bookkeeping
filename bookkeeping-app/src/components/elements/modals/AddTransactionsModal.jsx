@@ -8,7 +8,7 @@ const AddTransactionsModal = () => {
             <div className={classes.mainContainer}>
                 <div className={classes.topTools}></div>
                 <section className={classes.header}>
-                    <h2>Make an Entry</h2>
+                    <h2>Make Entries</h2>
                 </section>
                 <section className={`${classes.columnNames} ${classes.entryGridTemplate}`}>
                     <div>
