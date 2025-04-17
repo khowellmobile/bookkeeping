@@ -7,7 +7,7 @@ import PayeeDropdown from "../dropdowns/PayeeDropdown.jsx";
 const TransactionModal = ({ vals, handleCloseModal }) => {
     const [transDate, setTransDate] = useState(vals.date);
     const [transPayee, setTransPayee] = useState(vals.payee); // State variable most likely not needed here
-    const [transAccount, setTransAccount] = useState(cancelIdleCallback.account_name); // State variable most likely not needed here
+    const [transAccount, setTransAccount] = useState(vals.account_name); // State variable most likely not needed here
     const [transMemo, setTransMemo] = useState(vals.memo);
     const [transAmount, setTransAmount] = useState(vals.amount);
 
@@ -23,6 +23,10 @@ const TransactionModal = ({ vals, handleCloseModal }) => {
         setTransAmount(event.target.value);
     };
 
+    const handleAccountClick = (accountName) => {
+        setTransAccount(accountName);
+    };
+
     return (
         <div className={classes.modalOverlay}>
             <div className={classes.mainContainer}>
@@ -33,7 +37,7 @@ const TransactionModal = ({ vals, handleCloseModal }) => {
                 </div>
                 <div className={`${classes.cluster} ${classes.dropdownCluster}`}>
                     <p>Account</p>
-                    <AccountDropdown initalVal={transAccount} />
+                    <AccountDropdown initalVal={transAccount} onChange={handleAccountClick} />
                 </div>
                 <div>
                     <div className={`${classes.cluster} ${classes.dropdownCluster}`}>

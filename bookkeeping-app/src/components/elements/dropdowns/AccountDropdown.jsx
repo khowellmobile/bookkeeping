@@ -1,11 +1,15 @@
 import classes from "./AccountDropdown.module.css";
 
-import { useState, useEffect, useRef } from "react";
+import BkpgContext from "../../contexts/BkpgContext";
 
-const AccountDropdown = ({ initalVal, onChange, accountList }) => {
+import { useState, useEffect, useRef, useContext } from "react";
+
+const AccountDropdown = ({ initalVal, onChange }) => {
+    const { ctxAccountList } = useContext(BkpgContext);
+
     const [activeAccount, setActiveAccount] = useState(initalVal);
     const [isExpanded, setIsExpanded] = useState(false);
-    const [accounts, setAccounts] = useState(accountList); // Might not need useState here
+    const [accounts, setAccounts] = useState(ctxAccountList); // Might not need useState here
 
     const dropdownRef = useRef(null);
 

@@ -7,10 +7,10 @@ import BkpgContext from "../components/contexts/BkpgContext";
 import { useState, useContext, useEffect } from "react";
 
 const TransactionsPage = () => {
-    const { ctxActiveAccount, changeCtxActiveAccount } = useContext(BkpgContext);
+    const { ctxAccountList, ctxActiveAccount, changeCtxActiveAccount } = useContext(BkpgContext);
 
     const [transactions, setTransactions] = useState([]);
-    const [accounts, setAccounts] = useState([]);
+    const [accounts, setAccounts] = useState(ctxAccountList);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -35,28 +35,6 @@ const TransactionsPage = () => {
         fetchTransactions();
     }, []);
 
-    useEffect(() => {
-        const fetchAccounts = async () => {
-            setLoading(true);
-            setError(null);
-            try {
-                const response = await fetch("http://127.0.0.1:8000/api/accounts/");
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const data = await response.json();
-
-                setAccounts(data);
-            } catch (e) {
-                setError(e.message);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchAccounts();
-    }, []);
-
     if (loading) {
         return <div>Loading transactions...</div>;
     }
@@ -75,7 +53,6 @@ const TransactionsPage = () => {
                             <AccountDropdown
                                 initalVal={ctxActiveAccount}
                                 onChange={changeCtxActiveAccount}
-                                accountList={accounts}
                             />
                             <input
                                 type="text"
