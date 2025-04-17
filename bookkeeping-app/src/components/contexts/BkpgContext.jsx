@@ -19,7 +19,6 @@ export function BkpgContextProvider(props) {
     };
 
     const changeCtxActiveAccount = (account) => {
-        console.log(account);
         setCtxActiveAccount(account);
     };
 

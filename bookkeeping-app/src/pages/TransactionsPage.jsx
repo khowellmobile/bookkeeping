@@ -5,14 +5,20 @@ import classes from "./TransactionsPage.module.css";
 import BkpgContext from "../components/contexts/BkpgContext";
 
 import { useState, useContext, useEffect } from "react";
+import AddTransactionsModal from "../components/elements/modals/AddTransactionsModal";
 
 const TransactionsPage = () => {
     const { ctxAccountList, ctxActiveAccount, changeCtxActiveAccount } = useContext(BkpgContext);
 
     const [transactions, setTransactions] = useState([]);
     const [accounts, setAccounts] = useState(ctxAccountList);
+    const [isModalOpen, setIsModalOpen] = useState(true);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+    };
 
     useEffect(() => {
         const fetchTransactions = async () => {
@@ -45,15 +51,14 @@ const TransactionsPage = () => {
 
     return (
         <>
+            {isModalOpen && <AddTransactionsModal />}
+
             <div className={classes.mainContainer}>
                 <div className={classes.tranasctionsHeader}>
                     <h2>Transactions</h2>
                     <div className={classes.tools}>
                         <div>
-                            <AccountDropdown
-                                initalVal={ctxActiveAccount}
-                                onChange={changeCtxActiveAccount}
-                            />
+                            <AccountDropdown initalVal={ctxActiveAccount} onChange={changeCtxActiveAccount} />
                             <input
                                 type="text"
                                 className={classes.transactionsSearch}
@@ -62,7 +67,7 @@ const TransactionsPage = () => {
                             ></input>
                         </div>
                         <div>
-                            <button>Add Transaction</button>
+                            <button>Add Transactions</button>
                         </div>
                     </div>
                 </div>

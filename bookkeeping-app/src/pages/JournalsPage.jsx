@@ -1,4 +1,4 @@
-import JournalEntryItem from "../components/elements/items/JournalEntryItem";
+import {JournalEntryItem} from "../components/elements/items/InputEntryItems";
 import classes from "./JournalsPage.module.css";
 
 import { useState, useCallback, useMemo } from "react";
