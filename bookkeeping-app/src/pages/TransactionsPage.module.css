@@ -26,6 +26,11 @@
     display: flex;
 }
 
+.tools > div:first-child {
+    width: 36%;
+    justify-content: space-between;
+}
+
 .transactionsSearch {
     width: 15rem;
     height: 2rem;

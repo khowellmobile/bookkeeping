@@ -51,7 +51,9 @@ const TransactionsPage = () => {
 
     return (
         <>
-            {isModalOpen && <AddTransactionsModal handleCloseModal={handleCloseModal}/>}
+            {isModalOpen && (
+                <AddTransactionsModal ctxActiveAccount={ctxActiveAccount} handleCloseModal={handleCloseModal} />
+            )}
 
             <div className={classes.mainContainer}>
                 <div className={classes.tranasctionsHeader}>

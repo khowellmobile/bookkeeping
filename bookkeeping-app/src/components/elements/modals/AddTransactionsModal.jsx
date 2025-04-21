@@ -4,8 +4,8 @@ import { TransactionEntryItem } from "../items/InputEntryItems";
 import AccountDropdown from "../dropdowns/AccountDropdown";
 import { useState, useCallback } from "react";
 
-const AddTransactionsModal = ({ handleCloseModal }) => {
-    const [activeAccount, setActiveAccount] = useState();
+const AddTransactionsModal = ({ handleCloseModal, ctxActiveAccount }) => {
+    const [activeAccount, setActiveAccount] = useState(ctxActiveAccount);
 
     const [transactionItems, settransactionItems] = useState([
         ["", "", "", ""],
@@ -27,7 +27,6 @@ const AddTransactionsModal = ({ handleCloseModal }) => {
 
     const changeActiveAccount = (account) => {
         setActiveAccount(account);
-        console.log(account);
     };
 
     const handleFocusLastItem = useCallback(
@@ -61,7 +60,7 @@ const AddTransactionsModal = ({ handleCloseModal }) => {
         <div className={classes.modalOverlay}>
             <div className={classes.mainContainer}>
                 <section className={classes.tools}>
-                    <AccountDropdown onChange={changeActiveAccount} />
+                    <AccountDropdown initalVal={activeAccount} onChange={changeActiveAccount} />
                     <p>What else?</p>
                     <section className={classes.buttons}>
                         <button onClick={handleCloseModal}>Save & Close</button>
