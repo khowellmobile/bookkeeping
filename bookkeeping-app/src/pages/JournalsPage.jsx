@@ -1,4 +1,4 @@
-import {JournalEntryItem} from "../components/elements/items/InputEntryItems";
+import { JournalEntryItem } from "../components/elements/items/InputEntryItems";
 import classes from "./JournalsPage.module.css";
 
 import { useState, useCallback, useMemo } from "react";
@@ -12,7 +12,7 @@ const JournalsPage = () => {
         ["2024-01-05", "Clear Income Stmt"],
         ["2024-01-05", "Adjustment #2"],
     ]);
-    
+
     const [journalItems, setJournalItems] = useState([
         ["Cash", 1000.0, 0.0, "Initial deposit"],
         ["Accounts Receivable", 0.0, 500.0, "Sale of goods"],

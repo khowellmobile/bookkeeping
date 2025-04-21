@@ -12,7 +12,7 @@ const TransactionsPage = () => {
 
     const [transactions, setTransactions] = useState([]);
     const [accounts, setAccounts] = useState(ctxAccountList);
-    const [isModalOpen, setIsModalOpen] = useState(true);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -51,7 +51,7 @@ const TransactionsPage = () => {
 
     return (
         <>
-            {isModalOpen && <AddTransactionsModal />}
+            {isModalOpen && <AddTransactionsModal handleCloseModal={handleCloseModal}/>}
 
             <div className={classes.mainContainer}>
                 <div className={classes.tranasctionsHeader}>
@@ -67,7 +67,7 @@ const TransactionsPage = () => {
                             ></input>
                         </div>
                         <div>
-                            <button>Add Transactions</button>
+                            <button onClick={() => setIsModalOpen(true)}>Add Transactions</button>
                         </div>
                     </div>
                 </div>
