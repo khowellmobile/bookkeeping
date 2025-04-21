@@ -78,51 +78,41 @@ const JournalEntryItem = ({ vals, index, onFocus, onItemChange }) => {
     );
 };
 
-const TransactionEntryItem = ({ index = null, onFocus = null, onItemChange = null }) => {
+const TransactionEntryItem = ({ vals, index, onFocus, onItemChange }) => {
     const [date, setDate] = useState("");
     const [payee, setPayee] = useState("");
     const [account, setAccount] = useState("");
     const [memo, setMemo] = useState("");
     const [amount, setAmount] = useState("");
 
-    /* useEffect(() => {
-        onItemChange(index, "date", date);
-    }, [date, index, onItemChange]);
-
-    useEffect(() => {
-        onItemChange(index, "payee", payee);
-    }, [payee, index, onItemChange]);
-
-    useEffect(() => {
-        onItemChange(index, "account", account);
-    }, [account, index, onItemChange]);
-
-    useEffect(() => {
-        onItemChange(index, "memo", memo);
-    }, [memo, index, onItemChange]);
-
-    useEffect(() => {
-        onItemChange(index, "amount", parsedAmount);
-    }, [amount, index, onItemChange]); */
-
     const handleDateChange = (event) => {
-        setDate(event.target.value);
+        const newValue = event.target.value;
+        setDate(newValue);
+        onItemChange(index, "date", newValue);
     };
 
     const handlePayeeChange = (event) => {
-        setPayee(event.target.value);
+        const newValue = event.target.value;
+        setPayee(newValue);
+        onItemChange(index, "payee", newValue);
     };
 
     const handleAccountChange = (event) => {
-        setAccount(event.target.value);
+        const newValue = event.target.value;
+        setAccount(newValue);
+        onItemChange(index, "account", newValue);
     };
 
     const handleMemoChange = (event) => {
-        setMemo(event.target.value);
+        const newValue = event.target.value;
+        setMemo(newValue);
+        onItemChange(index, "memo", newValue);
     };
 
     const handleAmountChange = (event) => {
-        setAmount(event.target.value);
+        const newValue = event.target.value;
+        setAmount(newValue);
+        onItemChange(index, "amount", newValue);
     };
 
     return (
