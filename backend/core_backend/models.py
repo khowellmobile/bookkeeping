@@ -7,6 +7,7 @@ ACCOUNT_TYPE_CHOICES = [
     ("equity", "Equity"),
     ("income", "Income"),
     ("expense", "Expense"),
+    ("bank", "Bank")
 ]
 
 
