@@ -4,26 +4,21 @@ import { TransactionEntryItem } from "../items/InputEntryItems";
 import AccountDropdown from "../dropdowns/AccountDropdown";
 import { useState, useCallback } from "react";
 
-const AddTransactionsModal = ({ handleCloseModal, ctxActiveAccount }) => {
+const AddTransactionsModal = ({ ctxActiveAccount, handleCloseModal }) => {
     const [activeAccount, setActiveAccount] = useState(ctxActiveAccount);
 
-    const [transactionItems, settransactionItems] = useState([
-        ["", "", "", ""],
-        ["", "", "", ""],
-        ["", "", "", ""],
-        ["", "", "", ""],
-        ["", "", "", ""],
-        ["", "", "", ""],
-        ["", "", "", ""],
-        ["", "", "", ""],
-        ["", "", "", ""],
-        ["", "", "", ""],
-        ["", "", "", ""],
-        ["", "", "", ""],
-        ["", "", "", ""],
-        ["", "", "", ""],
-        ["", "", "", ""],
-    ]);
+    const [transactionItems, settransactionItems] = useState(
+        Array(15)
+            .fill(null)
+            .map(() => ({
+                date: "",
+                payee: "",
+                account_name: "",
+                memo: "",
+                amount: "",
+                is_reconciled: false,
+            }))
+    );
 
     const changeActiveAccount = (account) => {
         setActiveAccount(account);
@@ -42,19 +37,37 @@ const AddTransactionsModal = ({ handleCloseModal, ctxActiveAccount }) => {
         (index, name, value) => {
             const newtransactionItems = [...transactionItems];
 
-            if (name === "debit") {
-                newtransactionItems[index][1] = parseFloat(value) || 0;
-            } else if (name === "credit") {
-                newtransactionItems[index][2] = parseFloat(value) || 0;
-            } else if (name === "account") {
-                newtransactionItems[index][0] = value;
+            if (name === "date") {
+                newtransactionItems[index].date = value;
+            } else if (name === "payee") {
+                newtransactionItems[index].payee = value;
+            } else if (name === "account_name") {
+                newtransactionItems[index].account_name = value;
             } else if (name === "memo") {
-                newtransactionItems[index][3] = value;
+                newtransactionItems[index].memo = value;
+            } else if (name === "amount") {
+                newtransactionItems[index].amount = parseFloat(value) || 0;
             }
+
             settransactionItems(newtransactionItems);
         },
         [transactionItems, settransactionItems]
     );
+
+    const handleSaveClose = () => {
+        const nonEmptyItems = transactionItems.filter((item) => {
+            const values = Object.values(item);
+
+            // Checking if at least one value is non-empty
+            return values.some((value) => typeof value === "string" && value.trim() !== "");
+        });
+
+        setTransactions((prev) => {
+            return [...nonEmptyItems, ...prev];
+        });
+
+        handleCloseModal();
+    };
 
     return (
         <div className={classes.modalOverlay}>
@@ -63,7 +76,7 @@ const AddTransactionsModal = ({ handleCloseModal, ctxActiveAccount }) => {
                     <AccountDropdown initalVal={activeAccount} onChange={changeActiveAccount} />
                     <p>What else?</p>
                     <section className={classes.buttons}>
-                        <button onClick={handleCloseModal}>Save & Close</button>
+                        <button onClick={handleSaveClose}>Save & Close</button>
                         <button onClick={handleCloseModal}>Cancel</button>
                     </section>
                 </section>

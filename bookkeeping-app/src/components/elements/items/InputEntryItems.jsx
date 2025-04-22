@@ -79,11 +79,11 @@ const JournalEntryItem = ({ vals, index, onFocus, onItemChange }) => {
 };
 
 const TransactionEntryItem = ({ vals, index, onFocus, onItemChange }) => {
-    const [date, setDate] = useState("");
-    const [payee, setPayee] = useState("");
-    const [account, setAccount] = useState("");
-    const [memo, setMemo] = useState("");
-    const [amount, setAmount] = useState("");
+    const [date, setDate] = useState(vals.date);
+    const [payee, setPayee] = useState(vals.payee);
+    const [account, setAccount] = useState(vals.account_name);
+    const [memo, setMemo] = useState(vals.memo);
+    const [amount, setAmount] = useState(vals.amount);
 
     const handleDateChange = (event) => {
         const newValue = event.target.value;
@@ -100,7 +100,7 @@ const TransactionEntryItem = ({ vals, index, onFocus, onItemChange }) => {
     const handleAccountChange = (event) => {
         const newValue = event.target.value;
         setAccount(newValue);
-        onItemChange(index, "account", newValue);
+        onItemChange(index, "account_name", newValue);
     };
 
     const handleMemoChange = (event) => {
