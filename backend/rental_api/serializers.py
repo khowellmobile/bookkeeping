@@ -13,7 +13,6 @@ class TransactionSerializer(serializers.ModelSerializer):
             "user",
             "account",
             "account_name",
-            "type",
             "date",
             "amount",
             "memo",

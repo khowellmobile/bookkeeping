@@ -7,7 +7,6 @@ class DatabaseConnectionsAdmin(admin.ModelAdmin):
     list_display = [
         "user",
         "account",
-        "type",
         "date",
         "amount",
         "payee",

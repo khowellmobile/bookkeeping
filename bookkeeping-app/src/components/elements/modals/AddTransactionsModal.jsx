@@ -2,7 +2,7 @@ import classes from "./AddTransactionsModal.module.css";
 
 import { TransactionEntryItem } from "../items/InputEntryItems";
 import AccountDropdown from "../dropdowns/AccountDropdown";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 
 const AddTransactionsModal = ({ ctxActiveAccount, handleCloseModal }) => {
     const [activeAccount, setActiveAccount] = useState(ctxActiveAccount);
@@ -20,9 +20,9 @@ const AddTransactionsModal = ({ ctxActiveAccount, handleCloseModal }) => {
             }))
     );
 
-    const changeActiveAccount = (account) => {
-        setActiveAccount(account);
-    };
+    useEffect(() => {
+        console.log(transactionItems);
+    }, transactionItems);
 
     const handleFocusLastItem = useCallback(
         (index) => {
@@ -62,18 +62,29 @@ const AddTransactionsModal = ({ ctxActiveAccount, handleCloseModal }) => {
             return values.some((value) => typeof value === "string" && value.trim() !== "");
         });
 
-        setTransactions((prev) => {
-            return [...nonEmptyItems, ...prev];
-        });
-
         handleCloseModal();
+    };
+
+    const addTransactions = async (transactionsToAdd) => {
+        try {
+            const response = await fetch("http://127.0.0.1:8000/api/transactions/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(transactionsToAdd),
+            });
+            console.log("Transactions sent (check your Django backend)");
+        } catch (error) {
+            console.error("Error sending transactions:", error);
+        }
     };
 
     return (
         <div className={classes.modalOverlay}>
             <div className={classes.mainContainer}>
                 <section className={classes.tools}>
-                    <AccountDropdown initalVal={activeAccount} onChange={changeActiveAccount} />
+                    <AccountDropdown initalVal={activeAccount} onChange={setActiveAccount} />
                     <p>What else?</p>
                     <section className={classes.buttons}>
                         <button onClick={handleSaveClose}>Save & Close</button>
