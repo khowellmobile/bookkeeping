@@ -13,10 +13,10 @@ const AccountDropdown = ({ initalVal, onChange }) => {
 
     const dropdownRef = useRef(null);
 
-    const clickAccountHandler = (accountName) => {
-        setActiveAccount(accountName);
+    const clickAccountHandler = (account) => {
+        setActiveAccount(account);
         setIsExpanded(false);
-        onChange(accountName);
+        onChange(account);
     };
 
     useEffect(() => {
@@ -35,7 +35,7 @@ const AccountDropdown = ({ initalVal, onChange }) => {
     return (
         <div className={classes.mainContainer} ref={dropdownRef}>
             <div className={classes.display} onClick={() => setIsExpanded((preVal) => !preVal)}>
-                <p>{activeAccount}</p>
+                <p>{activeAccount.name}</p>
             </div>
             <div className={classes.arrow} onClick={() => setIsExpanded((preVal) => !preVal)}>
                 <p>{isExpanded ? "△" : "▽"}</p>
@@ -50,7 +50,7 @@ const AccountDropdown = ({ initalVal, onChange }) => {
                         <div className={classes.clientListing}>
                             {accounts.map((account, index) => {
                                 return (
-                                    <p key={index} onClick={() => clickAccountHandler(account.name)}>
+                                    <p key={index} onClick={() => clickAccountHandler(account)}>
                                         {account.name}
                                     </p>
                                 );

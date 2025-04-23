@@ -49,7 +49,26 @@ class LoginSerializer(serializers.Serializer):
         fields = ["username", "password"]
 
 
+class AccountSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Account
+        fields = (
+            "user",
+            "name",
+            "type",
+            "balance",
+            "initial_balance",
+            "description",
+            "account_number",
+            "is_active",
+            "is_deleted",
+            "created_at",
+            "updated_at",
+        )
+
+
 class TransactionSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Transaction
         fields = (
@@ -72,33 +91,19 @@ class TransactionSerializer(serializers.ModelSerializer):
         }
 
     def create(self, validated_data):
-        user = self.context['request'].user
-        validated_data['user'] = user
+        user = self.context["request"].user
+        validated_data["user"] = user
 
         # Get the account instance based on the provided account ID
-        account_id = validated_data.pop('account') #changed from validated_data['account']
+        account_id = validated_data.pop(
+            "account"
+        )  # changed from validated_data['account']
         try:
             account = Account.objects.get(id=account_id)
         except Account.DoesNotExist:
-            raise serializers.ValidationError({"account": "Account with this ID does not exist."})
-        validated_data['account'] = account
+            raise serializers.ValidationError(
+                {"account": "Account with this ID does not exist."}
+            )
+        validated_data["account"] = account
 
         return super().create(validated_data)
-
-
-class AccountSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Account
-        fields = (
-            "user",
-            "name",
-            "type",
-            "balance",
-            "initial_balance",
-            "description",
-            "account_number",
-            "is_active",
-            "is_deleted",
-            "created_at",
-            "updated_at",
-        )

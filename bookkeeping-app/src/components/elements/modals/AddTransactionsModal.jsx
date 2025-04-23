@@ -20,10 +20,6 @@ const AddTransactionsModal = ({ ctxActiveAccount, handleCloseModal }) => {
             }))
     );
 
-    useEffect(() => {
-        console.log(transactionItems);
-    }, transactionItems);
-
     const handleFocusLastItem = useCallback(
         (index) => {
             if (index === transactionItems.length - 1) {
@@ -42,7 +38,7 @@ const AddTransactionsModal = ({ ctxActiveAccount, handleCloseModal }) => {
             } else if (name === "payee") {
                 newtransactionItems[index].payee = value;
             } else if (name === "account_name") {
-                newtransactionItems[index].account_name = value;
+                newtransactionItems[index].account.name = value;
             } else if (name === "memo") {
                 newtransactionItems[index].memo = value;
             } else if (name === "amount") {

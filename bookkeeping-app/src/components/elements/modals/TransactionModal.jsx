@@ -7,7 +7,7 @@ import PayeeDropdown from "../dropdowns/PayeeDropdown.jsx";
 const TransactionModal = ({ vals, handleCloseModal }) => {
     const [transDate, setTransDate] = useState(vals.date);
     const [transPayee, setTransPayee] = useState(vals.payee); // State variable most likely not needed here
-    const [transAccount, setTransAccount] = useState(vals.account_name); // State variable most likely not needed here
+    const [transAccount, setTransAccount] = useState(vals.account.name); // State variable most likely not needed here
     const [transMemo, setTransMemo] = useState(vals.memo);
     const [transAmount, setTransAmount] = useState(vals.amount);
 

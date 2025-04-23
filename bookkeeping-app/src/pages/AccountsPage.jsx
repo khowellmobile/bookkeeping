@@ -8,14 +8,19 @@ import { useNavigate } from "react-router-dom";
 const AccountsPage = () => {
     const navigate = useNavigate();
 
-    const { ctxAccountList, changeCtxAccountList, changeCtxActiveAccount } = useContext(BkpgContext);
+    console.log("rendinger accounts page");
 
+    const { ctxAccountList, changeCtxAccountList, changeCtxActiveAccount } = useContext(BkpgContext);
     const [accounts, setAccounts] = useState(ctxAccountList);
 
-    const accountClickHandler = (val) => {
-        changeCtxActiveAccount(val);
+    const accountClickHandler = (account) => {
+        changeCtxActiveAccount(account);
         navigate("/transactions");
     };
+
+    if (!accounts) {
+        return <div>Loading accounts...</div>; // Or some other loading indicator
+    }
 
     return (
         <div className={classes.mainContainer}>

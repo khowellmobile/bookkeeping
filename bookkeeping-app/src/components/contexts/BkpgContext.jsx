@@ -19,11 +19,12 @@ export function BkpgContextProvider(props) {
     };
 
     const changeCtxActiveAccount = (account) => {
+        console.log(account);
         setCtxActiveAccount(account);
     };
 
     const changeCtxAccountList = (account) => {
-        setCtxActiveAccount(account);
+        setCtxAccountList(account);
     };
 
     const context = {
@@ -36,6 +37,7 @@ export function BkpgContextProvider(props) {
     };
 
     useEffect(() => {
+        // RENDER TIMING ISSUE WITH ACCOUNTS PAGE
         const fetchAccounts = async () => {
             try {
                 const response = await fetch("http://127.0.0.1:8000/api/accounts/");
@@ -43,8 +45,8 @@ export function BkpgContextProvider(props) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 const data = await response.json();
-
                 setCtxAccountList(data);
+                console.log(data)
             } catch (e) {
                 console.log("Error: " + e);
             }

@@ -17,7 +17,7 @@ const TransactionItem = ({ vals }) => {
             <div className={classes.mainContainer} onClick={() => setIsModalOpen(true)}>
                 <p>{vals.date}</p>
                 <p>{vals.payee}</p>
-                <p>{vals.account_name}</p>
+                <p>{vals.account.name}</p>
                 <p>{vals.memo}</p>
                 <p>{vals.amount}</p>
                 <p>{vals.is_reconciled ? "yes" : "no"}</p>
