@@ -62,6 +62,8 @@ const AddTransactionsModal = ({ ctxActiveAccount, handleCloseModal }) => {
             return values.some((value) => typeof value === "string" && value.trim() !== "");
         });
 
+        addTransactions(nonEmptyItems);
+
         handleCloseModal();
     };
 
