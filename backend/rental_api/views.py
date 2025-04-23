@@ -4,48 +4,70 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import TransactionSerializer, AccountSerializer
+from .serializers import TransactionSerializer, AccountSerializer, LoginSerializer
 from core_backend.models import Transaction, Account
+from django.contrib.auth import authenticate, login
+from rest_framework.permissions import IsAuthenticated
+
+
+class LoginView(APIView):
+    """
+    API endpoint to handle user login.
+    """
+
+    serializer_class = LoginSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            user = serializer.validated_data["user"]
+            login(request, user)
+            return Response(
+                {"message": "Login successful", "username": user.username},
+                status=status.HTTP_200_OK,
+            )
+        else:
+            return Response(serializer.errors, status=status.HTTP_401_UNAUTHORIZED)
 
 
 class TransactionListAPIView(APIView):
     """
-    API endpoint to list all transactions.
+    API endpoint to list and create transactions.
     """
 
+    """ permission_classes = [IsAuthenticated] """
+
     def get(self, request):
-        transactions = Transaction.objects.all()
+        transactions = Transaction.objects.all() 
         serializer = TransactionSerializer(transactions, many=True)
         return Response(serializer.data)
 
     def post(self, request):
-        """
-        Simplified API endpoint to create a list of new transactions.
-        Expects a JSON payload with a list of transaction objects.
-        Basic version for connection testing.
-        """
         data = request.data
 
-        if isinstance(data, list):
-            serializers = [TransactionSerializer(data=item) for item in data]
-            saved_transactions = []
-            for serializer in serializers:
-                if serializer.is_valid():
-                    serializer.save()
-                    saved_transactions.append(serializer.instance)
-
-            if saved_transactions:
-                serializer = TransactionSerializer(saved_transactions, many=True)
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-            else:
-                return Response(
-                    {"message": "No valid transactions were processed."},
-                    status=status.HTTP_200_OK,
-                )
-        else:
+        if not isinstance(data, list):
             return Response(
                 {"error": "Expected a list of transactions."},
                 status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        saved_transactions = []
+        for item in data:
+            serializer = TransactionSerializer(data=item, context={"request": request})
+            if serializer.is_valid():
+                serializer.save()
+                saved_transactions.append(serializer.instance)
+            else:
+                # Handle validation errors for each transaction
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        if saved_transactions:
+            serializer = TransactionSerializer(saved_transactions, many=True)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(
+                {"message": "No valid transactions were processed."},
+                status=status.HTTP_200_OK,
             )
 
 
