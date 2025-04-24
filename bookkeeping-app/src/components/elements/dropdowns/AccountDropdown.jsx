@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useContext } from "react";
 
 const AccountDropdown = ({ initalVal, onChange }) => {
     const { ctxAccountList, ctxActiveAccount } = useContext(BkpgContext);
-    const [activeAccount, setActiveAccount] = useState(initalVal);
+    const [activeAccount, setActiveAccount] = useState(initalVal || {name: ""});
     const [isExpanded, setIsExpanded] = useState(false);
     const dropdownRef = useRef(null);
 
@@ -43,13 +43,14 @@ const AccountDropdown = ({ initalVal, onChange }) => {
                         <p>All Accounts</p>
                         <div className={classes.separatorH}></div>
                         <div className={classes.clientListing}>
-                            {ctxAccountList && ctxAccountList.map((account, index) => {
-                                return (
-                                    <p key={index} onClick={() => clickAccountHandler(account)}>
-                                        {account.name}
-                                    </p>
-                                );
-                            })}
+                            {ctxAccountList &&
+                                ctxAccountList.map((account, index) => {
+                                    return (
+                                        <p key={index} onClick={() => clickAccountHandler(account)}>
+                                            {account.name}
+                                        </p>
+                                    );
+                                })}
                         </div>
                     </div>
                 </div>

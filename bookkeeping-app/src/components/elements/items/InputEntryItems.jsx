@@ -1,3 +1,4 @@
+import AccountEntryDropdown from "../dropdowns/AccountEntryDropdown";
 import classes from "./InputEntryItems.module.css";
 
 import { useState, useEffect } from "react";
@@ -119,7 +120,7 @@ const TransactionEntryItem = ({ vals, index, onFocus, onItemChange }) => {
         <div className={`${classes.mainContainer} ${classes.transactionGridTemplate}`} onFocus={onFocus} tabIndex={0}>
             <input type="text" value={date} onChange={handleDateChange} />
             <input type="text" value={payee} onChange={handlePayeeChange} />
-            <input type="text" value={account} onChange={handleAccountChange} />
+            <AccountEntryDropdown />
             <input type="text" value={memo} onChange={handleMemoChange} />
             <input type="text" value={amount} onChange={handleAmountChange} />
         </div>
