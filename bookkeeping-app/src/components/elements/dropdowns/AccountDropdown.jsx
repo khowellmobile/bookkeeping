@@ -1,16 +1,11 @@
 import classes from "./AccountDropdown.module.css";
-
 import BkpgContext from "../../contexts/BkpgContext";
-
 import { useState, useEffect, useRef, useContext } from "react";
 
 const AccountDropdown = ({ initalVal, onChange }) => {
-    const { ctxAccountList } = useContext(BkpgContext);
-
+    const { ctxAccountList, ctxActiveAccount } = useContext(BkpgContext);
     const [activeAccount, setActiveAccount] = useState(initalVal);
     const [isExpanded, setIsExpanded] = useState(false);
-    const [accounts, setAccounts] = useState(ctxAccountList); // Might not need useState here
-
     const dropdownRef = useRef(null);
 
     const clickAccountHandler = (account) => {
@@ -48,7 +43,7 @@ const AccountDropdown = ({ initalVal, onChange }) => {
                         <p>All Accounts</p>
                         <div className={classes.separatorH}></div>
                         <div className={classes.clientListing}>
-                            {accounts.map((account, index) => {
+                            {ctxAccountList && ctxAccountList.map((account, index) => {
                                 return (
                                     <p key={index} onClick={() => clickAccountHandler(account)}>
                                         {account.name}

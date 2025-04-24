@@ -8,10 +8,9 @@ import { useState, useContext, useEffect } from "react";
 import AddTransactionsModal from "../components/elements/modals/AddTransactionsModal";
 
 const TransactionsPage = () => {
-    const { ctxAccountList, ctxActiveAccount, changeCtxActiveAccount } = useContext(BkpgContext);
+    const { ctxActiveAccount, changeCtxActiveAccount } = useContext(BkpgContext);
 
     const [transactions, setTransactions] = useState([]);
-    const [accounts, setAccounts] = useState(ctxAccountList);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -30,6 +29,8 @@ const TransactionsPage = () => {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 const data = await response.json();
+
+                console.log(data);
                 setTransactions(data);
             } catch (e) {
                 setError(e.message);

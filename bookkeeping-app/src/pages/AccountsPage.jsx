@@ -1,24 +1,19 @@
 import classes from "./AccountsPage.module.css";
-
 import BkpgContext from "../components/contexts/BkpgContext";
-
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 
 const AccountsPage = () => {
     const navigate = useNavigate();
-
-    console.log("rendinger accounts page");
-
-    const { ctxAccountList, changeCtxAccountList, changeCtxActiveAccount } = useContext(BkpgContext);
-    const [accounts, setAccounts] = useState(ctxAccountList);
+    const { ctxAccountList, changeCtxActiveAccount } = useContext(BkpgContext);
 
     const accountClickHandler = (account) => {
         changeCtxActiveAccount(account);
         navigate("/transactions");
     };
 
-    if (!accounts) {
+    if (!ctxAccountList) {
+        console.log(ctxAccountList);
         return <div>Loading accounts...</div>; // Or some other loading indicator
     }
 
@@ -49,7 +44,7 @@ const AccountsPage = () => {
                     <p>Action</p>
                 </div>
                 <div className={classes.listingItems}>
-                    {accounts.map((account, index) => (
+                    {ctxAccountList.map((account, index) => (
                         <div key={index}>
                             <p onClick={() => accountClickHandler(account.name)}>{account.name}</p>
                             <p>{account.type}</p>

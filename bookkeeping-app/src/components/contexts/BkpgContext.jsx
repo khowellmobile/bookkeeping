@@ -11,7 +11,7 @@ const BkpgContext = createContext({
 
 export function BkpgContextProvider(props) {
     const [ctxActiveClient, setCtxActiveClient] = useState(null);
-    const [ctxActiveAccount, setCtxActiveAccount] = useState(null);
+    const [ctxActiveAccount, setCtxActiveAccount] = useState({ name: "None Selected" });
     const [ctxAccountList, setCtxAccountList] = useState(null);
 
     const changeCtxActiveClient = (client) => {
@@ -19,7 +19,6 @@ export function BkpgContextProvider(props) {
     };
 
     const changeCtxActiveAccount = (account) => {
-        console.log(account);
         setCtxActiveAccount(account);
     };
 
@@ -46,7 +45,7 @@ export function BkpgContextProvider(props) {
                 }
                 const data = await response.json();
                 setCtxAccountList(data);
-                console.log(data)
+                /* console.log(data) */
             } catch (e) {
                 console.log("Error: " + e);
             }

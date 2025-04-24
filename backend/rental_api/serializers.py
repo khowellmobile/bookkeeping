@@ -68,6 +68,7 @@ class AccountSerializer(serializers.ModelSerializer):
 
 
 class TransactionSerializer(serializers.ModelSerializer):
+    account = AccountSerializer(read_only=True)
 
     class Meta:
         model = Transaction
