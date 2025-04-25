@@ -11,6 +11,7 @@ const AccountEntryDropdown = ({ onChange }) => {
     const [searchTerm, setSearchTerm] = useState("");
     const [filteredAccounts, setFilteredAccounts] = useState(ctxAccountList);
     const [isExpanded, setIsExpanded] = useState(false);
+    const [shownValue, setShownValue] = useState("");
 
     const inputRef = useRef();
 
@@ -25,10 +26,14 @@ const AccountEntryDropdown = ({ onChange }) => {
 
     const clickAccountHandler = (account) => {
         setIsExpanded(false);
-        setSearchTerm(account.name); 
-        if (inputRef.current) {
-            inputRef.current.blur();
-        }
+        setSearchTerm(account.name);
+        inputRef.current = account.name;
+    };
+
+    const handleBlur = () => {
+        setTimeout(() => {
+            setIsExpanded(false);
+        }, 100);
     };
 
     return (
@@ -38,11 +43,11 @@ const AccountEntryDropdown = ({ onChange }) => {
                 value={searchTerm}
                 onChange={(e) => {
                     setSearchTerm(e.target.value);
-                    setIsExpanded(true); // Keep dropdown open while typing
+                    setIsExpanded(true);
                 }}
-                onFocus={() => setIsExpanded(true)} // Open on focus as before
+                onFocus={() => setIsExpanded(true)}
+                onBlur={handleBlur}
                 ref={inputRef}
-                placeholder="Search Accounts..."
             />
             {isExpanded && (
                 <div className={classes.anchor}>
