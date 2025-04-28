@@ -4,38 +4,16 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import TransactionSerializer, AccountSerializer, LoginSerializer
+from .serializers import TransactionSerializer, AccountSerializer
 from core_backend.models import Transaction, Account
-from django.contrib.auth import authenticate, login
 from rest_framework.permissions import IsAuthenticated
-
-
-class LoginView(APIView):
-    """
-    API endpoint to handle user login.
-    """
-
-    serializer_class = LoginSerializer
-
-    def post(self, request):
-        serializer = self.serializer_class(data=request.data)
-        if serializer.is_valid():
-            user = serializer.validated_data["user"]
-            login(request, user)
-            return Response(
-                {"message": "Login successful", "username": user.username},
-                status=status.HTTP_200_OK,
-            )
-        else:
-            return Response(serializer.errors, status=status.HTTP_401_UNAUTHORIZED)
-
 
 class TransactionListAPIView(APIView):
     """
     API endpoint to list and create transactions.
     """
 
-    """ permission_classes = [IsAuthenticated] """
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         transactions = Transaction.objects.all() 
