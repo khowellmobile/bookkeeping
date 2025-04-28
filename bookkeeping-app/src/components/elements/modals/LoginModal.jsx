@@ -1,36 +1,45 @@
 import classes from "./LoginModal.module.css";
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const LoginModal = ({ handleCloseModal }) => {
     const navigate = useNavigate();
-    
+
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [errorMsg, setErrorMsg] = useState("");
 
     const handleLogin = async (event) => {
         event.preventDefault();
+        setErrorMsg("");
         try {
-            const response = await fetch("http://127.0.0.1:8000/api/login/", {
-                method: "POST",
+            const response = await fetch('http://localhost:8000/api/token/', {
+                method: 'POST',
                 headers: {
-                    "Content-Type": "application/json",
+                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ username: email, password: password }),
+                body: JSON.stringify({
+                    username: email, //
+                    password: password,
+                }),
             });
-            const data = await response.json();
-            if (response.ok) {
-                console.log("Login successful:", data);
-                navigate("/home");
-            } else if (response.status === 401) {
-                console.error("Login failed:", data);
-            } else {
-                console.error("Login error:", data);
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error('Login failed:', errorData);
+                setErrorMsg("Login failed please try again");
+                return;
             }
+
+            const data = await response.json();
+            const { access } = data;
+            localStorage.setItem('accessToken', access);
+            console.log('Login successful, token stored!');
+            navigate("/home"); 
+            handleCloseModal();
         } catch (error) {
-            console.error("Error during login:", error);
+            console.error('Login failed:', error);
+            setErrorMsg("Login failed please try again");
         }
     };
 
@@ -47,7 +56,7 @@ const LoginModal = ({ handleCloseModal }) => {
                     </section>
                     {errorMsg && (
                         <section className={classes.errors}>
-                            <p>Login failed please try again</p>
+                            <p>{errorMsg}</p>
                         </section>
                     )}
                     <section className={classes.inputs}>
@@ -68,11 +77,11 @@ const LoginModal = ({ handleCloseModal }) => {
                             <input
                                 type="password"
                                 className={classes.formInput}
+                                value={password}
                                 id="password"
                                 name="password"
                                 placeholder=""
                                 required
-                                value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                             />
                             <p className={classes.formLabel}>Password</p>

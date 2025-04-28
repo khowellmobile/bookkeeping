@@ -39,7 +39,7 @@ export function BkpgContextProvider(props) {
         // RENDER TIMING ISSUE WITH ACCOUNTS PAGE
         const fetchAccounts = async () => {
             try {
-                const response = await fetch("http://127.0.0.1:8000/api/accounts/");
+                const response = await fetch("http://localhost:8000/api/accounts/");
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
