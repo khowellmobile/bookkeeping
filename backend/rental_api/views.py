@@ -35,7 +35,7 @@ class TransactionListAPIView(APIView):
     API endpoint to list and create transactions.
     """
 
-    """ permission_classes = [IsAuthenticated] """
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         transactions = Transaction.objects.all() 

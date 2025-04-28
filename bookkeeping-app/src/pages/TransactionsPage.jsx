@@ -24,7 +24,9 @@ const TransactionsPage = () => {
             setLoading(true);
             setError(null);
             try {
-                const response = await fetch("http://127.0.0.1:8000/api/transactions/");
+                const response = await fetch("http://127.0.0.1:8000/api/transactions/", {
+                    credentials: 'include' // Add this line
+                });
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
@@ -36,7 +38,7 @@ const TransactionsPage = () => {
                 setLoading(false);
             }
         };
-
+    
         fetchTransactions();
     }, []);
 
