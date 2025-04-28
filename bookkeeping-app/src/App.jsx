@@ -12,21 +12,21 @@ import JournalsPage from "./pages/JournalsPage";
 import ReportsPage from "./pages/ReportsPage";
 import SupportPage from "./pages/SupportPage";
 import SettingsPage from "./pages/SettingsPage";
+import SplashPage from "./pages/SplashPage";
 
 function App() {
     return (
         <BkpgContextProvider>
-            <Layout>
-                <Routes>
-                    <Route path="/" element={<HomePage />} />
-                    <Route path="/transactions" element={<TransactionsPage />} />
-                    <Route path="/accounts" element={<AccountsPage />} />
-                    <Route path="/journals" element={<JournalsPage />} />
-                    <Route path="/reports" element={<ReportsPage />} />
-                    <Route path="/support" element={<SupportPage />} />
-                    <Route path="/settings" element={<SettingsPage />} />
-                </Routes>
-            </Layout>
+            <Routes>
+                <Route path="/" element={<SplashPage />} /> 
+                <Route path="/home" element={<Layout><HomePage /></Layout>} />
+                <Route path="/transactions" element={<Layout><TransactionsPage /></Layout>} />
+                <Route path="/accounts" element={<Layout><AccountsPage /></Layout>} />
+                <Route path="/journals" element={<Layout><JournalsPage /></Layout>} />
+                <Route path="/reports" element={<Layout><ReportsPage /></Layout>} />
+                <Route path="/support" element={<Layout><SupportPage /></Layout>} />
+                <Route path="/settings" element={<Layout><SettingsPage /></Layout>} />
+            </Routes>
         </BkpgContextProvider>
     );
 }

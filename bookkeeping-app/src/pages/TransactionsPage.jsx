@@ -1,15 +1,12 @@
 import AccountDropdown from "../components/elements/dropdowns/AccountDropdown";
 import TransactionItem from "../components/elements/items/TransactionItem";
 import classes from "./TransactionsPage.module.css";
-
 import BkpgContext from "../components/contexts/BkpgContext";
-
 import { useState, useContext, useEffect } from "react";
 import AddTransactionsModal from "../components/elements/modals/AddTransactionsModal";
 
 const TransactionsPage = () => {
     const { ctxActiveAccount, changeCtxActiveAccount } = useContext(BkpgContext);
-
     const [transactions, setTransactions] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -23,8 +20,14 @@ const TransactionsPage = () => {
         const fetchTransactions = async () => {
             setLoading(true);
             setError(null);
+            const accessToken = localStorage.getItem('accessToken'); 
+
             try {
-                const response = await fetch("http://127.0.0.1:8000/api/transactions/");
+                const response = await fetch("http://localhost:8000/api/transactions/", {
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`, 
+                    },
+                });
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
