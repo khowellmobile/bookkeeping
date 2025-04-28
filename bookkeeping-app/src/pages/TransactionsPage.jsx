@@ -29,8 +29,6 @@ const TransactionsPage = () => {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 const data = await response.json();
-
-                console.log(data);
                 setTransactions(data);
             } catch (e) {
                 setError(e.message);

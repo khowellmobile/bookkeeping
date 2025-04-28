@@ -98,10 +98,15 @@ const TransactionEntryItem = ({ vals, index, onFocus, onItemChange }) => {
         onItemChange(index, "payee", newValue);
     };
 
-    const handleAccountChange = (event) => {
+    /* const handleAccountChange = (event) => {
         const newValue = event.target.value;
         setAccount(newValue);
-        onItemChange(index, "account_name", newValue);
+        onItemChange(index, "account_id", newValue);
+    }; */
+
+    const handleAccountChange = (account) => {
+        setAccount(account);
+        onItemChange(index, "account_id", account.id);
     };
 
     const handleMemoChange = (event) => {
@@ -120,7 +125,7 @@ const TransactionEntryItem = ({ vals, index, onFocus, onItemChange }) => {
         <div className={`${classes.mainContainer} ${classes.transactionGridTemplate}`} onFocus={onFocus} tabIndex={0}>
             <input type="text" value={date} onChange={handleDateChange} />
             <input type="text" value={payee} onChange={handlePayeeChange} />
-            <AccountEntryDropdown />
+            <AccountEntryDropdown onChange={handleAccountChange} />
             <input type="text" value={memo} onChange={handleMemoChange} />
             <input type="text" value={amount} onChange={handleAmountChange} />
         </div>

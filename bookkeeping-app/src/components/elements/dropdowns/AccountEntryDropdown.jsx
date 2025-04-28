@@ -25,8 +25,10 @@ const AccountEntryDropdown = ({ onChange }) => {
     }, [searchTerm, ctxAccountList]);
 
     const clickAccountHandler = (account) => {
+        console.log(account)
         setIsExpanded(false);
         setSearchTerm(account.name);
+        onChange(account);
         inputRef.current = account.name;
     };
 

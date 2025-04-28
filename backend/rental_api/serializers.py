@@ -53,6 +53,7 @@ class AccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = Account
         fields = (
+            "id",
             "user",
             "name",
             "type",
@@ -69,6 +70,7 @@ class AccountSerializer(serializers.ModelSerializer):
 
 class TransactionSerializer(serializers.ModelSerializer):
     account = AccountSerializer(read_only=True)
+    account_id = serializers.IntegerField(write_only=True)
 
     class Meta:
         model = Transaction
@@ -76,6 +78,7 @@ class TransactionSerializer(serializers.ModelSerializer):
             "id",
             "user",
             "account",
+            "account_id",
             "date",
             "amount",
             "memo",
@@ -94,17 +97,12 @@ class TransactionSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = self.context["request"].user
         validated_data["user"] = user
-
-        # Get the account instance based on the provided account ID
-        account_id = validated_data.pop(
-            "account"
-        )  # changed from validated_data['account']
+        account_id = validated_data.pop("account_id")
         try:
             account = Account.objects.get(id=account_id)
         except Account.DoesNotExist:
             raise serializers.ValidationError(
-                {"account": "Account with this ID does not exist."}
+                {"account_id": "Account with this ID does not exist."}
             )
         validated_data["account"] = account
-
         return super().create(validated_data)

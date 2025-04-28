@@ -13,7 +13,7 @@ const AddTransactionsModal = ({ ctxActiveAccount, handleCloseModal }) => {
             .map(() => ({
                 date: "",
                 payee: "",
-                account_name: "",
+                account_id: "",
                 memo: "",
                 amount: "",
                 is_reconciled: false,
@@ -29,6 +29,10 @@ const AddTransactionsModal = ({ ctxActiveAccount, handleCloseModal }) => {
         [transactionItems, settransactionItems]
     );
 
+    useEffect(() => {
+
+    }, transactionItems)
+
     const handleItemChange = useCallback(
         (index, name, value) => {
             const newtransactionItems = [...transactionItems];
@@ -37,8 +41,8 @@ const AddTransactionsModal = ({ ctxActiveAccount, handleCloseModal }) => {
                 newtransactionItems[index].date = value;
             } else if (name === "payee") {
                 newtransactionItems[index].payee = value;
-            } else if (name === "account_name") {
-                newtransactionItems[index].account.name = value;
+            } else if (name === "account_id") {
+                newtransactionItems[index].account_id = value;
             } else if (name === "memo") {
                 newtransactionItems[index].memo = value;
             } else if (name === "amount") {
@@ -72,6 +76,7 @@ const AddTransactionsModal = ({ ctxActiveAccount, handleCloseModal }) => {
                 },
                 body: JSON.stringify(transactionsToAdd),
             });
+            console.log(transactionsToAdd);
             console.log("Transactions sent (check your Django backend)");
         } catch (error) {
             console.error("Error sending transactions:", error);
