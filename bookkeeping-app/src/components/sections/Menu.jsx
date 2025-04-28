@@ -22,7 +22,7 @@ const Menu = () => {
                 <p>Dashboard</p>
             </section>
             <section className={classes.itemsSection}>
-                <MenuLineItem itemName="Dashboard" link="/" icon={<img src={DashIcon} alt="Icon" />} />
+                <MenuLineItem itemName="Dashboard" link="/home" icon={<img src={DashIcon} alt="Icon" />} />
                 <MenuLineItem itemName="Transactions" link="/transactions" icon={<img src={TransactionIcon} alt="Icon" />} />
                 <MenuLineItem itemName="Accounts" link="/accounts" icon={<img src={AccountsIcon} alt="Icon" />} />
                 <MenuLineItem itemName="Journals" link="/journals" icon={<img src={JournalIcon} alt="Icon" />} />

@@ -1,0 +1,16 @@
+.mainContainer {
+    width: 100vw;
+    height: 100vh;
+}
+
+.loginButton {
+    width: 5rem;
+    height: 2rem;
+
+    background-color: black;
+    color: white;
+    border: none;
+    outline: none;
+
+    cursor: pointer;
+}
