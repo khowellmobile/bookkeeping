@@ -20,12 +20,12 @@ const TransactionsPage = () => {
         const fetchTransactions = async () => {
             setLoading(true);
             setError(null);
-            const accessToken = localStorage.getItem('accessToken'); // Get the token
+            const accessToken = localStorage.getItem('accessToken'); 
 
             try {
                 const response = await fetch("http://localhost:8000/api/transactions/", {
                     headers: {
-                        'Authorization': `Bearer ${accessToken}`, // Include the Authorization header
+                        'Authorization': `Bearer ${accessToken}`, 
                     },
                 });
                 if (!response.ok) {
