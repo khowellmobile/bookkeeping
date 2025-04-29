@@ -7,6 +7,7 @@ import AddTransactionsModal from "../components/elements/modals/AddTransactionsM
 
 const TransactionsPage = () => {
     const { ctxActiveAccount, changeCtxActiveAccount } = useContext(BkpgContext);
+
     const [transactions, setTransactions] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -20,12 +21,12 @@ const TransactionsPage = () => {
         const fetchTransactions = async () => {
             setLoading(true);
             setError(null);
-            const accessToken = localStorage.getItem('accessToken'); 
+            const accessToken = localStorage.getItem("accessToken");
 
             try {
                 const response = await fetch("http://localhost:8000/api/transactions/", {
                     headers: {
-                        'Authorization': `Bearer ${accessToken}`, 
+                        Authorization: `Bearer ${accessToken}`,
                     },
                 });
                 if (!response.ok) {

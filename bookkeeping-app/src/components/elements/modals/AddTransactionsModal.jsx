@@ -29,9 +29,7 @@ const AddTransactionsModal = ({ ctxActiveAccount, handleCloseModal }) => {
         [transactionItems, settransactionItems]
     );
 
-    useEffect(() => {
-
-    }, transactionItems)
+    useEffect(() => {}, transactionItems);
 
     const handleItemChange = useCallback(
         (index, name, value) => {
@@ -68,11 +66,14 @@ const AddTransactionsModal = ({ ctxActiveAccount, handleCloseModal }) => {
     };
 
     const addTransactions = async (transactionsToAdd) => {
+        const accessToken = localStorage.getItem("accessToken");
+
         try {
             const response = await fetch("http://127.0.0.1:8000/api/transactions/", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    Authorization: `Bearer ${accessToken}`,
                 },
                 body: JSON.stringify(transactionsToAdd),
             });

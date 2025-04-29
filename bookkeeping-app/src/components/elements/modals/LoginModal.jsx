@@ -1,8 +1,12 @@
 import classes from "./LoginModal.module.css";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 
+import BkpgContext from "../../contexts/BkpgContext";
+
 const LoginModal = ({ handleCloseModal }) => {
+    const { populateCtxACcounts } = useContext(BkpgContext);
+
     const navigate = useNavigate();
 
     const [email, setEmail] = useState("");
@@ -11,12 +15,14 @@ const LoginModal = ({ handleCloseModal }) => {
 
     const handleLogin = async (event) => {
         event.preventDefault();
-        setErrorMsg("");
+        const accessToken = localStorage.getItem("accessToken");
+
         try {
-            const response = await fetch('http://localhost:8000/api/token/', {
-                method: 'POST',
+            const response = await fetch("http://localhost:8000/api/token/", {
+                method: "POST",
                 headers: {
-                    'Content-Type': 'application/json',
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${accessToken}`,
                 },
                 body: JSON.stringify({
                     username: email, //
@@ -26,19 +32,20 @@ const LoginModal = ({ handleCloseModal }) => {
 
             if (!response.ok) {
                 const errorData = await response.json();
-                console.error('Login failed:', errorData);
+                console.error("Login failed:", errorData);
                 setErrorMsg("Login failed please try again");
                 return;
             }
 
             const data = await response.json();
             const { access } = data;
-            localStorage.setItem('accessToken', access);
-            console.log('Login successful, token stored!');
-            navigate("/home"); 
+            localStorage.setItem("accessToken", access);
+            console.log("Login successful, token stored!");
+            navigate("/home");
+            populateCtxACcounts();
             handleCloseModal();
         } catch (error) {
-            console.error('Login failed:', error);
+            console.error("Login failed:", error);
             setErrorMsg("Login failed please try again");
         }
     };

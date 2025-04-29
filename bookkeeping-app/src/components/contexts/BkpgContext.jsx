@@ -7,12 +7,14 @@ const BkpgContext = createContext({
     changeCtxActiveClient: (client) => {},
     changeCtxActiveAccount: (account) => {},
     changeCtxAccountList: (accounts) => {},
+    populateCtxACcounts: () => {},
 });
 
 export function BkpgContextProvider(props) {
     const [ctxActiveClient, setCtxActiveClient] = useState(null);
     const [ctxActiveAccount, setCtxActiveAccount] = useState({ name: "None Selected" });
     const [ctxAccountList, setCtxAccountList] = useState(null);
+    const accessToken = localStorage.getItem("accessToken");
 
     const changeCtxActiveClient = (client) => {
         setCtxActiveClient(client);
@@ -26,6 +28,23 @@ export function BkpgContextProvider(props) {
         setCtxAccountList(account);
     };
 
+    const populateCtxACcounts = async () => {
+        try {
+            const response = await fetch("http://localhost:8000/api/accounts/", {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            setCtxAccountList(data);
+        } catch (e) {
+            console.log("Error: " + e);
+        }
+    };
+
     const context = {
         ctxActiveClient,
         ctxActiveAccount,
@@ -33,26 +52,8 @@ export function BkpgContextProvider(props) {
         changeCtxActiveClient,
         changeCtxActiveAccount,
         changeCtxAccountList,
+        populateCtxACcounts,
     };
-
-    useEffect(() => {
-        // RENDER TIMING ISSUE WITH ACCOUNTS PAGE
-        const fetchAccounts = async () => {
-            try {
-                const response = await fetch("http://localhost:8000/api/accounts/");
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const data = await response.json();
-                setCtxAccountList(data);
-                /* console.log(data) */
-            } catch (e) {
-                console.log("Error: " + e);
-            }
-        };
-
-        fetchAccounts();
-    }, []);
 
     return <BkpgContext.Provider value={context}>{props.children}</BkpgContext.Provider>;
 }
