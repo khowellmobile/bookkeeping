@@ -8,6 +8,7 @@ from .serializers import TransactionSerializer, AccountSerializer
 from core_backend.models import Transaction, Account
 from rest_framework.permissions import IsAuthenticated
 
+
 class TransactionListAPIView(APIView):
     """
     API endpoint to list and create transactions.
@@ -16,7 +17,7 @@ class TransactionListAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        transactions = Transaction.objects.all() 
+        transactions = Transaction.objects.all()
         serializer = TransactionSerializer(transactions, many=True)
         return Response(serializer.data)
 
@@ -54,13 +55,42 @@ class TransactionDetailAPIView(APIView):
     API endpoint to retrieve a single transaction by its primary key (id).
     """
 
-    def get(self, request, pk):
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self, pk):
         try:
-            transaction = Transaction.objects.get(pk=pk)
+            return Transaction.objects.get(
+                pk=pk, user=self.request.user
+            )  
         except Transaction.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-        serializer = TransactionSerializer(transaction)
-        return Response(serializer.data)
+            return None
+
+    def get(self, request, pk):
+        transaction = self.get_object(pk)
+        if transaction:
+            serializer = TransactionSerializer(transaction)
+            return Response(serializer.data)
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    def put(self, request, pk):
+        transaction = self.get_object(pk)
+        if transaction:
+            serializer = TransactionSerializer(
+                transaction, data=request.data, context={"request": request}
+            )
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            print(serializer.errors)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    def delete(self, request, pk):
+        transaction = self.get_object(pk)
+        if transaction:
+            transaction.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
 
 class AccountListAPIView(APIView):

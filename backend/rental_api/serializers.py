@@ -26,6 +26,7 @@ class AccountSerializer(serializers.ModelSerializer):
 class TransactionSerializer(serializers.ModelSerializer):
     account = AccountSerializer(read_only=True)
     account_id = serializers.IntegerField(write_only=True)
+    date = serializers.DateField(required=False)
 
     class Meta:
         model = Transaction
@@ -43,11 +44,6 @@ class TransactionSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         )
-        extra_kwargs = {
-            "user": {"read_only": True},
-            "date": {"required": True},
-            "amount": {"required": True},
-        }
 
     def create(self, validated_data):
         user = self.context["request"].user
@@ -61,3 +57,13 @@ class TransactionSerializer(serializers.ModelSerializer):
             )
         validated_data["account"] = account
         return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        fields_to_update = ["date", "payee", "memo", "amount", "account_id"]
+
+        for attr in fields_to_update:
+            if attr in validated_data:
+                setattr(instance, attr, validated_data[attr])
+
+        instance.save()
+        return instance

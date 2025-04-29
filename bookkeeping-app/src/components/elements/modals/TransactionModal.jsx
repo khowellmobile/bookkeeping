@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import classes from "./TransactionModal.module.css";
 
 import AccountDropdown from "../dropdowns/AccountDropdown.jsx";
@@ -6,25 +6,56 @@ import PayeeDropdown from "../dropdowns/PayeeDropdown.jsx";
 
 const TransactionModal = ({ vals, handleCloseModal }) => {
     const [transDate, setTransDate] = useState(vals.date);
-    const [transPayee, setTransPayee] = useState(vals.payee); // State variable most likely not needed here
-    const [transAccount, setTransAccount] = useState(vals.account); // State variable most likely not needed here
+    const [transPayee, setTransPayee] = useState(vals.payee);
+    const [transAccount, setTransAccount] = useState(vals.account);
     const [transMemo, setTransMemo] = useState(vals.memo);
     const [transAmount, setTransAmount] = useState(vals.amount);
 
+    const [editedTransaction, setEditedTransaction] = useState({account_id: vals.account.id});
+
     const handleDateChange = (event) => {
         setTransDate(event.target.value);
+        setEditedTransaction((prev) => ({ ...prev, date: event.target.value }));
+    };
+
+    const handlePayeeChange = (payeeName) => {
+        setTransPayee(payeeName);
+        setEditedTransaction((prev) => ({ ...prev, payee: payeeName }));
     };
 
     const handleMemoChange = (event) => {
         setTransMemo(event.target.value);
+        setEditedTransaction((prev) => ({ ...prev, memo: event.target.value }));
     };
 
     const handleAmountChange = (event) => {
         setTransAmount(event.target.value);
+        setEditedTransaction((prev) => ({ ...prev, amount: event.target.value }));
     };
 
     const handleAccountClick = (accountName) => {
         setTransAccount(accountName);
+        setEditedTransaction((prev) => ({ ...prev, account_id: vals.account.id }));
+    };
+
+    const updateTransaction = async () => {
+        const accessToken = localStorage.getItem("accessToken");
+
+        console.log(vals.id)
+        console.log(JSON.stringify(editedTransaction))
+
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/api/transactions/${vals.id}/`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${accessToken}`,
+                },
+                body: JSON.stringify(editedTransaction),
+            });
+        } catch (error) {
+            console.error("Error editing transaction:", error);
+        }
     };
 
     return (
@@ -56,6 +87,9 @@ const TransactionModal = ({ vals, handleCloseModal }) => {
                 <p>{vals.is_reconciled ? "☑️" : "❌"}</p>
                 <button className={classes.closeModalButton} onClick={handleCloseModal}>
                     Close
+                </button>
+                <button className={classes.closeModalButton} onClick={updateTransaction}>
+                    Save
                 </button>
             </div>
         </div>
