@@ -33,9 +33,9 @@ const TransactionModal = ({ vals, handleCloseModal }) => {
         setEditedTransaction((prev) => ({ ...prev, amount: event.target.value }));
     };
 
-    const handleAccountClick = (accountName) => {
-        setTransAccount(accountName);
-        setEditedTransaction((prev) => ({ ...prev, account_id: vals.account.id }));
+    const handleAccountClick = (account) => {
+        setTransAccount(account.id);
+        setEditedTransaction((prev) => ({ ...prev, account_id: account.id }));
     };
 
     const updateTransaction = async () => {
@@ -78,6 +78,7 @@ const TransactionModal = ({ vals, handleCloseModal }) => {
                 </div>
                 <div>
                     <div className={`${classes.cluster} ${classes.dropdownCluster}`}>
+                        {/* NEED TO ADD FULLY WORKING PAYEE DROPDOWN */}
                         <p>Payee</p>
                         <PayeeDropdown initalVal={transPayee} />
                     </div>
