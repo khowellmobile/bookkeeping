@@ -11,7 +11,7 @@ const TransactionModal = ({ vals, handleCloseModal }) => {
     const [transMemo, setTransMemo] = useState(vals.memo);
     const [transAmount, setTransAmount] = useState(vals.amount);
 
-    const [editedTransaction, setEditedTransaction] = useState({account_id: vals.account.id});
+    const [editedTransaction, setEditedTransaction] = useState({ account_id: vals.account.id });
 
     const handleDateChange = (event) => {
         setTransDate(event.target.value);
@@ -41,8 +41,8 @@ const TransactionModal = ({ vals, handleCloseModal }) => {
     const updateTransaction = async () => {
         const accessToken = localStorage.getItem("accessToken");
 
-        console.log(vals.id)
-        console.log(JSON.stringify(editedTransaction))
+        console.log(vals.id);
+        console.log(JSON.stringify(editedTransaction));
 
         try {
             const response = await fetch(`http://127.0.0.1:8000/api/transactions/${vals.id}/`, {
@@ -53,6 +53,12 @@ const TransactionModal = ({ vals, handleCloseModal }) => {
                 },
                 body: JSON.stringify(editedTransaction),
             });
+
+            if (!response.ok) {
+                console.log("Error:", response.error);
+            }
+
+            handleCloseModal()
         } catch (error) {
             console.error("Error editing transaction:", error);
         }
@@ -85,12 +91,10 @@ const TransactionModal = ({ vals, handleCloseModal }) => {
                     <input type="text" value={transMemo} onChange={handleMemoChange} />
                 </div>
                 <p>{vals.is_reconciled ? "☑️" : "❌"}</p>
-                <button className={classes.closeModalButton} onClick={handleCloseModal}>
-                    Close
-                </button>
-                <button className={classes.closeModalButton} onClick={updateTransaction}>
-                    Save
-                </button>
+                <div className={classes.buttons}>
+                    <button onClick={updateTransaction}>Save & Close</button>
+                    <button onClick={handleCloseModal}>Close</button>
+                </div>
             </div>
         </div>
     );

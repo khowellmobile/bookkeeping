@@ -75,13 +75,10 @@ class TransactionDetailAPIView(APIView):
     def put(self, request, pk):
         transaction = self.get_object(pk)
         if transaction:
-            serializer = TransactionSerializer(
-                transaction, data=request.data, context={"request": request}
-            )
+            serializer = TransactionSerializer(transaction, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data)
-            print(serializer.errors)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(status=status.HTTP_404_NOT_FOUND)
 

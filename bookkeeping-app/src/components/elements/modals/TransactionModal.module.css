@@ -86,9 +86,15 @@
     width: 100%;
 }
 
-.closeModalButton {
-    width: 15rem;
+.buttons {
+    display: flex;
+    justify-content: end;
+}
+
+.buttons > button {
+    width: 10rem;
     padding: 0.25rem 0.5rem;
+    margin-left: 0.5rem;
 
     background-color: rgb(42, 42, 209);
     color: white;
