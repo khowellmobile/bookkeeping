@@ -77,6 +77,11 @@ const AddTransactionsModal = ({ ctxActiveAccount, handleCloseModal }) => {
                 },
                 body: JSON.stringify(transactionsToAdd),
             });
+            
+            if (!response.ok) {
+                console.log(response.error)
+            }
+
             console.log("Transactions sent (check your Django backend)");
         } catch (error) {
             console.error("Error sending transactions:", error);

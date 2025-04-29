@@ -4,17 +4,19 @@ const BkpgContext = createContext({
     ctxActiveClient: null,
     ctxActiveAccount: null,
     ctxAccountList: null,
+    ctxIsLoading: null,
     changeCtxActiveClient: (client) => {},
     changeCtxActiveAccount: (account) => {},
     changeCtxAccountList: (accounts) => {},
-    populateCtxACcounts: () => {},
+    populateCtxAccounts: () => {},
 });
 
 export function BkpgContextProvider(props) {
+    const [ctxIsLoading, setCtxIsLoading] = useState(false);
     const [ctxActiveClient, setCtxActiveClient] = useState(null);
     const [ctxActiveAccount, setCtxActiveAccount] = useState({ name: "None Selected" });
     const [ctxAccountList, setCtxAccountList] = useState(null);
-    const accessToken = localStorage.getItem("accessToken");
+    const accessToken = localStorage.getItem("accessToken") || null;
 
     const changeCtxActiveClient = (client) => {
         setCtxActiveClient(client);
@@ -28,7 +30,8 @@ export function BkpgContextProvider(props) {
         setCtxAccountList(account);
     };
 
-    const populateCtxACcounts = async () => {
+    const populateCtxAccounts = async () => {
+        setCtxIsLoading(true);
         try {
             const response = await fetch("http://localhost:8000/api/accounts/", {
                 headers: {
@@ -42,17 +45,26 @@ export function BkpgContextProvider(props) {
             setCtxAccountList(data);
         } catch (e) {
             console.log("Error: " + e);
+        } finally {
+            setCtxIsLoading(false);
         }
     };
+
+    useEffect(() => {
+        if (accessToken) {
+            populateCtxAccounts();
+        }
+    }, [])
 
     const context = {
         ctxActiveClient,
         ctxActiveAccount,
         ctxAccountList,
+        ctxIsLoading,
         changeCtxActiveClient,
         changeCtxActiveAccount,
         changeCtxAccountList,
-        populateCtxACcounts,
+        populateCtxAccounts,
     };
 
     return <BkpgContext.Provider value={context}>{props.children}</BkpgContext.Provider>;

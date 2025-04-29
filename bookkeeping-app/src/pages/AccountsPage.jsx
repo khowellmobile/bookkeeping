@@ -1,11 +1,11 @@
 import classes from "./AccountsPage.module.css";
 import BkpgContext from "../components/contexts/BkpgContext";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const AccountsPage = () => {
     const navigate = useNavigate();
-    const { ctxAccountList, changeCtxActiveAccount } = useContext(BkpgContext);
+    const { ctxAccountList, changeCtxActiveAccount, ctxIsLoading, populateCtxAccounts } = useContext(BkpgContext);
 
     const accountClickHandler = (account) => {
         changeCtxActiveAccount(account);
@@ -13,8 +13,7 @@ const AccountsPage = () => {
     };
 
     if (!ctxAccountList) {
-        console.log(ctxAccountList);
-        return <div>Loading accounts...</div>; // Or some other loading indicator
+        return <div>Accounts not loaded</div>;
     }
 
     return (

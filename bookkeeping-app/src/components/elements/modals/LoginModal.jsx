@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import BkpgContext from "../../contexts/BkpgContext";
 
 const LoginModal = ({ handleCloseModal }) => {
-    const { populateCtxACcounts } = useContext(BkpgContext);
+    const { populateCtxAccounts } = useContext(BkpgContext);
 
     const navigate = useNavigate();
 
@@ -25,7 +25,7 @@ const LoginModal = ({ handleCloseModal }) => {
                     Authorization: `Bearer ${accessToken}`,
                 },
                 body: JSON.stringify({
-                    username: email, //
+                    username: email,
                     password: password,
                 }),
             });
@@ -42,7 +42,7 @@ const LoginModal = ({ handleCloseModal }) => {
             localStorage.setItem("accessToken", access);
             console.log("Login successful, token stored!");
             navigate("/home");
-            populateCtxACcounts();
+            populateCtxAccounts();
             handleCloseModal();
         } catch (error) {
             console.error("Login failed:", error);
