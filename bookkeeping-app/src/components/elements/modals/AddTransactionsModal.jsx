@@ -4,10 +4,10 @@ import { TransactionEntryItem } from "../items/InputEntryItems";
 import AccountDropdown from "../dropdowns/AccountDropdown";
 import { useState, useCallback, useEffect } from "react";
 
-const AddTransactionsModal = ({ ctxActiveAccount, handleCloseModal }) => {
+const AddTransactionsModal = ({ ctxActiveAccount, setPageTrans, handleCloseModal }) => {
     const [activeAccount, setActiveAccount] = useState(ctxActiveAccount);
 
-    const [transactionItems, settransactionItems] = useState(
+    const [transactionItems, setTransactionItems] = useState(
         Array(15)
             .fill(null)
             .map(() => ({
@@ -23,13 +23,11 @@ const AddTransactionsModal = ({ ctxActiveAccount, handleCloseModal }) => {
     const handleFocusLastItem = useCallback(
         (index) => {
             if (index === transactionItems.length - 1) {
-                settransactionItems([...transactionItems, ["", "", "", ""]]);
+                setTransactionItems([...transactionItems, ["", "", "", ""]]);
             }
         },
-        [transactionItems, settransactionItems]
+        [transactionItems, setTransactionItems]
     );
-
-    useEffect(() => {}, transactionItems);
 
     const handleItemChange = useCallback(
         (index, name, value) => {
@@ -47,9 +45,9 @@ const AddTransactionsModal = ({ ctxActiveAccount, handleCloseModal }) => {
                 newtransactionItems[index].amount = parseFloat(value) || 0;
             }
 
-            settransactionItems(newtransactionItems);
+            setTransactionItems(newtransactionItems);
         },
-        [transactionItems, settransactionItems]
+        [transactionItems, setTransactionItems]
     );
 
     const handleSaveClose = () => {
@@ -77,11 +75,12 @@ const AddTransactionsModal = ({ ctxActiveAccount, handleCloseModal }) => {
                 },
                 body: JSON.stringify(transactionsToAdd),
             });
-            
+
             if (!response.ok) {
-                console.log(response.error)
+                console.log(response.error);
             }
 
+            setPageTrans((prev) => [...prev, transactionsToAdd]);
             console.log("Transactions sent (check your Django backend)");
         } catch (error) {
             console.error("Error sending transactions:", error);

@@ -3,7 +3,7 @@ import classes from "./TransactionItem.module.css";
 
 import TransactionModal from "../modals/TransactionModal";
 
-const TransactionItem = ({ vals }) => {
+const TransactionItem = ({ vals, setPageTrans }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const handleCloseModal = () => {
@@ -12,7 +12,7 @@ const TransactionItem = ({ vals }) => {
 
     return (
         <>
-            {isModalOpen && <TransactionModal vals={vals} handleCloseModal={handleCloseModal} />}
+            {isModalOpen && <TransactionModal vals={vals} setPageTrans={setPageTrans} handleCloseModal={handleCloseModal} />}
 
             <div className={classes.mainContainer} onClick={() => setIsModalOpen(true)}>
                 <p>{vals.date}</p>

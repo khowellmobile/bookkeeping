@@ -41,8 +41,8 @@ const LoginModal = ({ handleCloseModal }) => {
             const { access } = data;
             localStorage.setItem("accessToken", access);
             console.log("Login successful, token stored!");
+            await populateCtxAccounts(); // ensure accounts populated before application accessed
             navigate("/home");
-            populateCtxAccounts();
             handleCloseModal();
         } catch (error) {
             console.error("Login failed:", error);

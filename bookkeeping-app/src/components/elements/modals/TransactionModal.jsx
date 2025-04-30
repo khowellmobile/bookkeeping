@@ -4,7 +4,7 @@ import classes from "./TransactionModal.module.css";
 import AccountDropdown from "../dropdowns/AccountDropdown.jsx";
 import PayeeDropdown from "../dropdowns/PayeeDropdown.jsx";
 
-const TransactionModal = ({ vals, handleCloseModal }) => {
+const TransactionModal = ({ vals, setPageTrans, handleCloseModal }) => {
     const [transDate, setTransDate] = useState(vals.date);
     const [transPayee, setTransPayee] = useState(vals.payee);
     const [transAccount, setTransAccount] = useState(vals.account);
@@ -41,9 +41,6 @@ const TransactionModal = ({ vals, handleCloseModal }) => {
     const updateTransaction = async () => {
         const accessToken = localStorage.getItem("accessToken");
 
-        console.log(vals.id);
-        console.log(JSON.stringify(editedTransaction));
-
         try {
             const response = await fetch(`http://127.0.0.1:8000/api/transactions/${vals.id}/`, {
                 method: "PUT",
@@ -56,9 +53,22 @@ const TransactionModal = ({ vals, handleCloseModal }) => {
 
             if (!response.ok) {
                 console.log("Error:", response.error);
+                return;
             }
 
-            handleCloseModal()
+            const updatedData = await response.json();
+
+            setPageTrans((prevTransactions) =>
+                prevTransactions.map((transaction) => {
+                    if (transaction.id === vals.id) {
+                        return updatedData;
+                    } else {
+                        return transaction;
+                    }
+                })
+            );
+
+            handleCloseModal();
         } catch (error) {
             console.error("Error editing transaction:", error);
         }

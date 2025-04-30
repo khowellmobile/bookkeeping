@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 const AccountsPage = () => {
     const navigate = useNavigate();
+    
     const { ctxAccountList, changeCtxActiveAccount, ctxIsLoading, populateCtxAccounts } = useContext(BkpgContext);
 
     const accountClickHandler = (account) => {

@@ -55,7 +55,7 @@ const TransactionsPage = () => {
     return (
         <>
             {isModalOpen && (
-                <AddTransactionsModal ctxActiveAccount={ctxActiveAccount} handleCloseModal={handleCloseModal} />
+                <AddTransactionsModal ctxActiveAccount={ctxActiveAccount} setPageTrans={setTransactions} handleCloseModal={handleCloseModal} />
             )}
 
             <div className={classes.mainContainer}>
@@ -87,7 +87,7 @@ const TransactionsPage = () => {
                     </div>
                     <div className={classes.listingItems}>
                         {transactions.map((transaction, index) => (
-                            <TransactionItem vals={transaction} key={index} />
+                            <TransactionItem vals={transaction} setPageTrans={setTransactions} key={index} />
                         ))}
                     </div>
                 </div>
