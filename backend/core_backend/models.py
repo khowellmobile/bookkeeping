@@ -12,7 +12,7 @@ ACCOUNT_TYPE_CHOICES = [
 
 
 class Account(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="accounts")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="accounts", null=True)
     name = models.CharField(max_length=255)
     type = models.CharField(
         max_length=10,

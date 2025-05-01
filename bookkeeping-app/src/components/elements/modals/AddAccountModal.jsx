@@ -1,15 +1,48 @@
 import { useState } from "react";
 import classes from "./AddAccountModal.module.css";
 
-const AddAccountModal = ({ handleCloseModal }) => {
+const AddAccountModal = ({ setPageAccounts, handleCloseModal }) => {
     const [accountName, setAccountName] = useState("");
     const [accountNumber, setAccountNumber] = useState("");
-    const [accountType, setAccountType] = useState("");
+    const [accountType, setAccountType] = useState("asset");
     const [initialBalance, setInitialBalance] = useState("");
     const [accountDescription, setAccountDescription] = useState("");
 
     const handleSaveClick = () => {
+        addAccount();
         handleCloseModal();
+    };
+
+    const addAccount = async () => {
+        const accessToken = localStorage.getItem("accessToken");
+
+        const accountToAdd = {
+            name: accountName,
+            type: accountType,
+            initial_balance: initialBalance,
+            description: accountDescription,
+            account_number: accountNumber,
+        };
+
+        try {
+            const response = await fetch("http://127.0.0.1:8000/api/accounts/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${accessToken}`,
+                },
+                body: JSON.stringify(accountToAdd),
+            });
+
+            if (!response.ok) {
+                console.log(response);
+            }
+
+            /* setPageTrans((prev) => [...prev, transactionsToAdd]); */
+            console.log("Account sent (check your Django backend)");
+        } catch (error) {
+            console.error("Error sending Account Info:", error);
+        }
     };
 
     return (
@@ -44,8 +77,7 @@ const AddAccountModal = ({ handleCloseModal }) => {
                             readOnly
                             value={accountType}
                             onChange={(e) => setAccountType(e.target.value)}
-                        />{" "}
-                        {/* Indicate it will be a dropdown */}
+                        />
                     </div>
                     <div className={classes.inputCluster}>
                         <p className={classes.label}>Initial Balance</p>

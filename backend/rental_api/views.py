@@ -95,10 +95,20 @@ class AccountListAPIView(APIView):
     API endpoint to list all accounts.
     """
 
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
         accounts = Account.objects.all()
         serializer = AccountSerializer(accounts, many=True)
         return Response(serializer.data)
+    
+    def post(self, request):
+        serializer = AccountSerializer(data=request.data, context={"request": request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        print(serializer.errors)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class AccountDetailAPIView(APIView):
