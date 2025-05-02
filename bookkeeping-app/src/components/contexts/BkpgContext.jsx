@@ -54,7 +54,7 @@ export function BkpgContextProvider(props) {
         if (accessToken) {
             populateCtxAccounts();
         }
-    }, [])
+    }, []);
 
     const context = {
         ctxActiveClient,

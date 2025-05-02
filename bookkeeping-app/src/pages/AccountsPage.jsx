@@ -1,6 +1,6 @@
 import classes from "./AccountsPage.module.css";
 import BkpgContext from "../components/contexts/BkpgContext";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AddAccountModal from "../components/elements/modals/AddAccountModal";
 
@@ -9,7 +9,7 @@ const AccountsPage = () => {
 
     const { ctxAccountList, changeCtxActiveAccount, ctxIsLoading, populateCtxAccounts } = useContext(BkpgContext);
 
-    const [isModalOpen, setIsModalOpen] = useState(true);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const accountClickHandler = (account) => {
         changeCtxActiveAccount(account);
