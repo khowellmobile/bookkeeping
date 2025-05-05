@@ -13,41 +13,43 @@ const LoginModal = ({ handleCloseModal }) => {
     const [password, setPassword] = useState("");
     const [errorMsg, setErrorMsg] = useState("");
 
-    const handleLogin = async (event) => {
+    const handleLogin = (event) => {
         event.preventDefault();
         const accessToken = localStorage.getItem("accessToken");
 
-        try {
-            const response = await fetch("http://localhost:8000/api/token/", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${accessToken}`,
-                },
-                body: JSON.stringify({
-                    username: email,
-                    password: password,
-                }),
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                console.error("Login failed:", errorData);
+        fetch("http://localhost:8000/api/token/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${accessToken}`,
+            },
+            body: JSON.stringify({
+                username: email,
+                password: password,
+            }),
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    return response.json().then((errorData) => {
+                        console.error("Login failed:", errorData);
+                        setErrorMsg("Login failed please try again");
+                        throw new Error("Login failed");
+                    });
+                }
+                return response.json();
+            })
+            .then((data) => {
+                const { access } = data;
+                localStorage.setItem("accessToken", access);
+                console.log("Login successful, token stored!");
+                populateCtxAccounts();
+                navigate("/home");
+                handleCloseModal();
+            })
+            .catch((error) => {
+                console.error("Login failed:", error);
                 setErrorMsg("Login failed please try again");
-                return;
-            }
-
-            const data = await response.json();
-            const { access } = data;
-            localStorage.setItem("accessToken", access);
-            console.log("Login successful, token stored!");
-            await populateCtxAccounts(); // ensure accounts populated before application accessed
-            navigate("/home");
-            handleCloseModal();
-        } catch (error) {
-            console.error("Login failed:", error);
-            setErrorMsg("Login failed please try again");
-        }
+            });
     };
 
     return (

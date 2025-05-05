@@ -1,20 +1,13 @@
 import classes from "./AccountsPage.module.css";
 import BkpgContext from "../components/contexts/BkpgContext";
 import { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import AddAccountModal from "../components/elements/modals/AddAccountModal";
+import AccountItem from "../components/elements/items/AccountItem";
 
 const AccountsPage = () => {
-    const navigate = useNavigate();
-
-    const { ctxAccountList, changeCtxActiveAccount, ctxIsLoading, populateCtxAccounts } = useContext(BkpgContext);
+    const { ctxAccountList, ctxIsLoading } = useContext(BkpgContext);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
-
-    const accountClickHandler = (account) => {
-        changeCtxActiveAccount(account);
-        navigate("/transactions");
-    };
 
     const handleCloseModal = () => {
         setIsModalOpen(false);
@@ -58,13 +51,7 @@ const AccountsPage = () => {
                         </div>
                         <div className={classes.listingItems}>
                             {ctxAccountList.map((account, index) => (
-                                <div key={index}>
-                                    <p onClick={() => accountClickHandler(account.name)}>{account.name}</p>
-                                    <p>{account.type}</p>
-                                    <p>{account.description}</p>
-                                    <p>{account.balance}</p>
-                                    <p>{account.initial_balance}</p>
-                                </div>
+                                <AccountItem account={account} key={index} />
                             ))}
                         </div>
                     </div>
