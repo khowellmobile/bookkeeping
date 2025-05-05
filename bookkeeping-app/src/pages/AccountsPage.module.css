@@ -69,7 +69,7 @@
     width: 100%;
 
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: 1.25fr 1.25fr 1.75fr 0.5fr 0.25fr;
 }
 
 .listingHeader > p {

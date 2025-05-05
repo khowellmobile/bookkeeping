@@ -4,7 +4,7 @@
     cursor: pointer;
 
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: 1.25fr 1.25fr 1.75fr 0.5fr 0.25fr;
     align-items: center;
 }
 
@@ -28,4 +28,57 @@
 
 .mainContainer > p:hover {
     background-color: rgba(214, 214, 214, 0.26);
+}
+
+.actionDiv {
+    width: 100%;
+    height: 100%;
+
+    border-left: 1px dashed rgba(128, 128, 128, 0.411);
+    border-bottom: 1px solid rgba(128, 128, 128, 0.411);
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    position: relative;
+}
+
+.icon {
+    height: 1.75rem;
+    width: 1.75rem;
+}
+
+.actionDropdown {
+    width: 10rem;
+
+    background-color: white;
+    border-radius: 0.25rem;
+    outline: 1px solid grey;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    position: absolute;
+    right: 0.5rem;
+    top: 0.5rem;
+
+    z-index: 10;
+}
+
+.actionDropdown > div {
+    width: 100%;
+    padding: 0.25rem;
+
+    border-bottom: 1px solid grey;
+    font-size: 0.8rem;
+}
+
+.actionDropdown > div:hover {
+    background-color: rgba(128, 128, 128, 0.13);
+}
+
+.actionDropdown > div:last-child {
+    border-bottom: none;
 }
