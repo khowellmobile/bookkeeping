@@ -27,6 +27,16 @@ class AccountSerializer(serializers.ModelSerializer):
         validated_data["user"] = user
         return super().create(validated_data)
 
+    def update(self, instance, validated_data):
+        fields_to_update = ["name", "type", "initial_balance", "description"]
+
+        for attr in fields_to_update:
+            if attr in validated_data:
+                setattr(instance, attr, validated_data[attr])
+
+        instance.save()
+        return instance
+
 
 class TransactionSerializer(serializers.ModelSerializer):
     account = AccountSerializer(read_only=True)

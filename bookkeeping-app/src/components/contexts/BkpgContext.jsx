@@ -9,6 +9,7 @@ const BkpgContext = createContext({
     changeCtxActiveAccount: (account) => {},
     changeCtxAccountList: (accounts) => {},
     populateCtxAccounts: () => {},
+    setCtxAccountList: () => {},
 });
 
 export function BkpgContextProvider(props) {
@@ -65,6 +66,7 @@ export function BkpgContextProvider(props) {
         changeCtxActiveAccount,
         changeCtxAccountList,
         populateCtxAccounts,
+        setCtxAccountList,
     };
 
     return <BkpgContext.Provider value={context}>{props.children}</BkpgContext.Provider>;

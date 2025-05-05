@@ -116,6 +116,14 @@ class AccountDetailAPIView(APIView):
     API endpoint to retrieve a single account by its primary key (id).
     """
 
+    def get_object(self, pk):
+        try:
+            return Account.objects.get(
+                pk=pk, user=self.request.user
+            )  
+        except Account.DoesNotExist:
+            return None
+
     def get(self, request, pk):
         try:
             account = Account.objects.get(pk=pk)
@@ -123,3 +131,13 @@ class AccountDetailAPIView(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = AccountSerializer(account)
         return Response(serializer.data)
+    
+    def put(self, request, pk):
+        account = self.get_object(pk)
+        if account:
+            serializer = AccountSerializer(account, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_404_NOT_FOUND)
