@@ -39,7 +39,7 @@
 }
 
 .dropDownContent {
-    width: calc(20rem - 0.5rem - 2px);
+    width: calc(20rem - 1px);
     height: 20rem;
 
     background-color: white;
@@ -112,4 +112,3 @@
     background-color: rgba(128, 128, 128, 0.116);
     text-decoration: underline;
 }
-

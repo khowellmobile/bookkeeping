@@ -44,6 +44,10 @@
     position: relative;
 }
 
+.actionDiv:hover {
+    background-color: rgba(214, 214, 214, 0.26);
+}
+
 .icon {
     height: 1.75rem;
     width: 1.75rem;

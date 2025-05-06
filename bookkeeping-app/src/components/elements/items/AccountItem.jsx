@@ -62,7 +62,7 @@ const AccountItem = ({ account }) => {
                                 <p>Edit</p>
                             </div>
                             <div>
-                                <p>Delete</p>
+                                <p>Mark Inactive</p>
                             </div>
                         </div>
                     )}
