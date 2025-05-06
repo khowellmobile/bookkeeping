@@ -8,5 +8,7 @@ urlpatterns = [
     path('transactions/<int:pk>/', views.TransactionDetailAPIView.as_view(), name='transaction-detail'),
     path('accounts/', views.AccountListAPIView.as_view(), name='account-list'),
     path('accounts/<int:pk>/', views.AccountDetailAPIView.as_view(), name='account-detail'),
+    path('entities/', views.EntityListAPIView.as_view(), name='entity-list'),
+    path('entities/<int:pk>/', views.EntityDetailAPIView.as_view(), name='entity-detail'),
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
 ]

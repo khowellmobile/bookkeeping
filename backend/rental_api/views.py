@@ -4,8 +4,8 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import TransactionSerializer, AccountSerializer
-from core_backend.models import Transaction, Account
+from .serializers import TransactionSerializer, AccountSerializer, EntitySerializer
+from core_backend.models import Transaction, Account, Entity
 from rest_framework.permissions import IsAuthenticated
 
 
@@ -59,9 +59,7 @@ class TransactionDetailAPIView(APIView):
 
     def get_object(self, pk):
         try:
-            return Transaction.objects.get(
-                pk=pk, user=self.request.user
-            )  
+            return Transaction.objects.get(pk=pk, user=self.request.user)
         except Transaction.DoesNotExist:
             return None
 
@@ -75,7 +73,9 @@ class TransactionDetailAPIView(APIView):
     def put(self, request, pk):
         transaction = self.get_object(pk)
         if transaction:
-            serializer = TransactionSerializer(transaction, data=request.data, partial=True)
+            serializer = TransactionSerializer(
+                transaction, data=request.data, partial=True
+            )
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data)
@@ -101,7 +101,7 @@ class AccountListAPIView(APIView):
         accounts = Account.objects.all()
         serializer = AccountSerializer(accounts, many=True)
         return Response(serializer.data)
-    
+
     def post(self, request):
         serializer = AccountSerializer(data=request.data, context={"request": request})
         if serializer.is_valid():
@@ -118,9 +118,7 @@ class AccountDetailAPIView(APIView):
 
     def get_object(self, pk):
         try:
-            return Account.objects.get(
-                pk=pk, user=self.request.user
-            )  
+            return Account.objects.get(pk=pk, user=self.request.user)
         except Account.DoesNotExist:
             return None
 
@@ -131,11 +129,61 @@ class AccountDetailAPIView(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = AccountSerializer(account)
         return Response(serializer.data)
-    
+
     def put(self, request, pk):
         account = self.get_object(pk)
         if account:
             serializer = AccountSerializer(account, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+class EntityListAPIView(APIView):
+    """
+    API endpoint to list all entities.
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        entites = Entity.objects.all()
+        serializer = EntitySerializer(entites, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = EntitySerializer(data=request.data, context={"request": request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class EntityDetailAPIView(APIView):
+    """
+    API endpoint to retrieve a single entity by its primary key (id).
+    """
+
+    def get_object(self, pk):
+        try:
+            return Entity.objects.get(pk=pk, user=self.request.user)
+        except Entity.DoesNotExist:
+            return None
+
+    def get(self, request, pk):
+        try:
+            entity = Entity.objects.get(pk=pk)
+        except Entity.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        serializer = EntitySerializer(entity)
+        return Response(serializer.data)
+
+    def put(self, request, pk):
+        entity = self.get_object(pk)
+        if entity:
+            serializer = EntitySerializer(entity, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data)

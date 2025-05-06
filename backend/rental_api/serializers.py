@@ -1,6 +1,6 @@
 # rental_api/serializers.py
 from rest_framework import serializers
-from core_backend.models import Transaction, Account
+from core_backend.models import Transaction, Account, Entity
 from django.contrib.auth import authenticate
 
 
@@ -75,6 +75,38 @@ class TransactionSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         fields_to_update = ["date", "payee", "memo", "amount", "account_id"]
+
+        for attr in fields_to_update:
+            if attr in validated_data:
+                setattr(instance, attr, validated_data[attr])
+
+        instance.save()
+        return instance
+
+
+class EntitySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Entity
+        fields = (
+            "id",
+            "user",
+            "name",
+            "company",
+            "description",
+            "address",
+            "is_deleted",
+            "created_at",
+            "updated_at",
+        )
+
+    def create(self, validated_data):
+        user = self.context["request"].user
+        validated_data["user"] = user
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        fields_to_update = ["name", "company", "description", "address"]
 
         for attr in fields_to_update:
             if attr in validated_data:

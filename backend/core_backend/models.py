@@ -7,12 +7,14 @@ ACCOUNT_TYPE_CHOICES = [
     ("equity", "Equity"),
     ("income", "Income"),
     ("expense", "Expense"),
-    ("bank", "Bank")
+    ("bank", "Bank"),
 ]
 
 
 class Account(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="accounts", null=True)
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="accounts", null=True
+    )
     name = models.CharField(max_length=255)
     type = models.CharField(
         max_length=10,
@@ -44,6 +46,19 @@ class Transaction(models.Model):
     payee = models.CharField(max_length=255, blank=True, null=True)
     memo = models.TextField(blank=True, null=True)
     is_reconciled = models.BooleanField(default=False)
+    is_deleted = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class Entity(models.Model):
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="entities", null=True
+    )
+    name = models.CharField(max_length=255)
+    company = models.CharField(max_length=255, null=True)
+    address = models.CharField(max_length=255, null=True)
+    description = models.TextField(blank=True, null=True)
     is_deleted = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
