@@ -9,7 +9,7 @@ class DatabaseConnectionsAdmin(admin.ModelAdmin):
         "account",
         "date",
         "amount",
-        "payee",
+        "entity",
         "memo",
         "is_reconciled",
         "is_deleted",

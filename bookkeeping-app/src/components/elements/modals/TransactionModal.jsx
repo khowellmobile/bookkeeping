@@ -6,7 +6,7 @@ import EntityDropdown from "../dropdowns/EntityDropdown.jsx";
 
 const TransactionModal = ({ vals, setPageTrans, handleCloseModal }) => {
     const [transDate, setTransDate] = useState(vals.date);
-    const [transPayee, setTransPayee] = useState(vals.payee);
+    const [transPayee, setTransPayee] = useState(vals.entity);
     const [transAccount, setTransAccount] = useState(vals.account);
     const [transMemo, setTransMemo] = useState(vals.memo);
     const [transAmount, setTransAmount] = useState(vals.amount);
@@ -18,9 +18,9 @@ const TransactionModal = ({ vals, setPageTrans, handleCloseModal }) => {
         setEditedTransaction((prev) => ({ ...prev, date: event.target.value }));
     };
 
-    const handlePayeeChange = (payeeName) => {
-        setTransPayee(payeeName);
-        setEditedTransaction((prev) => ({ ...prev, payee: payeeName }));
+    const handlePayeeChange = (entity) => {
+        setTransPayee(entity.id);
+        setEditedTransaction((prev) => ({ ...prev, entity_id: entity.id }));
     };
 
     const handleMemoChange = (event) => {
@@ -88,9 +88,8 @@ const TransactionModal = ({ vals, setPageTrans, handleCloseModal }) => {
                 </div>
                 <div>
                     <div className={`${classes.cluster} ${classes.dropdownCluster}`}>
-                        {/* NEED TO ADD FULLY WORKING PAYEE DROPDOWN */}
                         <p>Payee</p>
-                        <EntityDropdown initalVal={transPayee} />
+                        <EntityDropdown initalVal={transPayee} onChange={handlePayeeChange}/>
                     </div>
                     <div className={`${classes.cluster} ${classes.amountCluster}`}>
                         <p>Amount</p>
