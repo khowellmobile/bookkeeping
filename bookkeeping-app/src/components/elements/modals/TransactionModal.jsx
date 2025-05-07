@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import classes from "./TransactionModal.module.css";
 
 import AccountDropdown from "../dropdowns/AccountDropdown.jsx";
-import PayeeDropdown from "../dropdowns/PayeeDropdown.jsx";
+import EntityDropdown from "../dropdowns/EntityDropdown.jsx";
 
 const TransactionModal = ({ vals, setPageTrans, handleCloseModal }) => {
     const [transDate, setTransDate] = useState(vals.date);
@@ -90,7 +90,7 @@ const TransactionModal = ({ vals, setPageTrans, handleCloseModal }) => {
                     <div className={`${classes.cluster} ${classes.dropdownCluster}`}>
                         {/* NEED TO ADD FULLY WORKING PAYEE DROPDOWN */}
                         <p>Payee</p>
-                        <PayeeDropdown initalVal={transPayee} />
+                        <EntityDropdown initalVal={transPayee} />
                     </div>
                     <div className={`${classes.cluster} ${classes.amountCluster}`}>
                         <p>Amount</p>

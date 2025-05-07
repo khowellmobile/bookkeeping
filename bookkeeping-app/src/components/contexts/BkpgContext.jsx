@@ -4,6 +4,7 @@ const BkpgContext = createContext({
     ctxActiveClient: null,
     ctxActiveAccount: null,
     ctxAccountList: null,
+    ctxEntityList: null,
     ctxIsLoading: null,
     changeCtxActiveClient: (client) => {},
     changeCtxActiveAccount: (account) => {},
@@ -17,6 +18,7 @@ export function BkpgContextProvider(props) {
     const [ctxActiveClient, setCtxActiveClient] = useState(null);
     const [ctxActiveAccount, setCtxActiveAccount] = useState({ name: "None Selected" });
     const [ctxAccountList, setCtxAccountList] = useState(null);
+    const [ctxEntityList, setCtxEntityList] = useState(null);
     const accessToken = localStorage.getItem("accessToken") || null;
 
     const changeCtxActiveClient = (client) => {
@@ -32,7 +34,10 @@ export function BkpgContextProvider(props) {
     };
 
     const populateCtxAccounts = async () => {
-        setCtxIsLoading(true);
+        if (!ctxIsLoading) {
+            setCtxIsLoading(true);
+        }
+
         try {
             const response = await fetch("http://localhost:8000/api/accounts/", {
                 headers: {
@@ -51,9 +56,33 @@ export function BkpgContextProvider(props) {
         }
     };
 
+    const populateCtxEntities = async () => {
+        if (!ctxIsLoading) {
+            setCtxIsLoading(true);
+        }
+
+        try {
+            const response = await fetch("http://localhost:8000/api/entities/", {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            setCtxEntityList(data);
+        } catch (e) {
+            setError(e.message);
+        } finally {
+            setCtxIsLoading(false);
+        }
+    };
+
     useEffect(() => {
         if (accessToken) {
             populateCtxAccounts();
+            populateCtxEntities();
         }
     }, []);
 
@@ -61,6 +90,7 @@ export function BkpgContextProvider(props) {
         ctxActiveClient,
         ctxActiveAccount,
         ctxAccountList,
+        ctxEntityList,
         ctxIsLoading,
         changeCtxActiveClient,
         changeCtxActiveAccount,

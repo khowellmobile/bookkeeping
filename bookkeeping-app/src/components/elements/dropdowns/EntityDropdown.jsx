@@ -1,7 +1,63 @@
-import classes from "./EntityDropdown.module.css"
+import classes from "./EntityDropdown.module.css";
 
-const EntityDropdown = () => {
+import { useState, useContext, useEffect, useRef } from "react";
+import BkpgContext from "../../contexts/BkpgContext";
 
-}
+const EntityDropdown = ({initalVal}) => {
+    const { ctxEntityList } = useContext(BkpgContext);
 
-export default EntityDropdown
+    const [activeEntity, setActiveEntity] = useState({name: initalVal});
+    const [isExpanded, setIsExpanded] = useState(false);
+
+    const dropdownRef = useRef(null);
+
+    const clickEntityHandler = (val) => {
+        setActiveEntity(val);
+        setIsExpanded(false);
+    };
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setIsExpanded(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
+
+    return (
+        <div className={classes.mainContainer} ref={dropdownRef}>
+            <div className={classes.display} onClick={() => setIsExpanded((preVal) => !preVal)}>
+                <p>{activeEntity.name}</p>
+            </div>
+            <div className={classes.arrow} onClick={() => setIsExpanded((preVal) => !preVal)}>
+                <p>{isExpanded ? "△" : "▽"}</p>
+            </div>
+            {isExpanded && (
+                <div className={classes.anchor}>
+                    <div className={classes.dropDownContent}>
+                        <p>Find Payee</p>
+                        <input type="text" placeholder="Search..." spellCheck="false"></input>
+                        <p>All Payees</p>
+                        <div className={classes.separatorH}></div>
+                        <div className={classes.clientListing}>
+                            {ctxEntityList && ctxEntityList.map((val, index) => {
+                                return (
+                                    <p key={index} onClick={() => clickEntityHandler(val)}>
+                                        {val.name}
+                                    </p>
+                                );
+                            })}
+                        </div>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+};
+
+export default EntityDropdown;
