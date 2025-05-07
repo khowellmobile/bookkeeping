@@ -1,4 +1,5 @@
 import AccountEntryDropdown from "../dropdowns/AccountEntryDropdown";
+import EntityEntryDropdown from "../dropdowns/EntityEntryDropdown";
 import classes from "./InputEntryItems.module.css";
 
 import { useState, useEffect } from "react";
@@ -81,7 +82,7 @@ const JournalEntryItem = ({ vals, index, onFocus, onItemChange }) => {
 
 const TransactionEntryItem = ({ vals, index, onFocus, onItemChange }) => {
     const [date, setDate] = useState(vals.date);
-    const [payee, setPayee] = useState(vals.payee);
+    const [entity, setEntity] = useState(vals.entity);
     const [account, setAccount] = useState(vals.account_name);
     const [memo, setMemo] = useState(vals.memo);
     const [amount, setAmount] = useState(vals.amount);
@@ -92,17 +93,10 @@ const TransactionEntryItem = ({ vals, index, onFocus, onItemChange }) => {
         onItemChange(index, "date", newValue);
     };
 
-    const handlePayeeChange = (event) => {
-        const newValue = event.target.value;
-        setPayee(newValue);
-        onItemChange(index, "payee", newValue);
+    const handleEntityChange = (entity) => {
+        setEntity(entity);
+        onItemChange(index, "entity_id", entity.id);
     };
-
-    /* const handleAccountChange = (event) => {
-        const newValue = event.target.value;
-        setAccount(newValue);
-        onItemChange(index, "account_id", newValue);
-    }; */
 
     const handleAccountChange = (account) => {
         setAccount(account);
@@ -124,7 +118,7 @@ const TransactionEntryItem = ({ vals, index, onFocus, onItemChange }) => {
     return (
         <div className={`${classes.mainContainer} ${classes.transactionGridTemplate}`} onFocus={onFocus} tabIndex={0}>
             <input type="text" value={date} onChange={handleDateChange} />
-            <input type="text" value={payee} onChange={handlePayeeChange} />
+            <EntityEntryDropdown onChange={handleEntityChange} />
             <AccountEntryDropdown onChange={handleAccountChange} />
             <input type="text" value={memo} onChange={handleMemoChange} />
             <input type="text" value={amount} onChange={handleAmountChange} />

@@ -2,7 +2,7 @@ import classes from "./AddTransactionsModal.module.css";
 
 import { TransactionEntryItem } from "../items/InputEntryItems";
 import AccountDropdown from "../dropdowns/AccountDropdown";
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 
 const AddTransactionsModal = ({ ctxActiveAccount, setPageTrans, handleCloseModal }) => {
     const [activeAccount, setActiveAccount] = useState(ctxActiveAccount);
@@ -35,8 +35,8 @@ const AddTransactionsModal = ({ ctxActiveAccount, setPageTrans, handleCloseModal
 
             if (name === "date") {
                 newtransactionItems[index].date = value;
-            } else if (name === "payee") {
-                newtransactionItems[index].payee = value;
+            } else if (name === "entity") {
+                newtransactionItems[index].entity_id = value;
             } else if (name === "account_id") {
                 newtransactionItems[index].account_id = value;
             } else if (name === "memo") {

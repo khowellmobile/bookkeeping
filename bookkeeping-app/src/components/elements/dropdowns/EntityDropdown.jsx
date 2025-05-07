@@ -33,7 +33,7 @@ const EntityDropdown = ({ initalVal, onChange }) => {
     return (
         <div className={classes.mainContainer} ref={dropdownRef}>
             <div className={classes.display} onClick={() => setIsExpanded((preVal) => !preVal)}>
-                <p>{activeEntity.name}</p>
+                <p>{activeEntity && activeEntity.name}</p>
             </div>
             <div className={classes.arrow} onClick={() => setIsExpanded((preVal) => !preVal)}>
                 <p>{isExpanded ? "△" : "▽"}</p>

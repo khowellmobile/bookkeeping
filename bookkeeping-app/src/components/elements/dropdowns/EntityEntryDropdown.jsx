@@ -1,33 +1,32 @@
-import classes from "./AccountEntryDropdown.module.css";
+import classes from "./entityEntryDropdown.module.css";
 
 import BkpgContext from "../../contexts/BkpgContext";
 
 import { useState, useContext, useEffect, useRef } from "react";
 
-const AccountEntryDropdown = ({ onChange }) => {
-    const { ctxAccountList } = useContext(BkpgContext);
+const EntityEntryDropdown = ({ onChange }) => {
+    const { ctxEntityList } = useContext(BkpgContext);
 
     const [searchTerm, setSearchTerm] = useState("");
-    const [filteredAccounts, setFilteredAccounts] = useState(ctxAccountList);
+    const [filteredEntitys, setFilteredEntitys] = useState(ctxEntityList);
     const [isExpanded, setIsExpanded] = useState(false);
 
     const inputRef = useRef();
 
     useEffect(() => {
-        if (ctxAccountList) {
-            const filtered = ctxAccountList.filter((account) =>
-                account.name.toLowerCase().includes(searchTerm.toLowerCase())
+        if (ctxEntityList) {
+            const filtered = ctxEntityList.filter((entity) =>
+                entity.name.toLowerCase().includes(searchTerm.toLowerCase())
             );
-            setFilteredAccounts(filtered);
+            setFilteredEntitys(filtered);
         }
-    }, [searchTerm, ctxAccountList]);
+    }, [searchTerm, ctxEntityList]);
 
-    const clickAccountHandler = (account) => {
-        console.log(account.name)
+    const clickentityHandler = (entity) => {
         setIsExpanded(false);
-        setSearchTerm(account.name);
-        onChange(account);
-        inputRef.current = account.name;
+        setSearchTerm(entity.name);
+        onChange(entity);
+        inputRef.current = entity.name;
     };
 
     const handleBlur = () => {
@@ -52,17 +51,17 @@ const AccountEntryDropdown = ({ onChange }) => {
             {isExpanded && (
                 <div className={classes.anchor}>
                     <div className={classes.dropDownContent}>
-                        <p>All Accounts</p>
+                        <p>All entitys</p>
                         <div className={classes.separatorH}></div>
-                        <div className={classes.accountListing}>
-                            {filteredAccounts && filteredAccounts.length > 0 ? ( // Use filteredAccounts
-                                filteredAccounts.map((account, index) => (
-                                    <p key={index} onClick={() => clickAccountHandler(account)}>
-                                        {account.name}
+                        <div className={classes.entityListing}>
+                            {filteredEntitys && filteredEntitys.length > 0 ? ( // Use filteredentitys
+                                filteredEntitys.map((entity, index) => (
+                                    <p key={index} onClick={() => clickentityHandler(entity)}>
+                                        {entity.name}
                                     </p>
                                 ))
                             ) : (
-                                <p>No matching accounts found.</p> // Show message if no matches
+                                <p>No matching entitys found.</p> // Show message if no matches
                             )}
                         </div>
                     </div>
@@ -72,4 +71,4 @@ const AccountEntryDropdown = ({ onChange }) => {
     );
 };
 
-export default AccountEntryDropdown;
+export default EntityEntryDropdown;
