@@ -15,7 +15,7 @@
 
 .mainContainer {
     width: 80rem;
-    height: 45rem;
+    height: 44rem;
 
     background-color: white;
     border-radius: 0.5rem;
@@ -79,7 +79,7 @@
 
 .columnNames {
     width: 100%;
-    height: 5%;
+    height: 2rem;
 
     background-color: rgb(250, 250, 250);
     border-bottom: 1px solid rgba(128, 128, 128, 0.301);
@@ -112,7 +112,7 @@
 
 .items {
     width: 100%;
-    height: 95%;
+    height: calc(100% - 2rem);
     border-radius: 0 0 0.5rem 0;
 
     overflow-y: scroll;

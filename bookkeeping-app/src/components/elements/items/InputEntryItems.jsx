@@ -80,7 +80,7 @@ const JournalEntryItem = ({ vals, index, onFocus, onItemChange }) => {
     );
 };
 
-const TransactionEntryItem = ({ vals, index, onFocus, onItemChange }) => {
+const TransactionEntryItem = ({ vals, index, onFocus, onItemChange, scrollRef }) => {
     const [date, setDate] = useState(vals.date);
     const [entity, setEntity] = useState(vals.entity);
     const [account, setAccount] = useState(vals.account_name);
@@ -118,8 +118,8 @@ const TransactionEntryItem = ({ vals, index, onFocus, onItemChange }) => {
     return (
         <div className={`${classes.mainContainer} ${classes.transactionGridTemplate}`} onFocus={onFocus} tabIndex={0}>
             <input type="text" value={date} onChange={handleDateChange} />
-            <EntityEntryDropdown onChange={handleEntityChange} />
-            <AccountEntryDropdown onChange={handleAccountChange} />
+            <EntityEntryDropdown scrollRef={scrollRef} onChange={handleEntityChange} />
+            <AccountEntryDropdown scrollRef={scrollRef} onChange={handleAccountChange} />
             <input type="text" value={memo} onChange={handleMemoChange} />
             <input type="text" value={amount} onChange={handleAmountChange} />
         </div>

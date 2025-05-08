@@ -2,13 +2,14 @@ import classes from "./AddTransactionsModal.module.css";
 
 import { TransactionEntryItem } from "../items/InputEntryItems";
 import AccountDropdown from "../dropdowns/AccountDropdown";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 
 const AddTransactionsModal = ({ ctxActiveAccount, setPageTrans, handleCloseModal }) => {
-    const [activeAccount, setActiveAccount] = useState(ctxActiveAccount);
+    const scrollRef = useRef();
 
+    const [activeAccount, setActiveAccount] = useState(ctxActiveAccount);
     const [transactionItems, setTransactionItems] = useState(
-        Array(15)
+        Array(14)
             .fill(null)
             .map(() => ({
                 date: "",
@@ -116,7 +117,7 @@ const AddTransactionsModal = ({ ctxActiveAccount, setPageTrans, handleCloseModal
                             <p>Amount</p>
                         </div>
                     </section>
-                    <section className={classes.items}>
+                    <section className={classes.items} ref={scrollRef}>
                         {transactionItems.map((transaction, index) => (
                             <TransactionEntryItem
                                 vals={transaction}
@@ -124,6 +125,7 @@ const AddTransactionsModal = ({ ctxActiveAccount, setPageTrans, handleCloseModal
                                 index={index}
                                 onFocus={() => handleFocusLastItem(index)}
                                 onItemChange={handleItemChange}
+                                scrollRef={scrollRef}
                             />
                         ))}
                     </section>
