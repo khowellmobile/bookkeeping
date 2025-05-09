@@ -13,7 +13,7 @@ const AddTransactionsModal = ({ ctxActiveAccount, setPageTrans, handleCloseModal
             .fill(null)
             .map(() => ({
                 date: "",
-                payee: "",
+                entity_id: "",
                 account_id: "",
                 memo: "",
                 amount: "",
@@ -36,7 +36,7 @@ const AddTransactionsModal = ({ ctxActiveAccount, setPageTrans, handleCloseModal
 
             if (name === "date") {
                 newtransactionItems[index].date = value;
-            } else if (name === "entity") {
+            } else if (name === "entity_id") {
                 newtransactionItems[index].entity_id = value;
             } else if (name === "account_id") {
                 newtransactionItems[index].account_id = value;
@@ -77,8 +77,11 @@ const AddTransactionsModal = ({ ctxActiveAccount, setPageTrans, handleCloseModal
                 body: JSON.stringify(transactionsToAdd),
             });
 
+            console.log(transactionsToAdd, "---------------------")
+
             if (!response.ok) {
                 console.log(response.error);
+                return
             }
 
             setPageTrans((prev) => [...prev, transactionsToAdd]);
