@@ -64,7 +64,9 @@ const EntityEntryDropdown = ({ scrollRef, onChange }) => {
         setIsExpanded(false);
         setSearchTerm(entity.name);
         onChange(entity);
-        inputRef.current = entity.name;
+        if (inputRef.current) {
+            inputRef.current.focus();
+        }
     };
 
     const handleBlur = () => {

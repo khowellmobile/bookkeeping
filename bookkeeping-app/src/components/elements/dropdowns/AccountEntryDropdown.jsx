@@ -64,7 +64,9 @@ const AccountEntryDropdown = ({ scrollRef, onChange }) => {
         setIsExpanded(false);
         setSearchTerm(account.name);
         onChange(account);
-        inputRef.current = account.name;
+        if (inputRef.current) {
+            inputRef.current.focus(); 
+        }
     };
 
     const handleBlur = () => {
