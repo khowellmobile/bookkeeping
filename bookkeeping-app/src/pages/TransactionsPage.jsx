@@ -55,7 +55,11 @@ const TransactionsPage = () => {
     return (
         <>
             {isModalOpen && (
-                <AddTransactionsModal ctxActiveAccount={ctxActiveAccount} setPageTrans={setTransactions} handleCloseModal={handleCloseModal} />
+                <AddTransactionsModal
+                    ctxActiveAccount={ctxActiveAccount}
+                    setPageTrans={setTransactions}
+                    handleCloseModal={handleCloseModal}
+                />
             )}
 
             <div className={classes.mainContainer}>

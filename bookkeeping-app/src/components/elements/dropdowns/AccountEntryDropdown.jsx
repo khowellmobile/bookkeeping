@@ -70,7 +70,7 @@ const AccountEntryDropdown = ({ scrollRef, onChange }) => {
     const handleBlur = () => {
         setTimeout(() => {
             setIsExpanded(false);
-        }, 100);
+        }, 150);
     };
 
     return (

@@ -95,12 +95,12 @@ const TransactionEntryItem = ({ vals, index, onFocus, onItemChange, scrollRef })
 
     const handleEntityChange = (entity) => {
         setEntity(entity);
-        onItemChange(index, "entity_id", entity.id);
+        onItemChange(index, "entity", entity);
     };
 
     const handleAccountChange = (account) => {
         setAccount(account);
-        onItemChange(index, "account_id", account.id);
+        onItemChange(index, "account", account);
     };
 
     const handleMemoChange = (event) => {

@@ -36,10 +36,10 @@ const AddTransactionsModal = ({ ctxActiveAccount, setPageTrans, handleCloseModal
 
             if (name === "date") {
                 newtransactionItems[index].date = value;
-            } else if (name === "entity_id") {
-                newtransactionItems[index].entity_id = value;
-            } else if (name === "account_id") {
-                newtransactionItems[index].account_id = value;
+            } else if (name === "entity") {
+                newtransactionItems[index].entity = value;
+            } else if (name === "account") {
+                newtransactionItems[index].account = value;
             } else if (name === "memo") {
                 newtransactionItems[index].memo = value;
             } else if (name === "amount") {
@@ -67,6 +67,17 @@ const AddTransactionsModal = ({ ctxActiveAccount, setPageTrans, handleCloseModal
     const addTransactions = async (transactionsToAdd) => {
         const accessToken = localStorage.getItem("accessToken");
 
+        const transformedTransactionsArray = transactionsToAdd.map((transaction) => ({
+            ...transaction,
+            entity_id: transaction.entity.id,
+            account_id: transaction.account.id,
+        }));
+
+        transformedTransactionsArray.forEach((transaction) => {
+            delete transaction.entity;
+            delete transaction.account;
+        });
+
         try {
             const response = await fetch("http://127.0.0.1:8000/api/transactions/", {
                 method: "POST",
@@ -74,18 +85,15 @@ const AddTransactionsModal = ({ ctxActiveAccount, setPageTrans, handleCloseModal
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${accessToken}`,
                 },
-                body: JSON.stringify(transactionsToAdd),
+                body: JSON.stringify(transformedTransactionsArray),
             });
-
-            console.log(transactionsToAdd, "---------------------")
 
             if (!response.ok) {
                 console.log(response.error);
-                return
+                return;
             }
 
-            setPageTrans((prev) => [...prev, transactionsToAdd]);
-            console.log("Transactions sent (check your Django backend)");
+            setPageTrans((prev) => [...prev, ...transactionsToAdd]);
         } catch (error) {
             console.error("Error sending transactions:", error);
         }
