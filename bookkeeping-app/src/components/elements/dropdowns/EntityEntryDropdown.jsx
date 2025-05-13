@@ -60,7 +60,7 @@ const EntityEntryDropdown = ({ scrollRef, onChange }) => {
         }
     }, [searchTerm, ctxEntityList]);
 
-    const clickentityHandler = (entity) => {
+    const clickEntityHandler = (entity) => {
         setIsExpanded(false);
         setSearchTerm(entity.name);
         onChange(entity);
@@ -95,7 +95,7 @@ const EntityEntryDropdown = ({ scrollRef, onChange }) => {
                     <div className={classes.entityListing}>
                         {filteredEntitys && filteredEntitys.length > 0 ? ( // Use filteredentitys
                             filteredEntitys.map((entity, index) => (
-                                <p key={index} onClick={() => clickentityHandler(entity)}>
+                                <p key={index} onClick={() => clickEntityHandler(entity)}>
                                     {entity.name}
                                 </p>
                             ))
