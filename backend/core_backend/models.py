@@ -50,12 +50,20 @@ class Entity(models.Model):
         return self.name
 
 
+TRANSACTION_TYPE_CHOICES = [("journal", "Journal"), ("account", "Account")]
+
+
 class Transaction(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="transactions", null=True
     )
     account = models.ForeignKey(
         Account, on_delete=models.CASCADE, related_name="transactions"
+    )
+    type = models.CharField(
+        max_length=10,
+        choices=TRANSACTION_TYPE_CHOICES,
+        default="account",
     )
     date = models.DateField()
     amount = models.DecimalField(max_digits=10, decimal_places=2)
