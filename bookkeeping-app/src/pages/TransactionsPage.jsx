@@ -13,6 +13,9 @@ const TransactionsPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    const [searchTerm, setSearchTerm] = useState("");
+    const [filteredTransactions, setFilteredTransactions] = useState([]);
+
     const handleCloseModal = () => {
         setIsModalOpen(false);
     };
@@ -44,6 +47,19 @@ const TransactionsPage = () => {
         fetchTransactions();
     }, []);
 
+    useEffect(() => {
+        if (transactions) {
+            const lowercasedSearchTerm = searchTerm.toLowerCase();
+            const filtered = transactions.filter(
+                (transaction) =>
+                    transaction.account.name.toLowerCase().includes(lowercasedSearchTerm) ||
+                    transaction.entity.name.toLowerCase().includes(lowercasedSearchTerm) ||
+                    transaction.memo.toLowerCase().includes(lowercasedSearchTerm)
+            );
+            setFilteredTransactions(filtered);
+        }
+    }, [searchTerm, transactions]);
+
     if (loading) {
         return <div>Loading transactions...</div>;
     }
@@ -73,6 +89,10 @@ const TransactionsPage = () => {
                                 className={classes.transactionsSearch}
                                 placeholder="Search..."
                                 spellCheck="false"
+                                value={searchTerm}
+                                onChange={(e) => {
+                                    setSearchTerm(e.target.value);
+                                }}
                             ></input>
                         </div>
                         <div>
@@ -90,9 +110,13 @@ const TransactionsPage = () => {
                         <p>Reconciled</p>
                     </div>
                     <div className={classes.listingItems}>
-                        {transactions.map((transaction, index) => (
-                            <TransactionItem vals={transaction} setPageTrans={setTransactions} key={index} />
-                        ))}
+                        {filteredTransactions && filteredTransactions.length > 0 ? (
+                            filteredTransactions.map((transaction, index) => (
+                                <TransactionItem vals={transaction} setPageTrans={setTransactions} key={index} />
+                            ))
+                        ) : (
+                            <p>No matching transactions found.</p>
+                        )}
                     </div>
                 </div>
             </div>

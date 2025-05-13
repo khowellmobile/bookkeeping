@@ -1,17 +1,33 @@
 import classes from "./AccountsPage.module.css";
 import BkpgContext from "../components/contexts/BkpgContext";
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import AddAccountModal from "../components/elements/modals/AddAccountModal";
 import AccountItem from "../components/elements/items/AccountItem";
 
 const AccountsPage = () => {
     const { ctxAccountList, ctxIsLoading } = useContext(BkpgContext);
 
+    const [searchTerm, setSearchTerm] = useState("");
+    const [filteredAccounts, setFilteredAccounts] = useState(ctxAccountList);
+
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const handleCloseModal = () => {
         setIsModalOpen(false);
     };
+
+    useEffect(() => {
+        if (ctxAccountList) {
+            const lowercasedSearchTerm = searchTerm.toLowerCase();
+            const filtered = ctxAccountList.filter(
+                (account) =>
+                    account.name.toLowerCase().includes(lowercasedSearchTerm) ||
+                    account.type.toLowerCase().includes(lowercasedSearchTerm) ||
+                    account.description.toLowerCase().includes(lowercasedSearchTerm)
+            );
+            setFilteredAccounts(filtered);
+        }
+    }, [searchTerm, ctxAccountList]);
 
     if (!ctxAccountList) {
         return <div>Accounts not loaded. Refresh Page.</div>;
@@ -34,6 +50,10 @@ const AccountsPage = () => {
                                     className={classes.accountSearch}
                                     placeholder="Search..."
                                     spellCheck="false"
+                                    value={searchTerm}
+                                    onChange={(e) => {
+                                        setSearchTerm(e.target.value);
+                                    }}
                                 ></input>
                             </div>
                             <div>
@@ -50,9 +70,11 @@ const AccountsPage = () => {
                             <p>Action</p>
                         </div>
                         <div className={classes.listingItems}>
-                            {ctxAccountList.map((account, index) => (
-                                <AccountItem account={account} key={index} />
-                            ))}
+                            {filteredAccounts && filteredAccounts.length > 0 ? (
+                                filteredAccounts.map((account, index) => <AccountItem account={account} key={index} />)
+                            ) : (
+                                <p>No matching accounts found.</p>
+                            )}
                         </div>
                     </div>
                 </div>
