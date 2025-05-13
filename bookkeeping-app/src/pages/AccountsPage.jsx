@@ -53,7 +53,6 @@ const AccountsPage = () => {
                                     value={searchTerm}
                                     onChange={(e) => {
                                         setSearchTerm(e.target.value);
-                                        setIsExpanded(true);
                                     }}
                                 ></input>
                             </div>
