@@ -1,12 +1,17 @@
 import { useState } from "react";
 import classes from "./AddAccountModal.module.css";
 
+import upChevIcon from "../../../assets/chevron-up-icon.svg";
+import downChevIcon from "../../../assets/chevron-down-icon.svg";
+
 const AddAccountModal = ({ setPageAccounts, handleCloseModal }) => {
     const [accountName, setAccountName] = useState("");
     const [accountNumber, setAccountNumber] = useState("");
-    const [accountType, setAccountType] = useState("asset");
+    const [accountType, setAccountType] = useState("Asset");
     const [initialBalance, setInitialBalance] = useState("");
     const [accountDescription, setAccountDescription] = useState("");
+
+    const [isExpanded, setIsExpanded] = useState(true);
 
     const handleSaveClick = () => {
         addAccount();
@@ -71,13 +76,21 @@ const AddAccountModal = ({ setPageAccounts, handleCloseModal }) => {
                     </div>
                     <div className={classes.inputCluster}>
                         <p className={classes.label}>Account Type</p>
-                        <input
-                            type="text"
-                            placeholder="Select account type"
-                            readOnly
-                            value={accountType}
-                            onChange={(e) => setAccountType(e.target.value)}
-                        />
+                        <div className={classes.accountTypeDiv}>
+                            {accountType ? (
+                                <p>{accountType}</p>
+                            ) : (
+                                <p className={classes.placeholder}>Select account type</p>
+                            )}
+                        </div>
+                        <div className={`${classes.anchor} ${isExpanded ? "" : classes.noDisplay}`}>
+                            <div className={classes.dropdown}>
+                                <p>Asset</p>
+                                <p>Bank</p>
+                                <p>Liability</p>
+                                <p>Equity</p>
+                            </div>
+                        </div>
                     </div>
                     <div className={classes.inputCluster}>
                         <p className={classes.label}>Initial Balance</p>
