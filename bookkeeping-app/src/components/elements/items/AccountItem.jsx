@@ -55,7 +55,7 @@ const AccountItem = ({ account }) => {
                     />
                     {isDropOpen && (
                         <div className={classes.actionDropdown} ref={dropdownRef}>
-                            <div onClick={() => accountClickHandler(account.name)}>
+                            <div onClick={() => accountClickHandler(account)}>
                                 <p>Go to Transactions</p>
                             </div>
                             <div onClick={() => setIsModalOpen(true)}>
