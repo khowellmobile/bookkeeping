@@ -45,7 +45,7 @@
     padding-left: 0.5rem;
 }
 
-.inputCluster > input {
+.inputCluster > input, .accountTypeDiv {
     width: 100%;
     padding-left: 0.25rem;
 
@@ -53,6 +53,15 @@
     border-bottom: 1px solid grey;
     outline: none;
     font-family: "poppins";
+}
+
+.accountTypeDiv > p {
+    font-size: 0.8rem;
+}
+
+.placeholder {
+    color: grey;
+    font-size: 0.8rem;
 }
 
 .noDisplay {
@@ -64,13 +73,13 @@
 }
 
 .dropdown {
-    width: 20rem;
+    width: 100%;
 
     background-color: white;
     color: black;
-    border-radius: 0.25rem;
     user-select: none;
-    outline: 1px solid rgb(216, 216, 216);
+    border: 1px solid grey;
+    border-top: none;
 
     display: flex;
     flex-direction: column;
@@ -80,8 +89,9 @@
 
 .dropdown > p {
     width: 100%;
-    padding-left: 0.5rem;
+    padding-left: 0.25rem;
 
+    font-size: 0.8rem;
     cursor: pointer;
 }
 
@@ -92,8 +102,10 @@
 .top > textarea {
     width: 100%;
     height: 10rem;
+    margin-top: 1rem;
     padding: 0.25rem;
 
+    border: 1px solid grey;
     font-family: "poppins";
     resize: none;
 }
