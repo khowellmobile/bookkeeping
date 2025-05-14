@@ -1,16 +1,29 @@
 import classes from "./DashListItems.module.css";
 
-const AccountListItem = ({ name, balance, date }) => {
+import BkpgContext from "../../contexts/BkpgContext.jsx";
+import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
+
+const AccountListItem = ({ account }) => {
+    const navigate = useNavigate();
+
+    const { changeCtxActiveAccount } = useContext(BkpgContext);
+
+    const accountClickHandler = (account) => {
+        changeCtxActiveAccount(account);
+        navigate("/transactions");
+    };
+
     return (
-        <div className={`${classes.mainContainer}`}>
+        <div className={`${classes.mainContainer}`} onClick={() => accountClickHandler(account)}>
             <div>
-                <p>{name}</p>
+                <p>{account.name}</p>
             </div>
             <div>
-                <p>{balance}</p>
+                <p>{account.type}</p>
             </div>
             <div>
-                <p>{date}</p>
+                <p>{account.balance}</p>
             </div>
         </div>
     );
