@@ -7,11 +7,13 @@ import downChevIcon from "../../../assets/chevron-down-icon.svg";
 const AddAccountModal = ({ setPageAccounts, handleCloseModal }) => {
     const [accountName, setAccountName] = useState("");
     const [accountNumber, setAccountNumber] = useState("");
-    const [accountType, setAccountType] = useState("Asset");
+    const [accountType, setAccountType] = useState("");
     const [initialBalance, setInitialBalance] = useState("");
     const [accountDescription, setAccountDescription] = useState("");
 
-    const [isExpanded, setIsExpanded] = useState(true);
+    const [isExpanded, setIsExpanded] = useState(false);
+
+    const accountTypes = ["Asset", "Bank", "Equity", "Liability"];
 
     const handleSaveClick = () => {
         addAccount();
@@ -23,7 +25,7 @@ const AddAccountModal = ({ setPageAccounts, handleCloseModal }) => {
 
         const accountToAdd = {
             name: accountName,
-            type: accountType,
+            type: accountType.toLowerCase(),
             initial_balance: initialBalance,
             description: accountDescription,
             account_number: accountNumber,
@@ -48,6 +50,11 @@ const AddAccountModal = ({ setPageAccounts, handleCloseModal }) => {
         } catch (error) {
             console.error("Error sending Account Info:", error);
         }
+    };
+
+    const clickTypeHandler = (type) => {
+        setAccountType(type);
+        setIsExpanded(false);
     };
 
     return (
@@ -76,19 +83,24 @@ const AddAccountModal = ({ setPageAccounts, handleCloseModal }) => {
                     </div>
                     <div className={classes.inputCluster}>
                         <p className={classes.label}>Account Type</p>
-                        <div className={classes.accountTypeDiv}>
+                        <div className={classes.accountTypeDiv} onClick={() => setIsExpanded((prev) => !prev)}>
                             {accountType ? (
                                 <p>{accountType}</p>
                             ) : (
                                 <p className={classes.placeholder}>Select account type</p>
                             )}
+
+                            <img src={isExpanded ? upChevIcon : downChevIcon} className={classes.icon} />
                         </div>
                         <div className={`${classes.anchor} ${isExpanded ? "" : classes.noDisplay}`}>
                             <div className={classes.dropdown}>
-                                <p>Asset</p>
-                                <p>Bank</p>
-                                <p>Liability</p>
-                                <p>Equity</p>
+                                {accountTypes.map((type, index) => {
+                                    return (
+                                        <p key={index} onClick={() => clickTypeHandler(type)}>
+                                            {type}
+                                        </p>
+                                    );
+                                })}
                             </div>
                         </div>
                     </div>
