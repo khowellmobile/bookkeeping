@@ -20,6 +20,8 @@ class Account(models.Model):
         max_length=10,
         choices=ACCOUNT_TYPE_CHOICES,
         default="asset",
+        null=True,
+        blank=True
     )
     balance = models.DecimalField(max_digits=15, decimal_places=2, default=0.00)
     initial_balance = models.DecimalField(max_digits=15, decimal_places=2, default=0.00)

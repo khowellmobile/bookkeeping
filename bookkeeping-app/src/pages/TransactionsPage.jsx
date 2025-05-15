@@ -6,12 +6,11 @@ import { useState, useContext, useEffect } from "react";
 import AddTransactionsModal from "../components/elements/modals/AddTransactionsModal";
 
 const TransactionsPage = () => {
-    const { ctxActiveAccount, changeCtxActiveAccount } = useContext(BkpgContext);
+    const { ctxActiveAccount, changeCtxActiveAccount, changeCtxTranList, populateCtxTransactions } =
+        useContext(BkpgContext);
 
     const [transactions, setTransactions] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
 
     const [searchTerm, setSearchTerm] = useState("");
     const [filteredTransactions, setFilteredTransactions] = useState([]);
@@ -20,31 +19,14 @@ const TransactionsPage = () => {
         setIsModalOpen(false);
     };
 
+    // load trnsactions on mount
     useEffect(() => {
-        const fetchTransactions = async () => {
-            setLoading(true);
-            setError(null);
-            const accessToken = localStorage.getItem("accessToken");
-
-            try {
-                const response = await fetch("http://localhost:8000/api/transactions/", {
-                    headers: {
-                        Authorization: `Bearer ${accessToken}`,
-                    },
-                });
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const data = await response.json();
-                setTransactions(data);
-            } catch (e) {
-                setError(e.message);
-            } finally {
-                setLoading(false);
-            }
+        const fetchTran = async () => {
+            const data = await populateCtxTransactions();
+            setTransactions(data);
         };
 
-        fetchTransactions();
+        fetchTran();
     }, []);
 
     useEffect(() => {
@@ -60,13 +42,9 @@ const TransactionsPage = () => {
         }
     }, [searchTerm, transactions]);
 
-    if (loading) {
-        return <div>Loading transactions...</div>;
-    }
-
-    if (error) {
-        return <div>Error loading things: {error}</div>;
-    }
+    useEffect(() => {
+        changeCtxTranList(transactions);
+    }, [transactions]);
 
     return (
         <>

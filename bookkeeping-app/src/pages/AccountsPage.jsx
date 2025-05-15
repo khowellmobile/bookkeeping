@@ -5,7 +5,7 @@ import AddAccountModal from "../components/elements/modals/AddAccountModal";
 import AccountItem from "../components/elements/items/AccountItem";
 
 const AccountsPage = () => {
-    const { ctxAccountList, ctxIsLoading } = useContext(BkpgContext);
+    const { ctxAccountList, ctxIsLoading, populateCtxAccounts } = useContext(BkpgContext);
 
     const [searchTerm, setSearchTerm] = useState("");
     const [filteredAccounts, setFilteredAccounts] = useState(ctxAccountList);
