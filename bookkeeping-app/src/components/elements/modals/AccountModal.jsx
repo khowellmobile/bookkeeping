@@ -4,7 +4,7 @@ import BkpgContext from "../../contexts/BkpgContext";
 import { useContext, useState } from "react";
 
 const AccountModal = ({ account, handleCloseModal }) => {
-    const { changeCtxActiveAccount, setCtxAccountList } = useContext(BkpgContext);
+    const { setCtxAccountList } = useContext(BkpgContext);
 
     const [accountName, setAccountName] = useState(account.name);
     const [accountType, setAccountType] = useState(account.type);
