@@ -5,11 +5,13 @@ const BkpgContext = createContext({
     ctxActiveAccount: null,
     ctxAccountList: null,
     ctxEntityList: null,
+    ctxTranList: null,
     ctxIsLoading: null,
     changeCtxActiveClient: (client) => {},
     changeCtxActiveAccount: (account) => {},
     changeCtxAccountList: (accounts) => {},
     populateCtxAccounts: () => {},
+    populateCtxEntities: () => {},
     setCtxAccountList: () => {},
 });
 
@@ -19,6 +21,7 @@ export function BkpgContextProvider(props) {
     const [ctxActiveAccount, setCtxActiveAccount] = useState({ name: "None Selected" });
     const [ctxAccountList, setCtxAccountList] = useState(null);
     const [ctxEntityList, setCtxEntityList] = useState(null);
+    const [ctxTranList, setCtxTranList] = useState(null);
     const accessToken = localStorage.getItem("accessToken") || null;
 
     const changeCtxActiveClient = (client) => {
@@ -33,11 +36,11 @@ export function BkpgContextProvider(props) {
         setCtxAccountList(account);
     };
 
-    const populateCtxAccounts = async () => {
-        if (!ctxIsLoading) {
-            setCtxIsLoading(true);
-        }
+    const changeCtxTranList = (transactions) => {
+        setCtxTranList(transactions);
+    };
 
+    const populateCtxAccounts = async () => {
         try {
             const response = await fetch("http://localhost:8000/api/accounts/", {
                 headers: {
@@ -51,8 +54,6 @@ export function BkpgContextProvider(props) {
             setCtxAccountList(data);
         } catch (e) {
             console.log("Error: " + e);
-        } finally {
-            setCtxIsLoading(false);
         }
     };
 
@@ -84,18 +85,21 @@ export function BkpgContextProvider(props) {
             populateCtxAccounts();
             populateCtxEntities();
         }
-    }, []);
+    }, [])
 
     const context = {
         ctxActiveClient,
         ctxActiveAccount,
         ctxAccountList,
         ctxEntityList,
+        ctxTranList,
         ctxIsLoading,
         changeCtxActiveClient,
         changeCtxActiveAccount,
         changeCtxAccountList,
+        changeCtxTranList,
         populateCtxAccounts,
+        populateCtxEntities,
         setCtxAccountList,
     };
 

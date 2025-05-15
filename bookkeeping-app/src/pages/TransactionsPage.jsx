@@ -6,7 +6,7 @@ import { useState, useContext, useEffect } from "react";
 import AddTransactionsModal from "../components/elements/modals/AddTransactionsModal";
 
 const TransactionsPage = () => {
-    const { ctxActiveAccount, changeCtxActiveAccount } = useContext(BkpgContext);
+    const { ctxActiveAccount, changeCtxActiveAccount, changeCtxTranList } = useContext(BkpgContext);
 
     const [transactions, setTransactions] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -23,7 +23,6 @@ const TransactionsPage = () => {
     useEffect(() => {
         const fetchTransactions = async () => {
             setLoading(true);
-            setError(null);
             const accessToken = localStorage.getItem("accessToken");
 
             try {
@@ -59,6 +58,10 @@ const TransactionsPage = () => {
             setFilteredTransactions(filtered);
         }
     }, [searchTerm, transactions]);
+
+    useEffect(() => {
+        changeCtxTranList(transactions);
+    }, transactions);
 
     if (loading) {
         return <div>Loading transactions...</div>;

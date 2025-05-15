@@ -42,7 +42,6 @@ const LoginModal = ({ handleCloseModal }) => {
                 const { access } = data;
                 localStorage.setItem("accessToken", access);
                 console.log("Login successful, token stored!");
-                populateCtxAccounts();
                 navigate("/home");
                 handleCloseModal();
             })
