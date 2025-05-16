@@ -129,6 +129,7 @@ class TransactionSerializer(serializers.ModelSerializer):
             "amount",
             "account_id",
             "entity_id",
+            "is_deleted",
         ]
 
         for attr in fields_to_update:
