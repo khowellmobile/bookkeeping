@@ -2,7 +2,6 @@
     width: 20rem;
     height: 2rem;
 
-    border-radius: 0.25rem;
     cursor: pointer;
 
     display: flex;
@@ -13,7 +12,6 @@
     padding-left: 0.5rem;
 
     border: 1px solid rgba(143, 140, 140, 0.329);
-    border-radius: 0.25rem 0 0 0.25rem;
 
     display: flex;
     align-items: center;
@@ -22,11 +20,9 @@
 .arrow {
     width: 12%;
 
-    background-color: rgba(143, 140, 140, 0.329);
-    color: rgb(143, 140, 140);
+    background-color: rgba(204, 204, 204, 0.329);
     border: 1px solid rgba(143, 140, 140, 0.158);
     border-left: none;
-    border-radius: 0 0.25rem 0.25rem 0;
     cursor: pointer;
     user-select: none;
 
@@ -35,17 +31,21 @@
     align-items: center;
 }
 
+.icon {
+    width: 1rem;
+    height: 1rem;
+}
+
 .anchor {
     position: relative;
 }
 
 .dropDownContent {
-    width: calc(20rem - 0.5rem - 2px);
+    width: calc(20rem - 0.5rem - 3px);
     height: 20rem;
 
     background-color: white;
     color: black;
-    border-radius: 0.25rem;
     user-select: none;
     outline: 1px solid rgb(216, 216, 216);
 
@@ -54,7 +54,7 @@
 
     position: absolute;
     top: calc(2rem);
-    right: calc(0rem);
+    right: calc(0rem + 1px);
 }
 
 .dropDownContent > p:nth-child(1) {
@@ -80,7 +80,6 @@
     font-size: 0.8rem;
     line-height: 1.5rem;
     border: 1px solid rgba(143, 140, 140, 0.644);
-    border-radius: 0.15rem;
     outline: none;
 }
 

@@ -2,6 +2,9 @@ import classes from "./Dropdown.module.css";
 
 import { useState } from "react";
 
+import upChevIcon from "../../../assets/chevron-up-icon.svg";
+import downChevIcon from "../../../assets/chevron-down-icon.svg";
+
 const Dropdown = () => {
     const [activeClient, setActiveClient] = useState("None Selected");
     const [isExpanded, setIsExpanded] = useState(false);
@@ -40,7 +43,7 @@ const Dropdown = () => {
                 <p>{activeClient}</p>
             </div>
             <div className={classes.arrow} onClick={() => setIsExpanded((preVal) => !preVal)}>
-                <p>{isExpanded ? "△" : "▽"}</p>
+                <img src={isExpanded ? upChevIcon : downChevIcon} className={classes.icon} />
             </div>
             {isExpanded && (
                 <div className={classes.anchor}>

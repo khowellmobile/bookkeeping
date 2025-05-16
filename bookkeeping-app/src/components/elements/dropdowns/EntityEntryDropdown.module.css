@@ -45,7 +45,6 @@
 
     background-color: white;
     color: black;
-    border-radius: 0.25rem;
     user-select: none;
     outline: 1px solid rgb(216, 216, 216);
 
@@ -53,6 +52,7 @@
     flex-direction: column;
 
     position: absolute;
+    left: 1px;
 }
 
 .dropDownContent > p:first-child {

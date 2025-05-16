@@ -2,6 +2,9 @@ import classes from "./AccountDropdown.module.css";
 import BkpgContext from "../../contexts/BkpgContext";
 import { useState, useEffect, useRef, useContext } from "react";
 
+import upChevIcon from "../../../assets/chevron-up-icon.svg";
+import downChevIcon from "../../../assets/chevron-down-icon.svg";
+
 const AccountDropdown = ({ initalVal, onChange }) => {
     const { ctxAccountList } = useContext(BkpgContext);
     const [activeAccount, setActiveAccount] = useState(initalVal || { name: "" });
@@ -33,7 +36,7 @@ const AccountDropdown = ({ initalVal, onChange }) => {
                 <p>{activeAccount.name}</p>
             </div>
             <div className={classes.arrow} onClick={() => setIsExpanded((preVal) => !preVal)}>
-                <p>{isExpanded ? "△" : "▽"}</p>
+                <img src={isExpanded ? upChevIcon : downChevIcon} className={classes.icon} />
             </div>
             {isExpanded && (
                 <div className={classes.anchor}>

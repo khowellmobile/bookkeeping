@@ -3,6 +3,9 @@ import classes from "./EntityDropdown.module.css";
 import { useState, useContext, useEffect, useRef } from "react";
 import BkpgContext from "../../contexts/BkpgContext";
 
+import upChevIcon from "../../../assets/chevron-up-icon.svg";
+import downChevIcon from "../../../assets/chevron-down-icon.svg";
+
 const EntityDropdown = ({ initalVal, onChange }) => {
     const { ctxEntityList } = useContext(BkpgContext);
 
@@ -36,7 +39,7 @@ const EntityDropdown = ({ initalVal, onChange }) => {
                 <p>{activeEntity && activeEntity.name}</p>
             </div>
             <div className={classes.arrow} onClick={() => setIsExpanded((preVal) => !preVal)}>
-                <p>{isExpanded ? "△" : "▽"}</p>
+                <img src={isExpanded ? upChevIcon : downChevIcon} className={classes.icon} />
             </div>
             {isExpanded && (
                 <div className={classes.anchor}>
