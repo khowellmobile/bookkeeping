@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useContext } from "react";
 
 const AccountDropdown = ({ initalVal, onChange }) => {
     const { ctxAccountList } = useContext(BkpgContext);
-    const [activeAccount, setActiveAccount] = useState(initalVal || {name: ""});
+    const [activeAccount, setActiveAccount] = useState(initalVal || { name: "" });
     const [isExpanded, setIsExpanded] = useState(false);
     const dropdownRef = useRef(null);
 

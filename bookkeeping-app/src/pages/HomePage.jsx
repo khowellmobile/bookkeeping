@@ -18,7 +18,7 @@ const HomePage = () => {
         populateCtxAccounts();
         populateCtxEntities();
         populateCtxTransactions();
-    }, [])
+    }, []);
 
     return (
         <div className={classes.featuresContainer}>
