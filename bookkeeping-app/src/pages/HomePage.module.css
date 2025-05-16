@@ -8,8 +8,6 @@
 .menuContainer {
     width: 15%;
     height: 100%;
-
-    outline: 1px solid red;
 }
 
 .contentContainer {
@@ -24,15 +22,12 @@
     width: 100%;
     height: 10%;
 
-    outline: 1px solid blue;
-
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
 .headerTools {
-
     height: 100%;
     padding: 0.5rem;
 
@@ -57,7 +52,7 @@
 
 .headerTools > div > .userEmail {
     margin-right: 0.25rem;
-    
+
     color: rgb(58, 58, 58);
     font-size: 0.9rem;
 }
@@ -65,8 +60,6 @@
 .featuresContainer {
     width: 100%;
     height: 100%;
-
-    outline: 1px solid green;
 
     display: flex;
     flex-direction: column;
