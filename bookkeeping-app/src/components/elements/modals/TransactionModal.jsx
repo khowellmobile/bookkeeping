@@ -11,7 +11,7 @@ const TransactionModal = ({ vals, setPageTrans, handleCloseModal }) => {
     const [transMemo, setTransMemo] = useState(vals.memo);
     const [transAmount, setTransAmount] = useState(vals.amount);
 
-    const [editedTransaction, setEditedTransaction] = useState({ account_id: vals.account.id });
+    const [editedTransaction, setEditedTransaction] = useState({});
 
     const handleDateChange = (event) => {
         setTransDate(event.target.value);
@@ -38,8 +38,20 @@ const TransactionModal = ({ vals, setPageTrans, handleCloseModal }) => {
         setEditedTransaction((prev) => ({ ...prev, account_id: account.id }));
     };
 
-    const updateTransaction = async () => {
+    const handleDeleteClick = () => {
+        setEditedTransaction((prev) => ({ ...prev, is_deleted: true }));
+        updateTransaction(true);
+    };
+
+    const updateTransaction = async (shouldDelete) => {
         const accessToken = localStorage.getItem("accessToken");
+        let data;
+
+        if (shouldDelete) {
+            data = { is_deleted: true };
+        } else {
+            data = editedTransaction;
+        }
 
         try {
             const response = await fetch(`http://127.0.0.1:8000/api/transactions/${vals.id}/`, {
@@ -48,7 +60,7 @@ const TransactionModal = ({ vals, setPageTrans, handleCloseModal }) => {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${accessToken}`,
                 },
-                body: JSON.stringify(editedTransaction),
+                body: JSON.stringify(data),
             });
 
             if (!response.ok) {
@@ -89,7 +101,7 @@ const TransactionModal = ({ vals, setPageTrans, handleCloseModal }) => {
                 <div>
                     <div className={`${classes.cluster} ${classes.dropdownCluster}`}>
                         <p>Payee</p>
-                        <EntityDropdown initalVal={transPayee} onChange={handlePayeeChange}/>
+                        <EntityDropdown initalVal={transPayee} onChange={handlePayeeChange} />
                     </div>
                     <div className={`${classes.cluster} ${classes.amountCluster}`}>
                         <p>Amount</p>
@@ -102,8 +114,9 @@ const TransactionModal = ({ vals, setPageTrans, handleCloseModal }) => {
                 </div>
                 <p>{vals.is_reconciled ? "☑️" : "❌"}</p>
                 <div className={classes.buttons}>
-                    <button onClick={updateTransaction}>Save & Close</button>
+                    <button onClick={() => updateTransaction(false)}>Save & Close</button>
                     <button onClick={handleCloseModal}>Close</button>
+                    <button onClick={handleDeleteClick}>Delete</button>
                 </div>
             </div>
         </div>

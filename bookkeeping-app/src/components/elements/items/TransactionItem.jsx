@@ -12,7 +12,9 @@ const TransactionItem = ({ vals, setPageTrans }) => {
 
     return (
         <>
-            {isModalOpen && <TransactionModal vals={vals} setPageTrans={setPageTrans} handleCloseModal={handleCloseModal} />}
+            {isModalOpen && (
+                <TransactionModal vals={vals} setPageTrans={setPageTrans} handleCloseModal={handleCloseModal} />
+            )}
 
             <div className={classes.mainContainer} onClick={() => setIsModalOpen(true)}>
                 <p>{vals.date}</p>

@@ -32,7 +32,7 @@ const Dropdown = () => {
     const clickClientHandler = (val) => {
         setActiveClient(val);
         setIsExpanded(false);
-    }
+    };
 
     return (
         <div className={classes.mainContainer}>
@@ -51,7 +51,11 @@ const Dropdown = () => {
                         <div className={classes.separatorH}></div>
                         <div className={classes.clientListing}>
                             {clients.map((val, index) => {
-                                return <p key={index} onClick={() => clickClientHandler(val)}>{val}</p>;
+                                return (
+                                    <p key={index} onClick={() => clickClientHandler(val)}>
+                                        {val}
+                                    </p>
+                                );
                             })}
                         </div>
                     </div>

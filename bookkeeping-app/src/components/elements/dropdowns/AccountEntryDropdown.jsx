@@ -65,7 +65,7 @@ const AccountEntryDropdown = ({ scrollRef, onChange }) => {
         setSearchTerm(account.name);
         onChange(account);
         if (inputRef.current) {
-            inputRef.current.focus(); 
+            inputRef.current.focus();
         }
     };
 
