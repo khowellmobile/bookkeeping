@@ -28,7 +28,7 @@ class AccountSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
     def update(self, instance, validated_data):
-        fields_to_update = ["name", "type", "initial_balance", "description"]
+        fields_to_update = ["name", "type", "initial_balance", "description", "is_deleted"]
 
         for attr in fields_to_update:
             if attr in validated_data:

@@ -37,6 +37,28 @@ const AccountItem = ({ account }) => {
         };
     }, [isDropOpen, dropdownRef]);
 
+    const deleteAccount = async () => {
+        const accessToken = localStorage.getItem("accessToken");
+
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/api/accounts/${account.id}/`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${accessToken}`,
+                },
+                body: JSON.stringify({ is_deleted: true }),
+            });
+
+            if (!response.ok) {
+                console.log("Error:", response.error);
+                return;
+            }
+        } catch (error) {
+            console.error("Error marking account inactive:", error);
+        }
+    };
+
     return (
         <>
             {isModalOpen && <AccountModal account={account} handleCloseModal={handleCloseModal} />}
@@ -62,7 +84,7 @@ const AccountItem = ({ account }) => {
                                 <p>Edit</p>
                             </div>
                             <div>
-                                <p>Mark Inactive</p>
+                                <p onClick={() => deleteAccount()}>Mark Inactive</p>
                             </div>
                         </div>
                     )}

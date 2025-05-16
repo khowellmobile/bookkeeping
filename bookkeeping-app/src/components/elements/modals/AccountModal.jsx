@@ -65,7 +65,7 @@ const AccountModal = ({ account, handleCloseModal }) => {
 
             handleCloseModal();
         } catch (error) {
-            console.error("Error editing transaction:", error);
+            console.error("Error editing account:", error);
         }
     };
 
