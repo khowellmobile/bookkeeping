@@ -14,16 +14,16 @@ const BkpgContext = createContext({
     populateCtxEntities: () => {},
     populateCtxTransactions: () => {},
     setCtxAccountList: () => {},
+    setCtxAccessToken: () => {},
 });
 
 export function BkpgContextProvider(props) {
-    const [ctxIsLoading, setCtxIsLoading] = useState(false);
     const [ctxActiveClient, setCtxActiveClient] = useState(null);
     const [ctxActiveAccount, setCtxActiveAccount] = useState({ name: "None Selected" });
     const [ctxAccountList, setCtxAccountList] = useState(null);
     const [ctxEntityList, setCtxEntityList] = useState(null);
     const [ctxTranList, setCtxTranList] = useState(null);
-    const accessToken = localStorage.getItem("accessToken") || null;
+    const [ctxAccessToken, setCtxAccessToken] = useState(localStorage.getItem("accessToken") || null); // State really needed here?
 
     const changeCtxActiveClient = (client) => {
         setCtxActiveClient(client);
@@ -45,7 +45,7 @@ export function BkpgContextProvider(props) {
         try {
             const response = await fetch("http://localhost:8000/api/accounts/", {
                 headers: {
-                    Authorization: `Bearer ${accessToken}`,
+                    Authorization: `Bearer ${ctxAccessToken}`,
                 },
             });
             if (!response.ok) {
@@ -62,7 +62,7 @@ export function BkpgContextProvider(props) {
         try {
             const response = await fetch("http://localhost:8000/api/entities/", {
                 headers: {
-                    Authorization: `Bearer ${accessToken}`,
+                    Authorization: `Bearer ${ctxAccessToken}`,
                 },
             });
             if (!response.ok) {
@@ -79,7 +79,7 @@ export function BkpgContextProvider(props) {
         try {
             const response = await fetch("http://localhost:8000/api/transactions/", {
                 headers: {
-                    Authorization: `Bearer ${accessToken}`,
+                    Authorization: `Bearer ${ctxAccessToken}`,
                 },
             });
             if (!response.ok) {
@@ -95,7 +95,7 @@ export function BkpgContextProvider(props) {
 
     // Ensures re-fetches on refresh
     useEffect(() => {
-        if (accessToken) {
+        if (ctxAccessToken) {
             populateCtxAccounts();
             populateCtxEntities();
             populateCtxTransactions();
@@ -116,6 +116,7 @@ export function BkpgContextProvider(props) {
         populateCtxEntities,
         populateCtxTransactions,
         setCtxAccountList,
+        setCtxAccessToken,
     };
 
     return <BkpgContext.Provider value={context}>{props.children}</BkpgContext.Provider>;
