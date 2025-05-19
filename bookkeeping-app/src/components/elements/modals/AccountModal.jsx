@@ -3,24 +3,30 @@ import classes from "./AccountModal.module.css";
 import BkpgContext from "../../contexts/BkpgContext";
 import { useContext, useState } from "react";
 
+import upChevIcon from "../../../assets/chevron-up-icon.svg";
+import downChevIcon from "../../../assets/chevron-down-icon.svg";
+
 const AccountModal = ({ account, handleCloseModal }) => {
     const { setCtxAccountList } = useContext(BkpgContext);
 
     const [accountName, setAccountName] = useState(account.name);
-    const [accountType, setAccountType] = useState(account.type);
+    const [accountType, setAccountType] = useState(account.type.charAt(0).toUpperCase() + account.type.slice(1));
     const [accountInitBalance, setAccountInitBalance] = useState(account.initial_balance);
     const [accountDescription, setAccountDescription] = useState(account.description);
-
     const [editedAccount, setEditedAccount] = useState({ id: account.id });
+    const [isExpanded, setIsExpanded] = useState(false);
+
+    const accountTypes = ["Asset", "Bank", "Equity", "Liability"];
 
     const handleNameChange = (event) => {
         setAccountName(event.target.value);
         setEditedAccount((prev) => ({ ...prev, name: event.target.value }));
     };
 
-    const handleTypeChange = (event) => {
-        setAccountType(event.target.value);
-        setEditedAccount((prev) => ({ ...prev, type: event.target.value }));
+    const clickTypeHandler = (type) => {
+        setAccountType(type);
+        setEditedAccount((prev) => ({ ...prev, type: type.toLowerCase() }));
+        setIsExpanded(false);
     };
 
     const handleInitBalanceChange = (event) => {
@@ -74,20 +80,39 @@ const AccountModal = ({ account, handleCloseModal }) => {
             <div className={classes.mainContainer}>
                 <h2>Edit Account</h2>
                 <div className={classes.seperatorH} />
-                <div className={`${classes.cluster}`}>
+                <div className={`${classes.inputCluster}`}>
                     <p>Name</p>
                     <input type="text" value={accountName} onChange={handleNameChange} />
                 </div>
-                <div className={`${classes.cluster}`}>
-                    <p>Type</p>
-                    <input type="text" value={accountType} onChange={handleTypeChange} />
+                <div className={classes.inputCluster}>
+                    <p className={classes.label}>Account Type</p>
+                    <div className={classes.accountTypeDiv} onClick={() => setIsExpanded((prev) => !prev)}>
+                        {accountType ? (
+                            <p>{accountType}</p>
+                        ) : (
+                            <p className={classes.placeholder}>Select account type</p>
+                        )}
+
+                        <img src={isExpanded ? upChevIcon : downChevIcon} className={classes.icon} />
+                    </div>
+                    <div className={`${classes.anchor} ${isExpanded ? "" : classes.noDisplay}`}>
+                        <div className={classes.dropdown}>
+                            {accountTypes.map((type, index) => {
+                                return (
+                                    <p key={index} onClick={() => clickTypeHandler(type)}>
+                                        {type}
+                                    </p>
+                                );
+                            })}
+                        </div>
+                    </div>
                 </div>
-                <div className={`${classes.cluster}`}>
+                <div className={`${classes.inputCluster}`}>
                     <p>Initial Balance</p>
                     <input type="text" value={accountInitBalance} onChange={handleInitBalanceChange} />
                 </div>
 
-                <div className={`${classes.cluster}`}>
+                <div className={`${classes.inputCluster}`}>
                     <p>Description</p>
                     <input type="text" value={accountDescription} onChange={handleDescChange} />
                 </div>

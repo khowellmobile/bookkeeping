@@ -65,7 +65,7 @@ const AccountItem = ({ account }) => {
 
             <div className={classes.mainContainer}>
                 <p>{account.name}</p>
-                <p>{account.type}</p>
+                <p>{account.type.charAt(0).toUpperCase() + account.type.slice(1)}</p>
                 <p>{account.description}</p>
                 <p>{account.balance}</p>
                 <div className={classes.actionDiv}>
