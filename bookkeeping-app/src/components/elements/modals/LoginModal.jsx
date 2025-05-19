@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import BkpgContext from "../../contexts/BkpgContext";
 
 const LoginModal = ({ handleCloseModal }) => {
-    const { populateCtxAccounts } = useContext(BkpgContext);
+    const { setCtxAccessToken } = useContext(BkpgContext);
 
     const navigate = useNavigate();
 
@@ -15,13 +15,11 @@ const LoginModal = ({ handleCloseModal }) => {
 
     const handleLogin = (event) => {
         event.preventDefault();
-        const accessToken = localStorage.getItem("accessToken");
 
         fetch("http://localhost:8000/api/token/", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${accessToken}`,
             },
             body: JSON.stringify({
                 username: email,
@@ -41,7 +39,7 @@ const LoginModal = ({ handleCloseModal }) => {
             .then((data) => {
                 const { access } = data;
                 localStorage.setItem("accessToken", access);
-                console.log("Login successful, token stored!");
+                setCtxAccessToken(access);
                 navigate("/home");
                 handleCloseModal();
             })
