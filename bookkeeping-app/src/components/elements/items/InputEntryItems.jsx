@@ -30,9 +30,9 @@ const JournalEntryItem = ({ vals, index, onFocus, onItemChange, scrollRef }) => 
         const parsedAmount = parseFloat(inputStr);
         if (!isNaN(parsedAmount) && parsedAmount >= 0) {
             setCredit("");
-            onItemChange(index, "amount", -parsedAmount);
+            onItemChange(index, "debit", parsedAmount);
         } else if (inputStr === "") {
-            onItemChange(index, "amount", 0);
+            onItemChange(index, "debit", 0);
         }
     };
 
@@ -43,9 +43,9 @@ const JournalEntryItem = ({ vals, index, onFocus, onItemChange, scrollRef }) => 
         const parsedAmount = parseFloat(inputStr);
         if (!isNaN(parsedAmount) && parsedAmount >= 0) {
             setDebit("");
-            onItemChange(index, "amount", parsedAmount);
+            onItemChange(index, "credit", parsedAmount);
         } else if (inputStr === "") {
-            onItemChange(index, "amount", 0);
+            onItemChange(index, "credit", 0);
         }
     };
 

@@ -40,7 +40,7 @@ const JournalsPage = () => {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 const data = await response.json();
-                setJ(data);
+                setJournalHistory(data);
             } catch (e) {
                 console.log("Error: " + e);
             }
@@ -50,11 +50,25 @@ const JournalsPage = () => {
     }, []);
 
     const debitTotal = useMemo(() => {
-        return journalItems.reduce((sum, item) => sum + (parseFloat(item[1]) || 0), 0);
+        if (journalItems) {
+            return (journalItems.reduce((sum, item) => {
+                const amount = parseFloat(item.amount) || 0;
+                return sum + (amount < 0 ? amount : 0);
+            }, 0)) * -1;
+        } else {
+            return 0;
+        }
     }, [journalItems]);
 
     const creditTotal = useMemo(() => {
-        return journalItems.reduce((sum, item) => sum + (parseFloat(item[2]) || 0), 0);
+        if (journalItems) {
+            return journalItems.reduce((sum, item) => {
+                const amount = parseFloat(item.amount) || 0;
+                return sum + (amount > 0 ? amount : 0);
+            }, 0);
+        } else {
+            return 0;
+        }
     }, [journalItems]);
 
     const handleFocusLastItem = useCallback(
@@ -84,6 +98,14 @@ const JournalsPage = () => {
         [journalItems, setJournalItems]
     );
 
+    useEffect(() => {
+        setJournalItems(journalHistory[0]?.item_list);
+    }, [journalHistory]);
+
+    useEffect(() => {
+        console.log(journalItems);
+    }, [journalItems]);
+
     return (
         <div className={classes.mainContainer}>
             <div className={classes.journalContent}>
@@ -102,8 +124,8 @@ const JournalsPage = () => {
                     <section className={classes.items}>
                         {journalHistory.map((entry, index) => (
                             <div className={classes.historyEntry} key={index}>
-                                <p>{entry[0]}</p>
-                                <p>{entry[1]}</p>
+                                <p>{entry.date}</p>
+                                <p>{entry.name}</p>
                             </div>
                         ))}
                     </section>
@@ -127,9 +149,9 @@ const JournalsPage = () => {
                         </div>
                     </section>
                     <section className={classes.items} ref={scrollRef}>
-                        {j &&
-                            j.length > 0 &&
-                            j[0].item_list.map((item, index) => (
+                        {journalItems &&
+                            journalItems.length > 0 &&
+                            journalItems.map((item, index) => (
                                 <JournalEntryItem
                                     vals={item}
                                     key={index}
