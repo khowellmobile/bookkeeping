@@ -1,9 +1,11 @@
 import { JournalEntryItem } from "../components/elements/items/InputEntryItems";
 import classes from "./JournalsPage.module.css";
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 
 const JournalsPage = () => {
+    const scrollRef = useRef();
+
     const [journalHistory, setJournalHistory] = useState([
         ["2024-01-24", "Revenue Adjustment"],
         ["2023-11-10", "Payroll Entry"],
@@ -13,23 +15,39 @@ const JournalsPage = () => {
         ["2024-01-05", "Adjustment #2"],
     ]);
 
-    const [journalItems, setJournalItems] = useState([
-        ["Cash", 1000.0, 0.0, "Initial deposit"],
-        ["Accounts Receivable", 0.0, 500.0, "Sale of goods"],
-        ["Service Revenue", 0.0, 500.0, "Revenue from consulting"],
-        ["Office Supplies", 200.0, 0.0, "Purchased office supplies"],
-        ["Accounts Payable", 0.0, 200.0, "Paid for office supplies"],
-        ["Bank Loan", 5000.0, 0.0, "Loan disbursement"],
-        ["Interest Expense", 50.0, 0.0, "Accrued interest on loan"],
-        ["Capital Contribution", 0.0, 3000.0, "Owner's contribution"],
-        ["Inventory", 300.0, 0.0, "Purchased inventory"],
-        ["Sales Revenue", 0.0, 300.0, "Sales made from inventory"],
-        ["", "", "", ""],
-        ["", "", "", ""],
-        ["", "", "", ""],
-        ["", "", "", ""],
-        ["", "", "", ""],
-    ]);
+    const [journalItems, setJournalItems] = useState(
+        Array(14)
+            .fill(null)
+            .map(() => ({
+                account: "",
+                amount: "",
+                memo: "",
+            }))
+    );
+
+    const [j, setJ] = useState();
+
+    useEffect(() => {
+        const populateCtxJournals = async () => {
+            const ctxAccessToken = localStorage.getItem("accessToken");
+            try {
+                const response = await fetch("http://localhost:8000/api/journals/", {
+                    headers: {
+                        Authorization: `Bearer ${ctxAccessToken}`,
+                    },
+                });
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                setJ(data);
+            } catch (e) {
+                console.log("Error: " + e);
+            }
+        };
+
+        populateCtxJournals();
+    }, []);
 
     const debitTotal = useMemo(() => {
         return journalItems.reduce((sum, item) => sum + (parseFloat(item[1]) || 0), 0);
@@ -52,14 +70,14 @@ const JournalsPage = () => {
         (index, name, value) => {
             const newJournalItems = [...journalItems];
 
-            if (name === "debit") {
-                newJournalItems[index][1] = parseFloat(value) || 0;
+            if (name === "account") {
+                newJournalItems[index].account = value.id;
+            } else if (name === "debit") {
+                newJournalItems[index].amount = parseFloat(value) * -1 || 0;
             } else if (name === "credit") {
-                newJournalItems[index][2] = parseFloat(value) || 0;
-            } else if (name === "account") {
-                newJournalItems[index][0] = value;
+                newJournalItems[index].amount = parseFloat(value) || 0;
             } else if (name === "memo") {
-                newJournalItems[index][3] = value;
+                newJournalItems[index].memo = value;
             }
             setJournalItems(newJournalItems);
         },
@@ -108,16 +126,19 @@ const JournalsPage = () => {
                             <p>Memo</p>
                         </div>
                     </section>
-                    <section className={classes.items}>
-                        {journalItems.map((transaction, index) => (
-                            <JournalEntryItem
-                                vals={transaction}
-                                key={index}
-                                index={index}
-                                onFocus={() => handleFocusLastItem(index)}
-                                onItemChange={handleItemChange}
-                            />
-                        ))}
+                    <section className={classes.items} ref={scrollRef}>
+                        {j &&
+                            j.length > 0 &&
+                            j[0].item_list.map((item, index) => (
+                                <JournalEntryItem
+                                    vals={item}
+                                    key={index}
+                                    index={index}
+                                    onFocus={() => handleFocusLastItem(index)}
+                                    onItemChange={handleItemChange}
+                                    scrollRef={scrollRef}
+                                />
+                            ))}
                     </section>
                     <section className={classes.entryTotals}>
                         <p>

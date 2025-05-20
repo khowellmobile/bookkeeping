@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Transaction, Account, Entity
+from .models import Transaction, Account, Entity, Journal
 
 
 @admin.register(Transaction)
@@ -22,6 +22,7 @@ class DatabaseConnectionsAdmin(admin.ModelAdmin):
 @admin.register(Account)
 class DatabaseConnectionsAdmin(admin.ModelAdmin):
     list_display = [
+        "id",
         "user",
         "name",
         "type",
@@ -35,6 +36,7 @@ class DatabaseConnectionsAdmin(admin.ModelAdmin):
         "updated_at",
     ]
 
+
 @admin.register(Entity)
 class DatabaseConnectionsAdmin(admin.ModelAdmin):
     list_display = [
@@ -43,6 +45,19 @@ class DatabaseConnectionsAdmin(admin.ModelAdmin):
         "company",
         "address",
         "description",
+        "is_deleted",
+        "created_at",
+        "updated_at",
+    ]
+
+
+@admin.register(Journal)
+class DatabaseConnectionsAdmin(admin.ModelAdmin):
+    list_display = [
+        "user",
+        "name",
+        "date",
+        "item_list",
         "is_deleted",
         "created_at",
         "updated_at",

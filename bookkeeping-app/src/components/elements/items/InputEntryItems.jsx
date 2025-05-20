@@ -4,75 +4,60 @@ import classes from "./InputEntryItems.module.css";
 
 import { useState, useEffect } from "react";
 
-const JournalEntryItem = ({ vals, index, onFocus, onItemChange }) => {
-    const [account, setAccount] = useState(vals[0]);
-    const [debit, setDebit] = useState(vals[1] === 0 ? "" : vals[1]);
-    const [credit, setCredit] = useState(vals[2] === 0 ? "" : vals[2]);
-    const [memo, setMemo] = useState(vals[3]);
+const JournalEntryItem = ({ vals, index, onFocus, onItemChange, scrollRef }) => {
+    const [account, setAccount] = useState(vals.account);
+    const [debit, setDebit] = useState(vals.amount > 0 ? "" : vals.amount * -1);
+    const [credit, setCredit] = useState(vals.amount > 0 ? vals.amount : "");
+    const [memo, setMemo] = useState(vals.memo);
 
     useEffect(() => {
-        if (account !== vals[0]) {
-            onItemChange(index, "account", account);
-        }
-    }, [account, index, onItemChange, vals]);
+        const newInitialAmount = parseFloat(vals.amount) || 0;
+        setAccount(vals.account || "");
+        setDebit(newInitialAmount < 0 ? String(newInitialAmount * -1) : "");
+        setCredit(newInitialAmount > 0 ? String(newInitialAmount) : "");
+        setMemo(vals.memo || "");
+    }, [vals]);
 
-    useEffect(() => {
-        const parsedDebit = parseFloat(debit) || 0;
-        if (parsedDebit !== vals[1]) {
-            onItemChange(index, "debit", parsedDebit);
-        }
-    }, [debit, index, onItemChange, vals]);
-
-    useEffect(() => {
-        const parsedCredit = parseFloat(credit) || 0;
-        if (parsedCredit !== vals[2]) {
-            onItemChange(index, "credit", parsedCredit);
-        }
-    }, [credit, index, onItemChange, vals]);
-
-    useEffect(() => {
-        if (memo !== vals[3]) {
-            onItemChange(index, "memo", memo);
-        }
-    }, [memo, index, onItemChange, vals]);
-
-    const handleAccountChange = (event) => {
-        setAccount(event.target.value);
+    const handleAccountChange = (account) => {
+        setAccount(account);
+        onItemChange(index, "account", account);
     };
 
     const handleDebitChange = (event) => {
-        const amount = event.target.value;
-        let str = "";
+        const inputStr = event.target.value;
+        setDebit(inputStr);
 
-        if (parseFloat(amount) < 0) {
-            str = `(${amount})`;
-        } else if (amount > 0) {
-            str = amount;
+        const parsedAmount = parseFloat(inputStr);
+        if (!isNaN(parsedAmount) && parsedAmount >= 0) {
+            setCredit("");
+            onItemChange(index, "amount", -parsedAmount);
+        } else if (inputStr === "") {
+            onItemChange(index, "amount", 0);
         }
-
-        setDebit(str);
     };
 
     const handleCreditChange = (event) => {
-        const amount = event.target.value;
-        let str = "";
+        const inputStr = event.target.value;
+        setCredit(inputStr);
 
-        if (parseFloat(amount) < 0) {
-            str = `(${amount})`;
-        } else if (amount > 0) {
-            str = amount;
+        const parsedAmount = parseFloat(inputStr);
+        if (!isNaN(parsedAmount) && parsedAmount >= 0) {
+            setDebit("");
+            onItemChange(index, "amount", parsedAmount);
+        } else if (inputStr === "") {
+            onItemChange(index, "amount", 0);
         }
-
-        setCredit(str);
     };
 
     const handleMemoChange = (event) => {
-        setMemo(event.target.value);
+        const newValue = event.target.value;
+        setMemo(newValue);
+        onItemChange(index, "memo", newValue);
     };
 
     return (
         <div className={`${classes.mainContainer} ${classes.journalGridTemplate}`} onFocus={onFocus} tabIndex={0}>
-            <input type="text" value={account} onChange={handleAccountChange} />
+            <AccountEntryDropdown initAccId={7} scrollRef={scrollRef} onChange={handleAccountChange} />
             <input type="text" value={debit} onChange={handleDebitChange} />
             <input type="text" value={credit} onChange={handleCreditChange} />
             <input type="text" value={memo} onChange={handleMemoChange} />
