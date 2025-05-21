@@ -26,6 +26,10 @@
     align-items: center;
 }
 
+.mainContainer > p:first-child {
+    border-left: none;
+}
+
 .mainContainer > p:hover {
     background-color: rgba(214, 214, 214, 0.26);
 }

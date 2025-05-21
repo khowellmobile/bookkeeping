@@ -38,7 +38,7 @@ const AccountEntryDropdown = ({ vals, scrollRef, onChange }) => {
     // Handling inital value by searching account list for id
     useEffect(() => {
         setSearchTerm(
-            vals.account && ctxAccountList && Array.isArray(ctxAccountList)
+            vals && vals.account && ctxAccountList && Array.isArray(ctxAccountList)
                 ? ctxAccountList.find((account) => account.id == vals.account)?.name || ""
                 : ""
         );

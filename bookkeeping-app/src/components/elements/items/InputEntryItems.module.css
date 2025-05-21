@@ -26,6 +26,10 @@
     align-items: center;
 }
 
+.mainContainer > input:first-child {
+    border-left: none;
+}
+
 .mainContainer > input:hover, .mainContainer > input:focus {
     background-color: rgba(214, 214, 214, 0.26);
 }
