@@ -3,14 +3,12 @@ import classes from "./JournalsPage.module.css";
 
 import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 
-// Save edits
-// Save new entry
-
 const JournalsPage = () => {
     const scrollRef = useRef();
 
     const [isEditing, setIsEditing] = useState(false);
     const [journalHistory, setJournalHistory] = useState([]);
+    const [selectedJournalId, setSelectedJournalId] = useState();
     const [journalName, setJournalName] = useState("");
     const [journalDate, setJournalDate] = useState("");
     const [journalItems, setJournalItems] = useState(
@@ -28,6 +26,7 @@ const JournalsPage = () => {
             const ctxAccessToken = localStorage.getItem("accessToken");
             try {
                 const response = await fetch("http://localhost:8000/api/journals/", {
+                    method: "GET",
                     headers: {
                         Authorization: `Bearer ${ctxAccessToken}`,
                     },
@@ -44,6 +43,50 @@ const JournalsPage = () => {
 
         populateCtxJournals();
     }, []);
+
+    const saveInfo = async () => {
+        const item_list = journalItems.filter((item) => {
+            return (
+                (item.account !== "" && item.account !== null && item.account !== undefined) ||
+                (item.amount !== "" && item.amount !== null && item.amount !== undefined && item.amount !== 0) ||
+                (item.memo && item.memo.trim() !== "")
+            );
+        });
+
+        const name = journalName;
+        const date = journalDate;
+        let url = "http://localhost:8000/api/journals/";
+        const method = isEditing ? "PUT" : "POST";
+
+        if (isEditing) {
+            url = url + `${selectedJournalId}/`;
+        }
+
+        const sendData = {
+            name: name,
+            date: date,
+            item_list: item_list,
+        };
+
+        const ctxAccessToken = localStorage.getItem("accessToken");
+        try {
+            const response = await fetch(url, {
+                method: method,
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${ctxAccessToken}`,
+                },
+                body: JSON.stringify(sendData),
+            });
+            const data = await response.json();
+            console.log(data);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+        } catch (e) {
+            console.log("Error: " + e);
+        }
+    };
 
     const debitTotal = useMemo(() => {
         if (journalItems) {
@@ -97,15 +140,18 @@ const JournalsPage = () => {
     );
 
     const handleHistoryClick = (index) => {
+        console.log(journalHistory);
         setJournalItems(journalHistory[index]?.item_list || []);
         setJournalDate(journalHistory[index]?.date || "");
         setJournalName(journalHistory[index]?.name || "");
+        setSelectedJournalId(journalHistory[index]?.id || "");
         setIsEditing(true);
     };
 
     const clearInputs = () => {
         setJournalDate("");
         setJournalName("");
+        setSelectedJournalId("");
         setJournalItems(
             Array(14)
                 .fill(null)
@@ -117,13 +163,6 @@ const JournalsPage = () => {
         );
         setIsEditing(false);
     };
-
-    // Temp for dev pre history selection
-    /* useEffect(() => {
-        setJournalItems(journalHistory[0]?.item_list || []);
-        setJournalDate(journalHistory[0]?.date || "");
-        setJournalName(journalHistory[0]?.name || "");
-    }, [journalHistory]); */
 
     /* useEffect(() => {
         console.log(journalItems);
@@ -156,9 +195,10 @@ const JournalsPage = () => {
                 <div className={classes.journalEntry}>
                     <section className={classes.header}>
                         {isEditing ? <h2>Edit an Entry</h2> : <h2>Make an Entry</h2>}
-                        <button onClick={clearInputs}>
-                            {isEditing ? "New Entry" : "Clear Inputs"}
-                        </button>
+                        <div className={classes.headerTools}>
+                            <button onClick={saveInfo}>{isEditing ? "Save Edits" : "Save Entry"}</button>
+                            <button onClick={clearInputs}>{isEditing ? "New Entry" : "Clear Inputs"}</button>
+                        </div>
                     </section>
                     <section className={classes.titleDate}>
                         <input

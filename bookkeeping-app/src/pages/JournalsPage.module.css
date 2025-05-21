@@ -44,9 +44,16 @@
     font-weight: 400;
 }
 
-.header > button {
+.headerTools {
+    padding-right: 0.5rem;
+
+    display: flex;
+    justify-content: space-between;
+}
+
+.headerTools > button {
     padding: 0.25rem 0.5rem;
-    margin-right: 0.5rem;
+    margin-left: 0.5rem;
 
     background-color: rgb(42, 42, 209);
     color: white;
@@ -61,11 +68,11 @@
     transition: all ease 0.25s;
 }
 
-.header > button:hover {
+.headerTools > button:hover {
     transform: translateY(-1px);
 }
 
-.header > button:active {
+.headerTools > button:active {
     transform: translateY(1px);
 }
 

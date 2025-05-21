@@ -158,13 +158,6 @@ class EntityListAPIView(APIView):
         serializer = EntitySerializer(entites, many=True)
         return Response(serializer.data)
 
-    def post(self, request):
-        serializer = EntitySerializer(data=request.data, context={"request": request})
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 class EntityDetailAPIView(APIView):
     """
@@ -195,6 +188,12 @@ class EntityDetailAPIView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(status=status.HTTP_404_NOT_FOUND)
 
+    def post(self, request):
+        serializer = EntitySerializer(data=request.data, context={"request": request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class JournalListAPIView(APIView):
     """
@@ -207,6 +206,13 @@ class JournalListAPIView(APIView):
         journals = Journal.objects.all()
         serializer = JournalSerializer(journals, many=True)
         return Response(serializer.data)
+    
+    def post(self, request):
+        serializer = JournalSerializer(data=request.data, context={"request": request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class JournalDetailAPIView(APIView):
