@@ -44,6 +44,7 @@ export function BkpgContextProvider(props) {
     const populateCtxAccounts = async () => {
         try {
             const response = await fetch("http://localhost:8000/api/accounts/", {
+                method: "GET",
                 headers: {
                     Authorization: `Bearer ${ctxAccessToken}`,
                 },
@@ -61,6 +62,7 @@ export function BkpgContextProvider(props) {
     const populateCtxEntities = async () => {
         try {
             const response = await fetch("http://localhost:8000/api/entities/", {
+                method: "GET",
                 headers: {
                     Authorization: `Bearer ${ctxAccessToken}`,
                 },
@@ -78,6 +80,7 @@ export function BkpgContextProvider(props) {
     const populateCtxTransactions = async () => {
         try {
             const response = await fetch("http://localhost:8000/api/transactions/", {
+                method: "GET",
                 headers: {
                     Authorization: `Bearer ${ctxAccessToken}`,
                 },

@@ -21,7 +21,7 @@ class Account(models.Model):
         choices=ACCOUNT_TYPE_CHOICES,
         default="asset",
         null=True,
-        blank=True
+        blank=True,
     )
     balance = models.DecimalField(max_digits=15, decimal_places=2, default=0.00)
     initial_balance = models.DecimalField(max_digits=15, decimal_places=2, default=0.00)
@@ -77,3 +77,18 @@ class Transaction(models.Model):
     is_deleted = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+
+class Journal(models.Model):
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="journals", null=True
+    )
+    name = models.CharField(max_length=255)
+    date = models.DateField()
+    item_list = models.JSONField(null=True, blank=True)
+    is_deleted = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name

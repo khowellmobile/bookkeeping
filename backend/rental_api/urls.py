@@ -10,5 +10,7 @@ urlpatterns = [
     path('accounts/<int:pk>/', views.AccountDetailAPIView.as_view(), name='account-detail'),
     path('entities/', views.EntityListAPIView.as_view(), name='entity-list'),
     path('entities/<int:pk>/', views.EntityDetailAPIView.as_view(), name='entity-detail'),
+    path('journals/', views.JournalListAPIView.as_view(), name='journal-list'),
+    path('journals/<int:pk>/', views.JournalDetailAPIView.as_view(), name='journal-detail'),
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
 ]

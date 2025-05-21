@@ -4,7 +4,7 @@ import BkpgContext from "../../contexts/BkpgContext";
 
 import { useState, useContext, useEffect, useRef } from "react";
 
-const AccountEntryDropdown = ({ scrollRef, onChange }) => {
+const AccountEntryDropdown = ({ vals, scrollRef, onChange }) => {
     const { ctxAccountList } = useContext(BkpgContext);
 
     const [searchTerm, setSearchTerm] = useState("");
@@ -34,6 +34,15 @@ const AccountEntryDropdown = ({ scrollRef, onChange }) => {
             console.log(error, "Safe to ignore");
         }
     };
+
+    // Handling inital value by searching account list for id
+    useEffect(() => {
+        setSearchTerm(
+            vals.account && ctxAccountList && Array.isArray(ctxAccountList)
+                ? ctxAccountList.find((account) => account.id == vals.account)?.name || ""
+                : ""
+        );
+    }, [ctxAccountList, vals]);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -93,14 +102,14 @@ const AccountEntryDropdown = ({ scrollRef, onChange }) => {
                     <p>All Accounts</p>
                     <div className={classes.separatorH}></div>
                     <div className={classes.accountListing}>
-                        {filteredAccounts && filteredAccounts.length > 0 ? ( // Use filteredAccounts
+                        {filteredAccounts && filteredAccounts.length > 0 ? (
                             filteredAccounts.map((account, index) => (
                                 <p key={index} onClick={() => clickAccountHandler(account)}>
                                     {account.name}
                                 </p>
                             ))
                         ) : (
-                            <p>No matching accounts found.</p> // Show message if no matches
+                            <p>No matching accounts found.</p>
                         )}
                     </div>
                 </div>

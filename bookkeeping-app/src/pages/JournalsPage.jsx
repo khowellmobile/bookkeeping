@@ -1,48 +1,121 @@
 import { JournalEntryItem } from "../components/elements/items/InputEntryItems";
 import classes from "./JournalsPage.module.css";
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 
 const JournalsPage = () => {
-    const [journalHistory, setJournalHistory] = useState([
-        ["2024-01-24", "Revenue Adjustment"],
-        ["2023-11-10", "Payroll Entry"],
-        ["2024-02-15", "Equity Balancing"],
-        ["2023-09-05", "JRE #4"],
-        ["2024-01-05", "Clear Income Stmt"],
-        ["2024-01-05", "Adjustment #2"],
-    ]);
+    const scrollRef = useRef();
 
-    const [journalItems, setJournalItems] = useState([
-        ["Cash", 1000.0, 0.0, "Initial deposit"],
-        ["Accounts Receivable", 0.0, 500.0, "Sale of goods"],
-        ["Service Revenue", 0.0, 500.0, "Revenue from consulting"],
-        ["Office Supplies", 200.0, 0.0, "Purchased office supplies"],
-        ["Accounts Payable", 0.0, 200.0, "Paid for office supplies"],
-        ["Bank Loan", 5000.0, 0.0, "Loan disbursement"],
-        ["Interest Expense", 50.0, 0.0, "Accrued interest on loan"],
-        ["Capital Contribution", 0.0, 3000.0, "Owner's contribution"],
-        ["Inventory", 300.0, 0.0, "Purchased inventory"],
-        ["Sales Revenue", 0.0, 300.0, "Sales made from inventory"],
-        ["", "", "", ""],
-        ["", "", "", ""],
-        ["", "", "", ""],
-        ["", "", "", ""],
-        ["", "", "", ""],
-    ]);
+    const [isEditing, setIsEditing] = useState(false);
+    const [journalHistory, setJournalHistory] = useState([]);
+    const [selectedJournalId, setSelectedJournalId] = useState();
+    const [journalName, setJournalName] = useState("");
+    const [journalDate, setJournalDate] = useState("");
+    const [journalItems, setJournalItems] = useState(
+        Array(14)
+            .fill(null)
+            .map(() => ({
+                account: "",
+                amount: "",
+                memo: "",
+            }))
+    );
+
+    useEffect(() => {
+        const populateCtxJournals = async () => {
+            const ctxAccessToken = localStorage.getItem("accessToken");
+            try {
+                const response = await fetch("http://localhost:8000/api/journals/", {
+                    method: "GET",
+                    headers: {
+                        Authorization: `Bearer ${ctxAccessToken}`,
+                    },
+                });
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                setJournalHistory(data);
+            } catch (e) {
+                console.log("Error: " + e);
+            }
+        };
+
+        populateCtxJournals();
+    }, []);
+
+    const saveInfo = async () => {
+        const item_list = journalItems.filter((item) => {
+            return (
+                (item.account !== "" && item.account !== null && item.account !== undefined) ||
+                (item.amount !== "" && item.amount !== null && item.amount !== undefined && item.amount !== 0) ||
+                (item.memo && item.memo.trim() !== "")
+            );
+        });
+
+        const name = journalName;
+        const date = journalDate;
+        let url = "http://localhost:8000/api/journals/";
+        const method = isEditing ? "PUT" : "POST";
+
+        if (isEditing) {
+            url = url + `${selectedJournalId}/`;
+        }
+
+        const sendData = {
+            name: name,
+            date: date,
+            item_list: item_list,
+        };
+
+        const ctxAccessToken = localStorage.getItem("accessToken");
+        try {
+            const response = await fetch(url, {
+                method: method,
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${ctxAccessToken}`,
+                },
+                body: JSON.stringify(sendData),
+            });
+            const data = await response.json();
+            console.log(data);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+        } catch (e) {
+            console.log("Error: " + e);
+        }
+    };
 
     const debitTotal = useMemo(() => {
-        return journalItems.reduce((sum, item) => sum + (parseFloat(item[1]) || 0), 0);
+        if (journalItems) {
+            return (
+                journalItems.reduce((sum, item) => {
+                    const amount = parseFloat(item.amount) || 0;
+                    return sum + (amount < 0 ? amount : 0);
+                }, 0) * -1
+            );
+        } else {
+            return 0;
+        }
     }, [journalItems]);
 
     const creditTotal = useMemo(() => {
-        return journalItems.reduce((sum, item) => sum + (parseFloat(item[2]) || 0), 0);
+        if (journalItems) {
+            return journalItems.reduce((sum, item) => {
+                const amount = parseFloat(item.amount) || 0;
+                return sum + (amount > 0 ? amount : 0);
+            }, 0);
+        } else {
+            return 0;
+        }
     }, [journalItems]);
 
     const handleFocusLastItem = useCallback(
         (index) => {
             if (index === journalItems.length - 1) {
-                setJournalItems([...journalItems, ["", "", "", ""]]);
+                setJournalItems([...journalItems, { account: "", amount: "", memo: "" }]);
             }
         },
         [journalItems, setJournalItems]
@@ -52,19 +125,48 @@ const JournalsPage = () => {
         (index, name, value) => {
             const newJournalItems = [...journalItems];
 
-            if (name === "debit") {
-                newJournalItems[index][1] = parseFloat(value) || 0;
+            if (name === "account") {
+                newJournalItems[index].account = value.id;
+            } else if (name === "debit") {
+                newJournalItems[index].amount = parseFloat(value) * -1 || 0;
             } else if (name === "credit") {
-                newJournalItems[index][2] = parseFloat(value) || 0;
-            } else if (name === "account") {
-                newJournalItems[index][0] = value;
+                newJournalItems[index].amount = parseFloat(value) || 0;
             } else if (name === "memo") {
-                newJournalItems[index][3] = value;
+                newJournalItems[index].memo = value;
             }
             setJournalItems(newJournalItems);
         },
         [journalItems, setJournalItems]
     );
+
+    const handleHistoryClick = (index) => {
+        console.log(journalHistory);
+        setJournalItems(journalHistory[index]?.item_list || []);
+        setJournalDate(journalHistory[index]?.date || "");
+        setJournalName(journalHistory[index]?.name || "");
+        setSelectedJournalId(journalHistory[index]?.id || "");
+        setIsEditing(true);
+    };
+
+    const clearInputs = () => {
+        setJournalDate("");
+        setJournalName("");
+        setSelectedJournalId("");
+        setJournalItems(
+            Array(14)
+                .fill(null)
+                .map(() => ({
+                    account: "",
+                    amount: "",
+                    memo: "",
+                }))
+        );
+        setIsEditing(false);
+    };
+
+    /* useEffect(() => {
+        console.log(journalItems);
+    }, [journalItems]); */
 
     return (
         <div className={classes.mainContainer}>
@@ -83,16 +185,32 @@ const JournalsPage = () => {
                     </section>
                     <section className={classes.items}>
                         {journalHistory.map((entry, index) => (
-                            <div className={classes.historyEntry} key={index}>
-                                <p>{entry[0]}</p>
-                                <p>{entry[1]}</p>
+                            <div className={classes.historyEntry} key={index} onClick={() => handleHistoryClick(index)}>
+                                <p>{entry.date}</p>
+                                <p>{entry.name}</p>
                             </div>
                         ))}
                     </section>
                 </div>
                 <div className={classes.journalEntry}>
                     <section className={classes.header}>
-                        <h2>Make an Entry</h2>
+                        {isEditing ? <h2>Edit an Entry</h2> : <h2>Make an Entry</h2>}
+                        <div className={classes.headerTools}>
+                            <button onClick={saveInfo}>{isEditing ? "Save Edits" : "Save Entry"}</button>
+                            <button onClick={clearInputs}>{isEditing ? "New Entry" : "Clear Inputs"}</button>
+                        </div>
+                    </section>
+                    <section className={classes.titleDate}>
+                        <input
+                            value={journalName}
+                            onChange={(event) => setJournalName(event.target.value)}
+                            placeholder="Enter Journal Name"
+                        />
+                        <input
+                            value={journalDate}
+                            onChange={(event) => setJournalDate(event.target.value)}
+                            placeholder="Choose Date"
+                        />
                     </section>
                     <section className={`${classes.columnNames} ${classes.entryGridTemplate}`}>
                         <div>
@@ -108,16 +226,19 @@ const JournalsPage = () => {
                             <p>Memo</p>
                         </div>
                     </section>
-                    <section className={classes.items}>
-                        {journalItems.map((transaction, index) => (
-                            <JournalEntryItem
-                                vals={transaction}
-                                key={index}
-                                index={index}
-                                onFocus={() => handleFocusLastItem(index)}
-                                onItemChange={handleItemChange}
-                            />
-                        ))}
+                    <section className={classes.items} ref={scrollRef}>
+                        {journalItems &&
+                            journalItems.length > 0 &&
+                            journalItems.map((item, index) => (
+                                <JournalEntryItem
+                                    vals={item}
+                                    key={index}
+                                    index={index}
+                                    onFocus={() => handleFocusLastItem(index)}
+                                    onItemChange={handleItemChange}
+                                    scrollRef={scrollRef}
+                                />
+                            ))}
                     </section>
                     <section className={classes.entryTotals}>
                         <p>
