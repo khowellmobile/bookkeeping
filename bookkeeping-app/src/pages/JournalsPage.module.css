@@ -44,6 +44,58 @@
     font-weight: 400;
 }
 
+.header > button {
+    padding: 0.25rem 0.5rem;
+    margin-right: 0.5rem;
+
+    background-color: rgb(42, 42, 209);
+    color: white;
+    cursor: pointer;
+    font-family: "poppins";
+    font-weight: 500;
+    font-size: 0.8rem;
+    border-radius: 0.25rem;
+    border: none;
+    outline: none;
+
+    transition: all ease 0.25s;
+}
+
+.header > button:hover {
+    transform: translateY(-1px);
+}
+
+.header > button:active {
+    transform: translateY(1px);
+}
+
+.titleDate {
+    height: 4%;
+
+    border-bottom: 1px solid rgba(128, 128, 128, 0.411);
+
+    display: flex;
+    justify-content: space-between;
+}
+
+.titleDate > input {
+    height: 100%;
+    padding-left: 0.5rem;
+
+    border: none;
+    outline: none;
+    font-family: "poppins";
+}
+
+.titleDate > input:first-child {
+    width: 80%;
+}
+
+.titleDate > input:last-child {
+    width: 20%;
+    border-left: 1px solid rgba(128, 128, 128, 0.301);
+}
+
 .columnNames {
     width: 100%;
     height: 5%;
@@ -81,7 +133,7 @@
 
 .items {
     width: 100%;
-    height: 84%;
+    height: 80%;
 
     overflow-y: scroll;
 }

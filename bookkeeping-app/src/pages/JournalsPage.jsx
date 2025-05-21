@@ -3,20 +3,18 @@ import classes from "./JournalsPage.module.css";
 
 import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 
+// Save edits
+// Save new entry
+
 const JournalsPage = () => {
     const scrollRef = useRef();
 
-    const [journalHistory, setJournalHistory] = useState([
-        ["2024-01-24", "Revenue Adjustment"],
-        ["2023-11-10", "Payroll Entry"],
-        ["2024-02-15", "Equity Balancing"],
-        ["2023-09-05", "JRE #4"],
-        ["2024-01-05", "Clear Income Stmt"],
-        ["2024-01-05", "Adjustment #2"],
-    ]);
-
+    const [isEditing, setIsEditing] = useState(false);
+    const [journalHistory, setJournalHistory] = useState([]);
+    const [journalName, setJournalName] = useState("");
+    const [journalDate, setJournalDate] = useState("");
     const [journalItems, setJournalItems] = useState(
-        Array(14)
+        Array(1)
             .fill(null)
             .map(() => ({
                 account: "",
@@ -24,8 +22,6 @@ const JournalsPage = () => {
                 memo: "",
             }))
     );
-
-    const [j, setJ] = useState();
 
     useEffect(() => {
         const populateCtxJournals = async () => {
@@ -51,10 +47,12 @@ const JournalsPage = () => {
 
     const debitTotal = useMemo(() => {
         if (journalItems) {
-            return (journalItems.reduce((sum, item) => {
-                const amount = parseFloat(item.amount) || 0;
-                return sum + (amount < 0 ? amount : 0);
-            }, 0)) * -1;
+            return (
+                journalItems.reduce((sum, item) => {
+                    const amount = parseFloat(item.amount) || 0;
+                    return sum + (amount < 0 ? amount : 0);
+                }, 0) * -1
+            );
         } else {
             return 0;
         }
@@ -74,7 +72,7 @@ const JournalsPage = () => {
     const handleFocusLastItem = useCallback(
         (index) => {
             if (index === journalItems.length - 1) {
-                setJournalItems([...journalItems, ["", "", "", ""]]);
+                setJournalItems([...journalItems, { account: "", amount: "", memo: "" }]);
             }
         },
         [journalItems, setJournalItems]
@@ -98,9 +96,34 @@ const JournalsPage = () => {
         [journalItems, setJournalItems]
     );
 
-    useEffect(() => {
-        setJournalItems(journalHistory[0]?.item_list);
-    }, [journalHistory]);
+    const handleHistoryClick = (index) => {
+        setJournalItems(journalHistory[index]?.item_list || []);
+        setJournalDate(journalHistory[index]?.date || "");
+        setJournalName(journalHistory[index]?.name || "");
+        setIsEditing(true);
+    };
+
+    const clearInputs = () => {
+        setJournalDate("");
+        setJournalName("");
+        setJournalItems(
+            Array(1)
+                .fill(null)
+                .map(() => ({
+                    account: "",
+                    amount: "",
+                    memo: "",
+                }))
+        );
+        setIsEditing(false);
+    };
+
+    // Temp for dev pre history selection
+    /* useEffect(() => {
+        setJournalItems(journalHistory[0]?.item_list || []);
+        setJournalDate(journalHistory[0]?.date || "");
+        setJournalName(journalHistory[0]?.name || "");
+    }, [journalHistory]); */
 
     useEffect(() => {
         console.log(journalItems);
@@ -123,7 +146,7 @@ const JournalsPage = () => {
                     </section>
                     <section className={classes.items}>
                         {journalHistory.map((entry, index) => (
-                            <div className={classes.historyEntry} key={index}>
+                            <div className={classes.historyEntry} key={index} onClick={() => handleHistoryClick(index)}>
                                 <p>{entry.date}</p>
                                 <p>{entry.name}</p>
                             </div>
@@ -132,7 +155,22 @@ const JournalsPage = () => {
                 </div>
                 <div className={classes.journalEntry}>
                     <section className={classes.header}>
-                        <h2>Make an Entry</h2>
+                        {isEditing ? <h2>Edit an Entry</h2> : <h2>Make an Entry</h2>}
+                        <button onClick={clearInputs}>
+                            {isEditing ? "New Entry" : "Clear Inputs"}
+                        </button>
+                    </section>
+                    <section className={classes.titleDate}>
+                        <input
+                            value={journalName}
+                            onChange={(event) => setJournalName(event.target.value)}
+                            placeholder="Enter Journal Name"
+                        />
+                        <input
+                            value={journalDate}
+                            onChange={(event) => setJournalDate(event.target.value)}
+                            placeholder="Choose Date"
+                        />
                     </section>
                     <section className={`${classes.columnNames} ${classes.entryGridTemplate}`}>
                         <div>
