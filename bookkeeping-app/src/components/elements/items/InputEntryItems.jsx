@@ -57,7 +57,7 @@ const JournalEntryItem = ({ vals, index, onFocus, onItemChange, scrollRef }) => 
 
     return (
         <div className={`${classes.mainContainer} ${classes.journalGridTemplate}`} onFocus={onFocus} tabIndex={0}>
-            <AccountEntryDropdown vals={vals} initAccId={account} scrollRef={scrollRef} onChange={handleAccountChange} />
+            <AccountEntryDropdown vals={vals} scrollRef={scrollRef} onChange={handleAccountChange} />
             <input type="text" value={debit} onChange={handleDebitChange} />
             <input type="text" value={credit} onChange={handleCreditChange} />
             <input type="text" value={memo} onChange={handleMemoChange} />

@@ -4,7 +4,7 @@ import BkpgContext from "../../contexts/BkpgContext";
 
 import { useState, useContext, useEffect, useRef } from "react";
 
-const AccountEntryDropdown = ({ vals, initAccId, scrollRef, onChange }) => {
+const AccountEntryDropdown = ({ vals, scrollRef, onChange }) => {
     const { ctxAccountList } = useContext(BkpgContext);
 
     const [searchTerm, setSearchTerm] = useState("");
@@ -38,8 +38,8 @@ const AccountEntryDropdown = ({ vals, initAccId, scrollRef, onChange }) => {
     // Handling inital value by searching account list for id
     useEffect(() => {
         setSearchTerm(
-            initAccId && ctxAccountList && Array.isArray(ctxAccountList)
-                ? ctxAccountList.find((account) => account.id == initAccId)?.name || ""
+            vals.account && ctxAccountList && Array.isArray(ctxAccountList)
+                ? ctxAccountList.find((account) => account.id == vals.account)?.name || ""
                 : ""
         );
     }, [ctxAccountList, vals]);

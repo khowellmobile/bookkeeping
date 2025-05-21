@@ -14,7 +14,7 @@ const JournalsPage = () => {
     const [journalName, setJournalName] = useState("");
     const [journalDate, setJournalDate] = useState("");
     const [journalItems, setJournalItems] = useState(
-        Array(1)
+        Array(14)
             .fill(null)
             .map(() => ({
                 account: "",
@@ -107,7 +107,7 @@ const JournalsPage = () => {
         setJournalDate("");
         setJournalName("");
         setJournalItems(
-            Array(1)
+            Array(14)
                 .fill(null)
                 .map(() => ({
                     account: "",
@@ -125,9 +125,9 @@ const JournalsPage = () => {
         setJournalName(journalHistory[0]?.name || "");
     }, [journalHistory]); */
 
-    useEffect(() => {
+    /* useEffect(() => {
         console.log(journalItems);
-    }, [journalItems]);
+    }, [journalItems]); */
 
     return (
         <div className={classes.mainContainer}>
