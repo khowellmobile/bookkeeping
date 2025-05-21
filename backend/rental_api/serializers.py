@@ -1,7 +1,6 @@
 # rental_api/serializers.py
 from rest_framework import serializers
-from core_backend.models import Transaction, Account, Entity
-from django.contrib.auth import authenticate
+from core_backend.models import Transaction, Account, Entity, Journal
 
 
 class AccountSerializer(serializers.ModelSerializer):
@@ -28,7 +27,13 @@ class AccountSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
     def update(self, instance, validated_data):
-        fields_to_update = ["name", "type", "initial_balance", "description", "is_deleted"]
+        fields_to_update = [
+            "name",
+            "type",
+            "initial_balance",
+            "description",
+            "is_deleted",
+        ]
 
         for attr in fields_to_update:
             if attr in validated_data:
@@ -131,6 +136,41 @@ class TransactionSerializer(serializers.ModelSerializer):
             "entity_id",
             "is_deleted",
         ]
+
+        for attr in fields_to_update:
+            if attr in validated_data:
+                setattr(instance, attr, validated_data[attr])
+
+        instance.save()
+        return instance
+
+
+class JournalSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(
+        read_only=True
+    )
+
+    class Meta:
+        model = Journal
+        fields = (
+            "id",
+            "user",
+            "name",
+            "date",
+            "item_list",
+            "is_deleted",
+            "created_at",
+            "updated_at",
+        )
+        read_only_fields = ("id", "created_at", "updated_at")
+
+    def create(self, validated_data):
+        user = self.context["request"].user
+        validated_data["user"] = user
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        fields_to_update = ["name", "date", "item_list", "is_deleted"]
 
         for attr in fields_to_update:
             if attr in validated_data:
