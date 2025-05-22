@@ -2,4 +2,159 @@
     width: 100%;
     height: 100%;
     padding: 0.5rem;
+
+    display: flex;
+    justify-content: space-between;
+}
+
+.searchBox {
+    width: calc(25% - 0.5rem);
+    height: 100%;
+    padding: 0.5rem;
+
+    border-radius: 0.25rem;
+    outline: 1px solid rgba(128, 128, 128, 0.301);
+
+    display: flex;
+    flex-direction: column;
+}
+
+.entitySerach {
+    height: 2rem;
+    padding: 0.25rem;
+
+    font-family: "poppins";
+    font-size: 0.8rem;
+    line-height: 1.5rem;
+    border: 1px solid rgba(143, 140, 140, 0.644);
+    border-radius: 0.15rem;
+    outline: none;
+}
+
+.contentBox {
+    width: 75%;
+    height: 100%;
+
+    border-radius: 0.25rem;
+    outline: 1px solid rgba(128, 128, 128, 0.301);
+
+    display: flex;
+    flex-direction: column;
+}
+
+.entityInfo {
+    width: 100%;
+    height: 30%;
+
+    border-bottom: 1px solid rgba(128, 128, 128, 0.301);
+}
+
+.entityInfo > .header {
+    width: 100%;
+    height: 3rem;
+    padding-left: 0.5rem;
+
+    border-bottom: 1px solid rgba(128, 128, 128, 0.301);
+
+    display: flex;
+    align-items: center;
+}
+
+.entityInfo > .header > h2 {
+    font-weight: 400;
+}
+
+.inputs {
+    width: 100%;
+    height: calc(100% - 3rem);
+
+    display: flex;
+}
+
+.inputs h3 {
+    width: 100%;
+    height: 2rem;
+    padding-left: 0.5rem;
+
+    border-bottom: 1px solid rgba(128, 128, 128, 0.301);
+    font-weight: 400;
+
+    display: flex;
+    align-items: center;
+}
+
+.genInfo {
+    width: 70%;
+    height: 100%;
+}
+
+.genInfo > div, .contactInfo > div {
+    height: calc(100% - 2rem);
+    padding: 0.5rem;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.cluster {
+    display: flex;
+    flex-direction: column;
+}
+
+.cluster > p {
+    font-size: 0.8rem;
+    color: rgb(92, 92, 92);
+}
+
+.cluster > input {
+    width: 20rem;
+    padding: 0rem 0.25rem;
+
+    border-radius: 0rem;
+    border: 1px solid grey;
+    outline: none;
+    font-size: 0.9rem;
+    font-family: "poppins";
+}
+
+.contactInfo {
+    width: 30%;
+
+    border-left: 1px solid rgba(128, 128, 128, 0.301);
+}
+
+.transactionListing {
+    width: 100%;
+    height: 70%;
+}
+
+.transactionListing {
+    width: 100%;
+    height: calc(100% - 5rem);
+}
+
+.listingHeader {    
+    width: 100%;
+
+    display: grid;
+    grid-template-columns: 0.5fr 1.25fr 1.25fr 1.75fr 0.75fr 0.5fr;
+    align-items: center;
+}
+
+.listingHeader > p {
+    padding-left: 0.5rem;
+
+    font-size: 0.9rem;
+    border-left: 1px dashed rgba(128, 128, 128, 0.411);
+    border-bottom: 2px solid rgba(128, 128, 128, 0.411);
+}
+
+.listingHeader > p:nth-child(1) {
+    border-left: none;
+}
+
+.listingItems {
+    height: calc(100% - 2rem);
+
+    overflow-y: scroll;
 }
