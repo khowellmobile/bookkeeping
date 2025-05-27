@@ -54,6 +54,8 @@ class EntitySerializer(serializers.ModelSerializer):
             "company",
             "description",
             "address",
+            "phone_number",
+            "email",
             "is_deleted",
             "created_at",
             "updated_at",
@@ -65,7 +67,7 @@ class EntitySerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
     def update(self, instance, validated_data):
-        fields_to_update = ["name", "company", "description", "address"]
+        fields_to_update = ["name", "company", "address", "phone_number", "email"]
 
         for attr in fields_to_update:
             if attr in validated_data:

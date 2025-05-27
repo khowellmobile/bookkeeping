@@ -44,6 +44,8 @@ class DatabaseConnectionsAdmin(admin.ModelAdmin):
         "name",
         "company",
         "address",
+        "phone_number",
+        "email",
         "description",
         "is_deleted",
         "created_at",
