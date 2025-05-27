@@ -24,7 +24,7 @@ const EntitiesPage = () => {
     });
 
     const [searchTerm, setSearchTerm] = useState("");
-    const [isEditing, setIsEditing] = useState(true);
+    const [isEditing, setIsEditing] = useState(false);
 
     const handleEditClick = () => {
         setIsEditing((prev) => !prev);
@@ -66,12 +66,7 @@ const EntitiesPage = () => {
     useEffect(() => {
         if (entities) {
             const lowercasedSearchTerm = searchTerm.toLowerCase();
-            const filtered = entities.filter(
-                (entity) =>
-                    entity.name.toLowerCase().includes(lowercasedSearchTerm) ||
-                    entity.company.toLowerCase().includes(lowercasedSearchTerm) ||
-                    entity.address.toLowerCase().includes(lowercasedSearchTerm)
-            );
+            const filtered = entities.filter((entity) => entity.name.toLowerCase().includes(lowercasedSearchTerm));
             setFilteredEntities(filtered);
         }
     }, [searchTerm, entities]);
@@ -104,8 +99,12 @@ const EntitiesPage = () => {
                         }}
                     ></input>
                     <div className={classes.entityListing}>
-                        {entities && entities.length > 0 ? (
-                            entities.map((entity, index) => <p key={index}>{entity.name}</p>)
+                        {filteredEntities && filteredEntities.length > 0 ? (
+                            filteredEntities.map((entity, index) => (
+                                <p key={index} onClick={() => setActiveEntity(entity)}>
+                                    {entity.name}
+                                </p>
+                            ))
                         ) : (
                             <p>No matching entities found.</p>
                         )}
@@ -139,14 +138,9 @@ const EntitiesPage = () => {
                                             disabled={!isEditing}
                                         />
                                     </div>
-                                    <div className={`${classes.cluster} ${isEditing ? classes.editing : ""}`}>
+                                    <div className={classes.cluster}>
                                         <p>Added:</p>
-                                        <input
-                                            type="text"
-                                            value={inputFields.created_at}
-                                            onChange={handleInputChange}
-                                            disabled={!isEditing}
-                                        />
+                                        <input type="text" value={inputFields.created_at} disabled={true} />
                                     </div>
                                 </div>
                             </div>
