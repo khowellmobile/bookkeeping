@@ -54,6 +54,8 @@ class EntitySerializer(serializers.ModelSerializer):
             "company",
             "description",
             "address",
+            "phone_number",
+            "email",
             "is_deleted",
             "created_at",
             "updated_at",

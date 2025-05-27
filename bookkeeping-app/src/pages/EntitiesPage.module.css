@@ -31,6 +31,37 @@
     outline: none;
 }
 
+.entityListing {
+    padding-top: 0.5rem;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.entityListing > p {
+    width: 100%;
+    height: 2rem;
+    padding-left: 0.25rem;
+
+    font-size: 0.9rem;
+    border-bottom: 1px solid rgba(143, 140, 140, 0.644);
+    border-left: 1px solid rgba(143, 140, 140, 0.644);
+    border-right: 1px solid rgba(143, 140, 140, 0.644);
+    user-select: none;
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+}
+
+.entityListing > p:hover {
+    background-color: rgba(235, 235, 235, 0.644);
+}
+
+.entityListing > p:first-child {
+    border-top: 1px solid rgba(143, 140, 140, 0.644);
+}
+
 .contentBox {
     width: 75%;
     height: 100%;
@@ -58,6 +89,15 @@
 
     display: flex;
     align-items: center;
+    justify-content: space-between;
+}
+
+.icon {
+    height: 2rem;
+    width: 2rem;
+    margin-right: 0.5rem;
+
+    cursor: pointer;
 }
 
 .entityInfo > .header > h2 {
@@ -88,7 +128,8 @@
     height: 100%;
 }
 
-.genInfo > div, .contactInfo > div {
+.genInfo > div,
+.contactInfo > div {
     height: calc(100% - 2rem);
     padding: 0.5rem;
 
@@ -110,11 +151,21 @@
     width: 20rem;
     padding: 0rem 0.25rem;
 
+    background-color: rgb(0, 0, 0, 0);
+    border: 1px solid rgb(0, 0, 0, 0);
     border-radius: 0rem;
-    border: 1px solid grey;
     outline: none;
     font-size: 0.9rem;
     font-family: "poppins";
+}
+
+.cluster > input:disabled {
+    color: black;
+}
+
+.editing > input {
+    background-color: white;
+    border: 1px solid grey;
 }
 
 .contactInfo {
@@ -133,7 +184,7 @@
     height: calc(100% - 5rem);
 }
 
-.listingHeader {    
+.listingHeader {
     width: 100%;
 
     display: grid;
