@@ -1,6 +1,7 @@
 import classes from "./Menu.module.css";
 
 import AccountsIcon from "../../assets/accounts-icon.svg";
+import EntitiesIcon from "../../assets/entities-icon.svg";
 import DashIcon from "../../assets/dashboard-icon.svg";
 import TransactionIcon from "../../assets/transaction-icon.svg";
 import JournalIcon from "../../assets/journal-icon.svg";
@@ -25,6 +26,7 @@ const Menu = () => {
                 <MenuLineItem itemName="Dashboard" link="/home" icon={<img src={DashIcon} alt="Icon" />} />
                 <MenuLineItem itemName="Transactions" link="/transactions" icon={<img src={TransactionIcon} alt="Icon" />} />
                 <MenuLineItem itemName="Accounts" link="/accounts" icon={<img src={AccountsIcon} alt="Icon" />} />
+                <MenuLineItem itemName="Entities" link="/entities" icon={<img src={EntitiesIcon} alt="Icon" />} />
                 <MenuLineItem itemName="Journals" link="/journals" icon={<img src={JournalIcon} alt="Icon" />} />
                 <MenuLineItem itemName="Reports" link="/reports" icon={<img src={ReportsIcon} alt="Icon" />} />
                 <div className={classes.seperatorH}></div>

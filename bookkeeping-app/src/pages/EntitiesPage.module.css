@@ -1,0 +1,236 @@
+.mainContainer {
+    width: 100%;
+    height: 100%;
+    padding: 0.5rem;
+
+    display: flex;
+    justify-content: space-between;
+}
+
+.searchBox {
+    width: calc(25% - 0.5rem);
+    height: 100%;
+    padding: 0.5rem;
+
+    border-radius: 0.25rem;
+    outline: 1px solid rgba(128, 128, 128, 0.301);
+
+    display: flex;
+    flex-direction: column;
+}
+
+.entitySerach {
+    height: 2rem;
+    padding: 0.25rem;
+
+    font-family: "poppins";
+    font-size: 0.8rem;
+    line-height: 1.5rem;
+    border: 1px solid rgba(143, 140, 140, 0.644);
+    border-radius: 0.15rem;
+    outline: none;
+}
+
+.entityListing {
+    padding-top: 0.5rem;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.entityListing > p {
+    width: 100%;
+    height: 2rem;
+    padding-left: 0.25rem;
+
+    font-size: 0.9rem;
+    border-bottom: 1px solid rgba(143, 140, 140, 0.644);
+    border-left: 1px solid rgba(143, 140, 140, 0.644);
+    border-right: 1px solid rgba(143, 140, 140, 0.644);
+    user-select: none;
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+}
+
+.entityListing > p:hover {
+    background-color: rgba(235, 235, 235, 0.644);
+}
+
+.entityListing > p:first-child {
+    border-top: 1px solid rgba(143, 140, 140, 0.644);
+}
+
+.contentBox {
+    width: 75%;
+    height: 100%;
+
+    border-radius: 0.25rem;
+    outline: 1px solid rgba(128, 128, 128, 0.301);
+
+    display: flex;
+    flex-direction: column;
+}
+
+.entityInfo {
+    width: 100%;
+    height: 30%;
+
+    border-bottom: 1px solid rgba(128, 128, 128, 0.301);
+}
+
+.entityInfo > .header {
+    width: 100%;
+    height: 3rem;
+    padding-left: 0.5rem;
+
+    border-bottom: 1px solid rgba(128, 128, 128, 0.301);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.header > div > button {
+    padding: 0.25rem 0.5rem;
+    margin-right: 0.5rem;
+
+    background-color: rgb(42, 42, 209);
+    color: white;
+    cursor: pointer;
+    font-family: "poppins";
+    font-weight: 500;
+    font-size: 0.8rem;
+    border-radius: 0.25rem;
+    border: none;
+    outline: none;
+
+    transition: all ease 0.25s;
+}
+
+.header > button:hover {
+    transform: translateY(-1px);
+}
+
+.header > button:active {
+    transform: translateY(1px);
+}
+
+.icon {
+    height: 2rem;
+    width: 2rem;
+    margin-right: 0.5rem;
+
+    cursor: pointer;
+}
+
+.entityInfo > .header > h2 {
+    font-weight: 400;
+}
+
+.inputs {
+    width: 100%;
+    height: calc(100% - 3rem);
+
+    display: flex;
+}
+
+.inputs h3 {
+    width: 100%;
+    height: 2rem;
+    padding-left: 0.5rem;
+
+    border-bottom: 1px solid rgba(128, 128, 128, 0.301);
+    font-weight: 400;
+
+    display: flex;
+    align-items: center;
+}
+
+.genInfo {
+    width: 70%;
+    height: 100%;
+}
+
+.genInfo > div,
+.contactInfo > div {
+    height: calc(100% - 2rem);
+    padding: 0.5rem;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.cluster {
+    display: flex;
+    flex-direction: column;
+}
+
+.cluster > p {
+    font-size: 0.8rem;
+    color: rgb(92, 92, 92);
+}
+
+.cluster > input {
+    width: 20rem;
+    padding: 0rem 0.25rem;
+
+    background-color: rgb(0, 0, 0, 0);
+    border: 1px solid rgb(0, 0, 0, 0);
+    border-radius: 0rem;
+    outline: none;
+    font-size: 0.9rem;
+    font-family: "poppins";
+}
+
+.cluster > input:disabled {
+    color: black;
+}
+
+.editing > input {
+    background-color: white;
+    border: 1px solid grey;
+}
+
+.contactInfo {
+    width: 30%;
+
+    border-left: 1px solid rgba(128, 128, 128, 0.301);
+}
+
+.transactionListing {
+    width: 100%;
+    height: 70%;
+}
+
+.transactionListing {
+    width: 100%;
+    height: calc(100% - 5rem);
+}
+
+.listingHeader {
+    width: 100%;
+
+    display: grid;
+    grid-template-columns: 0.5fr 1.25fr 1.25fr 1.75fr 0.75fr 0.5fr;
+    align-items: center;
+}
+
+.listingHeader > p {
+    padding-left: 0.5rem;
+
+    font-size: 0.9rem;
+    border-left: 1px dashed rgba(128, 128, 128, 0.411);
+    border-bottom: 2px solid rgba(128, 128, 128, 0.411);
+}
+
+.listingHeader > p:nth-child(1) {
+    border-left: none;
+}
+
+.listingItems {
+    height: calc(100% - 2rem);
+
+    overflow-y: scroll;
+}

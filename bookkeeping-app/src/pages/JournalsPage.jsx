@@ -164,10 +164,6 @@ const JournalsPage = () => {
         setIsEditing(false);
     };
 
-    /* useEffect(() => {
-        console.log(journalItems);
-    }, [journalItems]); */
-
     return (
         <div className={classes.mainContainer}>
             <div className={classes.journalContent}>
