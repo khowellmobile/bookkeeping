@@ -92,6 +92,31 @@
     justify-content: space-between;
 }
 
+.header > div > button {
+    padding: 0.25rem 0.5rem;
+    margin-right: 0.5rem;
+
+    background-color: rgb(42, 42, 209);
+    color: white;
+    cursor: pointer;
+    font-family: "poppins";
+    font-weight: 500;
+    font-size: 0.8rem;
+    border-radius: 0.25rem;
+    border: none;
+    outline: none;
+
+    transition: all ease 0.25s;
+}
+
+.header > button:hover {
+    transform: translateY(-1px);
+}
+
+.header > button:active {
+    transform: translateY(1px);
+}
+
 .icon {
     height: 2rem;
     width: 2rem;

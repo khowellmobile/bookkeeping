@@ -26,16 +26,36 @@ const EntitiesPage = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [isEditing, setIsEditing] = useState(false);
 
-    const handleEditClick = () => {
-        setIsEditing((prev) => !prev);
-    };
-
     const handleInputChange = (e) => {
         const { name, value } = e.target;
+        console.log(name, " ", value);
         setInputFields((prev) => ({
             ...prev,
             [name]: value,
         }));
+    };
+
+    const handleSave = async () => {
+        const ctxAccessToken = localStorage.getItem("accessToken");
+        try {
+            const response = await fetch(`http://localhost:8000/api/entities/${activeEntity.id}/`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${ctxAccessToken}`,
+                },
+                body: JSON.stringify(inputFields),
+            });
+            const data = await response.json();
+            console.log(data);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+        } catch (e) {
+            console.log("Error: " + e);
+        }
+
+        setIsEditing(false);
     };
 
     useEffect(() => {
@@ -114,7 +134,19 @@ const EntitiesPage = () => {
                     <div className={classes.entityInfo}>
                         <div className={classes.header}>
                             <h2>{activeEntity ? activeEntity.name : "Select an Entity"}</h2>
-                            <img src={penIcon} className={classes.icon} alt="Icon" onClick={handleEditClick} />
+                            {isEditing ? (
+                                <div>
+                                    <button onClick={handleSave}>Save</button>
+                                    <button onClick={() => setIsEditing(false)}>Cancel</button>
+                                </div>
+                            ) : (
+                                <img
+                                    src={penIcon}
+                                    className={classes.icon}
+                                    alt="Icon"
+                                    onClick={() => setIsEditing(true)}
+                                />
+                            )}
                         </div>
                         <div className={classes.inputs}>
                             <div className={classes.genInfo}>
@@ -124,6 +156,7 @@ const EntitiesPage = () => {
                                         <p>Company:</p>
                                         <input
                                             type="text"
+                                            name="company"
                                             value={inputFields.company}
                                             onChange={handleInputChange}
                                             disabled={!isEditing}
@@ -133,6 +166,7 @@ const EntitiesPage = () => {
                                         <p>Address:</p>
                                         <input
                                             type="text"
+                                            name="address"
                                             value={inputFields.address}
                                             onChange={handleInputChange}
                                             disabled={!isEditing}
