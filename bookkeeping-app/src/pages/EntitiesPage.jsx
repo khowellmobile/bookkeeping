@@ -125,8 +125,14 @@ const EntitiesPage = () => {
                 </div>
                 <div className={classes.contentBox}>
                     <div className={classes.entityInfo}>
-                        <div className={classes.header}>
-                            <h2>{activeEntity ? activeEntity.name : "Select an Entity"}</h2>
+                        <div className={`${classes.header} ${isEditing ? classes.editing : ""}`}>
+                            <input
+                                type="text"
+                                name="name"
+                                value={inputFields.name}
+                                onChange={handleInputChange}
+                                disabled={!isEditing}
+                            />
                             {isEditing ? (
                                 <div>
                                     <button onClick={handleSave}>Save</button>
