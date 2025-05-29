@@ -12,7 +12,7 @@ const EntitiesPage = () => {
 
     const [transactions, setTransactions] = useState([]);
     const [entities, setEntities] = useState([]);
-    const [activeEntity, setActiveEntity] = useState({});
+    const [activeEntity, setActiveEntity] = useState();
     const [filteredEntities, setFilteredEntities] = useState([]);
     const [inputFields, setInputFields] = useState({
         name: "",
@@ -61,15 +61,6 @@ const EntitiesPage = () => {
     useEffect(() => {
         if (ctxEntityList && ctxEntityList.length > 0) {
             setEntities(ctxEntityList);
-            setActiveEntity(ctxEntityList[0]);
-            setInputFields({
-                name: ctxEntityList[0].name || "",
-                company: ctxEntityList[0].company || "",
-                address: ctxEntityList[0].address || "",
-                created_at: ctxEntityList[0].created_at || "",
-                phone_number: ctxEntityList[0].phone_number || "",
-                email: ctxEntityList[0].email || "",
-            });
         }
     }, [ctxEntityList]);
 
@@ -83,6 +74,7 @@ const EntitiesPage = () => {
         fetchTran();
     }, []);
 
+    // Filtering results by search term
     useEffect(() => {
         if (entities) {
             const lowercasedSearchTerm = searchTerm.toLowerCase();
@@ -91,6 +83,7 @@ const EntitiesPage = () => {
         }
     }, [searchTerm, entities]);
 
+    // Setting fields to selected entity
     useEffect(() => {
         if (activeEntity) {
             setInputFields({

@@ -82,7 +82,7 @@
     border-bottom: 1px solid rgba(128, 128, 128, 0.301);
 }
 
-.entityInfo > .header {
+.header {
     width: 100%;
     height: 3rem;
     padding-left: 0.5rem;
