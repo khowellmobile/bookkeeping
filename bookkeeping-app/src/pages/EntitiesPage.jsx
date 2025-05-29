@@ -21,6 +21,7 @@ const EntitiesPage = () => {
         created_at: "",
         phone_number: "",
         email: "",
+        is_deleted: "",
     });
 
     const [searchTerm, setSearchTerm] = useState("");
@@ -28,14 +29,19 @@ const EntitiesPage = () => {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        console.log(name, " ", value);
         setInputFields((prev) => ({
             ...prev,
             [name]: value,
         }));
     };
 
-    const handleSave = async () => {
+    const handleSave = async (shouldDelete) => {
+        let data = inputFields;
+
+        if (shouldDelete) {
+            data = { is_deleted: true };
+        }
+
         const ctxAccessToken = localStorage.getItem("accessToken");
         try {
             const response = await fetch(`http://localhost:8000/api/entities/${activeEntity.id}/`, {
@@ -44,10 +50,10 @@ const EntitiesPage = () => {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${ctxAccessToken}`,
                 },
-                body: JSON.stringify(inputFields),
+                body: JSON.stringify(data),
             });
-            const data = await response.json();
-            console.log(data);
+            const repData = await response.json();
+            console.log(repData);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -56,6 +62,14 @@ const EntitiesPage = () => {
         }
 
         setIsEditing(false);
+    };
+
+    const deleteHandler = () => {
+        setInputFields((prev) => ({
+            ...prev,
+            is_deleted: true,
+        }));
+        handleSave(true);
     };
 
     useEffect(() => {
@@ -135,7 +149,8 @@ const EntitiesPage = () => {
                             />
                             {isEditing ? (
                                 <div>
-                                    <button onClick={handleSave}>Save</button>
+                                    <button onClick={() => handleSave(false)}>Save</button>
+                                    <button onClick={() => deleteHandler()}>Delete</button>
                                     <button onClick={() => setIsEditing(false)}>Cancel</button>
                                 </div>
                             ) : (
