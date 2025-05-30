@@ -9,7 +9,7 @@ import TransactionItem from "../components/elements/items/TransactionItem";
 import AddEntityModal from "../components/elements/modals/AddEntityModal";
 
 const EntitiesPage = () => {
-    const { populateCtxTransactions, ctxEntityList } = useContext(BkpgContext);
+    const { populateCtxTransactions, setCtxEntityList, ctxEntityList } = useContext(BkpgContext);
 
     const [transactions, setTransactions] = useState([]);
     const [activeEntity, setActiveEntity] = useState();
@@ -57,10 +57,14 @@ const EntitiesPage = () => {
                 },
                 body: JSON.stringify(data),
             });
-            const repData = await response.json();
-            console.log(repData);
+
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
+            } else {
+                const newEntity = await response.json();
+                setCtxEntityList((prev) => {
+                    return [...prev, newEntity];
+                });
             }
         } catch (e) {
             console.log("Error: " + e);
@@ -77,13 +81,6 @@ const EntitiesPage = () => {
         handleSave(true);
     };
 
-    // Reflect changes is CtxEntityList
-    useEffect(() => {
-        if (ctxEntityList && ctxEntityList.length > 0) {
-            setEntities(ctxEntityList);
-        }
-    }, [ctxEntityList]);
-
     // load transactions on mount
     useEffect(() => {
         const fetchTran = async () => {
@@ -96,12 +93,12 @@ const EntitiesPage = () => {
 
     // Filtering results by search term
     useEffect(() => {
-        if (entities) {
+        if (ctxEntityList) {
             const lowercasedSearchTerm = searchTerm.toLowerCase();
-            const filtered = entities.filter((entity) => entity.name.toLowerCase().includes(lowercasedSearchTerm));
+            const filtered = ctxEntityList.filter((entity) => entity.name.toLowerCase().includes(lowercasedSearchTerm));
             setFilteredEntities(filtered);
         }
-    }, [searchTerm, entities]);
+    }, [searchTerm, ctxEntityList]);
 
     // Setting fields to selected entity
     useEffect(() => {

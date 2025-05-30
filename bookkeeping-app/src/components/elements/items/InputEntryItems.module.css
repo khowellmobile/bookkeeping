@@ -1,7 +1,6 @@
 .mainContainer {
     height: 3rem;
 
-    cursor: pointer;
     outline: none;
     border: none;
 
@@ -30,7 +29,8 @@
     border-left: none;
 }
 
-.mainContainer > input:hover, .mainContainer > input:focus {
+.mainContainer > input:hover,
+.mainContainer > input:focus {
     background-color: rgba(214, 214, 214, 0.26);
 }
 

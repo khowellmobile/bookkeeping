@@ -1,7 +1,6 @@
 .mainContainer {
     height: 3rem;
 
-    cursor: pointer;
     outline: none;
     border: none;
 
@@ -55,10 +54,37 @@
     left: 1px;
 }
 
-.dropDownContent > p:first-child {
-    margin-top: 0.25rem;
-    margin-bottom: 0.25rem;
-    padding-left: 0.5rem;
+.dropdownHeader {
+    width: 100%;
+    padding: 0.5rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.dropdownHeader > button {
+    padding: 0.25rem 0.5rem;
+
+    background-color: rgb(42, 42, 209);
+    color: white;
+    cursor: pointer;
+    font-family: "poppins";
+    font-weight: 500;
+    font-size: 0.8rem;
+    border-radius: 0.25rem;
+    border: none;
+    outline: none;
+
+    transition: all ease 0.25s;
+}
+
+.dropdownHeader > button:hover {
+    transform: translateY(-1px);
+}
+
+.dropdownHeader > button:active {
+    transform: translateY(1px);
 }
 
 .separatorH {

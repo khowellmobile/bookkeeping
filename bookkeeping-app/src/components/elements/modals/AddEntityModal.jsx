@@ -38,12 +38,14 @@ const AddEntityModal = ({ handleCloseModal }) => {
             if (!response.ok) {
                 const errorData = await response.json();
                 console.error("Backend Error:", errorData);
+            } else {
+                const newEntity = await response.json();
+                setCtxEntityList((prev) => {
+                    return [...prev, newEntity];
+                });
             }
 
-            const newEntity = await response.json();
-            setCtxEntityList((prev) => {
-                return { ...prev, newEntity };
-            });
+            handleCloseModal();
 
             console.log("Entity sent (check your Django backend)");
         } catch (error) {
