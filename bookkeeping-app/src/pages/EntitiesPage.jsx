@@ -12,7 +12,7 @@ const EntitiesPage = () => {
 
     const [transactions, setTransactions] = useState([]);
     const [entities, setEntities] = useState([]);
-    const [activeEntity, setActiveEntity] = useState({});
+    const [activeEntity, setActiveEntity] = useState();
     const [filteredEntities, setFilteredEntities] = useState([]);
     const [inputFields, setInputFields] = useState({
         name: "",
@@ -21,6 +21,7 @@ const EntitiesPage = () => {
         created_at: "",
         phone_number: "",
         email: "",
+        is_deleted: "",
     });
 
     const [searchTerm, setSearchTerm] = useState("");
@@ -28,14 +29,19 @@ const EntitiesPage = () => {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        console.log(name, " ", value);
         setInputFields((prev) => ({
             ...prev,
             [name]: value,
         }));
     };
 
-    const handleSave = async () => {
+    const handleSave = async (shouldDelete) => {
+        let data = inputFields;
+
+        if (shouldDelete) {
+            data = { is_deleted: true };
+        }
+
         const ctxAccessToken = localStorage.getItem("accessToken");
         try {
             const response = await fetch(`http://localhost:8000/api/entities/${activeEntity.id}/`, {
@@ -44,10 +50,10 @@ const EntitiesPage = () => {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${ctxAccessToken}`,
                 },
-                body: JSON.stringify(inputFields),
+                body: JSON.stringify(data),
             });
-            const data = await response.json();
-            console.log(data);
+            const repData = await response.json();
+            console.log(repData);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -58,18 +64,17 @@ const EntitiesPage = () => {
         setIsEditing(false);
     };
 
+    const deleteHandler = () => {
+        setInputFields((prev) => ({
+            ...prev,
+            is_deleted: true,
+        }));
+        handleSave(true);
+    };
+
     useEffect(() => {
         if (ctxEntityList && ctxEntityList.length > 0) {
             setEntities(ctxEntityList);
-            setActiveEntity(ctxEntityList[0]);
-            setInputFields({
-                name: ctxEntityList[0].name || "",
-                company: ctxEntityList[0].company || "",
-                address: ctxEntityList[0].address || "",
-                created_at: ctxEntityList[0].created_at || "",
-                phone_number: ctxEntityList[0].phone_number || "",
-                email: ctxEntityList[0].email || "",
-            });
         }
     }, [ctxEntityList]);
 
@@ -83,6 +88,7 @@ const EntitiesPage = () => {
         fetchTran();
     }, []);
 
+    // Filtering results by search term
     useEffect(() => {
         if (entities) {
             const lowercasedSearchTerm = searchTerm.toLowerCase();
@@ -91,6 +97,7 @@ const EntitiesPage = () => {
         }
     }, [searchTerm, entities]);
 
+    // Setting fields to selected entity
     useEffect(() => {
         if (activeEntity) {
             setInputFields({
@@ -132,11 +139,18 @@ const EntitiesPage = () => {
                 </div>
                 <div className={classes.contentBox}>
                     <div className={classes.entityInfo}>
-                        <div className={classes.header}>
-                            <h2>{activeEntity ? activeEntity.name : "Select an Entity"}</h2>
+                        <div className={`${classes.header} ${isEditing ? classes.editing : ""}`}>
+                            <input
+                                type="text"
+                                name="name"
+                                value={inputFields.name}
+                                onChange={handleInputChange}
+                                disabled={!isEditing}
+                            />
                             {isEditing ? (
                                 <div>
-                                    <button onClick={handleSave}>Save</button>
+                                    <button onClick={() => handleSave(false)}>Save</button>
+                                    <button onClick={() => deleteHandler()}>Delete</button>
                                     <button onClick={() => setIsEditing(false)}>Cancel</button>
                                 </div>
                             ) : (

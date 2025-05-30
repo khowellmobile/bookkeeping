@@ -44,6 +44,8 @@ class AccountSerializer(serializers.ModelSerializer):
 
 
 class EntitySerializer(serializers.ModelSerializer):
+    phone_number = serializers.CharField(required=False, allow_blank=True) #
+    email = serializers.EmailField(required=False, allow_blank=True)
 
     class Meta:
         model = Entity
@@ -67,7 +69,14 @@ class EntitySerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
     def update(self, instance, validated_data):
-        fields_to_update = ["name", "company", "address", "phone_number", "email"]
+        fields_to_update = [
+            "name",
+            "company",
+            "address",
+            "phone_number",
+            "email",
+            "is_deleted",
+        ]
 
         for attr in fields_to_update:
             if attr in validated_data:
@@ -148,9 +157,7 @@ class TransactionSerializer(serializers.ModelSerializer):
 
 
 class JournalSerializer(serializers.ModelSerializer):
-    user = serializers.PrimaryKeyRelatedField(
-        read_only=True
-    )
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = Journal
