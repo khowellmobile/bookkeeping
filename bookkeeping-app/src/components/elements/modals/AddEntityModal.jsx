@@ -1,7 +1,12 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
+
+import BkpgContext from "../../contexts/BkpgContext";
+
 import classes from "./AddEntityModal.module.css";
 
-const AddEntityModal = ({ setEntities, handleCloseModal }) => {
+const AddEntityModal = ({ handleCloseModal }) => {
+    const { setCtxEntityList } = useContext(BkpgContext);
+
     const [name, setName] = useState("");
     const [company, setCompany] = useState("");
     const [address, setAddress] = useState("");
@@ -34,6 +39,11 @@ const AddEntityModal = ({ setEntities, handleCloseModal }) => {
                 const errorData = await response.json();
                 console.error("Backend Error:", errorData);
             }
+
+            const newEntity = await response.json();
+            setCtxEntityList((prev) => {
+                return { ...prev, newEntity };
+            });
 
             console.log("Entity sent (check your Django backend)");
         } catch (error) {

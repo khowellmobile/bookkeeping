@@ -9,10 +9,9 @@ import TransactionItem from "../components/elements/items/TransactionItem";
 import AddEntityModal from "../components/elements/modals/AddEntityModal";
 
 const EntitiesPage = () => {
-    const { populateCtxTransactions, populateCtxEntities, ctxEntityList } = useContext(BkpgContext);
+    const { populateCtxTransactions, ctxEntityList } = useContext(BkpgContext);
 
     const [transactions, setTransactions] = useState([]);
-    const [entities, setEntities] = useState([]);
     const [activeEntity, setActiveEntity] = useState();
     const [filteredEntities, setFilteredEntities] = useState([]);
     const [inputFields, setInputFields] = useState({

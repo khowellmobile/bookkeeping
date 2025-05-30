@@ -15,13 +15,14 @@ const BkpgContext = createContext({
     populateCtxTransactions: () => {},
     setCtxAccountList: () => {},
     setCtxAccessToken: () => {},
+    setCtxEntityList: () => {},
 });
 
 export function BkpgContextProvider(props) {
     const [ctxActiveClient, setCtxActiveClient] = useState(null);
     const [ctxActiveAccount, setCtxActiveAccount] = useState({ name: "None Selected" });
     const [ctxAccountList, setCtxAccountList] = useState(null);
-    const [ctxEntityList, setCtxEntityList] = useState(null);
+    const [ctxEntityList, setCtxEntityList] = useState([]);
     const [ctxTranList, setCtxTranList] = useState(null);
     const [ctxAccessToken, setCtxAccessToken] = useState(localStorage.getItem("accessToken") || null); // State really needed here?
 
@@ -120,6 +121,7 @@ export function BkpgContextProvider(props) {
         populateCtxTransactions,
         setCtxAccountList,
         setCtxAccessToken,
+        setCtxEntityList,
     };
 
     return <BkpgContext.Provider value={context}>{props.children}</BkpgContext.Provider>;
