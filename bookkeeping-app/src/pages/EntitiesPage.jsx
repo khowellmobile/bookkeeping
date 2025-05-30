@@ -26,7 +26,7 @@ const EntitiesPage = () => {
 
     const [searchTerm, setSearchTerm] = useState("");
     const [isEditing, setIsEditing] = useState(false);
-    const [isModalOpen, setIsModalOpen] = useState(true);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const handleCloseModal = () => {
         setIsModalOpen(false);
@@ -170,12 +170,16 @@ const EntitiesPage = () => {
                                     </button>
                                 </div>
                             ) : (
-                                <img
-                                    src={penIcon}
-                                    className={classes.icon}
-                                    alt="Icon"
-                                    onClick={() => setIsEditing(true)}
-                                />
+                                <>
+                                    {activeEntity && (
+                                        <img
+                                            src={penIcon}
+                                            className={classes.icon}
+                                            alt="Icon"
+                                            onClick={() => setIsEditing(true)}
+                                        />
+                                    )}
+                                </>
                             )}
                         </div>
                         <div className={classes.inputs}>
