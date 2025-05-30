@@ -6,6 +6,7 @@ import { useState, useContext, useEffect } from "react";
 import penIcon from "../assets/pen-icon.svg";
 
 import TransactionItem from "../components/elements/items/TransactionItem";
+import AddEntityModal from "../components/elements/modals/AddEntityModal";
 
 const EntitiesPage = () => {
     const { populateCtxTransactions, populateCtxEntities, ctxEntityList } = useContext(BkpgContext);
@@ -26,6 +27,11 @@ const EntitiesPage = () => {
 
     const [searchTerm, setSearchTerm] = useState("");
     const [isEditing, setIsEditing] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(true);
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+    };
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -72,6 +78,7 @@ const EntitiesPage = () => {
         handleSave(true);
     };
 
+    // Reflect changes is CtxEntityList
     useEffect(() => {
         if (ctxEntityList && ctxEntityList.length > 0) {
             setEntities(ctxEntityList);
@@ -113,8 +120,15 @@ const EntitiesPage = () => {
 
     return (
         <>
+            {isModalOpen && <AddEntityModal handleCloseModal={handleCloseModal} />}
+
             <div className={classes.mainContainer}>
                 <div className={classes.searchBox}>
+                    <div className={classes.searchBoxTools}>
+                        <button className={classes.button} onClick={() => setIsModalOpen(true)}>
+                            Add Entity
+                        </button>
+                    </div>
                     <input
                         type="text"
                         className={classes.entitySerach}
@@ -149,9 +163,15 @@ const EntitiesPage = () => {
                             />
                             {isEditing ? (
                                 <div>
-                                    <button onClick={() => handleSave(false)}>Save</button>
-                                    <button onClick={() => deleteHandler()}>Delete</button>
-                                    <button onClick={() => setIsEditing(false)}>Cancel</button>
+                                    <button className={classes.button} onClick={() => handleSave(false)}>
+                                        Save
+                                    </button>
+                                    <button className={classes.button} onClick={() => deleteHandler()}>
+                                        Delete
+                                    </button>
+                                    <button className={classes.button} onClick={() => setIsEditing(false)}>
+                                        Cancel
+                                    </button>
                                 </div>
                             ) : (
                                 <img
