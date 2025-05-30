@@ -3,6 +3,7 @@ import classes from "./entityEntryDropdown.module.css";
 import BkpgContext from "../../contexts/BkpgContext";
 
 import { useState, useContext, useEffect, useRef } from "react";
+import AddEntityModal from "../modals/AddEntityModal";
 
 const EntityEntryDropdown = ({ scrollRef, onChange }) => {
     const { ctxEntityList } = useContext(BkpgContext);
@@ -10,6 +11,7 @@ const EntityEntryDropdown = ({ scrollRef, onChange }) => {
     const [searchTerm, setSearchTerm] = useState("");
     const [filteredEntitys, setFilteredEntitys] = useState(ctxEntityList);
     const [isExpanded, setIsExpanded] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const [isOffScreenBottom, setIsOffScreenBottom] = useState();
     const [pxScroll, setPxScroll] = useState(0);
@@ -19,6 +21,10 @@ const EntityEntryDropdown = ({ scrollRef, onChange }) => {
     let style = isOffScreenBottom
         ? { bottom: `calc(1.5rem + ${pxScroll}px + 1px)` }
         : { top: `calc(1.5rem - ${pxScroll}px)` };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+    };
 
     const checkOffScreen = () => {
         try {
@@ -76,36 +82,43 @@ const EntityEntryDropdown = ({ scrollRef, onChange }) => {
     };
 
     return (
-        <div className={classes.mainContainer} onFocus={() => checkOffScreen()}>
-            <input
-                type="text"
-                value={searchTerm}
-                onChange={(e) => {
-                    setSearchTerm(e.target.value);
-                    setIsExpanded(true);
-                }}
-                onFocus={() => setIsExpanded(true)}
-                onBlur={handleBlur}
-                ref={inputRef}
-            />
-            <div className={`${classes.anchor} ${isExpanded ? "" : classes.noDisplay}`}>
-                <div className={classes.dropDownContent} style={style}>
-                    <p>All entitys</p>
-                    <div className={classes.separatorH}></div>
-                    <div className={classes.entityListing}>
-                        {filteredEntitys && filteredEntitys.length > 0 ? ( // Use filteredentitys
-                            filteredEntitys.map((entity, index) => (
-                                <p key={index} onClick={() => clickEntityHandler(entity)}>
-                                    {entity.name}
-                                </p>
-                            ))
-                        ) : (
-                            <p>No matching entitys found.</p> // Show message if no matches
-                        )}
+        <>
+            {isModalOpen && <AddEntityModal handleCloseModal={handleCloseModal} />}
+
+            <div className={classes.mainContainer} onFocus={() => checkOffScreen()}>
+                <input
+                    type="text"
+                    value={searchTerm}
+                    onChange={(e) => {
+                        setSearchTerm(e.target.value);
+                        setIsExpanded(true);
+                    }}
+                    onFocus={() => setIsExpanded(true)}
+                    onBlur={handleBlur}
+                    ref={inputRef}
+                />
+                <div className={`${classes.anchor} ${isExpanded ? "" : classes.noDisplay}`}>
+                    <div className={classes.dropDownContent} style={style}>
+                        <div className={classes.dropdownHeader}>
+                            <p>All entitys</p>
+                            <button onClick={() => setIsModalOpen(true)}>Add Entity</button>
+                        </div>
+                        <div className={classes.separatorH}></div>
+                        <div className={classes.entityListing}>
+                            {filteredEntitys && filteredEntitys.length > 0 ? ( // Use filteredentitys
+                                filteredEntitys.map((entity, index) => (
+                                    <p key={index} onClick={() => clickEntityHandler(entity)}>
+                                        {entity.name}
+                                    </p>
+                                ))
+                            ) : (
+                                <p>No matching entitys found.</p> // Show message if no matches
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 };
 

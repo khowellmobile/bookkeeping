@@ -6,12 +6,12 @@ import { useState, useContext, useEffect } from "react";
 import penIcon from "../assets/pen-icon.svg";
 
 import TransactionItem from "../components/elements/items/TransactionItem";
+import AddEntityModal from "../components/elements/modals/AddEntityModal";
 
 const EntitiesPage = () => {
-    const { populateCtxTransactions, populateCtxEntities, ctxEntityList } = useContext(BkpgContext);
+    const { populateCtxTransactions, setCtxEntityList, ctxEntityList } = useContext(BkpgContext);
 
     const [transactions, setTransactions] = useState([]);
-    const [entities, setEntities] = useState([]);
     const [activeEntity, setActiveEntity] = useState();
     const [filteredEntities, setFilteredEntities] = useState([]);
     const [inputFields, setInputFields] = useState({
@@ -26,6 +26,11 @@ const EntitiesPage = () => {
 
     const [searchTerm, setSearchTerm] = useState("");
     const [isEditing, setIsEditing] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+    };
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -52,10 +57,14 @@ const EntitiesPage = () => {
                 },
                 body: JSON.stringify(data),
             });
-            const repData = await response.json();
-            console.log(repData);
+
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
+            } else {
+                const newEntity = await response.json();
+                setCtxEntityList((prev) => {
+                    return [...prev, newEntity];
+                });
             }
         } catch (e) {
             console.log("Error: " + e);
@@ -72,12 +81,6 @@ const EntitiesPage = () => {
         handleSave(true);
     };
 
-    useEffect(() => {
-        if (ctxEntityList && ctxEntityList.length > 0) {
-            setEntities(ctxEntityList);
-        }
-    }, [ctxEntityList]);
-
     // load transactions on mount
     useEffect(() => {
         const fetchTran = async () => {
@@ -90,12 +93,12 @@ const EntitiesPage = () => {
 
     // Filtering results by search term
     useEffect(() => {
-        if (entities) {
+        if (ctxEntityList) {
             const lowercasedSearchTerm = searchTerm.toLowerCase();
-            const filtered = entities.filter((entity) => entity.name.toLowerCase().includes(lowercasedSearchTerm));
+            const filtered = ctxEntityList.filter((entity) => entity.name.toLowerCase().includes(lowercasedSearchTerm));
             setFilteredEntities(filtered);
         }
-    }, [searchTerm, entities]);
+    }, [searchTerm, ctxEntityList]);
 
     // Setting fields to selected entity
     useEffect(() => {
@@ -113,8 +116,15 @@ const EntitiesPage = () => {
 
     return (
         <>
+            {isModalOpen && <AddEntityModal handleCloseModal={handleCloseModal} />}
+
             <div className={classes.mainContainer}>
                 <div className={classes.searchBox}>
+                    <div className={classes.searchBoxTools}>
+                        <button className={classes.button} onClick={() => setIsModalOpen(true)}>
+                            Add Entity
+                        </button>
+                    </div>
                     <input
                         type="text"
                         className={classes.entitySerach}
@@ -149,17 +159,27 @@ const EntitiesPage = () => {
                             />
                             {isEditing ? (
                                 <div>
-                                    <button onClick={() => handleSave(false)}>Save</button>
-                                    <button onClick={() => deleteHandler()}>Delete</button>
-                                    <button onClick={() => setIsEditing(false)}>Cancel</button>
+                                    <button className={classes.button} onClick={() => handleSave(false)}>
+                                        Save
+                                    </button>
+                                    <button className={classes.button} onClick={() => deleteHandler()}>
+                                        Delete
+                                    </button>
+                                    <button className={classes.button} onClick={() => setIsEditing(false)}>
+                                        Cancel
+                                    </button>
                                 </div>
                             ) : (
-                                <img
-                                    src={penIcon}
-                                    className={classes.icon}
-                                    alt="Icon"
-                                    onClick={() => setIsEditing(true)}
-                                />
+                                <>
+                                    {activeEntity && (
+                                        <img
+                                            src={penIcon}
+                                            className={classes.icon}
+                                            alt="Icon"
+                                            onClick={() => setIsEditing(true)}
+                                        />
+                                    )}
+                                </>
                             )}
                         </div>
                         <div className={classes.inputs}>
