@@ -9,7 +9,7 @@
 }
 
 .mainContainer:hover {
-    background-color: rgba(214, 214, 214, 0.178);
+    background-color: var(--hover-color);
 }
 
 .mainContainer > p {
@@ -18,9 +18,9 @@
 
     padding-left: 0.5rem;
 
-    color: rgb(53, 53, 53);
-    border-left: 1px dashed rgba(128, 128, 128, 0.411);
-    border-bottom: 1px solid rgba(128, 128, 128, 0.411);
+    color: var(--primary-text-color);
+    border-left: 1px dashed var(--border-color);
+    border-bottom: 1px solid var(--border-color);
 
     display: flex;
     align-items: center;
@@ -31,15 +31,15 @@
 }
 
 .mainContainer > p:hover {
-    background-color: rgba(214, 214, 214, 0.26);
+    background-color: var(--hover-color);
 }
 
 .actionDiv {
     width: 100%;
     height: 100%;
 
-    border-left: 1px dashed rgba(128, 128, 128, 0.411);
-    border-bottom: 1px solid rgba(128, 128, 128, 0.411);
+    border-left: 1px dashed var(--border-color);
+    border-bottom: 1px solid var(--border-color);
 
     display: flex;
     align-items: center;
@@ -49,7 +49,7 @@
 }
 
 .actionDiv:hover {
-    background-color: rgba(214, 214, 214, 0.26);
+    background-color: var(--hover-color);
 }
 
 .icon {
@@ -60,9 +60,9 @@
 .actionDropdown {
     width: 10rem;
 
-    background-color: white;
+    background-color: var(--background-color);
     border-radius: 0.25rem;
-    outline: 1px solid grey;
+    outline: 1px solid var(--border-color);
 
     display: flex;
     flex-direction: column;
@@ -79,12 +79,12 @@
     width: 100%;
     padding: 0.25rem;
 
-    border-bottom: 1px solid grey;
+    border-bottom: 1px solid var(--border-color);
     font-size: 0.8rem;
 }
 
 .actionDropdown > div:hover {
-    background-color: rgba(128, 128, 128, 0.13);
+    background-color: var(--hover-color);
 }
 
 .actionDropdown > div:last-child {

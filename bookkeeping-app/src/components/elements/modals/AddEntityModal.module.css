@@ -18,7 +18,7 @@
     height: 100%;
     padding: 0.5rem;
 
-    background-color: white;
+    background-color: var(--background-color);
 
     display: flex;
     flex-direction: column;
@@ -34,7 +34,7 @@
     height: 1px;
     margin-bottom: 1rem;
 
-    background-color: rgba(128, 128, 128, 0.349);
+    background-color: var(--border-color);
 }
 
 .label {
@@ -50,7 +50,7 @@
     padding-left: 0.25rem;
 
     border: none;
-    border-bottom: 1px solid grey;
+    border-bottom: 1px solid var(--border-color);
     outline: none;
     font-family: "poppins";
 }
@@ -71,7 +71,7 @@
     padding: 0.5rem 1rem;
     margin-left: 0.5rem;
 
-    background-color: rgb(42, 42, 209);
+    background-color: var(--primary-color);
     color: white;
     cursor: pointer;
     font-family: "poppins";

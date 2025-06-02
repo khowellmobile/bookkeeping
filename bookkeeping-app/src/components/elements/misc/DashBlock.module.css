@@ -4,7 +4,7 @@
     padding: 0.5rem;
 
     border-radius: 0.25rem;
-    outline: 1px solid rgba(128, 128, 128, 0.301);
+    outline: 1px solid var(--border-color);
 
     display: flex;
     flex-direction: column;
@@ -16,7 +16,7 @@
     padding: 0.25rem;
 
     color: white;
-    background-color: rgb(42, 42, 209);
+    background-color: var(--primary-color);
     font-family: "poppins";
     font-weight: 600;
     border-radius: 0.25rem;
@@ -32,7 +32,7 @@
 }
 
 .mainContainer > button:active {
-    transform: translateY(1px)
+    transform: translateY(1px);
 }
 
 .blockTitle {

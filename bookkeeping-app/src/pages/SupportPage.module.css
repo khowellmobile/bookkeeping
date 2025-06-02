@@ -12,7 +12,7 @@
     height: 9rem;
 
     border-radius: 0.25rem;
-    outline: 1px solid rgba(128, 128, 128, 0.301);
+    outline: 1px solid var(--border-color);
 
     display: flex;
     flex-direction: column;
@@ -23,8 +23,8 @@
     height: 3rem;
     padding-left: 0.5rem;
 
-    background-color: white;
-    border-bottom: 1px solid rgba(128, 128, 128, 0.411);
+    background-color: var(--background-color);
+    border-bottom: 1px solid var(--border-color);
     cursor: pointer;
 
     display: flex;
@@ -36,7 +36,7 @@
 }
 
 .supportGroup:hover {
-    background-color: rgba(214, 214, 214, 0.26);
+    background-color: var(--hover-color);
 }
 
 .supportGroup > p {
@@ -48,7 +48,7 @@
     height: 100%;
 
     border-radius: 0.25rem;
-    outline: 1px solid rgba(128, 128, 128, 0.301);
+    outline: 1px solid var(--border-color);
 }
 
 .contentHeader {
@@ -56,7 +56,7 @@
     height: 3rem;
     padding-left: 0.5rem;
 
-    border-bottom: 1px solid rgba(128, 128, 128, 0.301);
+    border-bottom: 1px solid var(--border-color);
 
     display: flex;
     align-items: center;

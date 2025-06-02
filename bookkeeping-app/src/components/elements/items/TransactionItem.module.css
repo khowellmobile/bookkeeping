@@ -9,7 +9,7 @@
 }
 
 .mainContainer:hover {
-    background-color: rgba(214, 214, 214, 0.178);
+    background-color: var(--hover-color);
 }
 
 .mainContainer > p {
@@ -18,10 +18,10 @@
 
     padding-left: 0.5rem;
 
-    color: rgb(53, 53, 53);
+    color: var(--primary-text-color);
     font-size: 0.9rem;
-    border-left: 1px dashed rgba(128, 128, 128, 0.411);
-    border-bottom: 1px solid rgba(128, 128, 128, 0.411);
+    border-left: 1px dashed var(--border-color);
+    border-bottom: 1px solid var(--border-color);
 
     display: flex;
     align-items: center;
@@ -32,5 +32,5 @@
 }
 
 .mainContainer > p:hover {
-    background-color: rgba(214, 214, 214, 0.26);
+    background-color: var(--hover-color);
 }

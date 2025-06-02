@@ -15,12 +15,13 @@
 
     padding-left: 0.5rem;
 
-    color: rgb(53, 53, 53);
+    color: var(--primary-text-color);
+    background-color: var(--secondary-background-color);
     font-size: 0.9rem;
     border: none;
     outline: none;
-    border-left: 1px dashed rgba(128, 128, 128, 0.411);
-    border-bottom: 1px solid rgba(128, 128, 128, 0.411);
+    border-left: 1px dashed var(--border-color);
+    border-bottom: 1px solid var(--border-color);
 
     display: flex;
     align-items: center;
@@ -28,7 +29,7 @@
 
 .mainContainer > input:hover,
 .mainContainer > input:focus {
-    background-color: rgba(214, 214, 214, 0.26);
+    background-color: var(--hover-color);
 }
 
 .noDisplay {
@@ -43,10 +44,10 @@
     width: 20rem;
     height: 20rem;
 
-    background-color: white;
-    color: black;
+    background-color: var(--background-color);
+    color: var(--primary-text-color);
     user-select: none;
-    outline: 1px solid rgb(216, 216, 216);
+    outline: 1px solid var(--border-color);
 
     display: flex;
     flex-direction: column;
@@ -66,7 +67,7 @@
     height: 1px;
     margin: 0 0.5rem 0 0.5rem;
 
-    background-color: rgba(143, 140, 140, 0.295);
+    background-color: var(--border-color);
 }
 
 .accountListing {
@@ -87,6 +88,6 @@
 }
 
 .accountListing > p:hover {
-    background-color: rgba(128, 128, 128, 0.116);
+    background-color: var(--hover-color);
     text-decoration: underline;
 }
