@@ -3,7 +3,7 @@
     height: 100%;
     padding: 0.5rem 0.5rem 0rem 0.5rem;
 
-    background-color: white;
+    background-color: var(--background-color);
 
     display: flex;
     flex-direction: column;
@@ -25,7 +25,7 @@
     font-family: "poppins";
     font-size: 0.8rem;
     line-height: 1.5rem;
-    border: 1px solid rgba(143, 140, 140, 0.644);
+    border: 1px solid var(--border-color);
     border-radius: 0.25rem;
     outline: none;
 }
@@ -35,7 +35,7 @@
     height: calc(100% - 17rem);
     padding: 0.5rem;
 
-    border: 1px solid rgba(143, 140, 140, 0.644);
+    border: 1px solid var(--border-color);
     border-radius: 0.25rem;
     outline: none;
 }
@@ -52,7 +52,7 @@
 
 .buttonDiv > button {
     padding: 0.5rem 3rem;
-    background-color: rgb(42, 42, 209);
+    background-color: var(--primary-color);
     color: white;
     cursor: pointer;
     font-family: "poppins";

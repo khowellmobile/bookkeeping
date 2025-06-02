@@ -17,7 +17,7 @@
     width: 55rem;
     padding: 0.5rem 1.5rem 1rem 1.5rem;
 
-    background-color: white;
+    background-color: var(--background-color);
     border-radius: 0.5rem;
 
     display: flex;
@@ -38,7 +38,7 @@
     height: 1px;
     margin-bottom: 1rem;
 
-    background-color: grey;
+    background-color: var(--border-color);
 }
 
 .cluster {
@@ -49,10 +49,11 @@
     width: fit-content;
     padding: 0.5rem 0.5rem;
 
+    background-color: var(--secondary-background-color);
     font-family: "poppins";
     border-radius: 0.25rem;
     border: none;
-    outline: 1px solid grey;
+    outline: 1px solid var(--border-color);
     cursor: pointer;
 }
 
@@ -71,10 +72,11 @@
 .amountCluster > input[type="text"] {
     padding: 0.25rem 0.5rem;
 
+    background-color: var(--secondary-background-color);
     font-family: "poppins";
     border-radius: 0.25rem;
     border: none;
-    outline: 1px solid grey;
+    outline: 1px solid var(--border-color);
 }
 
 .amountCluster > input[type="text"] {
@@ -96,7 +98,7 @@
     padding: 0.25rem 0.5rem;
     margin-left: 0.5rem;
 
-    background-color: rgb(42, 42, 209);
+    background-color: var(--primary-color);
     color: white;
 
     border-radius: 0.25rem;
