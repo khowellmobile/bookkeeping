@@ -9,8 +9,9 @@ from .serializers import (
     AccountSerializer,
     EntitySerializer,
     JournalSerializer,
+    PropertySerializer,
 )
-from core_backend.models import Transaction, Account, Entity, Journal
+from core_backend.models import Transaction, Account, Entity, Journal, Property
 from rest_framework.permissions import IsAuthenticated
 
 
@@ -156,7 +157,7 @@ class EntityListAPIView(APIView):
         entites = Entity.objects.all()
         serializer = EntitySerializer(entites, many=True)
         return Response(serializer.data)
-    
+
     def post(self, request):
         serializer = EntitySerializer(data=request.data, context={"request": request})
         if serializer.is_valid():
@@ -194,6 +195,7 @@ class EntityDetailAPIView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(status=status.HTTP_404_NOT_FOUND)
 
+
 class JournalListAPIView(APIView):
     """
     API endpoint to list journals.
@@ -205,7 +207,7 @@ class JournalListAPIView(APIView):
         journals = Journal.objects.all()
         serializer = JournalSerializer(journals, many=True)
         return Response(serializer.data)
-    
+
     def post(self, request):
         serializer = JournalSerializer(data=request.data, context={"request": request})
         if serializer.is_valid():
@@ -248,5 +250,63 @@ class JournalDetailAPIView(APIView):
         journal = self.get_object(pk)
         if journal:
             journal.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+class PropertyListAPIView(APIView):
+    """
+    API endpoint to list properties.
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        properties = Property.objects.all()
+        serializer = PropertySerializer(properties, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = PropertySerializer(data=request.data, context={"request": request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class PropertyDetailAPIView(APIView):
+    """
+    API endpoint to retrieve a single property by its primary key (id).
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self, pk):
+        try:
+            return Property.objects.get(pk=pk, user=self.request.user)
+        except Property.DoesNotExist:
+            return None
+
+    def get(self, request, pk):
+        property = self.get_object(pk)
+        if property:
+            serializer = PropertySerializer(property)
+            return Response(serializer.data)
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    def put(self, request, pk):
+        property = self.get_object(pk)
+        if property:
+            serializer = PropertySerializer(property, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    def delete(self, request, pk):
+        property = self.get_object(pk)
+        if property:
+            property.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_404_NOT_FOUND)

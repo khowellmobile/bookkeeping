@@ -12,5 +12,7 @@ urlpatterns = [
     path('entities/<int:pk>/', views.EntityDetailAPIView.as_view(), name='entity-detail'),
     path('journals/', views.JournalListAPIView.as_view(), name='journal-list'),
     path('journals/<int:pk>/', views.JournalDetailAPIView.as_view(), name='journal-detail'),
+    path('properties/', views.PropertyListAPIView.as_view(), name='property-list'),
+    path('properties/<int:pk>/', views.PropertyDetailAPIView.as_view(), name='property-detail'),
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
 ]
