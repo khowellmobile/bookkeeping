@@ -64,6 +64,11 @@ const EntityEntryDropdown = ({ scrollRef, onChange }) => {
             );
             setFilteredEntitys(filtered);
         }
+
+        // Clear selection in components further up tree when user clears search box
+        if (searchTerm == "") {
+            onChange("");
+        }
     }, [searchTerm, ctxEntityList]);
 
     const clickEntityHandler = (entity) => {

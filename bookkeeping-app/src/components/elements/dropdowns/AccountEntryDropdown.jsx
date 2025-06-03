@@ -67,6 +67,11 @@ const AccountEntryDropdown = ({ vals, scrollRef, onChange }) => {
             );
             setFilteredAccounts(filtered);
         }
+
+        // Clear selection in components further up tree when user clears search box
+        if (searchTerm == "") {
+            onChange("");
+        }
     }, [searchTerm, ctxAccountList]);
 
     const clickAccountHandler = (account) => {
