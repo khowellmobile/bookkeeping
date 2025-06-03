@@ -96,7 +96,6 @@ export function BkpgContextProvider(props) {
             }
             const data = await response.json();
             setCtxTranList(data);
-            return data;
         } catch (e) {
             console.log("Error: " + e);
         }
