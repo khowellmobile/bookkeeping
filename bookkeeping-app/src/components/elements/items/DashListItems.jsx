@@ -29,17 +29,17 @@ const AccountListItem = ({ account }) => {
     );
 };
 
-const PropertyListItem = ({ address, rent, rentDue }) => {
+const PropertyListItem = ({ vals }) => {
     return (
         <div className={`${classes.mainContainer}`}>
             <div>
-                <p>{address}</p>
+                <p>{vals.address}</p>
             </div>
             <div>
-                <p>{rent}</p>
+                <p>{vals.rent}</p>
             </div>
             <div>
-                <p>{rentDue}</p>
+                <p>{vals.name}</p>
             </div>
         </div>
     );

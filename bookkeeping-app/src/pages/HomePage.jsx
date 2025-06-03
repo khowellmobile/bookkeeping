@@ -9,7 +9,7 @@ import BkpgContext from "../components/contexts/BkpgContext";
 import { AccountListing, PropertyListing, ReportListing } from "../components/elements/listings/DashListings";
 
 const HomePage = () => {
-    const { populateCtxAccounts, populateCtxEntities, populateCtxTransactions } = useContext(BkpgContext);
+    const { populateCtxAccounts, populateCtxEntities, populateCtxTransactions, populateCtxProperties } = useContext(BkpgContext);
 
     const exampleText =
         "Your contractors W2s are ready for download! Head to the journals page to print them out right away!";
@@ -18,6 +18,7 @@ const HomePage = () => {
         populateCtxAccounts();
         populateCtxEntities();
         populateCtxTransactions();
+        populateCtxProperties();
     }, []);
 
     return (

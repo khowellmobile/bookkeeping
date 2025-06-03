@@ -6,16 +6,18 @@ const BkpgContext = createContext({
     ctxAccountList: null,
     ctxEntityList: null,
     ctxTranList: null,
-    ctxIsLoading: null,
+    ctxPropertyList: null,
     changeCtxActiveClient: (client) => {},
     changeCtxActiveAccount: (account) => {},
     changeCtxAccountList: (accounts) => {},
     populateCtxAccounts: () => {},
     populateCtxEntities: () => {},
     populateCtxTransactions: () => {},
+    populateCtxProperties: () => {},
     setCtxAccountList: () => {},
     setCtxAccessToken: () => {},
     setCtxEntityList: () => {},
+    setCtxPropertyList: () => {},
 });
 
 export function BkpgContextProvider(props) {
@@ -24,6 +26,7 @@ export function BkpgContextProvider(props) {
     const [ctxAccountList, setCtxAccountList] = useState(null);
     const [ctxEntityList, setCtxEntityList] = useState([]);
     const [ctxTranList, setCtxTranList] = useState(null);
+    const [ctxPropertyList, setCtxPropertyList] = useState(null);
     const [ctxAccessToken, setCtxAccessToken] = useState(localStorage.getItem("accessToken") || null); // State really needed here?
 
     const changeCtxActiveClient = (client) => {
@@ -78,6 +81,24 @@ export function BkpgContextProvider(props) {
         }
     };
 
+    const populateCtxProperties = async () => {
+        try {
+            const response = await fetch("http://localhost:8000/api/properties/", {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${ctxAccessToken}`,
+                },
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            setCtxPropertyList(data);
+        } catch (e) {
+            console.log("Error: " + e);
+        }
+    };
+
     const populateCtxTransactions = async () => {
         try {
             const response = await fetch("http://localhost:8000/api/transactions/", {
@@ -112,6 +133,7 @@ export function BkpgContextProvider(props) {
         ctxAccountList,
         ctxEntityList,
         ctxTranList,
+        ctxPropertyList,
         changeCtxActiveClient,
         changeCtxActiveAccount,
         changeCtxAccountList,
@@ -119,9 +141,11 @@ export function BkpgContextProvider(props) {
         populateCtxAccounts,
         populateCtxEntities,
         populateCtxTransactions,
+        populateCtxProperties,
         setCtxAccountList,
         setCtxAccessToken,
         setCtxEntityList,
+        setCtxPropertyList,
     };
 
     return <BkpgContext.Provider value={context}>{props.children}</BkpgContext.Provider>;
