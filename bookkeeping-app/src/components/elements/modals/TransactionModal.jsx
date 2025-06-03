@@ -3,6 +3,7 @@ import classes from "./TransactionModal.module.css";
 
 import AccountDropdown from "../dropdowns/AccountDropdown.jsx";
 import EntityDropdown from "../dropdowns/EntityDropdown.jsx";
+import ConfirmationModal from "./ConfirmationModal.jsx";
 
 const TransactionModal = ({ vals, setPageTrans, handleCloseModal }) => {
     const [transDate, setTransDate] = useState(vals.date);
@@ -10,6 +11,7 @@ const TransactionModal = ({ vals, setPageTrans, handleCloseModal }) => {
     const [transAccount, setTransAccount] = useState(vals.account);
     const [transMemo, setTransMemo] = useState(vals.memo);
     const [transAmount, setTransAmount] = useState(vals.amount);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const [editedTransaction, setEditedTransaction] = useState({});
 
@@ -86,40 +88,71 @@ const TransactionModal = ({ vals, setPageTrans, handleCloseModal }) => {
         }
     };
 
+    const handleCancelClose = () => {
+        if (Object.keys(editedTransaction).length !== 0) {
+            setIsModalOpen(true);
+        } else {
+            handleCloseModal();
+        }
+    };
+
+    const onConfirm = () => {
+        setIsModalOpen(false);
+        handleCloseModal();
+    };
+
+    const onCancel = () => {
+        setIsModalOpen(false);
+    };
+
     return (
-        <div className={classes.modalOverlay}>
-            <div className={classes.mainContainer}>
-                <h2>Edit Transaction</h2>
-                <div className={classes.seperatorH} />
-                <div className={`${classes.cluster} ${classes.dateCluster}`}>
-                    <input type="date" value={transDate} onChange={handleDateChange} />
-                </div>
-                <div className={`${classes.cluster} ${classes.dropdownCluster}`}>
-                    <p>Account</p>
-                    <AccountDropdown initalVal={transAccount} onChange={handleAccountClick} />
-                </div>
-                <div>
+        <>
+            {isModalOpen && (
+                <ConfirmationModal
+                    text={{
+                        msg: "You are above to leave without saving.",
+                        confirm_txt: "Leave",
+                        cancel_txt: "Stay",
+                    }}
+                    onConfirm={onConfirm}
+                    onCancel={onCancel}
+                />
+            )}
+
+            <div className={classes.modalOverlay}>
+                <div className={classes.mainContainer}>
+                    <h2>Edit Transaction</h2>
+                    <div className={classes.seperatorH} />
+                    <div className={`${classes.cluster} ${classes.dateCluster}`}>
+                        <input type="date" value={transDate} onChange={handleDateChange} />
+                    </div>
                     <div className={`${classes.cluster} ${classes.dropdownCluster}`}>
-                        <p>Payee</p>
-                        <EntityDropdown initalVal={transPayee} onChange={handlePayeeChange} />
+                        <p>Account</p>
+                        <AccountDropdown initalVal={transAccount} onChange={handleAccountClick} />
                     </div>
-                    <div className={`${classes.cluster} ${classes.amountCluster}`}>
-                        <p>Amount</p>
-                        <input type="text" value={transAmount} onChange={handleAmountChange} />
+                    <div>
+                        <div className={`${classes.cluster} ${classes.dropdownCluster}`}>
+                            <p>Payee</p>
+                            <EntityDropdown initalVal={transPayee} onChange={handlePayeeChange} />
+                        </div>
+                        <div className={`${classes.cluster} ${classes.amountCluster}`}>
+                            <p>Amount</p>
+                            <input type="text" value={transAmount} onChange={handleAmountChange} />
+                        </div>
                     </div>
-                </div>
-                <div className={`${classes.cluster} ${classes.memoCluster}`}>
-                    <p>Memo</p>
-                    <input type="text" value={transMemo} onChange={handleMemoChange} />
-                </div>
-                <p>{vals.is_reconciled ? "☑️" : "❌"}</p>
-                <div className={classes.buttons}>
-                    <button onClick={() => updateTransaction(false)}>Save & Close</button>
-                    <button onClick={handleCloseModal}>Close</button>
-                    <button onClick={handleDeleteClick}>Delete</button>
+                    <div className={`${classes.cluster} ${classes.memoCluster}`}>
+                        <p>Memo</p>
+                        <input type="text" value={transMemo} onChange={handleMemoChange} />
+                    </div>
+                    <p>{vals.is_reconciled ? "☑️" : "❌"}</p>
+                    <div className={classes.buttons}>
+                        <button onClick={() => updateTransaction(false)}>Save & Close</button>
+                        <button onClick={handleCancelClose}>Close</button>
+                        <button onClick={handleDeleteClick}>Delete</button>
+                    </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 };
 
