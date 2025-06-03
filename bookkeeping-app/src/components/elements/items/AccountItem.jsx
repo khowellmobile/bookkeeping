@@ -8,7 +8,7 @@ import ThreeDotsIcon from "../../../assets/three-dots-icon.svg";
 const AccountItem = ({ account }) => {
     const navigate = useNavigate();
 
-    const { changeCtxActiveAccount } = useContext(BkpgContext);
+    const { setCtxActiveAccount } = useContext(BkpgContext);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isDropOpen, setIsDropOpen] = useState(false);
@@ -16,7 +16,7 @@ const AccountItem = ({ account }) => {
     const dropdownRef = useRef(null);
 
     const accountClickHandler = (account) => {
-        changeCtxActiveAccount(account);
+        setCtxActiveAccount(account);
         navigate("/transactions");
     };
 

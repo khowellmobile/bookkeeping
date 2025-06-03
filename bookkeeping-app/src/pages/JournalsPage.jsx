@@ -140,7 +140,6 @@ const JournalsPage = () => {
     );
 
     const handleHistoryClick = (index) => {
-        console.log(journalHistory);
         setJournalItems(journalHistory[index]?.item_list || []);
         setJournalDate(journalHistory[index]?.date || "");
         setJournalName(journalHistory[index]?.name || "");

@@ -61,9 +61,9 @@ const EntitiesPage = () => {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             } else {
-                const newEntity = await response.json();
-                setCtxEntityList((prev) => {
-                    return [...prev, newEntity];
+                const updatedEntity = await response.json();
+                setCtxEntityList((prevEntityList) => {
+                    return prevEntityList.map((entity) => (entity.id === updatedEntity.id ? updatedEntity : entity));
                 });
             }
         } catch (e) {

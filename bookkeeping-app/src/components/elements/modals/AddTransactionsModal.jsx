@@ -60,7 +60,6 @@ const AddTransactionsModal = ({ ctxActiveAccount, setPageTrans, handleCloseModal
         });
 
         addTransactions(nonEmptyItems);
-
         handleCloseModal();
     };
 
@@ -78,8 +77,6 @@ const AddTransactionsModal = ({ ctxActiveAccount, setPageTrans, handleCloseModal
             delete transaction.account;
         });
 
-        console.log(transformedTransactionsArray)
-
         try {
             const response = await fetch("http://127.0.0.1:8000/api/transactions/", {
                 method: "POST",
@@ -95,7 +92,8 @@ const AddTransactionsModal = ({ ctxActiveAccount, setPageTrans, handleCloseModal
                 return;
             }
 
-            setPageTrans((prev) => [...prev, ...transactionsToAdd]);
+            const newData = await response.json();
+            setPageTrans((prev) => [...prev, ...newData]);
         } catch (error) {
             console.error("Error sending transactions:", error);
         }

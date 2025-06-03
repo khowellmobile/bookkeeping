@@ -7,14 +7,14 @@ const BkpgContext = createContext({
     ctxEntityList: null,
     ctxTranList: null,
     ctxPropertyList: null,
-    changeCtxActiveClient: (client) => {},
-    changeCtxActiveAccount: (account) => {},
-    changeCtxAccountList: (accounts) => {},
     populateCtxAccounts: () => {},
     populateCtxEntities: () => {},
     populateCtxTransactions: () => {},
     populateCtxProperties: () => {},
+    setCtxActiveClient: () => {},
+    setCtxActiveAccount: () => {},
     setCtxAccountList: () => {},
+    setCtxTranList: () => {},
     setCtxAccessToken: () => {},
     setCtxEntityList: () => {},
     setCtxPropertyList: () => {},
@@ -28,22 +28,6 @@ export function BkpgContextProvider(props) {
     const [ctxTranList, setCtxTranList] = useState(null);
     const [ctxPropertyList, setCtxPropertyList] = useState(null);
     const [ctxAccessToken, setCtxAccessToken] = useState(localStorage.getItem("accessToken") || null); // State really needed here?
-
-    const changeCtxActiveClient = (client) => {
-        setCtxActiveClient(client);
-    };
-
-    const changeCtxActiveAccount = (account) => {
-        setCtxActiveAccount(account);
-    };
-
-    const changeCtxAccountList = (account) => {
-        setCtxAccountList(account);
-    };
-
-    const changeCtxTranList = (transactions) => {
-        setCtxTranList(transactions);
-    };
 
     const populateCtxAccounts = async () => {
         try {
@@ -134,15 +118,14 @@ export function BkpgContextProvider(props) {
         ctxEntityList,
         ctxTranList,
         ctxPropertyList,
-        changeCtxActiveClient,
-        changeCtxActiveAccount,
-        changeCtxAccountList,
-        changeCtxTranList,
         populateCtxAccounts,
         populateCtxEntities,
         populateCtxTransactions,
         populateCtxProperties,
+        setCtxActiveClient,
+        setCtxActiveAccount,
         setCtxAccountList,
+        setCtxTranList,
         setCtxAccessToken,
         setCtxEntityList,
         setCtxPropertyList,
