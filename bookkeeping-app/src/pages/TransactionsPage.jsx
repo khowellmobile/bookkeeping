@@ -6,10 +6,9 @@ import { useState, useContext, useEffect } from "react";
 import AddTransactionsModal from "../components/elements/modals/AddTransactionsModal";
 
 const TransactionsPage = () => {
-    const { ctxActiveAccount, setCtxActiveAccount, setCtxTranList, populateCtxTransactions } =
+    const { ctxActiveAccount, setCtxActiveAccount, setCtxTranList, populateCtxTransactions, ctxTranList } =
         useContext(BkpgContext);
 
-    const [transactions, setTransactions] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const [searchTerm, setSearchTerm] = useState("");
@@ -21,18 +20,13 @@ const TransactionsPage = () => {
 
     // load trnsactions on mount
     useEffect(() => {
-        const fetchTran = async () => {
-            const data = await populateCtxTransactions();
-            setTransactions(data);
-        };
-
-        fetchTran();
+        populateCtxTransactions();
     }, []);
 
     useEffect(() => {
-        if (transactions) {
+        if (ctxTranList) {
             const lowercasedSearchTerm = searchTerm.toLowerCase();
-            const filtered = transactions.filter(
+            const filtered = ctxTranList.filter(
                 (transaction) =>
                     transaction.account.name.toLowerCase().includes(lowercasedSearchTerm) ||
                     transaction.entity.name.toLowerCase().includes(lowercasedSearchTerm) ||
@@ -40,18 +34,14 @@ const TransactionsPage = () => {
             );
             setFilteredTransactions(filtered);
         }
-    }, [searchTerm, transactions]);
-
-    useEffect(() => {
-        setCtxTranList(transactions);
-    }, [transactions]);
+    }, [searchTerm, ctxTranList]);
 
     return (
         <>
             {isModalOpen && (
                 <AddTransactionsModal
                     ctxActiveAccount={ctxActiveAccount}
-                    setPageTrans={setTransactions}
+                    setPageTrans={setCtxTranList}
                     handleCloseModal={handleCloseModal}
                 />
             )}
@@ -90,7 +80,7 @@ const TransactionsPage = () => {
                     <div className={classes.listingItems}>
                         {filteredTransactions && filteredTransactions.length > 0 ? (
                             filteredTransactions.map((transaction, index) => (
-                                <TransactionItem vals={transaction} setPageTrans={setTransactions} key={index} />
+                                <TransactionItem vals={transaction} setPageTrans={setCtxTranList} key={index} />
                             ))
                         ) : (
                             <p>No matching transactions found.</p>

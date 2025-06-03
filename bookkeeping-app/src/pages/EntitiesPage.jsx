@@ -9,9 +9,9 @@ import TransactionItem from "../components/elements/items/TransactionItem";
 import AddEntityModal from "../components/elements/modals/AddEntityModal";
 
 const EntitiesPage = () => {
-    const { populateCtxTransactions, setCtxEntityList, ctxEntityList } = useContext(BkpgContext);
+    const { populateCtxTransactions, setCtxEntityList, ctxEntityList, ctxTranList, setCtxTranList } =
+        useContext(BkpgContext);
 
-    const [transactions, setTransactions] = useState([]);
     const [activeEntity, setActiveEntity] = useState();
     const [filteredEntities, setFilteredEntities] = useState([]);
     const [inputFields, setInputFields] = useState({
@@ -83,12 +83,7 @@ const EntitiesPage = () => {
 
     // load transactions on mount
     useEffect(() => {
-        const fetchTran = async () => {
-            const data = await populateCtxTransactions();
-            setTransactions(data);
-        };
-
-        fetchTran();
+        populateCtxTransactions();
     }, []);
 
     // Filtering results by search term
@@ -249,9 +244,9 @@ const EntitiesPage = () => {
                             <p>Reconciled</p>
                         </div>
                         <div className={classes.listingItems}>
-                            {transactions && transactions.length > 0 ? (
-                                transactions.map((transaction, index) => (
-                                    <TransactionItem vals={transaction} setPageTrans={setTransactions} key={index} />
+                            {ctxTranList && ctxTranList.length > 0 ? (
+                                ctxTranList.map((transaction, index) => (
+                                    <TransactionItem vals={transaction} setPageTrans={setCtxTranList} key={index} />
                                 ))
                             ) : (
                                 <p>No matching transactions listed.</p>
