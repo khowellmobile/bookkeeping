@@ -3,6 +3,8 @@ import classes from "./AccountModal.module.css";
 import BkpgContext from "../../contexts/BkpgContext";
 import { useContext, useState } from "react";
 
+import ConfirmationModal from "./ConfirmationModal";
+
 import upChevIcon from "../../../assets/chevron-up-icon.svg";
 import downChevIcon from "../../../assets/chevron-down-icon.svg";
 
@@ -13,8 +15,9 @@ const AccountModal = ({ account, handleCloseModal }) => {
     const [accountType, setAccountType] = useState(account.type.charAt(0).toUpperCase() + account.type.slice(1));
     const [accountInitBalance, setAccountInitBalance] = useState(account.initial_balance);
     const [accountDescription, setAccountDescription] = useState(account.description);
-    const [editedAccount, setEditedAccount] = useState({ id: account.id });
+    const [editedAccount, setEditedAccount] = useState({});
     const [isExpanded, setIsExpanded] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const accountTypes = ["Asset", "Bank", "Equity", "Liability"];
 
@@ -75,53 +78,83 @@ const AccountModal = ({ account, handleCloseModal }) => {
         }
     };
 
-    return (
-        <div className={classes.modalOverlay}>
-            <div className={classes.mainContainer}>
-                <h2>Edit Account</h2>
-                <div className={classes.seperatorH} />
-                <div className={`${classes.inputCluster}`}>
-                    <p>Name</p>
-                    <input type="text" value={accountName} onChange={handleNameChange} />
-                </div>
-                <div className={classes.inputCluster}>
-                    <p className={classes.label}>Account Type</p>
-                    <div className={classes.accountTypeDiv} onClick={() => setIsExpanded((prev) => !prev)}>
-                        {accountType ? (
-                            <p>{accountType}</p>
-                        ) : (
-                            <p className={classes.placeholder}>Select account type</p>
-                        )}
+    const handleCancelClose = () => {
+        if (Object.keys(editedAccount).length !== 0) {
+            setIsModalOpen(true);
+        } else {
+            handleCloseModal();
+        }
+    };
 
-                        <img src={isExpanded ? upChevIcon : downChevIcon} className={classes.icon} />
+    const onConfirm = () => {
+        setIsModalOpen(false);
+        handleCloseModal();
+    };
+
+    const onCancel = () => {
+        setIsModalOpen(false);
+    };
+
+    return (
+        <>
+            {isModalOpen && (
+                <ConfirmationModal
+                    text={{
+                        msg: "You are above to leave without saving.",
+                        confirm_txt: "Leave",
+                        cancel_txt: "Stay",
+                    }}
+                    onConfirm={onConfirm}
+                    onCancel={onCancel}
+                />
+            )}
+            <div className={classes.modalOverlay}>
+                <div className={classes.mainContainer}>
+                    <h2>Edit Account</h2>
+                    <div className={classes.seperatorH} />
+                    <div className={`${classes.inputCluster}`}>
+                        <p>Name</p>
+                        <input type="text" value={accountName} onChange={handleNameChange} />
                     </div>
-                    <div className={`${classes.anchor} ${isExpanded ? "" : classes.noDisplay}`}>
-                        <div className={classes.dropdown}>
-                            {accountTypes.map((type, index) => {
-                                return (
-                                    <p key={index} onClick={() => clickTypeHandler(type)}>
-                                        {type}
-                                    </p>
-                                );
-                            })}
+                    <div className={classes.inputCluster}>
+                        <p className={classes.label}>Account Type</p>
+                        <div className={classes.accountTypeDiv} onClick={() => setIsExpanded((prev) => !prev)}>
+                            {accountType ? (
+                                <p>{accountType}</p>
+                            ) : (
+                                <p className={classes.placeholder}>Select account type</p>
+                            )}
+
+                            <img src={isExpanded ? upChevIcon : downChevIcon} className={classes.icon} />
+                        </div>
+                        <div className={`${classes.anchor} ${isExpanded ? "" : classes.noDisplay}`}>
+                            <div className={classes.dropdown}>
+                                {accountTypes.map((type, index) => {
+                                    return (
+                                        <p key={index} onClick={() => clickTypeHandler(type)}>
+                                            {type}
+                                        </p>
+                                    );
+                                })}
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div className={`${classes.inputCluster}`}>
-                    <p>Initial Balance</p>
-                    <input type="text" value={accountInitBalance} onChange={handleInitBalanceChange} />
-                </div>
+                    <div className={`${classes.inputCluster}`}>
+                        <p>Initial Balance</p>
+                        <input type="text" value={accountInitBalance} onChange={handleInitBalanceChange} />
+                    </div>
 
-                <div className={`${classes.inputCluster}`}>
-                    <p>Description</p>
-                    <input type="text" value={accountDescription} onChange={handleDescChange} />
-                </div>
-                <div className={classes.buttons}>
-                    <button onClick={updateAccount}>Save & Close</button>
-                    <button onClick={handleCloseModal}>Close</button>
+                    <div className={`${classes.inputCluster}`}>
+                        <p>Description</p>
+                        <input type="text" value={accountDescription} onChange={handleDescChange} />
+                    </div>
+                    <div className={classes.buttons}>
+                        <button onClick={updateAccount}>Save & Close</button>
+                        <button onClick={handleCancelClose}>Close</button>
+                    </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 };
 

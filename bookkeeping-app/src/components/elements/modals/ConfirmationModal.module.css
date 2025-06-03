@@ -59,7 +59,7 @@
 }
 
 .buttonContainer > button {
-    width: calc(100%/2 - 0.25rem);
+    width: calc(100% / 2 - 0.25rem);
     padding: 0.5rem 1rem;
 
     background-color: var(--primary-color);
