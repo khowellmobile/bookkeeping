@@ -1,5 +1,8 @@
 import classes from "./Menu.module.css";
 
+import { useContext } from "react";
+import BkpgContext from "../contexts/BkpgContext";
+
 import AccountsIcon from "../../assets/accounts-icon.svg";
 import EntitiesIcon from "../../assets/entities-icon.svg";
 import DashIcon from "../../assets/dashboard-icon.svg";
@@ -13,6 +16,8 @@ import UserIcon from "../../assets/user-icon-white.svg";
 import MenuLineItem from "../elements/items/MenuLineItem";
 
 const Menu = () => {
+    const { logoutUser } = useContext(BkpgContext);
+
     return (
         <div className={classes.mainContainer}>
             <section className={classes.logoSection}>
@@ -24,7 +29,11 @@ const Menu = () => {
             </section>
             <section className={classes.itemsSection}>
                 <MenuLineItem itemName="Dashboard" link="/home" icon={<img src={DashIcon} alt="Icon" />} />
-                <MenuLineItem itemName="Transactions" link="/transactions" icon={<img src={TransactionIcon} alt="Icon" />} />
+                <MenuLineItem
+                    itemName="Transactions"
+                    link="/transactions"
+                    icon={<img src={TransactionIcon} alt="Icon" />}
+                />
                 <MenuLineItem itemName="Accounts" link="/accounts" icon={<img src={AccountsIcon} alt="Icon" />} />
                 <MenuLineItem itemName="Entities" link="/entities" icon={<img src={EntitiesIcon} alt="Icon" />} />
                 <MenuLineItem itemName="Journals" link="/journals" icon={<img src={JournalIcon} alt="Icon" />} />
@@ -33,14 +42,7 @@ const Menu = () => {
                 <MenuLineItem itemName="Support" link="/support" icon={<img src={SupportIcon} alt="Icon" />} />
                 <MenuLineItem itemName="Settings" link="/settings" icon={<img src={SettingsIcon} alt="Icon" />} />
             </section>
-            {/* <section className={classes.profileSection}>
-                <div className={classes.profilePicture}></div>
-                <div className={classes.profileInfo}>
-                    <p className={classes.profileName}>John Doe</p>
-                    <p className={classes.profileDate}>August 3rd, 2024 10:32am</p>
-                </div>
-            </section> */}
-            <MenuLineItem className={classes.logoutItem} itemName="Logout" icon={<img src={UserIcon} alt="Icon" />} />
+            <MenuLineItem className={classes.logoutItem} itemName="Logout" link="/" icon={<img src={UserIcon} alt="Icon" />} onClick={logoutUser}/>
         </div>
     );
 };
