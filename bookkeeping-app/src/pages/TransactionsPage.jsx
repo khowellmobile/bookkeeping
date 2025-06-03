@@ -6,7 +6,7 @@ import { useState, useContext, useEffect } from "react";
 import AddTransactionsModal from "../components/elements/modals/AddTransactionsModal";
 
 const TransactionsPage = () => {
-    const { ctxActiveAccount, changeCtxActiveAccount, changeCtxTranList, populateCtxTransactions } =
+    const { ctxActiveAccount, setCtxActiveAccount, setCtxTranList, populateCtxTransactions } =
         useContext(BkpgContext);
 
     const [transactions, setTransactions] = useState([]);
@@ -43,7 +43,7 @@ const TransactionsPage = () => {
     }, [searchTerm, transactions]);
 
     useEffect(() => {
-        changeCtxTranList(transactions);
+        setCtxTranList(transactions);
     }, [transactions]);
 
     return (
@@ -61,7 +61,7 @@ const TransactionsPage = () => {
                     <h2>Transactions</h2>
                     <div className={classes.tools}>
                         <div>
-                            <AccountDropdown initalVal={ctxActiveAccount} onChange={changeCtxActiveAccount} />
+                            <AccountDropdown initalVal={ctxActiveAccount} onChange={setCtxActiveAccount} />
                             <input
                                 type="text"
                                 className={classes.transactionsSearch}

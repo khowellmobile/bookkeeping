@@ -7,10 +7,10 @@ import { useNavigate } from "react-router-dom";
 const AccountListItem = ({ account }) => {
     const navigate = useNavigate();
 
-    const { changeCtxActiveAccount } = useContext(BkpgContext);
+    const { setCtxActiveAccount } = useContext(BkpgContext);
 
     const accountClickHandler = (account) => {
-        changeCtxActiveAccount(account);
+        setCtxActiveAccount(account);
         navigate("/transactions");
     };
 
