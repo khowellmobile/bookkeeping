@@ -94,3 +94,36 @@ class Journal(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Property(models.Model):
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="properties", null=True
+    )
+    address = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, null=True)
+    property_type = models.CharField(
+        max_length=25,
+        choices=[
+            ("residential", "Residential"),
+            ("commercial", "Commercial"),
+            ("multi_unit", "Multi-Unit"),
+        ],
+        default="residential",
+        null=True,
+    )
+    accounts = models.ManyToManyField(
+        Account,
+        related_name="properties",
+        blank=True,
+    )
+    number_of_units = models.DecimalField(max_digits=4, decimal_places=0, null=True)
+    rent = models.DecimalField(max_digits=10, decimal_places=2, null=True)
+    notes = models.JSONField(null=True)
+    is_active = models.BooleanField(default=True)
+    is_deleted = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.address

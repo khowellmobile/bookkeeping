@@ -1,6 +1,6 @@
 # rental_api/serializers.py
 from rest_framework import serializers
-from core_backend.models import Transaction, Account, Entity, Journal
+from core_backend.models import Transaction, Account, Entity, Journal, Property
 
 
 class AccountSerializer(serializers.ModelSerializer):
@@ -44,7 +44,7 @@ class AccountSerializer(serializers.ModelSerializer):
 
 
 class EntitySerializer(serializers.ModelSerializer):
-    phone_number = serializers.CharField(required=False, allow_blank=True) #
+    phone_number = serializers.CharField(required=False, allow_blank=True)  #
     email = serializers.EmailField(required=False, allow_blank=True)
 
     class Meta:
@@ -186,4 +186,77 @@ class JournalSerializer(serializers.ModelSerializer):
                 setattr(instance, attr, validated_data[attr])
 
         instance.save()
+        return instance
+
+
+# New PropertySerializer
+class PropertySerializer(serializers.ModelSerializer):
+    accounts = AccountSerializer(many=True, read_only=True)
+    account_ids = serializers.ListField(
+        child=serializers.IntegerField(),
+        write_only=True,
+        required=False,
+        help_text="List of Account IDs to link to this property.",
+    )
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
+
+    class Meta:
+        model = Property
+        fields = (
+            "id",
+            "user",
+            "address",
+            "name",
+            "property_type",
+            "number_of_units",
+            "rent",
+            "notes",
+            "is_active",
+            "is_deleted",
+            "created_at",
+            "updated_at",
+            "accounts",
+            "account_ids",
+        )
+        read_only_fields = ("id", "created_at", "updated_at")
+
+    def create(self, validated_data):
+        account_ids = validated_data.pop("account_ids", [])
+        user = self.context["request"].user
+        validated_data["user"] = user
+
+        property_instance = super().create(validated_data)
+
+        if account_ids:
+            accounts_to_link = Account.objects.filter(id__in=account_ids, user=user)
+            property_instance.accounts.set(accounts_to_link)
+
+        return property_instance
+
+    def update(self, instance, validated_data):
+        account_ids = validated_data.pop("account_ids", None)
+
+        fields_to_update = [
+            "address",
+            "name",
+            "property_type",
+            "number_of_units",
+            "rent",
+            "notes",
+            "is_active",
+            "is_deleted",
+        ]
+
+        for attr in fields_to_update:
+            if attr in validated_data:
+                setattr(instance, attr, validated_data[attr])
+
+        instance.save()
+
+        if account_ids is not None:
+            accounts_to_link = Account.objects.filter(
+                id__in=account_ids, user=self.context["request"].user
+            )
+            instance.accounts.set(accounts_to_link)
+
         return instance
