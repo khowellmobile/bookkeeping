@@ -57,7 +57,7 @@ const AddEntityModal = ({ handleCloseModal }) => {
         <div className={classes.modalOverlay}>
             <div className={classes.mainContainer}>
                 <section className={classes.top}>
-                    <h2>New Account Creation</h2>
+                    <h2>New Entity Creation</h2>
                     <div className={classes.seperatorH} />
                     <div className={classes.inputCluster}>
                         <p className={classes.label}>Entity Name</p>
