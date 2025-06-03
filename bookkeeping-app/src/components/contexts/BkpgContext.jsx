@@ -1,4 +1,5 @@
 import { createContext, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const BkpgContext = createContext({
     ctxActiveClient: null,
@@ -18,9 +19,12 @@ const BkpgContext = createContext({
     setCtxAccessToken: () => {},
     setCtxEntityList: () => {},
     setCtxPropertyList: () => {},
+    logoutUser: () => {},
 });
 
 export function BkpgContextProvider(props) {
+    const navigate = useNavigate();
+
     const [ctxActiveClient, setCtxActiveClient] = useState(null);
     const [ctxActiveAccount, setCtxActiveAccount] = useState({ name: "None Selected" });
     const [ctxAccountList, setCtxAccountList] = useState(null);
@@ -28,6 +32,11 @@ export function BkpgContextProvider(props) {
     const [ctxTranList, setCtxTranList] = useState(null);
     const [ctxPropertyList, setCtxPropertyList] = useState(null);
     const [ctxAccessToken, setCtxAccessToken] = useState(localStorage.getItem("accessToken") || null); // State really needed here?
+
+    const logoutUser = () => {
+        localStorage.removeItem("accessToken");
+        setCtxAccessToken(null);
+    };
 
     const populateCtxAccounts = async () => {
         try {
@@ -128,6 +137,7 @@ export function BkpgContextProvider(props) {
         setCtxAccessToken,
         setCtxEntityList,
         setCtxPropertyList,
+        logoutUser,
     };
 
     return <BkpgContext.Provider value={context}>{props.children}</BkpgContext.Provider>;
