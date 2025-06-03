@@ -110,7 +110,6 @@ class Property(models.Model):
             ("multi_unit", "Multi-Unit"),
         ],
         default="residential",
-        null=True,
     )
     accounts = models.ManyToManyField(
         Account,
@@ -119,7 +118,7 @@ class Property(models.Model):
     )
     number_of_units = models.DecimalField(max_digits=4, decimal_places=0, null=True)
     rent = models.DecimalField(max_digits=10, decimal_places=2, null=True)
-    notes = models.JSONField(null=True)
+    notes = models.JSONField(null=True, blank=True)
     is_active = models.BooleanField(default=True)
     is_deleted = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)

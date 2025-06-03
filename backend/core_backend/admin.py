@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Transaction, Account, Entity, Journal
+from .models import Transaction, Account, Entity, Journal, Property
 
 
 @admin.register(Transaction)
@@ -64,3 +64,27 @@ class DatabaseConnectionsAdmin(admin.ModelAdmin):
         "created_at",
         "updated_at",
     ]
+
+
+@admin.register(Property)
+class DatabaseConnectionsAdmin(admin.ModelAdmin):
+    list_display = [
+        "user",
+        "address",
+        "name",
+        "property_type",
+        "display_accounts",
+        "number_of_units",
+        "rent",
+        "notes",
+        "is_active",
+        "is_deleted",
+        "created_at",
+        "updated_at",
+    ]
+
+    def display_accounts(self, obj):
+        """
+        Returns a comma-separated string of account names for the Property.
+        """
+        return ", ".join([account.name for account in obj.accounts.all()])
