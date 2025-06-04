@@ -7,6 +7,7 @@ import penIcon from "../assets/pen-icon.svg";
 
 import TransactionItem from "../components/elements/items/TransactionItem";
 import AddEntityModal from "../components/elements/modals/AddEntityModal";
+import ConfirmationModal from "../components/elements/modals/ConfirmationModal";
 
 const EntitiesPage = () => {
     const { populateCtxTransactions, setCtxEntityList, ctxEntityList, ctxTranList, setCtxTranList } =
@@ -27,6 +28,7 @@ const EntitiesPage = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [isEditing, setIsEditing] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
     const handleCloseModal = () => {
         setIsModalOpen(false);
@@ -109,9 +111,44 @@ const EntitiesPage = () => {
         }
     }, [activeEntity]);
 
+    const handleCancelClose = () => {
+        const entityWasEdited =
+            inputFields.name != activeEntity.name ||
+            inputFields.company != activeEntity.company ||
+            inputFields.address != activeEntity.address ||
+            inputFields.phone_number != activeEntity.phone_number ||
+            inputFields.email != activeEntity.email;
+
+        if (entityWasEdited) {
+            setIsConfirmModalOpen(true);
+        } else {
+            setIsEditing(false);
+        }
+    };
+
+    const onConfirm = () => {
+        setIsConfirmModalOpen(false);
+        setIsEditing(false);
+    };
+
+    const onCancel = () => {
+        setIsConfirmModalOpen(false);
+    };
+
     return (
         <>
             {isModalOpen && <AddEntityModal handleCloseModal={handleCloseModal} />}
+            {isConfirmModalOpen && (
+                <ConfirmationModal
+                    text={{
+                        msg: "You are above to leave without saving.",
+                        confirm_txt: "Leave",
+                        cancel_txt: "Stay",
+                    }}
+                    onConfirm={onConfirm}
+                    onCancel={onCancel}
+                />
+            )}
 
             <div className={classes.mainContainer}>
                 <div className={classes.searchBox}>
@@ -160,7 +197,7 @@ const EntitiesPage = () => {
                                     <button className={classes.button} onClick={() => deleteHandler()}>
                                         Delete
                                     </button>
-                                    <button className={classes.button} onClick={() => setIsEditing(false)}>
+                                    <button className={classes.button} onClick={handleCancelClose}>
                                         Cancel
                                     </button>
                                 </div>
