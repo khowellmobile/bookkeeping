@@ -1,4 +1,6 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect, useContext } from "react";
+
+import AuthCtx from "./AuthCtx";
 
 const AccountsCtx = createContext({
     ctxActiveAccount: null,
@@ -9,15 +11,21 @@ const AccountsCtx = createContext({
 });
 
 export function AccountsCtxProvider(props) {
+    const { ctxAccessToken } = useContext(AuthCtx);
+
     const [ctxActiveAccount, setCtxActiveAccount] = useState({ name: "None Selected" });
     const [ctxAccountList, setCtxAccountList] = useState(null);
+
+    useEffect(() => {
+        populateCtxAccounts();
+    }, []);
 
     const populateCtxAccounts = async () => {
         try {
             const response = await fetch("http://localhost:8000/api/accounts/", {
                 method: "GET",
                 headers: {
-                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                    Authorization: `Bearer ${ctxAccessToken}`,
                 },
             });
             if (!response.ok) {

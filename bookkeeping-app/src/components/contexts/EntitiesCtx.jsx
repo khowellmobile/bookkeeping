@@ -1,4 +1,6 @@
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState, useContext } from "react";
+
+import AuthCtx from "./AuthCtx";
 
 const EntitiesCtx = createContext({
     ctxEntityList: null,
@@ -7,14 +9,20 @@ const EntitiesCtx = createContext({
 });
 
 export function EntitiesCtxProvider(props) {
+    const { ctxAccessToken } = useContext(AuthCtx);
+
     const [ctxEntityList, setCtxEntityList] = useState([]);
+
+    useEffect(() => {
+        populateCtxEntities();
+    }, []);
 
     const populateCtxEntities = async () => {
         try {
             const response = await fetch("http://localhost:8000/api/entities/", {
                 method: "GET",
                 headers: {
-                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                    Authorization: `Bearer ${ctxAccessToken}`,
                 },
             });
             if (!response.ok) {

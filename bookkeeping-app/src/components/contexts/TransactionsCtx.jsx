@@ -1,4 +1,6 @@
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState, useContext } from "react";
+
+import AuthCtx from "./AuthCtx";
 
 const TransactionsCtx = createContext({
     ctxTranList: null,
@@ -7,14 +9,20 @@ const TransactionsCtx = createContext({
 });
 
 export function TransactionsCtxProvider(props) {
+    const { ctxAccessToken } = useContext(AuthCtx);
+
     const [ctxTranList, setCtxTranList] = useState(null);
+
+    useEffect(() => {
+        populateCtxTransactions();
+    }, []);
 
     const populateCtxTransactions = async () => {
         try {
             const response = await fetch("http://localhost:8000/api/transactions/", {
                 method: "GET",
                 headers: {
-                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                    Authorization: `Bearer ${ctxAccessToken}`,
                 },
             });
             if (!response.ok) {

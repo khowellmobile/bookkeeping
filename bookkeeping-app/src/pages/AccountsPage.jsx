@@ -5,7 +5,7 @@ import AddAccountModal from "../components/elements/modals/AddAccountModal";
 import AccountItem from "../components/elements/items/AccountItem";
 
 const AccountsPage = () => {
-    const { ctxAccountList, populateCtxAccounts } = useContext(AccountsCtx);
+    const { ctxAccountList } = useContext(AccountsCtx);
 
     const [searchTerm, setSearchTerm] = useState("");
     const [filteredAccounts, setFilteredAccounts] = useState(ctxAccountList);
@@ -28,10 +28,6 @@ const AccountsPage = () => {
             setFilteredAccounts(filtered);
         }
     }, [searchTerm, ctxAccountList]);
-
-    useEffect(() => {
-        populateCtxAccounts();
-    }, [])
 
     if (!ctxAccountList) {
         return <div>Accounts not loaded. Refresh Page.</div>;
