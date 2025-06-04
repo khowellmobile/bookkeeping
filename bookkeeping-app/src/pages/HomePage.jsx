@@ -3,14 +3,21 @@ import classes from "./HomePage.module.css";
 import Shortcuts from "../components/elements/misc/Shortcuts";
 import DashBlock from "../components/elements/misc/DashBlock";
 
+import TransactionsCtx from "../components/contexts/TransactionsCtx";
+import AccountsCtx from "../components/contexts/AccountsCtx";
+import EntitiesCtx from "../components/contexts/EntitiesCtx";
+import PropertiesCtx from "../components/contexts/PropertiesCtx";
+
 import { useContext, useEffect } from "react";
 import BkpgContext from "../components/contexts/BkpgContext";
 
 import { AccountListing, PropertyListing, ReportListing } from "../components/elements/listings/DashListings";
 
 const HomePage = () => {
-    const { populateCtxAccounts, populateCtxEntities, populateCtxTransactions, populateCtxProperties } =
-        useContext(BkpgContext);
+    const { populateCtxTransactions } = useContext(TransactionsCtx);
+    const { populateCtxAccounts } = useContext(AccountsCtx);
+    const { populateCtxEntities } = useContext(EntitiesCtx);
+    const { populateCtxProperties } = useContext(PropertiesCtx);
 
     const exampleText =
         "Your contractors W2s are ready for download! Head to the journals page to print them out right away!";

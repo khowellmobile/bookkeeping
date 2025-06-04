@@ -1,6 +1,6 @@
 import classes from "./AccountItem.module.css";
 
-import BkpgContext from "../../contexts/BkpgContext";
+import AccountsCtx from "../../contexts/AccountsCtx";
 import { useContext, useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -11,7 +11,7 @@ import ConfirmationModal from "../modals/ConfirmationModal";
 const AccountItem = ({ account }) => {
     const navigate = useNavigate();
 
-    const { setCtxActiveAccount } = useContext(BkpgContext);
+    const { setCtxActiveAccount } = useContext(AccountsCtx);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isDropOpen, setIsDropOpen] = useState(false);

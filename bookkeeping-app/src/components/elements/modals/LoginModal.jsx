@@ -2,10 +2,10 @@ import classes from "./LoginModal.module.css";
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 
-import BkpgContext from "../../contexts/BkpgContext";
+import AuthCtx from "../../contexts/AuthCtx";
 
 const LoginModal = ({ handleCloseModal }) => {
-    const { setCtxAccessToken } = useContext(BkpgContext);
+    const { setCtxAccessToken } = useContext(AuthCtx);
 
     const navigate = useNavigate();
 

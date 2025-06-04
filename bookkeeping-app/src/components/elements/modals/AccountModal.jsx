@@ -1,6 +1,6 @@
 import classes from "./AccountModal.module.css";
 
-import BkpgContext from "../../contexts/BkpgContext";
+import AccountsCtx from "../../contexts/AccountsCtx";
 import { useContext, useState } from "react";
 
 import ConfirmationModal from "./ConfirmationModal";
@@ -9,7 +9,7 @@ import upChevIcon from "../../../assets/chevron-up-icon.svg";
 import downChevIcon from "../../../assets/chevron-down-icon.svg";
 
 const AccountModal = ({ account, handleCloseModal }) => {
-    const { setCtxAccountList } = useContext(BkpgContext);
+    const { setCtxAccountList } = useContext(AccountsCtx);
 
     const [accountName, setAccountName] = useState(account.name);
     const [accountType, setAccountType] = useState(account.type.charAt(0).toUpperCase() + account.type.slice(1));

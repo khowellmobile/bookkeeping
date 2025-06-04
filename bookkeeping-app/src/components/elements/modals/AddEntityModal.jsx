@@ -1,13 +1,13 @@
 import { useContext, useState } from "react";
 
-import BkpgContext from "../../contexts/BkpgContext";
+import EntitiesCtx from "../../contexts/EntitiesCtx";
 
 import ConfirmationModal from "./ConfirmationModal";
 
 import classes from "./AddEntityModal.module.css";
 
 const AddEntityModal = ({ handleCloseModal }) => {
-    const { setCtxEntityList } = useContext(BkpgContext);
+    const { setCtxEntityList } = useContext(EntitiesCtx);
 
     const [name, setName] = useState("");
     const [company, setCompany] = useState("");

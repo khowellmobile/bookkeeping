@@ -1,12 +1,13 @@
 import classes from "./DashListings.module.css";
 
-import BkpgContext from "../../contexts/BkpgContext.jsx";
+import AccountsCtx from "../../contexts/AccountsCtx.jsx";
+import PropertiesCtx from "../../contexts/PropertiesCtx.jsx";
 import { useContext } from "react";
 
 import { AccountListItem, PropertyListItem, ReportListItem } from "../items/DashListItems.jsx";
 
 const AccountListing = () => {
-    const { ctxAccountList } = useContext(BkpgContext);
+    const { ctxAccountList } = useContext(AccountsCtx);
 
     return (
         <div className={classes.mainContainer}>
@@ -35,7 +36,7 @@ const AccountListing = () => {
 };
 
 const PropertyListing = () => {
-    const { ctxPropertyList } = useContext(BkpgContext);
+    const { ctxPropertyList } = useContext(PropertiesCtx);
 
     return (
         <div className={classes.mainContainer}>
@@ -54,10 +55,13 @@ const PropertyListing = () => {
                 </div>
             </section>
             <section className={classes.items}>
-                {ctxPropertyList && ctxPropertyList.length > 0 ? ctxPropertyList.map((property, index) => {
-                    return (<PropertyListItem vals={property} key={index} />)
-                }) : 
-                <p>No Properties Found</p>}
+                {ctxPropertyList && ctxPropertyList.length > 0 ? (
+                    ctxPropertyList.map((property, index) => {
+                        return <PropertyListItem vals={property} key={index} />;
+                    })
+                ) : (
+                    <p>No Properties Found</p>
+                )}
             </section>
         </div>
     );

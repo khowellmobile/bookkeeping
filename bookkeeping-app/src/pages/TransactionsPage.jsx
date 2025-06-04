@@ -1,13 +1,16 @@
 import AccountDropdown from "../components/elements/dropdowns/AccountDropdown";
 import TransactionItem from "../components/elements/items/TransactionItem";
 import classes from "./TransactionsPage.module.css";
-import BkpgContext from "../components/contexts/BkpgContext";
+
+import TransactionsCtx from "../components/contexts/TransactionsCtx";
+import AccountsCtx from "../components/contexts/AccountsCtx";
+
 import { useState, useContext, useEffect } from "react";
 import AddTransactionsModal from "../components/elements/modals/AddTransactionsModal";
 
 const TransactionsPage = () => {
-    const { ctxActiveAccount, setCtxActiveAccount, setCtxTranList, populateCtxTransactions, ctxTranList } =
-        useContext(BkpgContext);
+    const { setCtxTranList, populateCtxTransactions, ctxTranList } = useContext(TransactionsCtx);
+    const { ctxActiveAccount, setCtxActiveAccount } = useContext(AccountsCtx);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 

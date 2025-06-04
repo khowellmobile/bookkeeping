@@ -1,13 +1,13 @@
 import classes from "./DashListItems.module.css";
 
-import BkpgContext from "../../contexts/BkpgContext.jsx";
+import AccountsCtx from "../../contexts/AccountsCtx.jsx";
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 
 const AccountListItem = ({ account }) => {
     const navigate = useNavigate();
 
-    const { setCtxActiveAccount } = useContext(BkpgContext);
+    const { setCtxActiveAccount } = useContext(AccountsCtx);
 
     const accountClickHandler = (account) => {
         setCtxActiveAccount(account);
