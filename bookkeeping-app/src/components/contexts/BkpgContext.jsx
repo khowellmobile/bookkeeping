@@ -23,8 +23,6 @@ const BkpgContext = createContext({
 });
 
 export function BkpgContextProvider(props) {
-    const navigate = useNavigate();
-
     const [ctxActiveClient, setCtxActiveClient] = useState(null);
     const [ctxActiveAccount, setCtxActiveAccount] = useState({ name: "None Selected" });
     const [ctxAccountList, setCtxAccountList] = useState(null);
