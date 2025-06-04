@@ -20,7 +20,6 @@
     font-size: 0.9rem;
     border: none;
     outline: none;
-    border-left: 1px dashed var(--border-color);
     border-bottom: 1px solid var(--border-color);
 
     display: flex;
