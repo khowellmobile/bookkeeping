@@ -11,7 +11,9 @@ const TransactionModal = ({ vals, setPageTrans, handleCloseModal }) => {
     const [transAccount, setTransAccount] = useState(vals.account);
     const [transMemo, setTransMemo] = useState(vals.memo);
     const [transAmount, setTransAmount] = useState(vals.amount);
-    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
     const [editedTransaction, setEditedTransaction] = useState({});
 
@@ -88,26 +90,41 @@ const TransactionModal = ({ vals, setPageTrans, handleCloseModal }) => {
         }
     };
 
-    const handleCancelClose = () => {
-        if (Object.keys(editedTransaction).length !== 0) {
-            setIsModalOpen(true);
+    const handleConfirmAction = (action) => {
+        if (action == "closeEdit") {
+            if (Object.keys(editedTransaction).length !== 0) {
+                setIsConfirmModalOpen(true);
+            } else {
+                handleCloseModal();
+            }
+        } else if (action == "delete") {
+            setIsDeleteModalOpen(true);
         } else {
-            handleCloseModal();
+            console.error("Action not recognized");
         }
     };
 
     const onConfirm = () => {
-        setIsModalOpen(false);
+        setIsConfirmModalOpen(false);
         handleCloseModal();
     };
 
     const onCancel = () => {
-        setIsModalOpen(false);
+        setIsConfirmModalOpen(false);
+    };
+
+    const onConfirmDelete = () => {
+        handleDeleteClick();
+        setIsDeleteModalOpen(false);
+    };
+
+    const onCancelDelete = () => {
+        setIsDeleteModalOpen(false);
     };
 
     return (
         <>
-            {isModalOpen && (
+            {isConfirmModalOpen && (
                 <ConfirmationModal
                     text={{
                         msg: "You are above to leave without saving.",
@@ -116,6 +133,18 @@ const TransactionModal = ({ vals, setPageTrans, handleCloseModal }) => {
                     }}
                     onConfirm={onConfirm}
                     onCancel={onCancel}
+                />
+            )}
+
+            {isDeleteModalOpen && (
+                <ConfirmationModal
+                    text={{
+                        msg: "Are you sure you wish to delete this transcation?",
+                        confirm_txt: "Delete",
+                        cancel_txt: "Cancel Deletion",
+                    }}
+                    onConfirm={onConfirmDelete}
+                    onCancel={onCancelDelete}
                 />
             )}
 
@@ -147,8 +176,8 @@ const TransactionModal = ({ vals, setPageTrans, handleCloseModal }) => {
                     <p>{vals.is_reconciled ? "☑️" : "❌"}</p>
                     <div className={classes.buttons}>
                         <button onClick={() => updateTransaction(false)}>Save & Close</button>
-                        <button onClick={handleCancelClose}>Close</button>
-                        <button onClick={handleDeleteClick}>Delete</button>
+                        <button onClick={() => handleConfirmAction("closeEdit")}>Close</button>
+                        <button onClick={() => handleConfirmAction("delete")}>Delete</button>
                     </div>
                 </div>
             </div>
