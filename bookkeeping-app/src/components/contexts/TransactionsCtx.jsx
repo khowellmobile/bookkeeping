@@ -14,7 +14,7 @@ export function TransactionsCtxProvider(props) {
             const response = await fetch("http://localhost:8000/api/transactions/", {
                 method: "GET",
                 headers: {
-                    Authorization: `Bearer ${ctxAccessToken}`,
+                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
                 },
             });
             if (!response.ok) {

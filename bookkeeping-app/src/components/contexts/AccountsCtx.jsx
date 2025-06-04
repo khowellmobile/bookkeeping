@@ -17,7 +17,7 @@ export function AccountsCtxProvider(props) {
             const response = await fetch("http://localhost:8000/api/accounts/", {
                 method: "GET",
                 headers: {
-                    Authorization: `Bearer ${ctxAccessToken}`,
+                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
                 },
             });
             if (!response.ok) {
