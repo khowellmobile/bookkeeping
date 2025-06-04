@@ -29,6 +29,7 @@ const EntitiesPage = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
     const handleCloseModal = () => {
         setIsModalOpen(false);
@@ -111,18 +112,24 @@ const EntitiesPage = () => {
         }
     }, [activeEntity]);
 
-    const handleCancelClose = () => {
-        const entityWasEdited =
-            inputFields.name != activeEntity.name ||
-            inputFields.company != activeEntity.company ||
-            inputFields.address != activeEntity.address ||
-            inputFields.phone_number != activeEntity.phone_number ||
-            inputFields.email != activeEntity.email;
+    const handleConfirmAction = (action) => {
+        if (action == "closeEdit") {
+            const entityWasEdited =
+                inputFields.name != activeEntity.name ||
+                inputFields.company != activeEntity.company ||
+                inputFields.address != activeEntity.address ||
+                inputFields.phone_number != activeEntity.phone_number ||
+                inputFields.email != activeEntity.email;
 
-        if (entityWasEdited) {
-            setIsConfirmModalOpen(true);
+            if (entityWasEdited) {
+                setIsConfirmModalOpen(true);
+            } else {
+                setIsEditing(false);
+            }
+        } else if (action == "delete") {
+            setIsDeleteModalOpen(true);
         } else {
-            setIsEditing(false);
+            console.error("Action not recognized");
         }
     };
 
@@ -133,6 +140,15 @@ const EntitiesPage = () => {
 
     const onCancel = () => {
         setIsConfirmModalOpen(false);
+    };
+
+    const onConfirmDelete = () => {
+        deleteHandler();
+        setIsDeleteModalOpen(false);
+    };
+
+    const onCancelDelete = () => {
+        setIsDeleteModalOpen(false);
     };
 
     return (
@@ -147,6 +163,18 @@ const EntitiesPage = () => {
                     }}
                     onConfirm={onConfirm}
                     onCancel={onCancel}
+                />
+            )}
+
+            {isDeleteModalOpen && (
+                <ConfirmationModal
+                    text={{
+                        msg: "Are you sure you wish to delete this Entity?",
+                        confirm_txt: "Delete",
+                        cancel_txt: "Cancel Deletion",
+                    }}
+                    onConfirm={onConfirmDelete}
+                    onCancel={onCancelDelete}
                 />
             )}
 
@@ -194,10 +222,10 @@ const EntitiesPage = () => {
                                     <button className={classes.button} onClick={() => handleSave(false)}>
                                         Save
                                     </button>
-                                    <button className={classes.button} onClick={() => deleteHandler()}>
+                                    <button className={classes.button} onClick={() => handleConfirmAction("delete")}>
                                         Delete
                                     </button>
-                                    <button className={classes.button} onClick={handleCancelClose}>
+                                    <button className={classes.button} onClick={() => handleConfirmAction("closeEdit")}>
                                         Cancel
                                     </button>
                                 </div>
