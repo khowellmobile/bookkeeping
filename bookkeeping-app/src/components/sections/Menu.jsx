@@ -1,7 +1,7 @@
 import classes from "./Menu.module.css";
 
 import { useContext } from "react";
-import BkpgContext from "../contexts/BkpgContext";
+import AuthCtx from "../contexts/AuthCtx";
 
 import AccountsIcon from "../../assets/accounts-icon.svg";
 import EntitiesIcon from "../../assets/entities-icon.svg";
@@ -16,7 +16,7 @@ import UserIcon from "../../assets/user-icon-white.svg";
 import MenuLineItem from "../elements/items/MenuLineItem";
 
 const Menu = () => {
-    const { logoutUser } = useContext(BkpgContext);
+    const { logoutUser } = useContext(AuthCtx);
 
     return (
         <div className={classes.mainContainer}>

@@ -1,11 +1,11 @@
 import classes from "./AccountsPage.module.css";
-import BkpgContext from "../components/contexts/BkpgContext";
+import AccountsCtx from "../components/contexts/AccountsCtx";
 import { useContext, useState, useEffect } from "react";
 import AddAccountModal from "../components/elements/modals/AddAccountModal";
 import AccountItem from "../components/elements/items/AccountItem";
 
 const AccountsPage = () => {
-    const { ctxAccountList } = useContext(BkpgContext);
+    const { ctxAccountList } = useContext(AccountsCtx);
 
     const [searchTerm, setSearchTerm] = useState("");
     const [filteredAccounts, setFilteredAccounts] = useState(ctxAccountList);

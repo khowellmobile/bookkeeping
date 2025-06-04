@@ -1,12 +1,12 @@
 import classes from "./entityEntryDropdown.module.css";
 
-import BkpgContext from "../../contexts/BkpgContext";
+import EntitiesCtx from "../../contexts/EntitiesCtx";
 
 import { useState, useContext, useEffect, useRef } from "react";
 import AddEntityModal from "../modals/AddEntityModal";
 
 const EntityEntryDropdown = ({ scrollRef, onChange }) => {
-    const { ctxEntityList } = useContext(BkpgContext);
+    const { ctxEntityList } = useContext(EntitiesCtx);
 
     const [searchTerm, setSearchTerm] = useState("");
     const [filteredEntitys, setFilteredEntitys] = useState(ctxEntityList);

@@ -1,11 +1,11 @@
 import classes from "./AccountEntryDropdown.module.css";
 
-import BkpgContext from "../../contexts/BkpgContext";
+import AccountsCtx from "../../contexts/AccountsCtx";
 
 import { useState, useContext, useEffect, useRef } from "react";
 
 const AccountEntryDropdown = ({ vals, scrollRef, onChange }) => {
-    const { ctxAccountList } = useContext(BkpgContext);
+    const { ctxAccountList } = useContext(AccountsCtx);
 
     const [searchTerm, setSearchTerm] = useState("");
     const [filteredAccounts, setFilteredAccounts] = useState(ctxAccountList);

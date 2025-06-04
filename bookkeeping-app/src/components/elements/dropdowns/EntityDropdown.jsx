@@ -1,13 +1,13 @@
 import classes from "./EntityDropdown.module.css";
 
 import { useState, useContext, useEffect, useRef } from "react";
-import BkpgContext from "../../contexts/BkpgContext";
+import EntitiesCtx from "../../contexts/EntitiesCtx";
 
 import upChevIcon from "../../../assets/chevron-up-icon.svg";
 import downChevIcon from "../../../assets/chevron-down-icon.svg";
 
 const EntityDropdown = ({ initalVal, onChange }) => {
-    const { ctxEntityList } = useContext(BkpgContext);
+    const { ctxEntityList } = useContext(EntitiesCtx);
 
     const [activeEntity, setActiveEntity] = useState(initalVal);
     const [isExpanded, setIsExpanded] = useState(false);

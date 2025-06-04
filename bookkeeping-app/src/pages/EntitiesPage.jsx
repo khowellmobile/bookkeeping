@@ -1,6 +1,8 @@
 import classes from "./EntitiesPage.module.css";
 
-import BkpgContext from "../components/contexts/BkpgContext";
+import EntitiesCtx from "../components/contexts/EntitiesCtx";
+import TransactionsCtx from "../components/contexts/TransactionsCtx";
+
 import { useState, useContext, useEffect } from "react";
 
 import penIcon from "../assets/pen-icon.svg";
@@ -10,8 +12,8 @@ import AddEntityModal from "../components/elements/modals/AddEntityModal";
 import ConfirmationModal from "../components/elements/modals/ConfirmationModal";
 
 const EntitiesPage = () => {
-    const { populateCtxTransactions, setCtxEntityList, ctxEntityList, ctxTranList, setCtxTranList } =
-        useContext(BkpgContext);
+    const {setCtxEntityList, ctxEntityList,} = useContext(EntitiesCtx);
+    const {populateCtxTransactions, ctxTranList, setCtxTranList} = useContext(TransactionsCtx);
 
     const [activeEntity, setActiveEntity] = useState();
     const [filteredEntities, setFilteredEntities] = useState([]);

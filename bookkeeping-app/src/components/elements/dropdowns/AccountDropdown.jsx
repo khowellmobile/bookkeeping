@@ -1,12 +1,12 @@
 import classes from "./AccountDropdown.module.css";
-import BkpgContext from "../../contexts/BkpgContext";
+import AccountsCtx from "../../contexts/AccountsCtx";
 import { useState, useEffect, useRef, useContext } from "react";
 
 import upChevIcon from "../../../assets/chevron-up-icon.svg";
 import downChevIcon from "../../../assets/chevron-down-icon.svg";
 
 const AccountDropdown = ({ initalVal, onChange }) => {
-    const { ctxAccountList } = useContext(BkpgContext);
+    const { ctxAccountList } = useContext(AccountsCtx);
     const [activeAccount, setActiveAccount] = useState(initalVal || { name: "" });
     const [isExpanded, setIsExpanded] = useState(false);
     const dropdownRef = useRef(null);
