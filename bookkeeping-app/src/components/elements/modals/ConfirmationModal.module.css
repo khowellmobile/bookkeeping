@@ -1,0 +1,83 @@
+.modalOverlay {
+    background-color: rgba(0, 0, 0, 0.5);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.mainContainer {
+    width: 20rem;
+    height: 10rem;
+    padding: 0.5rem;
+
+    background-color: var(--background-color);
+    border-radius: 0.5rem;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.headerContainer {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.headerContainer > h3 {
+    font-weight: 700;
+}
+
+.messageContainer {
+    width: 100%;
+    height: calc(100% - 2rem);
+
+    display: flex;
+    align-items: center;
+
+    /* outline: 1px solid red; */
+}
+
+.messageContainer > p {
+    text-align: center;
+}
+
+.buttonContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.buttonContainer > button {
+    width: calc(100% / 2 - 0.25rem);
+    padding: 0.5rem 1rem;
+
+    background-color: var(--primary-color);
+    color: white;
+    cursor: pointer;
+    font-family: "poppins";
+    font-weight: 400;
+    border-radius: 0.25rem;
+    border: none;
+    outline: none;
+
+    transition: all ease 0.25s;
+}
+
+.buttonContainer > button:hover {
+    transform: translateY(-1px);
+}
+
+.buttonContainer > button:active {
+    transform: translateY(1px);
+}

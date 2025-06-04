@@ -1,9 +1,12 @@
 import classes from "./AccountItem.module.css";
+
 import BkpgContext from "../../contexts/BkpgContext";
 import { useContext, useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+
 import AccountModal from "../modals/AccountModal";
 import ThreeDotsIcon from "../../../assets/three-dots-icon.svg";
+import ConfirmationModal from "../modals/ConfirmationModal";
 
 const AccountItem = ({ account }) => {
     const navigate = useNavigate();
@@ -12,6 +15,7 @@ const AccountItem = ({ account }) => {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isDropOpen, setIsDropOpen] = useState(false);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
     const dropdownRef = useRef(null);
 
@@ -59,9 +63,29 @@ const AccountItem = ({ account }) => {
         }
     };
 
+    const onConfirmDelete = () => {
+        deleteAccount();
+        setIsDeleteModalOpen(false);
+    };
+
+    const onCancelDelete = () => {
+        setIsDeleteModalOpen(false);
+    };
+
     return (
         <>
             {isModalOpen && <AccountModal account={account} handleCloseModal={handleCloseModal} />}
+            {isDeleteModalOpen && (
+                <ConfirmationModal
+                    text={{
+                        msg: "Are you sure you wish to mark this Account inactive?",
+                        confirm_txt: "Delete",
+                        cancel_txt: "Cancel Deletion",
+                    }}
+                    onConfirm={onConfirmDelete}
+                    onCancel={onCancelDelete}
+                />
+            )}
 
             <div className={classes.mainContainer}>
                 <p>{account.name}</p>
@@ -84,7 +108,7 @@ const AccountItem = ({ account }) => {
                                 <p>Edit</p>
                             </div>
                             <div>
-                                <p onClick={() => deleteAccount()}>Mark Inactive</p>
+                                <p onClick={() => setIsDeleteModalOpen(true)}>Mark Inactive</p>
                             </div>
                         </div>
                     )}
