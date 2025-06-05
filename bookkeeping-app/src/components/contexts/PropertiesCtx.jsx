@@ -1,20 +1,28 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect, useContext } from "react";
+
+import AuthCtx from "./AuthCtx";
 
 const PropertiesCtx = createContext({
     ctxPropertyList: null,
-    populateCtxProperties: () => {},
     setCtxPropertyList: () => {},
+    populateCtxProperties: () => {},
 });
 
 export function PropertiesCtxProvider(props) {
+    const { ctxAccessToken } = useContext(AuthCtx);
+
     const [ctxPropertyList, setCtxPropertyList] = useState(null);
+
+    useEffect(() => {
+        populateCtxProperties();
+    }, []);
 
     const populateCtxProperties = async () => {
         try {
             const response = await fetch("http://localhost:8000/api/properties/", {
                 method: "GET",
                 headers: {
-                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                    Authorization: `Bearer ${ctxAccessToken}`,
                 },
             });
             if (!response.ok) {
@@ -29,8 +37,8 @@ export function PropertiesCtxProvider(props) {
 
     const context = {
         ctxPropertyList,
-        populateCtxProperties,
         setCtxPropertyList,
+        populateCtxProperties,
     };
 
     return <PropertiesCtx.Provider value={context}>{props.children}</PropertiesCtx.Provider>;

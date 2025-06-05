@@ -1,12 +1,14 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import classes from "./AddAccountModal.module.css";
 
+import AccountsCtx from "../../contexts/AccountsCtx";
 import ConfirmationModal from "./ConfirmationModal";
-
 import upChevIcon from "../../../assets/chevron-up-icon.svg";
 import downChevIcon from "../../../assets/chevron-down-icon.svg";
 
-const AddAccountModal = ({ setPageAccounts, handleCloseModal }) => {
+const AddAccountModal = ({ handleCloseModal }) => {
+    const { ctxAddAccount } = useContext(AccountsCtx);
+
     const [accountName, setAccountName] = useState("");
     const [accountNumber, setAccountNumber] = useState("");
     const [accountType, setAccountType] = useState("");
@@ -24,8 +26,6 @@ const AddAccountModal = ({ setPageAccounts, handleCloseModal }) => {
     };
 
     const addAccount = async () => {
-        const accessToken = localStorage.getItem("accessToken");
-
         const accountToAdd = {
             name: accountName,
             type: accountType.toLowerCase(),
@@ -34,25 +34,7 @@ const AddAccountModal = ({ setPageAccounts, handleCloseModal }) => {
             account_number: accountNumber,
         };
 
-        try {
-            const response = await fetch("http://127.0.0.1:8000/api/accounts/", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${accessToken}`,
-                },
-                body: JSON.stringify(accountToAdd),
-            });
-
-            if (!response.ok) {
-                console.log(response);
-            }
-
-            /* setPageTrans((prev) => [...prev, transactionsToAdd]); */
-            console.log("Account sent (check your Django backend)");
-        } catch (error) {
-            console.error("Error sending Account Info:", error);
-        }
+        ctxAddAccount(accountToAdd);
     };
 
     const clickTypeHandler = (type) => {

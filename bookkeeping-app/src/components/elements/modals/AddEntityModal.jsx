@@ -7,7 +7,7 @@ import ConfirmationModal from "./ConfirmationModal";
 import classes from "./AddEntityModal.module.css";
 
 const AddEntityModal = ({ handleCloseModal }) => {
-    const { setCtxEntityList } = useContext(EntitiesCtx);
+    const { ctxAddEntity } = useContext(EntitiesCtx);
 
     const [name, setName] = useState("");
     const [company, setCompany] = useState("");
@@ -17,8 +17,6 @@ const AddEntityModal = ({ handleCloseModal }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const handleSaveClick = async () => {
-        const accessToken = localStorage.getItem("accessToken");
-
         const entityToAdd = {
             name: name,
             company: company,
@@ -28,32 +26,8 @@ const AddEntityModal = ({ handleCloseModal }) => {
             description: "",
         };
 
-        try {
-            const response = await fetch("http://127.0.0.1:8000/api/entities/", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${accessToken}`,
-                },
-                body: JSON.stringify(entityToAdd),
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                console.error("Backend Error:", errorData);
-            } else {
-                const newEntity = await response.json();
-                setCtxEntityList((prev) => {
-                    return [...prev, newEntity];
-                });
-            }
-
-            handleCloseModal();
-
-            console.log("Entity sent (check your Django backend)");
-        } catch (error) {
-            console.error("Error sending Account Info:", error);
-        }
+        ctxAddEntity(entityToAdd);
+        handleCloseModal();
     };
 
     const handleCancelClose = () => {

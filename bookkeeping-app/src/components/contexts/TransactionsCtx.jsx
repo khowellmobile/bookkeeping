@@ -1,20 +1,30 @@
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState, useContext } from "react";
+
+import AuthCtx from "./AuthCtx";
 
 const TransactionsCtx = createContext({
     ctxTranList: null,
-    populateCtxTransactions: () => {},
     setCtxTranList: () => {},
+    populateCtxTransactions: () => {},
+    ctxAddTransactions: () => {},
+    ctxUpdateTransaction: () => {},
 });
 
 export function TransactionsCtxProvider(props) {
+    const { ctxAccessToken } = useContext(AuthCtx);
+
     const [ctxTranList, setCtxTranList] = useState(null);
+
+    useEffect(() => {
+        populateCtxTransactions();
+    }, []);
 
     const populateCtxTransactions = async () => {
         try {
             const response = await fetch("http://localhost:8000/api/transactions/", {
                 method: "GET",
                 headers: {
-                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                    Authorization: `Bearer ${ctxAccessToken}`,
                 },
             });
             if (!response.ok) {
@@ -27,10 +37,78 @@ export function TransactionsCtxProvider(props) {
         }
     };
 
+    const ctxAddTransactions = async (transactionsToAdd) => {
+        const transformedTransactionsArray = transactionsToAdd.map((transaction) => ({
+            ...transaction,
+            entity_id: transaction.entity.id,
+            account_id: transaction.account.id,
+        }));
+
+        transformedTransactionsArray.forEach((transaction) => {
+            delete transaction.entity;
+            delete transaction.account;
+        });
+
+        try {
+            const response = await fetch("http://127.0.0.1:8000/api/transactions/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${ctxAccessToken}`,
+                },
+                body: JSON.stringify(transformedTransactionsArray),
+            });
+
+            if (!response.ok) {
+                console.log(response.error);
+                return;
+            }
+
+            const newData = await response.json();
+            setCtxTranList((prev) => [...prev, ...newData]);
+        } catch (error) {
+            console.error("Error sending transactions:", error);
+        }
+    };
+
+    const ctxUpdateTransaction = async (updatedTransaction) => {
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/api/transactions/${updatedTransaction.id}/`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${ctxAccessToken}`,
+                },
+                body: JSON.stringify(updatedTransaction),
+            });
+
+            if (!response.ok) {
+                console.log("Error:", response.error);
+                return;
+            }
+
+            const updatedData = await response.json();
+
+            setCtxTranList((prevTransactions) =>
+                prevTransactions.map((transaction) => {
+                    if (transaction.id === updatedTransaction.id) {
+                        return updatedData;
+                    } else {
+                        return transaction;
+                    }
+                })
+            );
+        } catch (error) {
+            console.error("Error editing transaction:", error);
+        }
+    };
+
     const context = {
         ctxTranList,
-        populateCtxTransactions,
         setCtxTranList,
+        populateCtxTransactions,
+        ctxAddTransactions,
+        ctxUpdateTransaction,
     };
 
     return <TransactionsCtx.Provider value={context}>{props.children}</TransactionsCtx.Provider>;

@@ -11,7 +11,7 @@ import ConfirmationModal from "../modals/ConfirmationModal";
 const AccountItem = ({ account }) => {
     const navigate = useNavigate();
 
-    const { setCtxActiveAccount } = useContext(AccountsCtx);
+    const { setCtxActiveAccount, ctxDeleteAccount } = useContext(AccountsCtx);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isDropOpen, setIsDropOpen] = useState(false);
@@ -41,30 +41,8 @@ const AccountItem = ({ account }) => {
         };
     }, [isDropOpen, dropdownRef]);
 
-    const deleteAccount = async () => {
-        const accessToken = localStorage.getItem("accessToken");
-
-        try {
-            const response = await fetch(`http://127.0.0.1:8000/api/accounts/${account.id}/`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${accessToken}`,
-                },
-                body: JSON.stringify({ is_deleted: true }),
-            });
-
-            if (!response.ok) {
-                console.log("Error:", response.error);
-                return;
-            }
-        } catch (error) {
-            console.error("Error marking account inactive:", error);
-        }
-    };
-
     const onConfirmDelete = () => {
-        deleteAccount();
+        ctxDeleteAccount(account.id);
         setIsDeleteModalOpen(false);
     };
 

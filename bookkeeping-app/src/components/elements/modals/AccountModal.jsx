@@ -9,7 +9,7 @@ import upChevIcon from "../../../assets/chevron-up-icon.svg";
 import downChevIcon from "../../../assets/chevron-down-icon.svg";
 
 const AccountModal = ({ account, handleCloseModal }) => {
-    const { setCtxAccountList } = useContext(AccountsCtx);
+    const { ctxUpdateAccount } = useContext(AccountsCtx);
 
     const [accountName, setAccountName] = useState(account.name);
     const [accountType, setAccountType] = useState(account.type.charAt(0).toUpperCase() + account.type.slice(1));
@@ -43,43 +43,12 @@ const AccountModal = ({ account, handleCloseModal }) => {
     };
 
     const updateAccount = async () => {
-        const accessToken = localStorage.getItem("accessToken");
-
-        try {
-            const response = await fetch(`http://127.0.0.1:8000/api/accounts/${account.id}/`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${accessToken}`,
-                },
-                body: JSON.stringify(editedAccount),
-            });
-
-            if (!response.ok) {
-                console.log("Error:", response.error);
-                return;
-            }
-
-            const updatedData = await response.json();
-
-            setCtxAccountList((prevAccounts) =>
-                prevAccounts.map((acc) => {
-                    if (acc.id === account.id) {
-                        return updatedData;
-                    } else {
-                        return acc;
-                    }
-                })
-            );
-
-            handleCloseModal();
-        } catch (error) {
-            console.error("Error editing account:", error);
-        }
+        ctxUpdateAccount({ ...editedAccount, id: account.id });
+        handleCloseModal();
     };
 
     const handleCancelClose = () => {
-        if (Object.keys(editedAccount).length !== 0) {
+        if (Object.keys(editedAccount).length > 1) {
             setIsModalOpen(true);
         } else {
             handleCloseModal();

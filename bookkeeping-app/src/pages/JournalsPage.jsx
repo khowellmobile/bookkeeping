@@ -1,14 +1,18 @@
-import { JournalEntryItem } from "../components/elements/items/InputEntryItems";
+import { useState, useCallback, useMemo, useEffect, useRef, useContext } from "react";
+
 import classes from "./JournalsPage.module.css";
 
-import { useState, useCallback, useMemo, useEffect, useRef } from "react";
+import JournalsCtx from "../components/contexts/JournalsCtx";
+
+import { JournalEntryItem } from "../components/elements/items/InputEntryItems";
 
 const JournalsPage = () => {
+    const { ctxJournalList, populateCtxJournals, ctxUpdateJournal } = useContext(JournalsCtx);
+
     const scrollRef = useRef();
 
     const [isEditing, setIsEditing] = useState(false);
-    const [journalHistory, setJournalHistory] = useState([]);
-    const [selectedJournalId, setSelectedJournalId] = useState();
+    const [selectedJournalId, setSelectedJournalId] = useState(null);
     const [journalName, setJournalName] = useState("");
     const [journalDate, setJournalDate] = useState("");
     const [journalItems, setJournalItems] = useState(
@@ -22,29 +26,11 @@ const JournalsPage = () => {
     );
 
     useEffect(() => {
-        const populateCtxJournals = async () => {
-            const ctxAccessToken = localStorage.getItem("accessToken");
-            try {
-                const response = await fetch("http://localhost:8000/api/journals/", {
-                    method: "GET",
-                    headers: {
-                        Authorization: `Bearer ${ctxAccessToken}`,
-                    },
-                });
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const data = await response.json();
-                setJournalHistory(data);
-            } catch (e) {
-                console.log("Error: " + e);
-            }
-        };
-
         populateCtxJournals();
     }, []);
 
     const saveInfo = async () => {
+        // Getting non-empty items
         const item_list = journalItems.filter((item) => {
             return (
                 (item.account !== "" && item.account !== null && item.account !== undefined) ||
@@ -68,24 +54,7 @@ const JournalsPage = () => {
             item_list: item_list,
         };
 
-        const ctxAccessToken = localStorage.getItem("accessToken");
-        try {
-            const response = await fetch(url, {
-                method: method,
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${ctxAccessToken}`,
-                },
-                body: JSON.stringify(sendData),
-            });
-            const data = await response.json();
-            console.log(data);
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-        } catch (e) {
-            console.log("Error: " + e);
-        }
+        ctxUpdateJournal(selectedJournalId, url, method, sendData);
     };
 
     const debitTotal = useMemo(() => {
@@ -140,10 +109,10 @@ const JournalsPage = () => {
     );
 
     const handleHistoryClick = (index) => {
-        setJournalItems(journalHistory[index]?.item_list || []);
-        setJournalDate(journalHistory[index]?.date || "");
-        setJournalName(journalHistory[index]?.name || "");
-        setSelectedJournalId(journalHistory[index]?.id || "");
+        setJournalItems(ctxJournalList[index]?.item_list || []);
+        setJournalDate(ctxJournalList[index]?.date || "");
+        setJournalName(ctxJournalList[index]?.name || "");
+        setSelectedJournalId(ctxJournalList[index]?.id || "");
         setIsEditing(true);
     };
 
@@ -179,12 +148,20 @@ const JournalsPage = () => {
                         </div>
                     </section>
                     <section className={classes.items}>
-                        {journalHistory.map((entry, index) => (
-                            <div className={classes.historyEntry} key={index} onClick={() => handleHistoryClick(index)}>
-                                <p>{entry.date}</p>
-                                <p>{entry.name}</p>
-                            </div>
-                        ))}
+                        {ctxJournalList && ctxJournalList.length > 0 ? (
+                            ctxJournalList.map((entry, index) => (
+                                <div
+                                    className={classes.historyEntry}
+                                    key={index}
+                                    onClick={() => handleHistoryClick(index)}
+                                >
+                                    <p>{entry.date}</p>
+                                    <p>{entry.name}</p>
+                                </div>
+                            ))
+                        ) : (
+                            <p>No Journals</p>
+                        )}
                     </section>
                 </div>
                 <div className={classes.journalEntry}>

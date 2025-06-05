@@ -20,12 +20,7 @@ const TransactionsPage = () => {
     const handleCloseModal = () => {
         setIsModalOpen(false);
     };
-
-    // load trnsactions on mount
-    useEffect(() => {
-        populateCtxTransactions();
-    }, []);
-
+    
     useEffect(() => {
         if (ctxTranList) {
             const lowercasedSearchTerm = searchTerm.toLowerCase();

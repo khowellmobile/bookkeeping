@@ -1,11 +1,16 @@
 import classes from "./AddTransactionsModal.module.css";
 
+import { useState, useCallback, useRef, useContext } from "react";
+
+import TransactionsCtx from "../../contexts/TransactionsCtx";
+
 import { TransactionEntryItem } from "../items/InputEntryItems";
 import AccountDropdown from "../dropdowns/AccountDropdown";
-import { useState, useCallback, useRef } from "react";
 import ConfirmationModal from "./ConfirmationModal";
 
 const AddTransactionsModal = ({ ctxActiveAccount, setPageTrans, handleCloseModal }) => {
+    const { ctxAddTransactions } = useContext(TransactionsCtx);
+
     const scrollRef = useRef();
 
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -61,13 +66,12 @@ const AddTransactionsModal = ({ ctxActiveAccount, setPageTrans, handleCloseModal
             return values.some((value) => typeof value === "string" && value.trim() !== "");
         });
 
-        addTransactions(nonEmptyItems);
+        ctxAddTransactions(nonEmptyItems);
         handleCloseModal();
     };
 
     const handleCancelClose = () => {
         const allItemsAreEmpty = transactionItems.every((item) => {
-            // Check if all string properties are empty and is_reconciled is false for this item
             return (
                 item.date === "" &&
                 item.entity === "" &&
@@ -92,42 +96,6 @@ const AddTransactionsModal = ({ ctxActiveAccount, setPageTrans, handleCloseModal
 
     const onCancel = () => {
         setIsModalOpen(false);
-    };
-
-    const addTransactions = async (transactionsToAdd) => {
-        const accessToken = localStorage.getItem("accessToken");
-
-        const transformedTransactionsArray = transactionsToAdd.map((transaction) => ({
-            ...transaction,
-            entity_id: transaction.entity.id,
-            account_id: transaction.account.id,
-        }));
-
-        transformedTransactionsArray.forEach((transaction) => {
-            delete transaction.entity;
-            delete transaction.account;
-        });
-
-        try {
-            const response = await fetch("http://127.0.0.1:8000/api/transactions/", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${accessToken}`,
-                },
-                body: JSON.stringify(transformedTransactionsArray),
-            });
-
-            if (!response.ok) {
-                console.log(response.error);
-                return;
-            }
-
-            const newData = await response.json();
-            setPageTrans((prev) => [...prev, ...newData]);
-        } catch (error) {
-            console.error("Error sending transactions:", error);
-        }
     };
 
     return (
