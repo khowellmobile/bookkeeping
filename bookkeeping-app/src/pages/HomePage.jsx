@@ -7,9 +7,9 @@ import TransactionsCtx from "../components/contexts/TransactionsCtx";
 import AccountsCtx from "../components/contexts/AccountsCtx";
 import EntitiesCtx from "../components/contexts/EntitiesCtx";
 import PropertiesCtx from "../components/contexts/PropertiesCtx";
+import JournalsCtx from "../components/contexts/JournalsCtx";
 
 import { useContext, useEffect } from "react";
-import BkpgContext from "../components/contexts/BkpgContext";
 
 import { AccountListing, PropertyListing, ReportListing } from "../components/elements/listings/DashListings";
 
@@ -18,6 +18,7 @@ const HomePage = () => {
     const { populateCtxAccounts } = useContext(AccountsCtx);
     const { populateCtxEntities } = useContext(EntitiesCtx);
     const { populateCtxProperties } = useContext(PropertiesCtx);
+    const { populateCtxJournals } = useContext(JournalsCtx);
 
     const exampleText =
         "Your contractors W2s are ready for download! Head to the journals page to print them out right away!";
@@ -27,6 +28,7 @@ const HomePage = () => {
         populateCtxEntities();
         populateCtxTransactions();
         populateCtxProperties();
+        populateCtxJournals();
     }, []);
 
     return (

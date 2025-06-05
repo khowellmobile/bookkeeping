@@ -4,8 +4,8 @@ import AuthCtx from "./AuthCtx";
 
 const PropertiesCtx = createContext({
     ctxPropertyList: null,
-    populateCtxProperties: () => {},
     setCtxPropertyList: () => {},
+    populateCtxProperties: () => {},
 });
 
 export function PropertiesCtxProvider(props) {
@@ -37,8 +37,8 @@ export function PropertiesCtxProvider(props) {
 
     const context = {
         ctxPropertyList,
-        populateCtxProperties,
         setCtxPropertyList,
+        populateCtxProperties,
     };
 
     return <PropertiesCtx.Provider value={context}>{props.children}</PropertiesCtx.Provider>;

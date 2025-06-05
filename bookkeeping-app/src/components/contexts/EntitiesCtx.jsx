@@ -58,7 +58,7 @@ export function EntitiesCtxProvider(props) {
                 });
             }
         } catch (error) {
-            console.error("Error sending Account Info:", error);
+            console.error("Error:", error);
         }
     };
 
