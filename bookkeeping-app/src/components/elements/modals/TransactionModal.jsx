@@ -49,6 +49,7 @@ const TransactionModal = ({ vals, setPageTrans, handleCloseModal }) => {
     const handleDeleteClick = () => {
         setEditedTransaction((prev) => ({ ...prev, is_deleted: true }));
         ctxUpdateTransaction({ id: vals.id, is_deleted: true });
+        handleCloseModal();
     };
 
     const handleUpdateClick = () => {
