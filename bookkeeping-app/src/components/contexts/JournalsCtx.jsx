@@ -7,6 +7,7 @@ const JournalsCtx = createContext({
     setCtxJournalList: () => {},
     populateCtxJournals: () => {},
     ctxUpdateJournal: () => {},
+    ctxDeleteJournal: () => {},
 });
 
 export function JournalsCtxProvider(props) {
@@ -37,9 +38,6 @@ export function JournalsCtxProvider(props) {
     };
 
     const ctxUpdateJournal = async (selectedJournalId, url, method, sendData) => {
-        if (method == "POST") {
-            console.log(sendData);
-        }
         const ctxAccessToken = localStorage.getItem("accessToken");
         try {
             const response = await fetch(url, {
@@ -72,11 +70,32 @@ export function JournalsCtxProvider(props) {
         }
     };
 
+    const ctxDeleteJournal = async (journalId) => {
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/api/journals/${journalId}/`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${ctxAccessToken}`,
+                },
+                body: JSON.stringify({ is_deleted: true }),
+            });
+
+            if (!response.ok) {
+                console.log("Error:", response.error);
+                return;
+            }
+        } catch (error) {
+            console.error("Error marking account inactive:", error);
+        }
+    };
+
     const context = {
         ctxJournalList,
         setCtxJournalList,
         populateCtxJournals,
         ctxUpdateJournal,
+        ctxDeleteJournal,
     };
 
     return <JournalsCtx.Provider value={context}>{props.children}</JournalsCtx.Provider>;
