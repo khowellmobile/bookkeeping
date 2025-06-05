@@ -1,11 +1,15 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import classes from "./TransactionModal.module.css";
+
+import TransactionsCtx from "../../contexts/TransactionsCtx.jsx";
 
 import AccountDropdown from "../dropdowns/AccountDropdown.jsx";
 import EntityDropdown from "../dropdowns/EntityDropdown.jsx";
 import ConfirmationModal from "./ConfirmationModal.jsx";
 
 const TransactionModal = ({ vals, setPageTrans, handleCloseModal }) => {
+    const { ctxUpdateTransaction } = useContext(TransactionsCtx);
+
     const [transDate, setTransDate] = useState(vals.date);
     const [transPayee, setTransPayee] = useState(vals.entity);
     const [transAccount, setTransAccount] = useState(vals.account);
@@ -44,50 +48,12 @@ const TransactionModal = ({ vals, setPageTrans, handleCloseModal }) => {
 
     const handleDeleteClick = () => {
         setEditedTransaction((prev) => ({ ...prev, is_deleted: true }));
-        updateTransaction(true);
+        ctxUpdateTransaction({ id: vals.id, is_deleted: true });
     };
 
-    const updateTransaction = async (shouldDelete) => {
-        const accessToken = localStorage.getItem("accessToken");
-        let data;
-
-        if (shouldDelete) {
-            data = { is_deleted: true };
-        } else {
-            data = editedTransaction;
-        }
-
-        try {
-            const response = await fetch(`http://127.0.0.1:8000/api/transactions/${vals.id}/`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${accessToken}`,
-                },
-                body: JSON.stringify(data),
-            });
-
-            if (!response.ok) {
-                console.log("Error:", response.error);
-                return;
-            }
-
-            const updatedData = await response.json();
-
-            setPageTrans((prevTransactions) =>
-                prevTransactions.map((transaction) => {
-                    if (transaction.id === vals.id) {
-                        return updatedData;
-                    } else {
-                        return transaction;
-                    }
-                })
-            );
-
-            handleCloseModal();
-        } catch (error) {
-            console.error("Error editing transaction:", error);
-        }
+    const handleUpdateClick = () => {
+        ctxUpdateTransaction({ id: vals.id, ...editedTransaction });
+        handleCloseModal();
     };
 
     const handleConfirmAction = (action) => {
@@ -175,7 +141,7 @@ const TransactionModal = ({ vals, setPageTrans, handleCloseModal }) => {
                     </div>
                     <p>{vals.is_reconciled ? "☑️" : "❌"}</p>
                     <div className={classes.buttons}>
-                        <button onClick={() => updateTransaction(false)}>Save & Close</button>
+                        <button onClick={handleUpdateClick}>Save & Close</button>
                         <button onClick={() => handleConfirmAction("closeEdit")}>Close</button>
                         <button onClick={() => handleConfirmAction("delete")}>Delete</button>
                     </div>
