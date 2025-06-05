@@ -12,8 +12,8 @@ import AddEntityModal from "../components/elements/modals/AddEntityModal";
 import ConfirmationModal from "../components/elements/modals/ConfirmationModal";
 
 const EntitiesPage = () => {
-    const {setCtxEntityList, ctxEntityList,} = useContext(EntitiesCtx);
-    const {populateCtxTransactions, ctxTranList, setCtxTranList} = useContext(TransactionsCtx);
+    const { setCtxEntityList, ctxEntityList, ctxUpdateEntity } = useContext(EntitiesCtx);
+    const { populateCtxTransactions, ctxTranList, setCtxTranList } = useContext(TransactionsCtx);
 
     const [activeEntity, setActiveEntity] = useState();
     const [filteredEntities, setFilteredEntities] = useState([]);
@@ -45,45 +45,8 @@ const EntitiesPage = () => {
         }));
     };
 
-    const handleSave = async (shouldDelete) => {
-        let data = inputFields;
-
-        if (shouldDelete) {
-            data = { is_deleted: true };
-        }
-
-        const ctxAccessToken = localStorage.getItem("accessToken");
-        try {
-            const response = await fetch(`http://localhost:8000/api/entities/${activeEntity.id}/`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${ctxAccessToken}`,
-                },
-                body: JSON.stringify(data),
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            } else {
-                const updatedEntity = await response.json();
-                setCtxEntityList((prevEntityList) => {
-                    return prevEntityList.map((entity) => (entity.id === updatedEntity.id ? updatedEntity : entity));
-                });
-            }
-        } catch (e) {
-            console.log("Error: " + e);
-        }
-
+    const handleSaveUpdate = async (shouldDelete) => {
         setIsEditing(false);
-    };
-
-    const deleteHandler = () => {
-        setInputFields((prev) => ({
-            ...prev,
-            is_deleted: true,
-        }));
-        handleSave(true);
     };
 
     // load transactions on mount
@@ -128,6 +91,9 @@ const EntitiesPage = () => {
             } else {
                 setIsEditing(false);
             }
+        } else if (action == "update") {
+            ctxUpdateEntity({ id: activeEntity.id, ...inputFields });
+            setIsEditing(false);
         } else if (action == "delete") {
             setIsDeleteModalOpen(true);
         } else {
@@ -145,7 +111,7 @@ const EntitiesPage = () => {
     };
 
     const onConfirmDelete = () => {
-        deleteHandler();
+        ctxUpdateEntity({ id: activeEntity.id, is_deleted: true });
         setIsDeleteModalOpen(false);
     };
 
@@ -221,7 +187,7 @@ const EntitiesPage = () => {
                             />
                             {isEditing ? (
                                 <div>
-                                    <button className={classes.button} onClick={() => handleSave(false)}>
+                                    <button className={classes.button} onClick={() => handleConfirmAction("update")}>
                                         Save
                                     </button>
                                     <button className={classes.button} onClick={() => handleConfirmAction("delete")}>
