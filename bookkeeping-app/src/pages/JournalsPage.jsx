@@ -14,7 +14,7 @@ const JournalsPage = () => {
 
     const [isEditing, setIsEditing] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedJournalId, setSelectedJournalId] = useState(null);
+    const [activeJournal, setActiveJournal] = useState(null);
     const [journalName, setJournalName] = useState("");
     const [journalDate, setJournalDate] = useState("");
     const [journalItems, setJournalItems] = useState(
@@ -26,6 +26,11 @@ const JournalsPage = () => {
                 memo: "",
             }))
     );
+
+    const [confirmAction, setConfirmAction] = useState({
+        type: null,
+        payload: null,
+    });
 
     useEffect(() => {
         populateCtxJournals();
@@ -47,7 +52,7 @@ const JournalsPage = () => {
         const method = isEditing ? "PUT" : "POST";
 
         if (isEditing) {
-            url = url + `${selectedJournalId}/`;
+            url = url + `${activeJournal.id}/`;
         }
 
         const sendData = {
@@ -56,7 +61,7 @@ const JournalsPage = () => {
             item_list: item_list,
         };
 
-        ctxUpdateJournal(selectedJournalId, url, method, sendData);
+        ctxUpdateJournal(activeJournal.id, url, method, sendData);
     };
 
     const debitTotal = useMemo(() => {
@@ -94,34 +99,85 @@ const JournalsPage = () => {
 
     const handleItemChange = useCallback(
         (index, name, value) => {
+            // Shallow copy
             const newJournalItems = [...journalItems];
 
+            // Deep copy
+            const updatedItem = { ...newJournalItems[index] };
+
             if (name === "account") {
-                newJournalItems[index].account = value.id;
+                updatedItem.account = value.id;
             } else if (name === "debit") {
-                newJournalItems[index].amount = parseFloat(value) * -1 || 0;
+                updatedItem.amount = parseFloat(value) * -1 || 0;
             } else if (name === "credit") {
-                newJournalItems[index].amount = parseFloat(value) || 0;
+                updatedItem.amount = parseFloat(value) || 0;
             } else if (name === "memo") {
-                newJournalItems[index].memo = value;
+                updatedItem.memo = value;
             }
+
+            newJournalItems[index] = updatedItem;
+
             setJournalItems(newJournalItems);
         },
         [journalItems, setJournalItems]
     );
 
+    const isJournalChanged = () => {
+        if (!activeJournal) {
+            return false;
+        }
+
+        return (
+            journalName != activeJournal.name ||
+            journalDate != activeJournal.date ||
+            JSON.stringify(journalItems) != JSON.stringify(activeJournal.item_list)
+        );
+    };
+
     const handleHistoryClick = (index) => {
+        if ((activeJournal === null || ctxJournalList[index]?.id !== activeJournal.id) && isJournalChanged()) {
+            setIsModalOpen(true);
+            setConfirmAction({
+                type: "switch_active",
+                payload: index,
+            });
+        } else if (activeJournal === null || ctxJournalList[index]?.id !== activeJournal.id) {
+            setToEditIndex(index);
+        }
+    };
+
+    const handleNewEntryClick = () => {
+        if (isJournalChanged()) {
+            setIsModalOpen(true);
+            setConfirmAction({
+                type: "discard_and_new",
+                payload: null,
+            });
+        }  else {
+            clearInputs();
+        }
+    };
+
+    const handleDeleteClick = () => {
+        setIsModalOpen(true);
+        setConfirmAction({
+            type: "delete_entry",
+            payload: null,
+        });
+    };
+
+    const setToEditIndex = (index) => {
         setJournalItems(ctxJournalList[index]?.item_list || []);
         setJournalDate(ctxJournalList[index]?.date || "");
         setJournalName(ctxJournalList[index]?.name || "");
-        setSelectedJournalId(ctxJournalList[index]?.id || "");
+        setActiveJournal(ctxJournalList[index] || {});
         setIsEditing(true);
     };
 
     const clearInputs = () => {
         setJournalDate("");
         setJournalName("");
-        setSelectedJournalId("");
+        setActiveJournal({});
         setJournalItems(
             Array(14)
                 .fill(null)
@@ -134,28 +190,55 @@ const JournalsPage = () => {
         setIsEditing(false);
     };
 
-    const onConfirmDelete = () => {
-        ctxDeleteJournal(selectedJournalId);
+    const onConfirmModalAction = () => {
         setIsModalOpen(false);
+        switch (confirmAction.type) {
+            case "switch_active":
+                setToEditIndex(confirmAction.payload);
+            case "discard_and_new":
+                clearInputs();
+            case "delete_entry":
+                ctxDeleteJournal(activeJournal.id);
+                clearInputs();
+            default:
+        }
     };
 
-    const onCancelDelete = () => {
+    const onCancelModalAction = () => {
         setIsModalOpen(false);
+        setConfirmAction({ type: null, payload: null });
+    };
+
+    const getModalText = () => {
+        switch (confirmAction.type) {
+            case "switch_active":
+            case "discard_and_new":
+                return {
+                    msg: "You have unsaved changes. Are you sure you want to discard them?",
+                    confirm_txt: "Discard Changes",
+                    cancel_txt: "Keep Editing",
+                };
+            case "delete_entry":
+                return {
+                    msg: "Are you sure you wish to delete this journal entry?",
+                    confirm_txt: "Delete",
+                    cancel_txt: "Cancel Deletion",
+                };
+            default:
+                return { msg: "", confirm_txt: "", cancel_txt: "" };
+        }
     };
 
     return (
         <>
-            {isModalOpen && (
-                <ConfirmationModal
-                    text={{
-                        msg: "Are you sure you wish to delete this journal entry?",
-                        confirm_txt: "Delete",
-                        cancel_txt: "Cancel Deletion",
-                    }}
-                    onConfirm={onConfirmDelete}
-                    onCancel={onCancelDelete}
-                />
-            )}
+            {isModalOpen &&
+                confirmAction.type && ( // Only render if modal is open and type is set
+                    <ConfirmationModal
+                        text={getModalText()}
+                        onConfirm={onConfirmModalAction}
+                        onCancel={onCancelModalAction}
+                    />
+                )}
             <div className={classes.mainContainer}>
                 <div className={classes.journalContent}>
                     <div className={classes.journalHistory}>
@@ -192,8 +275,10 @@ const JournalsPage = () => {
                             {isEditing ? <h2>Edit an Entry</h2> : <h2>Make an Entry</h2>}
                             <div className={classes.headerTools}>
                                 <button onClick={saveInfo}>{isEditing ? "Save Edits" : "Save Entry"}</button>
-                                <button onClick={clearInputs}>{isEditing ? "New Entry" : "Clear Inputs"}</button>
-                                {isEditing && <button onClick={() => setIsModalOpen(true)}>Delete Entry</button>}
+                                <button onClick={handleNewEntryClick}>
+                                    {isEditing ? "New Entry" : "Clear Inputs"}
+                                </button>
+                                {isEditing && <button onClick={handleDeleteClick}>Delete Entry</button>}
                             </div>
                         </section>
                         <section className={classes.titleDate}>
