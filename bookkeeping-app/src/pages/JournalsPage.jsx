@@ -145,9 +145,6 @@ const JournalsPage = () => {
             }
         }
 
-        console.log(activeJournal);
-        console.log(journalDate, journalDate, journalItems);
-
         return (
             journalName != activeJournal.name ||
             journalDate != activeJournal.date ||
