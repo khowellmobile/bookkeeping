@@ -6,61 +6,33 @@ import { useState, useEffect } from "react";
 
 const JournalEntryItem = ({ vals, index, onFocus, onItemChange, scrollRef }) => {
     const [account, setAccount] = useState(vals.account);
-    const [debit, setDebit] = useState(vals.amount > 0 ? "" : vals.amount * -1);
-    const [credit, setCredit] = useState(vals.amount > 0 ? vals.amount : "");
     const [memo, setMemo] = useState(vals.memo);
 
-    useEffect(() => {
-        const newInitialAmount = parseFloat(vals.amount) || 0;
-        setAccount(vals.account || "");
-        setDebit(newInitialAmount < 0 ? String(newInitialAmount * -1) : "");
-        setCredit(newInitialAmount > 0 ? String(newInitialAmount) : "");
-        setMemo(vals.memo || "");
-    }, [vals]);
-
     const handleAccountChange = (account) => {
-        setAccount(account);
         onItemChange(index, "account", account);
     };
 
     const handleDebitChange = (event) => {
         const inputStr = event.target.value;
-        setDebit(inputStr);
-
-        const parsedAmount = parseFloat(inputStr);
-        if (!isNaN(parsedAmount) && parsedAmount >= 0) {
-            setCredit("");
-            onItemChange(index, "debit", parsedAmount);
-        } else if (inputStr === "") {
-            onItemChange(index, "debit", 0);
-        }
+        onItemChange(index, "debit", inputStr);
     };
 
     const handleCreditChange = (event) => {
         const inputStr = event.target.value;
-        setCredit(inputStr);
-
-        const parsedAmount = parseFloat(inputStr);
-        if (!isNaN(parsedAmount) && parsedAmount >= 0) {
-            setDebit("");
-            onItemChange(index, "credit", parsedAmount);
-        } else if (inputStr === "") {
-            onItemChange(index, "credit", 0);
-        }
+        onItemChange(index, "credit", inputStr);
     };
 
     const handleMemoChange = (event) => {
         const newValue = event.target.value;
-        setMemo(newValue);
         onItemChange(index, "memo", newValue);
     };
 
     return (
         <div className={`${classes.mainContainer} ${classes.journalGridTemplate}`} onFocus={onFocus} tabIndex={0}>
             <AccountEntryDropdown vals={vals} scrollRef={scrollRef} onChange={handleAccountChange} />
-            <input type="text" value={debit} onChange={handleDebitChange} />
-            <input type="text" value={credit} onChange={handleCreditChange} />
-            <input type="text" value={memo} onChange={handleMemoChange} />
+            <input type="text" value={vals.debit} onChange={handleDebitChange} />
+            <input type="text" value={vals.credit} onChange={handleCreditChange} />
+            <input type="text" value={vals.memo} onChange={handleMemoChange} />
         </div>
     );
 };
