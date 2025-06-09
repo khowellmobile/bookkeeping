@@ -97,6 +97,7 @@
 
 .titleDate > input:first-child {
     width: 80%;
+    font-size: 1.1rem;
 }
 
 .titleDate > input:last-child {

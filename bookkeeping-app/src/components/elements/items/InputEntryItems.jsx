@@ -5,7 +5,6 @@ import classes from "./InputEntryItems.module.css";
 import { useState, useEffect } from "react";
 
 const JournalEntryItem = ({ vals, index, onFocus, onItemChange, scrollRef }) => {
-
     const handleAccountChange = (account) => {
         onItemChange(index, "account", account);
     };
@@ -36,47 +35,36 @@ const JournalEntryItem = ({ vals, index, onFocus, onItemChange, scrollRef }) => 
 };
 
 const TransactionEntryItem = ({ vals, index, onFocus, onItemChange, scrollRef }) => {
-    const [date, setDate] = useState(vals.date);
-    const [entity, setEntity] = useState(vals.entity);
-    const [account, setAccount] = useState(vals.account_name);
-    const [memo, setMemo] = useState(vals.memo);
-    const [amount, setAmount] = useState(vals.amount);
-
     const handleDateChange = (event) => {
         const newValue = event.target.value;
-        setDate(newValue);
         onItemChange(index, "date", newValue);
     };
 
     const handleEntityChange = (entity) => {
-        setEntity(entity);
         onItemChange(index, "entity", entity);
     };
 
     const handleAccountChange = (account) => {
-        setAccount(account);
         onItemChange(index, "account", account);
     };
 
     const handleMemoChange = (event) => {
         const newValue = event.target.value;
-        setMemo(newValue);
         onItemChange(index, "memo", newValue);
     };
 
     const handleAmountChange = (event) => {
         const newValue = event.target.value;
-        setAmount(newValue);
         onItemChange(index, "amount", newValue);
     };
 
     return (
         <div className={`${classes.mainContainer} ${classes.transactionGridTemplate}`} onFocus={onFocus} tabIndex={0}>
-            <input type="text" value={date} onChange={handleDateChange} />
+            <input type="text" value={vals.date} onChange={handleDateChange} />
             <EntityEntryDropdown scrollRef={scrollRef} onChange={handleEntityChange} />
             <AccountEntryDropdown scrollRef={scrollRef} onChange={handleAccountChange} />
-            <input type="text" value={memo} onChange={handleMemoChange} />
-            <input type="text" value={amount} onChange={handleAmountChange} />
+            <input type="text" value={vals.memo} onChange={handleMemoChange} />
+            <input type="text" value={vals.amount} onChange={handleAmountChange} />
         </div>
     );
 };
