@@ -66,6 +66,7 @@ export function JournalsCtxProvider(props) {
                         journal.id === selectedJournalId ? returnedJournal : journal
                     );
                 });
+                return returnedJournal;
             }
         } catch (e) {
             console.log("Error: " + e);

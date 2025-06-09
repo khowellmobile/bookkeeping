@@ -69,6 +69,7 @@ const JournalsPage = () => {
         setJournalName(returnedJournal.name);
         setJournalDate(returnedJournal.date);
         setJournalItems(returnedJournal.item_list);
+        setIsEditing(true);
     };
 
     const debitTotal = useMemo(() => {
