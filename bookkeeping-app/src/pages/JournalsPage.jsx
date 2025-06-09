@@ -22,7 +22,8 @@ const JournalsPage = () => {
             .fill(null)
             .map(() => ({
                 account: "",
-                amount: "",
+                debit: "",
+                credit: "",
                 memo: "",
             }))
     );
@@ -41,7 +42,8 @@ const JournalsPage = () => {
         const item_list = journalItems.filter((item) => {
             return (
                 (item.account !== "" && item.account !== null && item.account !== undefined) ||
-                (item.amount !== "" && item.amount !== null && item.amount !== undefined && item.amount !== 0) ||
+                (item.debit !== "" && item.debit !== null && item.debit !== undefined && item.debit !== 0) ||
+                (item.credit !== "" && item.credit !== null && item.credit !== undefined && item.credit !== 0) ||
                 (item.memo && item.memo.trim() !== "")
             );
         });
@@ -50,6 +52,7 @@ const JournalsPage = () => {
         const date = journalDate;
         let url = "http://localhost:8000/api/journals/";
         const method = isEditing ? "PUT" : "POST";
+        const id = activeJournal ? activeJournal.id : null;
 
         if (isEditing) {
             url = url + `${activeJournal.id}/`;
@@ -61,17 +64,20 @@ const JournalsPage = () => {
             item_list: item_list,
         };
 
-        ctxUpdateJournal(activeJournal.id, url, method, sendData);
+        const returnedJournal = await ctxUpdateJournal(id, url, method, sendData);
+        setActiveJournal(returnedJournal);
+        setJournalName(returnedJournal.name);
+        setJournalDate(returnedJournal.date);
+        setJournalItems(returnedJournal.item_list);
+        setIsEditing(true);
     };
 
     const debitTotal = useMemo(() => {
         if (journalItems) {
-            return (
-                journalItems.reduce((sum, item) => {
-                    const amount = parseFloat(item.amount) || 0;
-                    return sum + (amount < 0 ? amount : 0);
-                }, 0) * -1
-            );
+            return journalItems.reduce((sum, item) => {
+                const amount = parseFloat(item.debit) || 0;
+                return sum + (amount > 0 ? amount : 0);
+            }, 0);
         } else {
             return 0;
         }
@@ -80,7 +86,7 @@ const JournalsPage = () => {
     const creditTotal = useMemo(() => {
         if (journalItems) {
             return journalItems.reduce((sum, item) => {
-                const amount = parseFloat(item.amount) || 0;
+                const amount = parseFloat(item.credit) || 0;
                 return sum + (amount > 0 ? amount : 0);
             }, 0);
         } else {
@@ -88,10 +94,16 @@ const JournalsPage = () => {
         }
     }, [journalItems]);
 
+    const isJournalItemsEmpty = useMemo(() => {
+        return journalItems.every(
+            (item) => item.account === "" && item.debit === "" && item.credit === "" && item.memo === ""
+        );
+    }, [journalItems]);
+
     const handleFocusLastItem = useCallback(
         (index) => {
             if (index === journalItems.length - 1) {
-                setJournalItems([...journalItems, { account: "", amount: "", memo: "" }]);
+                setJournalItems([...journalItems, { account: "", debit: "", credit: "", memo: "" }]);
             }
         },
         [journalItems, setJournalItems]
@@ -108,9 +120,11 @@ const JournalsPage = () => {
             if (name === "account") {
                 updatedItem.account = value.id;
             } else if (name === "debit") {
-                updatedItem.amount = parseFloat(value) * -1 || 0;
+                updatedItem.credit = "";
+                updatedItem.debit = checkDebit(value);
             } else if (name === "credit") {
-                updatedItem.amount = parseFloat(value) || 0;
+                updatedItem.debit = "";
+                updatedItem.credit = checkCredit(value);
             } else if (name === "memo") {
                 updatedItem.memo = value;
             }
@@ -124,7 +138,11 @@ const JournalsPage = () => {
 
     const isJournalChanged = () => {
         if (!activeJournal) {
-            return false;
+            if (journalName != "" || journalDate != "" || !isJournalItemsEmpty) {
+                return true;
+            } else {
+                return false;
+            }
         }
 
         return (
@@ -153,7 +171,7 @@ const JournalsPage = () => {
                 type: "discard_and_new",
                 payload: null,
             });
-        }  else {
+        } else {
             clearInputs();
         }
     };
@@ -177,13 +195,14 @@ const JournalsPage = () => {
     const clearInputs = () => {
         setJournalDate("");
         setJournalName("");
-        setActiveJournal({});
+        setActiveJournal(null);
         setJournalItems(
             Array(14)
                 .fill(null)
                 .map(() => ({
                     account: "",
-                    amount: "",
+                    debit: "",
+                    credit: "",
                     memo: "",
                 }))
         );
@@ -195,11 +214,14 @@ const JournalsPage = () => {
         switch (confirmAction.type) {
             case "switch_active":
                 setToEditIndex(confirmAction.payload);
+                return;
             case "discard_and_new":
                 clearInputs();
+                return;
             case "delete_entry":
                 ctxDeleteJournal(activeJournal.id);
                 clearInputs();
+                return;
             default:
         }
     };
@@ -226,6 +248,22 @@ const JournalsPage = () => {
                 };
             default:
                 return { msg: "", confirm_txt: "", cancel_txt: "" };
+        }
+    };
+
+    const checkDebit = (val) => {
+        if (val >= 0 && !isNaN(parseFloat(val))) {
+            return val;
+        } else {
+            return "";
+        }
+    };
+
+    const checkCredit = (val) => {
+        if (val >= 0 && !isNaN(parseFloat(val))) {
+            return val;
+        } else {
+            return "";
         }
     };
 

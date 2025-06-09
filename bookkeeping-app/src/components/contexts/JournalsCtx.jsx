@@ -58,12 +58,15 @@ export function JournalsCtxProvider(props) {
                 setCtxJournalList((prev) => {
                     return [...prev, returnedJournal];
                 });
+
+                return returnedJournal;
             } else if (method == "PUT") {
                 setCtxJournalList((prevJournalList) => {
                     return prevJournalList.map((journal) =>
                         journal.id === selectedJournalId ? returnedJournal : journal
                     );
                 });
+                return returnedJournal;
             }
         } catch (e) {
             console.log("Error: " + e);
