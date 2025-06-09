@@ -5,8 +5,6 @@ import classes from "./InputEntryItems.module.css";
 import { useState, useEffect } from "react";
 
 const JournalEntryItem = ({ vals, index, onFocus, onItemChange, scrollRef }) => {
-    const [account, setAccount] = useState(vals.account);
-    const [memo, setMemo] = useState(vals.memo);
 
     const handleAccountChange = (account) => {
         onItemChange(index, "account", account);
