@@ -64,7 +64,11 @@ const JournalsPage = () => {
             item_list: item_list,
         };
 
-        ctxUpdateJournal(id, url, method, sendData);
+        const returnedJournal = await ctxUpdateJournal(id, url, method, sendData);
+        setActiveJournal(returnedJournal);
+        setJournalName(returnedJournal.name);
+        setJournalDate(returnedJournal.date);
+        setJournalItems(returnedJournal.item_list);
     };
 
     const debitTotal = useMemo(() => {
@@ -139,6 +143,9 @@ const JournalsPage = () => {
                 return false;
             }
         }
+
+        console.log(activeJournal);
+        console.log(journalDate, journalDate, journalItems);
 
         return (
             journalName != activeJournal.name ||
