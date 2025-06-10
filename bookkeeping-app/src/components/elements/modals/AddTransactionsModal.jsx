@@ -39,24 +39,36 @@ const AddTransactionsModal = ({ ctxActiveAccount, setPageTrans, handleCloseModal
 
     const handleItemChange = useCallback(
         (index, name, value) => {
-            const newtransactionItems = [...transactionItems];
+            const newTransactionItems = [...transactionItems];
+
+            const updatedItem = { ...newTransactionItems[index] };
 
             if (name === "date") {
-                newtransactionItems[index].date = value;
+                updatedItem.date = value;
             } else if (name === "entity") {
-                newtransactionItems[index].entity = value;
+                updatedItem.entity = value;
             } else if (name === "account") {
-                newtransactionItems[index].account = value;
+                updatedItem.account = value;
             } else if (name === "memo") {
-                newtransactionItems[index].memo = value;
+                updatedItem.memo = value;
             } else if (name === "amount") {
-                newtransactionItems[index].amount = parseFloat(value) || 0;
+                updatedItem.amount = checkAmount(value);
             }
 
-            setTransactionItems(newtransactionItems);
+            newTransactionItems[index] = updatedItem;
+
+            setTransactionItems(newTransactionItems);
         },
         [transactionItems, setTransactionItems]
     );
+
+    const checkAmount = (val) => {
+        if (!isNaN(parseFloat(val))) {
+            return val;
+        } else {
+            return "";
+        }
+    };
 
     const handleSaveClose = () => {
         const nonEmptyItems = transactionItems.filter((item) => {
@@ -103,7 +115,7 @@ const AddTransactionsModal = ({ ctxActiveAccount, setPageTrans, handleCloseModal
             {isModalOpen && (
                 <ConfirmationModal
                     text={{
-                        msg: "You are above to leave without saving.",
+                        msg: "You are about to leave without saving.",
                         confirm_txt: "Leave",
                         cancel_txt: "Stay",
                     }}
@@ -136,7 +148,10 @@ const AddTransactionsModal = ({ ctxActiveAccount, setPageTrans, handleCloseModal
                                 <p>Memo</p>
                             </div>
                             <div>
-                                <p>Amount</p>
+                                <p>Debit</p>
+                            </div>
+                            <div>
+                                <p>Credit</p>
                             </div>
                         </section>
                         <section className={classes.items} ref={scrollRef}>

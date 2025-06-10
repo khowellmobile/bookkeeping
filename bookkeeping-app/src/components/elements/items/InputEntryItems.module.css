@@ -43,5 +43,5 @@
 }
 
 .transactionGridTemplate {
-    grid-template-columns: 0.5fr 1fr 1.25fr 1.5fr 0.75fr;
+    grid-template-columns: 0.6fr 1.15fr 1.25fr 1.5fr 0.75fr 0.75fr;
 }

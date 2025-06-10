@@ -121,10 +121,10 @@ const JournalsPage = () => {
                 updatedItem.account = value.id;
             } else if (name === "debit") {
                 updatedItem.credit = "";
-                updatedItem.debit = checkDebit(value);
+                updatedItem.debit = checkAmount(value);
             } else if (name === "credit") {
                 updatedItem.debit = "";
-                updatedItem.credit = checkCredit(value);
+                updatedItem.credit = checkAmount(value);
             } else if (name === "memo") {
                 updatedItem.memo = value;
             }
@@ -251,15 +251,7 @@ const JournalsPage = () => {
         }
     };
 
-    const checkDebit = (val) => {
-        if (val >= 0 && !isNaN(parseFloat(val))) {
-            return val;
-        } else {
-            return "";
-        }
-    };
-
-    const checkCredit = (val) => {
+    const checkAmount = (val) => {
         if (val >= 0 && !isNaN(parseFloat(val))) {
             return val;
         } else {

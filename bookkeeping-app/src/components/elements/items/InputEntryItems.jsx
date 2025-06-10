@@ -35,6 +35,9 @@ const JournalEntryItem = ({ vals, index, onFocus, onItemChange, scrollRef }) => 
 };
 
 const TransactionEntryItem = ({ vals, index, onFocus, onItemChange, scrollRef }) => {
+    const [debit, setDebit] = useState(vals.amount > 0 ? vals.amount : "");
+    const [credit, setCredit] = useState(vals.amount < 0 ? vals.amount : "");
+
     const handleDateChange = (event) => {
         const newValue = event.target.value;
         onItemChange(index, "date", newValue);
@@ -53,9 +56,26 @@ const TransactionEntryItem = ({ vals, index, onFocus, onItemChange, scrollRef })
         onItemChange(index, "memo", newValue);
     };
 
-    const handleAmountChange = (event) => {
-        const newValue = event.target.value;
+    const handleDebitChange = (event) => {
+        const newValue = checkAmount(event.target.value);
+        setDebit(newValue);
+        setCredit("");
+        onItemChange(index, "amount", -1 * newValue);
+    };
+
+    const handleCreditChange = (event) => {
+        const newValue = checkAmount(event.target.value);
+        setCredit(newValue);
+        setDebit("");
         onItemChange(index, "amount", newValue);
+    };
+
+    const checkAmount = (val) => {
+        if (!isNaN(parseFloat(val))) {
+            return val;
+        } else {
+            return "";
+        }
     };
 
     return (
@@ -64,7 +84,8 @@ const TransactionEntryItem = ({ vals, index, onFocus, onItemChange, scrollRef })
             <EntityEntryDropdown scrollRef={scrollRef} onChange={handleEntityChange} />
             <AccountEntryDropdown scrollRef={scrollRef} onChange={handleAccountChange} />
             <input type="text" value={vals.memo} onChange={handleMemoChange} />
-            <input type="text" value={vals.amount} onChange={handleAmountChange} />
+            <input type="text" value={debit} onChange={handleDebitChange} />
+            <input type="text" value={credit} onChange={handleCreditChange} />
         </div>
     );
 };
