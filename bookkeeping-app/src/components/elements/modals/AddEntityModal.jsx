@@ -52,9 +52,9 @@ const AddEntityModal = ({ handleCloseModal }) => {
             {isModalOpen && (
                 <ConfirmationModal
                     text={{
-                        msg: "You are above to leave without saving.",
-                        confirm_txt: "Leave",
-                        cancel_txt: "Stay",
+                        msg: "You have unsaved changes. Are you sure you want to discard them?",
+                        confirm_txt: "Discard Changes",
+                        cancel_txt: "Keep Editing",
                     }}
                     onConfirm={onConfirm}
                     onCancel={onCancel}
