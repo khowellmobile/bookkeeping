@@ -8,7 +8,7 @@ import { TransactionEntryItem } from "../items/InputEntryItems";
 import AccountDropdown from "../dropdowns/AccountDropdown";
 import ConfirmationModal from "./ConfirmationModal";
 
-const AddTransactionsModal = ({ ctxActiveAccount, setPageTrans, handleCloseModal }) => {
+const AddTransactionsModal = ({ ctxActiveAccount, handleCloseModal }) => {
     const { ctxAddTransactions } = useContext(TransactionsCtx);
 
     const scrollRef = useRef();

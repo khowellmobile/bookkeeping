@@ -7,14 +7,15 @@ import AccountDropdown from "../dropdowns/AccountDropdown.jsx";
 import EntityDropdown from "../dropdowns/EntityDropdown.jsx";
 import ConfirmationModal from "./ConfirmationModal.jsx";
 
-const TransactionModal = ({ vals, setPageTrans, handleCloseModal }) => {
+const TransactionModal = ({ vals, handleCloseModal }) => {
     const { ctxUpdateTransaction } = useContext(TransactionsCtx);
 
     const [transDate, setTransDate] = useState(vals.date);
     const [transPayee, setTransPayee] = useState(vals.entity);
     const [transAccount, setTransAccount] = useState(vals.account);
     const [transMemo, setTransMemo] = useState(vals.memo);
-    const [transAmount, setTransAmount] = useState(vals.amount);
+    const [transDebit, setTransDebit] = useState(vals.amount < 0 ? (vals.amount * -1).toFixed(2) : "");
+    const [transCredit, setTransCredit] = useState(vals.amount > 0 ? (vals.amount).toFixed(2)  : "");
 
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -36,9 +37,18 @@ const TransactionModal = ({ vals, setPageTrans, handleCloseModal }) => {
         setEditedTransaction((prev) => ({ ...prev, memo: event.target.value }));
     };
 
-    const handleAmountChange = (event) => {
-        setTransAmount(event.target.value);
-        setEditedTransaction((prev) => ({ ...prev, amount: event.target.value }));
+    const handleDebitChange = (event) => {
+        const newAmount = checkAmount(event.target.value);
+        setTransDebit(newAmount);
+        setTransCredit("");
+        setEditedTransaction((prev) => ({ ...prev, amount: newAmount * -1 }));
+    };
+
+    const handleCreditChange = (event) => {
+        const newAmount = checkAmount(event.target.value);
+        setTransCredit(newAmount);
+        setTransDebit("");
+        setEditedTransaction((prev) => ({ ...prev, amount: newAmount }));
     };
 
     const handleAccountClick = (account) => {
@@ -55,6 +65,14 @@ const TransactionModal = ({ vals, setPageTrans, handleCloseModal }) => {
     const handleUpdateClick = () => {
         ctxUpdateTransaction({ id: vals.id, ...editedTransaction });
         handleCloseModal();
+    };
+
+    const checkAmount = (val) => {
+        if (val >= 0 && !isNaN(parseFloat(val))) {
+            return val;
+        } else {
+            return "";
+        }
     };
 
     const handleConfirmAction = (action) => {
@@ -133,7 +151,22 @@ const TransactionModal = ({ vals, setPageTrans, handleCloseModal }) => {
                         </div>
                         <div className={`${classes.cluster} ${classes.amountCluster}`}>
                             <p>Amount</p>
-                            <input type="text" value={transAmount} onChange={handleAmountChange} />
+                            <div>
+                                <div>Debit</div>
+                                <input
+                                    type="text"
+                                    className={classes.debit}
+                                    value={transDebit}
+                                    onChange={handleDebitChange}
+                                />
+                                <div>Credit</div>
+                                <input
+                                    type="text"
+                                    className={classes.credit}
+                                    value={transCredit}
+                                    onChange={handleCreditChange}
+                                />
+                            </div>
                         </div>
                     </div>
                     <div className={`${classes.cluster} ${classes.memoCluster}`}>
