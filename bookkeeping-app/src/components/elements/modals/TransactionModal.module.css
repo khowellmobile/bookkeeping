@@ -68,8 +68,7 @@
     font-size: 0.8rem;
 }
 
-.memoCluster > input[type="text"],
-.amountCluster > input[type="text"] {
+.memoCluster > input[type="text"] {
     padding: 0.25rem 0.5rem;
 
     background-color: var(--secondary-background-color);
@@ -79,7 +78,47 @@
     outline: 1px solid var(--border-color);
 }
 
-.amountCluster > input[type="text"] {
+.amountCluster {
+    width: 30rem;
+}
+
+.amountCluster > div {
+    display: flex;
+}
+
+.amountCluster > div > div {
+    width: 4rem;
+    padding-left: 0.5rem;
+
+    border: 1px solid var(--border-color);
+    background-color: rgb(223, 223, 223);
+    font-size: 0.8rem;
+
+    display: flex;
+    align-items: center;
+}
+
+.amountCluster input[type="text"] {
+    width: calc(100%/2 - 4rem);
+    padding: 0.25rem 0.5rem;
+
+    background-color: var(--secondary-background-color);
+    font-family: "poppins";
+}
+
+.amountCluster .debit {
+    border: 1px solid var(--border-color);
+    border-left: none;
+    border-right: none;
+    outline: none;
+}
+
+.amountCluster .credit {
+    border: 1px solid var(--border-color);
+    border-left: none;
+}
+
+.amountCluster input[type="text"] {
     height: 2rem;
     font-size: 1rem;
 }
