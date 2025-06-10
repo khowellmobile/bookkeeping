@@ -39,24 +39,36 @@ const AddTransactionsModal = ({ ctxActiveAccount, setPageTrans, handleCloseModal
 
     const handleItemChange = useCallback(
         (index, name, value) => {
-            const newtransactionItems = [...transactionItems];
+            const newTransactionItems = [...transactionItems];
+
+            const updatedItem = { ...newTransactionItems[index] };
 
             if (name === "date") {
-                newtransactionItems[index].date = value;
+                updatedItem.date = value;
             } else if (name === "entity") {
-                newtransactionItems[index].entity = value;
+                updatedItem.entity = value;
             } else if (name === "account") {
-                newtransactionItems[index].account = value;
+                updatedItem.account = value;
             } else if (name === "memo") {
-                newtransactionItems[index].memo = value;
+                updatedItem.memo = value;
             } else if (name === "amount") {
-                newtransactionItems[index].amount = parseFloat(value) || 0;
+                updatedItem.amount = checkAmount(value);
             }
 
-            setTransactionItems(newtransactionItems);
+            newTransactionItems[index] = updatedItem;
+
+            setTransactionItems(newTransactionItems);
         },
         [transactionItems, setTransactionItems]
     );
+
+    const checkAmount = (val) => {
+        if (val.charAt(0) == "-" || !isNaN(parseFloat(val))) {
+            return val;
+        } else {
+            return "";
+        }
+    };
 
     const handleSaveClose = () => {
         const nonEmptyItems = transactionItems.filter((item) => {
