@@ -63,7 +63,7 @@ const AddTransactionsModal = ({ ctxActiveAccount, setPageTrans, handleCloseModal
     );
 
     const checkAmount = (val) => {
-        if (val.charAt(0) == "-" || !isNaN(parseFloat(val))) {
+        if (!isNaN(parseFloat(val))) {
             return val;
         } else {
             return "";
@@ -115,7 +115,7 @@ const AddTransactionsModal = ({ ctxActiveAccount, setPageTrans, handleCloseModal
             {isModalOpen && (
                 <ConfirmationModal
                     text={{
-                        msg: "You are above to leave without saving.",
+                        msg: "You are about to leave without saving.",
                         confirm_txt: "Leave",
                         cancel_txt: "Stay",
                     }}
@@ -148,7 +148,10 @@ const AddTransactionsModal = ({ ctxActiveAccount, setPageTrans, handleCloseModal
                                 <p>Memo</p>
                             </div>
                             <div>
-                                <p>Amount</p>
+                                <p>Debit</p>
+                            </div>
+                            <div>
+                                <p>Credit</p>
                             </div>
                         </section>
                         <section className={classes.items} ref={scrollRef}>

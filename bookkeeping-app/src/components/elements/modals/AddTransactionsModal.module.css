@@ -14,7 +14,7 @@
 }
 
 .mainContainer {
-    width: 80rem;
+    width: 84rem;
     height: 44rem;
 
     background-color: var(--background-color);
@@ -24,6 +24,7 @@
 }
 
 .tools {
+    width: 21rem;
     height: 100%;
     padding: 0.5rem;
 
@@ -72,7 +73,7 @@
 }
 
 .entryContainer {
-    width: 75%;
+    width: calc(100% - 21rem);
     height: 100%;
 }
 
@@ -88,7 +89,7 @@
 }
 
 .entryGridTemplate {
-    grid-template-columns: 0.5fr 1fr 1.25fr 1.5fr 0.75fr;
+    grid-template-columns: 0.6fr 1.15fr 1.25fr 1.5fr 0.75fr 0.75fr;
 }
 
 .columnNames > div {
