@@ -94,7 +94,7 @@ const TransactionModal = ({ vals, setPageTrans, handleCloseModal }) => {
             {isConfirmModalOpen && (
                 <ConfirmationModal
                     text={{
-                        msg: "You are above to leave without saving.",
+                        msg: "You are about to leave without saving.",
                         confirm_txt: "Leave",
                         cancel_txt: "Stay",
                     }}
