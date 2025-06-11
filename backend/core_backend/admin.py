@@ -7,6 +7,7 @@ class DatabaseConnectionsAdmin(admin.ModelAdmin):
     list_display = [
         "user",
         "account",
+        "property",
         "type",
         "date",
         "amount",
@@ -41,6 +42,7 @@ class DatabaseConnectionsAdmin(admin.ModelAdmin):
 class DatabaseConnectionsAdmin(admin.ModelAdmin):
     list_display = [
         "user",
+        "property",
         "name",
         "company",
         "address",
