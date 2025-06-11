@@ -3,14 +3,12 @@ import classes from "./PropertiesPage.module.css";
 import { useState, useContext, useEffect, useMemo, act } from "react";
 
 import PropertiesCtx from "../components/contexts/PropertiesCtx";
-import EntitiesCtx from "../components/contexts/EntitiesCtx";
 import ConfirmationModal from "../components/elements/modals/ConfirmationModal";
 
 import penIcon from "../assets/pen-icon.svg";
 
 const PropertiesPage = () => {
-    const { ctxEntityList, ctxUpdateEntity } = useContext(EntitiesCtx);
-    const { ctxPropertyList } = useContext(PropertiesCtx);
+    const { ctxPropertyList, ctxUpdateProperty, ctxAddProperty } = useContext(PropertiesCtx);
 
     const [activeProperty, setActiveProperty] = useState("");
     const [searchTerm, setSearchTerm] = useState("");
@@ -130,7 +128,7 @@ const PropertiesPage = () => {
     };
 
     const handleSaveClick = () => {
-        ctxUpdateEntity({ id: activeProperty.id, ...inputFields });
+        ctxUpdateProperty({ id: activeProperty.id, ...inputFields });
         setIsEditing(false);
     };
 
