@@ -14,8 +14,8 @@ const TransactionModal = ({ vals, handleCloseModal }) => {
     const [transPayee, setTransPayee] = useState(vals.entity);
     const [transAccount, setTransAccount] = useState(vals.account);
     const [transMemo, setTransMemo] = useState(vals.memo);
-    const [transDebit, setTransDebit] = useState(vals.amount < 0 ? (vals.amount * -1).toFixed(2) : "");
-    const [transCredit, setTransCredit] = useState(vals.amount > 0 ? (vals.amount).toFixed(2)  : "");
+    const [transDebit, setTransDebit] = useState(vals.amount < 0 ? vals.amount * -1 : "");
+    const [transCredit, setTransCredit] = useState(vals.amount > 0 ? vals.amount : "");
 
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
