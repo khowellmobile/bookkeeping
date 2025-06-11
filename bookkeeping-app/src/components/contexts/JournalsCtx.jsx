@@ -16,7 +16,9 @@ export function JournalsCtxProvider(props) {
     const [ctxJournalList, setCtxJournalList] = useState(null);
 
     useEffect(() => {
-        populateCtxJournals();
+        if (ctxAccessToken) {
+            populateCtxJournals();
+        }
     }, []);
 
     const populateCtxJournals = async () => {

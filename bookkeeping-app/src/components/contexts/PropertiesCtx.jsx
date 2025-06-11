@@ -14,7 +14,9 @@ export function PropertiesCtxProvider(props) {
     const [ctxPropertyList, setCtxPropertyList] = useState(null);
 
     useEffect(() => {
-        populateCtxProperties();
+        if (ctxAccessToken) {
+            populateCtxProperties();
+        }
     }, []);
 
     const populateCtxProperties = async () => {

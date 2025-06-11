@@ -16,7 +16,9 @@ export function EntitiesCtxProvider(props) {
     const [ctxEntityList, setCtxEntityList] = useState([]);
 
     useEffect(() => {
-        populateCtxEntities();
+        if (ctxAccessToken) {
+            populateCtxEntities();
+        }
     }, []);
 
     const populateCtxEntities = async () => {
