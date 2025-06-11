@@ -16,7 +16,9 @@ export function TransactionsCtxProvider(props) {
     const [ctxTranList, setCtxTranList] = useState(null);
 
     useEffect(() => {
-        populateCtxTransactions();
+        if (ctxAccessToken) {
+            populateCtxTransactions();
+        }
     }, []);
 
     const populateCtxTransactions = async () => {

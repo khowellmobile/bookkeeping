@@ -20,7 +20,9 @@ export function AccountsCtxProvider(props) {
     const [ctxAccountList, setCtxAccountList] = useState(null);
 
     useEffect(() => {
-        populateCtxAccounts();
+        if (ctxAccessToken) {
+            populateCtxAccounts();
+        }
     }, []);
 
     const populateCtxAccounts = async () => {
