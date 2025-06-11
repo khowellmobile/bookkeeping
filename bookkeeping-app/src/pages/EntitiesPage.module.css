@@ -62,7 +62,7 @@
     justify-content: end;
 }
 
-.entitySerach {
+.entitySearch {
     height: 2rem;
     padding: 0.25rem;
     margin: 0.5rem 0.5rem;
@@ -229,11 +229,6 @@
     width: 30%;
 
     border-left: 1px solid var(--border-color);
-}
-
-.transactionListing {
-    width: 100%;
-    height: 70%;
 }
 
 .transactionListing {
