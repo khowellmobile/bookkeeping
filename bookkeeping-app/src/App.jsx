@@ -19,6 +19,7 @@ import SupportPage from "./pages/SupportPage";
 import SettingsPage from "./pages/SettingsPage";
 import SplashPage from "./pages/SplashPage";
 import EntitiesPage from "./pages/EntitiesPage";
+import PropertiesPage from "./pages/PropertiesPage";
 
 function App() {
     return (
@@ -36,6 +37,7 @@ function App() {
                                     <Route path="/journals" element={<Layout><JournalsPage /></Layout>} />
                                     <Route path="/entities" element={<Layout><EntitiesPage /></Layout>} />
                                     <Route path="/reports" element={<Layout><ReportsPage /></Layout>} />
+                                    <Route path="/properties" element={<Layout><PropertiesPage /></Layout>} />
                                     <Route path="/support" element={<Layout><SupportPage /></Layout>} />
                                     <Route path="/settings" element={<Layout><SettingsPage /></Layout>} />
                                 </Routes>
