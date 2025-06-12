@@ -10,13 +10,13 @@ import penIcon from "../assets/pen-icon.svg";
 import TransactionItem from "../components/elements/items/TransactionItem";
 import AddEntityModal from "../components/elements/modals/AddEntityModal";
 import ConfirmationModal from "../components/elements/modals/ConfirmationModal";
+import SearchBox from "../components/elements/misc/SearchBox";
 
 const EntitiesPage = () => {
     const { ctxEntityList, ctxUpdateEntity } = useContext(EntitiesCtx);
-    const { populateCtxTransactions, ctxTranList, setCtxTranList } = useContext(TransactionsCtx);
+    const { ctxTranList, setCtxTranList } = useContext(TransactionsCtx);
 
     const [activeEntity, setActiveEntity] = useState();
-    const [filteredEntities, setFilteredEntities] = useState([]);
     const [inputFields, setInputFields] = useState({
         name: "",
         company: "",
@@ -27,7 +27,6 @@ const EntitiesPage = () => {
         is_deleted: "",
     });
 
-    const [searchTerm, setSearchTerm] = useState("");
     const [isEditing, setIsEditing] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
@@ -45,28 +44,9 @@ const EntitiesPage = () => {
         }));
     };
 
-    // Filtering results by search term
-    useEffect(() => {
-        if (ctxEntityList) {
-            const lowercasedSearchTerm = searchTerm.toLowerCase();
-            const filtered = ctxEntityList.filter((entity) => entity.name.toLowerCase().includes(lowercasedSearchTerm));
-            setFilteredEntities(filtered);
-        }
-    }, [searchTerm, ctxEntityList]);
-
-    // Setting fields to selected entity
-    useEffect(() => {
-        if (activeEntity) {
-            setInputFields({
-                name: activeEntity.name || "",
-                company: activeEntity.company || "",
-                address: activeEntity.address || "",
-                created_at: activeEntity.created_at || "",
-                phone_number: activeEntity.phone_number || "",
-                email: activeEntity.email || "",
-            });
-        }
-    }, [activeEntity]);
+    const onItemClick = (item) => {
+        setActiveEntity(item);
+    };
 
     const handleConfirmAction = (action) => {
         if (action == "closeEdit") {
@@ -110,6 +90,20 @@ const EntitiesPage = () => {
         setIsDeleteModalOpen(false);
     };
 
+    // Setting fields to selected entity
+    useEffect(() => {
+        if (activeEntity) {
+            setInputFields({
+                name: activeEntity.name || "",
+                company: activeEntity.company || "",
+                address: activeEntity.address || "",
+                created_at: activeEntity.created_at || "",
+                phone_number: activeEntity.phone_number || "",
+                email: activeEntity.email || "",
+            });
+        }
+    }, [activeEntity]);
+
     return (
         <>
             {isModalOpen && <AddEntityModal handleCloseModal={handleCloseModal} />}
@@ -138,34 +132,12 @@ const EntitiesPage = () => {
             )}
 
             <div className={classes.mainContainer}>
-                <div className={classes.searchBox}>
-                    <div className={classes.searchBoxTools}>
-                        <button className={classes.button} onClick={() => setIsModalOpen(true)}>
-                            Add Entity
-                        </button>
-                    </div>
-                    <input
-                        type="text"
-                        className={classes.entitySearch}
-                        placeholder="Search..."
-                        spellCheck="false"
-                        value={searchTerm}
-                        onChange={(e) => {
-                            setSearchTerm(e.target.value);
-                        }}
-                    ></input>
-                    <div className={classes.entityListing}>
-                        {filteredEntities && filteredEntities.length > 0 ? (
-                            filteredEntities.map((entity, index) => (
-                                <p key={index} onClick={() => setActiveEntity(entity)}>
-                                    {entity.name}
-                                </p>
-                            ))
-                        ) : (
-                            <p>No matching entities found.</p>
-                        )}
-                    </div>
-                </div>
+                <SearchBox
+                    itemName={"Entity"}
+                    items={ctxEntityList}
+                    onItemClick={onItemClick}
+                    onAddButtonClick={() => setIsModalOpen(true)}
+                />
                 <div className={classes.contentBox}>
                     <div className={classes.entityInfo}>
                         <div className={`${classes.header} ${isEditing ? classes.editing : ""}`}>
