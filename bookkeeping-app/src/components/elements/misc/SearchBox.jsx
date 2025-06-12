@@ -40,7 +40,7 @@ const SearchBox = ({ itemName, items, onItemClick, onAddButtonClick }) => {
                         </p>
                     ))
                 ) : (
-                    <p>No matching entities found.</p>
+                    <p>No matching items found.</p>
                 )}
             </div>
         </div>
