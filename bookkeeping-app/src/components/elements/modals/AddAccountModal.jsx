@@ -1,150 +1,122 @@
 import { useContext, useState } from "react";
-import classes from "./AddAccountModal.module.css";
+
+import classes from "./AddModalStyle.module.css";
 
 import AccountsCtx from "../../contexts/AccountsCtx";
-import ConfirmationModal from "./ConfirmationModal";
+import BaseAddModal from "./BaseAddModal";
+import AddInputCluster from "../misc/AddInputCluster";
 import upChevIcon from "../../../assets/chevron-up-icon.svg";
 import downChevIcon from "../../../assets/chevron-down-icon.svg";
 
 const AddAccountModal = ({ handleCloseModal }) => {
     const { ctxAddAccount } = useContext(AccountsCtx);
 
-    const [accountName, setAccountName] = useState("");
-    const [accountNumber, setAccountNumber] = useState("");
-    const [accountType, setAccountType] = useState("");
-    const [initialBalance, setInitialBalance] = useState("");
-    const [accountDescription, setAccountDescription] = useState("");
-    const [isModalOpen, setIsModalOpen] = useState(false);
-
+    const [inputFields, setInputFields] = useState({
+        name: "",
+        type: "",
+        initial_balance: "",
+        description: "",
+        account_number: "",
+    });
     const [isExpanded, setIsExpanded] = useState(false);
 
+    const hasUnsavedChanges =
+        inputFields.name !== "" ||
+        inputFields.account_number !== "" ||
+        inputFields.type !== "" ||
+        inputFields.initial_balance !== "" ||
+        inputFields.description !== "";
+
     const accountTypes = ["Asset", "Bank", "Equity", "Liability"];
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setInputFields((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
+    };
+
+    const addAccount = async () => {
+        const accountToAdd = {
+            ...inputFields,
+            type: inputFields.type.toLowerCase(),
+        };
+
+        ctxAddAccount(accountToAdd);
+    };
 
     const handleSaveClick = () => {
         addAccount();
         handleCloseModal();
     };
 
-    const addAccount = async () => {
-        const accountToAdd = {
-            name: accountName,
-            type: accountType.toLowerCase(),
-            initial_balance: initialBalance,
-            description: accountDescription,
-            account_number: accountNumber,
-        };
-
-        ctxAddAccount(accountToAdd);
-    };
-
     const clickTypeHandler = (type) => {
-        setAccountType(type);
+        setInputFields((prev) => ({
+            ...prev,
+            type: type,
+        }));
         setIsExpanded(false);
     };
 
-    const handleCancelClose = () => {
-        if (
-            accountName !== "" ||
-            accountNumber !== "" ||
-            accountType !== "" ||
-            initialBalance !== "" ||
-            accountDescription !== ""
-        ) {
-            setIsModalOpen(true);
-        } else {
-            handleCloseModal();
-        }
-    };
-
-    const onConfirm = () => {
-        setIsModalOpen(false);
-        handleCloseModal();
-    };
-
-    const onCancel = () => {
-        setIsModalOpen(false);
-    };
-
     return (
-        <>
-            {isModalOpen && (
-                <ConfirmationModal
-                    text={{
-                        msg: "You have unsaved changes. Are you sure you want to discard them?",
-                        confirm_txt: "Discard Changes",
-                        cancel_txt: "Keep Editing",
-                    }}
-                    onConfirm={onConfirm}
-                    onCancel={onCancel}
-                />
-            )}
-            <div className={classes.modalOverlay}>
-                <div className={classes.mainContainer}>
-                    <section className={classes.top}>
-                        <h2>New Account Creation</h2>
-                        <div className={classes.seperatorH} />
-                        <div className={classes.inputCluster}>
-                            <p className={classes.label}>Account Name</p>
-                            <input
-                                type="text"
-                                placeholder="Enter account name (e.g., Checking, Savings, Credit Card)"
-                                value={accountName}
-                                onChange={(e) => setAccountName(e.target.value)}
-                            />
-                        </div>
-                        <div className={classes.inputCluster}>
-                            <p className={classes.label}>Account Number</p>
-                            <input
-                                type="text"
-                                placeholder="Enter account number (optional)"
-                                value={accountNumber}
-                                onChange={(e) => setAccountNumber(e.target.value)}
-                            />
-                        </div>
-                        <div className={classes.inputCluster}>
-                            <p className={classes.label}>Account Type</p>
-                            <div className={classes.accountTypeDiv} onClick={() => setIsExpanded((prev) => !prev)}>
-                                {accountType ? (
-                                    <p>{accountType}</p>
-                                ) : (
-                                    <p className={classes.placeholder}>Select account type</p>
-                                )}
+        <BaseAddModal
+            handleCloseModal={handleCloseModal}
+            hasUnsavedChanges={hasUnsavedChanges}
+            handleSaveClick={handleSaveClick}
+            title="New Account Creation"
+        >
+            <AddInputCluster
+                label="Account Name"
+                placeholder="Enter account name (e.g., Checking, Savings, Credit Card)"
+                name="name"
+                value={inputFields.name}
+                onChange={handleInputChange}
+            />
+            <AddInputCluster
+                label="Account Number"
+                placeholder="Enter account number (optional)"
+                name="account_number"
+                value={inputFields.account_number}
+                onChange={handleInputChange}
+            />
+            <div className={classes.inputCluster}>
+                <p className={classes.label}>Account Type</p>
+                <div className={classes.typeDiv} onClick={() => setIsExpanded((prev) => !prev)}>
+                    {inputFields?.type ? (
+                        <p>{inputFields.type}</p>
+                    ) : (
+                        <p className={classes.placeholder}>Select account type</p>
+                    )}
 
-                                <img src={isExpanded ? upChevIcon : downChevIcon} className={classes.icon} />
-                            </div>
-                            <div className={`${classes.anchor} ${isExpanded ? "" : classes.noDisplay}`}>
-                                <div className={classes.dropdown}>
-                                    {accountTypes.map((type, index) => {
-                                        return (
-                                            <p key={index} onClick={() => clickTypeHandler(type)}>
-                                                {type}
-                                            </p>
-                                        );
-                                    })}
-                                </div>
-                            </div>
-                        </div>
-                        <div className={classes.inputCluster}>
-                            <p className={classes.label}>Initial Balance</p>
-                            <input
-                                type="text"
-                                placeholder="Enter starting balance (e.g., 0.00)"
-                                value={initialBalance}
-                                onChange={(e) => setInitialBalance(e.target.value)}
-                            />
-                        </div>
-                        <textarea
-                            value={accountDescription}
-                            onChange={(e) => setAccountDescription(e.target.value)}
-                        ></textarea>
-                    </section>
-                    <section className={classes.buttons}>
-                        <button onClick={handleSaveClick}>Save & Close</button>
-                        <button onClick={handleCancelClose}>Close</button>
-                    </section>
+                    <img src={isExpanded ? upChevIcon : downChevIcon} className={classes.icon} />
+                </div>
+                <div className={`${classes.anchor} ${isExpanded ? "" : classes.noDisplay}`}>
+                    <div className={classes.dropdown}>
+                        {accountTypes.map((type, index) => {
+                            return (
+                                <p key={index} onClick={() => clickTypeHandler(type)}>
+                                    {type}
+                                </p>
+                            );
+                        })}
+                    </div>
                 </div>
             </div>
-        </>
+            <AddInputCluster
+                label="Initial Balance"
+                placeholder="Enter starting balance (e.g., 0.00)"
+                name="initial_balance"
+                value={inputFields.initial_balance}
+                onChange={handleInputChange}
+            />
+            <textarea
+                value={inputFields.description}
+                className={classes.textArea}
+                name="description"
+                onChange={handleInputChange}
+            ></textarea>
+        </BaseAddModal>
     );
 };
 

@@ -37,87 +37,11 @@
     background-color: var(--border-color);
 }
 
-.label {
-    margin-top: 1rem;
-}
-
-.top {
-    padding-left: 0.5rem;
-}
-
-.inputCluster > input,
-.accountTypeDiv {
-    width: 100%;
-    padding-left: 0.25rem;
-
-    border: none;
-    border-bottom: 1px solid var(--border-color);
-    outline: none;
-    font-family: "poppins";
-}
-
-.accountTypeDiv {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.accountTypeDiv > p {
-    font-size: 0.8rem;
-}
-
-.placeholder {
-    color: grey;
-    font-size: 0.8rem;
-    user-select: none;
-}
-
-.icon {
-    width: 1.25rem;
-    height: 1.25rem;
-
-    user-select: none;
-    cursor: pointer;
-}
-
-.noDisplay {
-    display: none;
-}
-
-.anchor {
-    position: relative;
-}
-
-.dropdown {
-    width: 100%;
-
-    background-color: var(--background-color);
-    color: black;
-    user-select: none;
-    border: 1px solid var(--border-color);
-    border-top: none;
-
-    display: flex;
-    flex-direction: column;
-
-    position: absolute;
-}
-
-.dropdown > p {
-    width: 100%;
-    padding-left: 0.25rem;
-
-    font-size: 0.8rem;
-    cursor: pointer;
-}
-
-.dropdown > p:hover {
-    background-color: var(--hover-color);
-}
-
 .buttons {
     width: 100%;
+
     display: flex;
+    align-items: center;
     justify-content: end;
 }
 
