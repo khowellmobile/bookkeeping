@@ -1,5 +1,7 @@
 import { useContext, useState } from "react";
-import classes from "./AddPropertyModal.module.css";
+
+import classes from "./AddModalStyle.module.css";
+
 import PropertiesCtx from "../../contexts/PropertiesCtx";
 import BaseAddModal from "./BaseAddModal";
 import upChevIcon from "../../../assets/chevron-up-icon.svg";
@@ -79,7 +81,7 @@ const AddPropertyModal = ({ handleCloseModal }) => {
             />
             <div className={classes.inputCluster}>
                 <p className={classes.label}>Property Type</p>
-                <div className={classes.accountTypeDiv} onClick={() => setIsExpanded((prev) => !prev)}>
+                <div className={classes.typeDiv} onClick={() => setIsExpanded((prev) => !prev)}>
                     {inputFields.property_type ? (
                         <p>{inputFields.property_type}</p>
                     ) : (

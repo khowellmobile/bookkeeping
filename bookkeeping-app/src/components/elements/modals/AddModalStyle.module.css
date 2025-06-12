@@ -2,7 +2,7 @@
     margin-top: 1rem;
 }
 
-.accountTypeDiv {
+.typeDiv {
     width: 100%;
     padding-left: 0.25rem;
 
@@ -12,13 +12,13 @@
     font-family: "poppins";
 }
 
-.accountTypeDiv {
+.typeDiv {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.accountTypeDiv > p {
+.typeDiv > p {
     font-size: 0.8rem;
 }
 
@@ -69,4 +69,15 @@
 
 .dropdown > p:hover {
     background-color: var(--hover-color);
+}
+
+.textArea {
+    width: 100%;
+    height: 10rem;
+    margin-top: 1rem;
+    padding: 0.25rem;
+
+    border: 1px solid var(--border-color);
+    font-family: "poppins";
+    resize: none;
 }
