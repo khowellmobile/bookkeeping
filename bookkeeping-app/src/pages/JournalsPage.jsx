@@ -33,10 +33,6 @@ const JournalsPage = () => {
         payload: null,
     });
 
-    useEffect(() => {
-        populateCtxJournals();
-    }, []);
-
     const saveInfo = async () => {
         // Getting non-empty items
         const item_list = journalItems.filter((item) => {

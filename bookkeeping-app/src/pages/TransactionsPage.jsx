@@ -20,7 +20,7 @@ const TransactionsPage = () => {
     const handleCloseModal = () => {
         setIsModalOpen(false);
     };
-    
+
     useEffect(() => {
         if (ctxTranList) {
             const lowercasedSearchTerm = searchTerm.toLowerCase();

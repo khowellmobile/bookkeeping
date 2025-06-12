@@ -45,15 +45,6 @@ const EntitiesPage = () => {
         }));
     };
 
-    const handleSaveUpdate = async (shouldDelete) => {
-        setIsEditing(false);
-    };
-
-    // load transactions on mount
-    useEffect(() => {
-        populateCtxTransactions();
-    }, []);
-
     // Filtering results by search term
     useEffect(() => {
         if (ctxEntityList) {
