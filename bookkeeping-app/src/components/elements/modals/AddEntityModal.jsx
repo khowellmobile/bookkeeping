@@ -9,29 +9,38 @@ import classes from "./AddEntityModal.module.css";
 const AddEntityModal = ({ handleCloseModal }) => {
     const { ctxAddEntity } = useContext(EntitiesCtx);
 
-    const [name, setName] = useState("");
-    const [company, setCompany] = useState("");
-    const [address, setAddress] = useState("");
-    const [phoneNumber, setPhoneNumber] = useState("");
-    const [email, setEmail] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [inputFields, setInputFields] = useState({
+        name: "",
+        company: "",
+        address: "",
+        phone_number: "",
+        email: "",
+        description: "",
+    });
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setInputFields((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
+    };
 
     const handleSaveClick = async () => {
-        const entityToAdd = {
-            name: name,
-            company: company,
-            address: address,
-            phone_number: phoneNumber,
-            email: email,
-            description: "",
-        };
-
-        ctxAddEntity(entityToAdd);
+        ctxAddEntity(inputFields);
         handleCloseModal();
     };
 
     const handleCancelClose = () => {
-        if (name !== "" || company !== "" || address !== "" || phoneNumber !== "" || email !== "") {
+        if (
+            inputFields.name !== "" ||
+            inputFields.company !== "" ||
+            inputFields.address !== "" ||
+            inputFields.phone_number !== "" ||
+            inputFields.email !== "" ||
+            inputFields.description !== ""
+        ) {
             setIsModalOpen(true);
         } else {
             handleCloseModal();
@@ -70,8 +79,9 @@ const AddEntityModal = ({ handleCloseModal }) => {
                             <input
                                 type="text"
                                 placeholder="Enter Entity Name"
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
+                                name="name"
+                                value={inputFields.name}
+                                onChange={handleInputChange}
                             />
                         </div>
                         <div className={classes.inputCluster}>
@@ -79,8 +89,9 @@ const AddEntityModal = ({ handleCloseModal }) => {
                             <input
                                 type="text"
                                 placeholder="Enter Entity Company (optional)"
-                                value={company}
-                                onChange={(e) => setCompany(e.target.value)}
+                                name="company"
+                                value={inputFields.company}
+                                onChange={handleInputChange}
                             />
                         </div>
                         <div className={classes.inputCluster}>
@@ -88,8 +99,9 @@ const AddEntityModal = ({ handleCloseModal }) => {
                             <input
                                 type="text"
                                 placeholder="Enter Entity Address (optional)"
-                                value={address}
-                                onChange={(e) => setAddress(e.target.value)}
+                                name="address"
+                                value={inputFields.address}
+                                onChange={handleInputChange}
                             />
                         </div>
                         <div className={classes.inputCluster}>
@@ -97,8 +109,9 @@ const AddEntityModal = ({ handleCloseModal }) => {
                             <input
                                 type="text"
                                 placeholder="Enter Entity Phone Number (optional)"
-                                value={phoneNumber}
-                                onChange={(e) => setPhoneNumber(e.target.value)}
+                                name="phone_number"
+                                value={inputFields.phone_number}
+                                onChange={handleInputChange}
                             />
                         </div>
                         <div className={classes.inputCluster}>
@@ -106,8 +119,9 @@ const AddEntityModal = ({ handleCloseModal }) => {
                             <input
                                 type="text"
                                 placeholder="Enter Entity Email (optional)"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
+                                name="email"
+                                value={inputFields.email}
+                                onChange={handleInputChange}
                             />
                         </div>
                     </section>

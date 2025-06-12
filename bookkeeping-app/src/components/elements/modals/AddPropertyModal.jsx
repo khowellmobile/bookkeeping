@@ -9,16 +9,26 @@ import downChevIcon from "../../../assets/chevron-down-icon.svg";
 const AddPropertyModal = ({ handleCloseModal }) => {
     const { ctxAddProperty } = useContext(PropertiesCtx);
 
-    const [name, setName] = useState("");
-    const [address, setAddress] = useState("")
-    const [type, setType] = useState("");
-    const [rent, setRent] = useState("");
-    const [units, setUnits] = useState("");
+    const [inputFields, setInputFields] = useState({
+        name: "",
+        address: "",
+        property_type: "",
+        rent: "",
+        number_of_units: "",
+    });
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isExpanded, setIsExpanded] = useState(false);
 
     const propertyTypes = ["Commercial", "Residential", "Multi-Unit"];
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setInputFields((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
+    };
 
     const handleSaveClick = () => {
         addProperty();
@@ -27,23 +37,29 @@ const AddPropertyModal = ({ handleCloseModal }) => {
 
     const addProperty = async () => {
         const propertyToAdd = {
-            name: name,
-            address: address,
-            property_type: type.toLowerCase(),
-            rent: rent,
-            number_of_units: units,
+            ...inputFields,
+            property_type: inputFields.property_type.toLowerCase(),
         };
 
         ctxAddProperty(propertyToAdd);
     };
 
     const clickTypeHandler = (type) => {
-        setType(type);
+        setInputFields((prev) => ({
+            ...prev,
+            property_type: type,
+        }));
         setIsExpanded(false);
     };
 
     const handleCancelClose = () => {
-        if (name !== "" || address!== "" || type !== "" || rent !== "" || units !== "") {
+        if (
+            inputFields.name !== "" ||
+            inputFields.address !== "" ||
+            inputFields.property_type !== "" ||
+            inputFields.rent !== "" ||
+            inputFields.number_of_units !== ""
+        ) {
             setIsModalOpen(true);
         } else {
             handleCloseModal();
@@ -82,8 +98,9 @@ const AddPropertyModal = ({ handleCloseModal }) => {
                             <input
                                 type="text"
                                 placeholder="Enter property name (e.g., West House, Green Marsh 024, Beach Rental)"
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
+                                name="name"
+                                value={inputFields.name}
+                                onChange={handleInputChange}
                             />
                         </div>
                         <div className={classes.inputCluster}>
@@ -91,14 +108,19 @@ const AddPropertyModal = ({ handleCloseModal }) => {
                             <input
                                 type="text"
                                 placeholder="Enter property Address (e.g., 123 Example St, City State 12345)"
-                                value={address}
-                                onChange={(e) => setAddress(e.target.value)}
+                                name="address"
+                                value={inputFields.address}
+                                onChange={handleInputChange}
                             />
                         </div>
                         <div className={classes.inputCluster}>
                             <p className={classes.label}>Property Type</p>
                             <div className={classes.accountTypeDiv} onClick={() => setIsExpanded((prev) => !prev)}>
-                                {type ? <p>{type}</p> : <p className={classes.placeholder}>Select Property type</p>}
+                                {inputFields.property_type ? (
+                                    <p>{inputFields.property_type}</p>
+                                ) : (
+                                    <p className={classes.placeholder}>Select Property type</p>
+                                )}
 
                                 <img src={isExpanded ? upChevIcon : downChevIcon} className={classes.icon} />
                             </div>
@@ -119,8 +141,9 @@ const AddPropertyModal = ({ handleCloseModal }) => {
                             <input
                                 type="text"
                                 placeholder="Enter Rent Amount (optional)"
-                                value={rent}
-                                onChange={(e) => setRent(e.target.value)}
+                                name="rent"
+                                value={inputFields.rent}
+                                onChange={handleInputChange}
                             />
                         </div>
                         <div className={classes.inputCluster}>
@@ -128,8 +151,9 @@ const AddPropertyModal = ({ handleCloseModal }) => {
                             <input
                                 type="text"
                                 placeholder="Enter Unit Amount"
-                                value={units}
-                                onChange={(e) => setUnits(e.target.value)}
+                                name="number_of_units"
+                                value={inputFields.number_of_units}
+                                onChange={handleInputChange}
                             />
                         </div>
                     </section>
