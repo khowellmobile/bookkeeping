@@ -6,6 +6,7 @@ import PropertiesCtx from "../components/contexts/PropertiesCtx";
 import ConfirmationModal from "../components/elements/modals/ConfirmationModal";
 
 import penIcon from "../assets/pen-icon.svg";
+import AddPropertyModal from "../components/elements/modals/AddPropertyModal";
 
 const PropertiesPage = () => {
     const { ctxPropertyList, ctxUpdateProperty, ctxAddProperty } = useContext(PropertiesCtx);
@@ -23,6 +24,7 @@ const PropertiesPage = () => {
     });
     const [isEditing, setIsEditing] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [confirmAction, setConfirmAction] = useState({
         type: null,
         payload: null,
@@ -84,8 +86,7 @@ const PropertiesPage = () => {
                 focusProperty(confirmAction.payload);
                 return;
             case "delete_entry":
-                ctxDeleteProperty(activeProperty.id);
-                clearInputs();
+                ctxUpdateProperty({ id: activeProperty.id, is_deleted: true });
                 return;
             default:
         }
@@ -151,10 +152,14 @@ const PropertiesPage = () => {
                     />
                 )}
 
+            {isAddModalOpen && <AddPropertyModal handleCloseModal={() => setIsAddModalOpen(false)} />}
+
             <div className={classes.mainContainer}>
                 <div className={classes.searchBox}>
                     <div className={classes.searchBoxTools}>
-                        <button className={classes.button}>Add Property</button>
+                        <button className={classes.button} onClick={() => setIsAddModalOpen(true)}>
+                            Add Property
+                        </button>
                     </div>
                     <input
                         type="text"

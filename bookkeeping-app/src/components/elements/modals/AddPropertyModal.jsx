@@ -6,10 +6,11 @@ import ConfirmationModal from "./ConfirmationModal";
 import upChevIcon from "../../../assets/chevron-up-icon.svg";
 import downChevIcon from "../../../assets/chevron-down-icon.svg";
 
-const AddAccountModal = ({ handleCloseModal }) => {
+const AddPropertyModal = ({ handleCloseModal }) => {
     const { ctxAddProperty } = useContext(PropertiesCtx);
 
     const [name, setName] = useState("");
+    const [address, setAddress] = useState("")
     const [type, setType] = useState("");
     const [rent, setRent] = useState("");
     const [units, setUnits] = useState("");
@@ -27,6 +28,7 @@ const AddAccountModal = ({ handleCloseModal }) => {
     const addProperty = async () => {
         const propertyToAdd = {
             name: name,
+            address: address,
             property_type: type.toLowerCase(),
             rent: rent,
             number_of_units: units,
@@ -41,7 +43,7 @@ const AddAccountModal = ({ handleCloseModal }) => {
     };
 
     const handleCancelClose = () => {
-        if (name !== "" || type !== "" || rent !== "" || units !== "") {
+        if (name !== "" || address!== "" || type !== "" || rent !== "" || units !== "") {
             setIsModalOpen(true);
         } else {
             handleCloseModal();
@@ -82,6 +84,15 @@ const AddAccountModal = ({ handleCloseModal }) => {
                                 placeholder="Enter property name (e.g., West House, Green Marsh 024, Beach Rental)"
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
+                            />
+                        </div>
+                        <div className={classes.inputCluster}>
+                            <p className={classes.label}>Property Address</p>
+                            <input
+                                type="text"
+                                placeholder="Enter property Address (e.g., 123 Example St, City State 12345)"
+                                value={address}
+                                onChange={(e) => setAddress(e.target.value)}
                             />
                         </div>
                         <div className={classes.inputCluster}>
@@ -132,4 +143,4 @@ const AddAccountModal = ({ handleCloseModal }) => {
     );
 };
 
-export default AddAccountModal;
+export default AddPropertyModal;
