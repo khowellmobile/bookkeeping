@@ -12,7 +12,7 @@ import AddEntityModal from "../components/elements/modals/AddEntityModal";
 import ConfirmationModal from "../components/elements/modals/ConfirmationModal";
 
 const EntitiesPage = () => {
-    const { setCtxEntityList, ctxEntityList, ctxUpdateEntity } = useContext(EntitiesCtx);
+    const { ctxEntityList, ctxUpdateEntity } = useContext(EntitiesCtx);
     const { populateCtxTransactions, ctxTranList, setCtxTranList } = useContext(TransactionsCtx);
 
     const [activeEntity, setActiveEntity] = useState();
@@ -155,7 +155,7 @@ const EntitiesPage = () => {
                     </div>
                     <input
                         type="text"
-                        className={classes.entitySerach}
+                        className={classes.entitySearch}
                         placeholder="Search..."
                         spellCheck="false"
                         value={searchTerm}

@@ -62,7 +62,7 @@
     justify-content: end;
 }
 
-.entitySearch {
+.propertySearch {
     height: 2rem;
     padding: 0.25rem;
     margin: 0.5rem 0.5rem;
@@ -75,7 +75,7 @@
     outline: none;
 }
 
-.entityListing {
+.propertyListing {
     margin: 0 0.5rem;
 
     overflow-y: scroll;
@@ -84,7 +84,7 @@
     flex-direction: column;
 }
 
-.entityListing > p {
+.propertyListing > p {
     width: 100%;
     height: 2rem;
     padding-left: 0.25rem;
@@ -100,11 +100,11 @@
     align-items: center;
 }
 
-.entityListing > p:hover {
+.propertyListing > p:hover {
     background-color: var(--hover-color);
 }
 
-.entityListing > p:first-child {
+.propertyListing > p:first-child {
     border-top: 1px solid var(--border-color);
 }
 
@@ -119,7 +119,7 @@
     flex-direction: column;
 }
 
-.entityInfo {
+.propertyInfo {
     width: 100%;
     height: 30%;
 
@@ -157,10 +157,6 @@
     color: var(--primary-text-color);
 }
 
-.entityInfo > .header > h2 {
-    font-weight: 400;
-}
-
 .inputs {
     width: 100%;
     height: calc(100% - 3rem);
@@ -186,8 +182,7 @@
 }
 
 .genInfo > div,
-.contactInfo > div {
-    height: calc(100% - 2rem);
+.financialInfo > div {
     padding: 0.5rem;
 
     display: flex;
@@ -225,7 +220,7 @@
     border: 1px solid var(--border-color);
 }
 
-.contactInfo {
+.financialInfo {
     width: 30%;
 
     border-left: 1px solid var(--border-color);

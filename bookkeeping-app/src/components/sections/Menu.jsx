@@ -9,6 +9,7 @@ import DashIcon from "../../assets/dashboard-icon.svg";
 import TransactionIcon from "../../assets/transaction-icon.svg";
 import JournalIcon from "../../assets/journal-icon.svg";
 import ReportsIcon from "../../assets/reports-icon.svg";
+import PropertiesIcon from "../../assets/properties-icon.svg";
 import SettingsIcon from "../../assets/settings-icon.svg";
 import SupportIcon from "../../assets/support-icon.svg";
 import UserIcon from "../../assets/user-icon-white.svg";
@@ -38,6 +39,8 @@ const Menu = () => {
                 <MenuLineItem itemName="Entities" link="/entities" icon={<img src={EntitiesIcon} alt="Icon" />} />
                 <MenuLineItem itemName="Journals" link="/journals" icon={<img src={JournalIcon} alt="Icon" />} />
                 <MenuLineItem itemName="Reports" link="/reports" icon={<img src={ReportsIcon} alt="Icon" />} />
+                <div className={classes.seperatorH}></div>
+                <MenuLineItem itemName="Properties" link="/properties" icon={<img src={PropertiesIcon} alt="Icon" />} />
                 <div className={classes.seperatorH}></div>
                 <MenuLineItem itemName="Support" link="/support" icon={<img src={SupportIcon} alt="Icon" />} />
                 <MenuLineItem itemName="Settings" link="/settings" icon={<img src={SettingsIcon} alt="Icon" />} />

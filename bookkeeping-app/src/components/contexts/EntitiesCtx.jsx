@@ -86,8 +86,6 @@ export function EntitiesCtxProvider(props) {
         } catch (e) {
             console.log("Error: " + e);
         }
-
-        setIsEditing(false);
     };
 
     const context = {
