@@ -120,7 +120,7 @@ class EntitySerializer(serializers.ModelSerializer):
     phone_number = serializers.CharField(required=False, allow_blank=True)
     email = serializers.EmailField(required=False, allow_blank=True)
     property = PropertySerializer(read_only=True)
-    property_id = serializers.IntegerField(write_only=True)
+    property_id = serializers.IntegerField(required=False, write_only=True)
 
     class Meta:
         model = Entity

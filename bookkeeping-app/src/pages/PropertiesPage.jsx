@@ -1,19 +1,17 @@
-import classes from "./PropertiesPage.module.css";
+import { useState, useContext, useEffect } from "react";
 
-import { useState, useContext, useEffect, useMemo, act } from "react";
+import classes from "./PropertiesPage.module.css";
 
 import PropertiesCtx from "../components/contexts/PropertiesCtx";
 import ConfirmationModal from "../components/elements/modals/ConfirmationModal";
-
 import penIcon from "../assets/pen-icon.svg";
 import AddPropertyModal from "../components/elements/modals/AddPropertyModal";
+import SearchBox from "../components/elements/misc/SearchBox";
 
 const PropertiesPage = () => {
-    const { ctxPropertyList, ctxUpdateProperty, ctxAddProperty } = useContext(PropertiesCtx);
+    const { ctxPropertyList, ctxUpdateProperty } = useContext(PropertiesCtx);
 
     const [activeProperty, setActiveProperty] = useState("");
-    const [searchTerm, setSearchTerm] = useState("");
-    const [filteredProperties, setFilteredProperties] = useState([]);
     const [inputFields, setInputFields] = useState({
         name: "",
         address: "",
@@ -29,17 +27,6 @@ const PropertiesPage = () => {
         type: null,
         payload: null,
     });
-
-    // Filtering by search term
-    useEffect(() => {
-        if (ctxPropertyList) {
-            const lowercasedSearchTerm = searchTerm.toLowerCase();
-            const filtered = ctxPropertyList.filter((property) =>
-                property.name.toLowerCase().includes(lowercasedSearchTerm)
-            );
-            setFilteredProperties(filtered);
-        }
-    }, [searchTerm, ctxPropertyList]);
 
     // Setting fields to selected entity
     const focusProperty = (property) => {
@@ -155,34 +142,12 @@ const PropertiesPage = () => {
             {isAddModalOpen && <AddPropertyModal handleCloseModal={() => setIsAddModalOpen(false)} />}
 
             <div className={classes.mainContainer}>
-                <div className={classes.searchBox}>
-                    <div className={classes.searchBoxTools}>
-                        <button className={classes.button} onClick={() => setIsAddModalOpen(true)}>
-                            Add Property
-                        </button>
-                    </div>
-                    <input
-                        type="text"
-                        className={classes.propertySearch}
-                        placeholder="Search..."
-                        spellCheck="false"
-                        value={searchTerm}
-                        onChange={(e) => {
-                            setSearchTerm(e.target.value);
-                        }}
-                    ></input>
-                    <div className={classes.propertyListing}>
-                        {filteredProperties && filteredProperties.length > 0 ? (
-                            filteredProperties.map((property, index) => (
-                                <p key={index} onClick={() => handlePropertyClick(property)}>
-                                    {property.name}
-                                </p>
-                            ))
-                        ) : (
-                            <p>No matching properties found.</p>
-                        )}
-                    </div>
-                </div>
+                <SearchBox
+                    itemName={"Property"}
+                    items={ctxPropertyList}
+                    onItemClick={handlePropertyClick}
+                    onAddButtonClick={() => setIsAddModalOpen(true)}
+                />
                 <div className={classes.contentBox}>
                     <div className={classes.propertyInfo}>
                         <div className={`${classes.header} ${isEditing ? classes.editing : ""}`}>

@@ -1,0 +1,13 @@
+.label {
+    margin-top: 1rem;
+}
+
+.inputCluster > input {
+    width: 100%;
+    padding-left: 0.25rem;
+
+    border: none;
+    border-bottom: 1px solid var(--border-color);
+    outline: none;
+    font-family: "poppins";
+}
