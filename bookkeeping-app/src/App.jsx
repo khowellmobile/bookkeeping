@@ -25,9 +25,9 @@ function App() {
     return (
         <AuthCtxProvider>
             <AccountsCtxProvider>
-                <EntitiesCtxProvider>
-                    <TransactionsCtxProvider>
-                        <PropertiesCtxProvider>
+                <PropertiesCtxProvider>
+                    <EntitiesCtxProvider>
+                        <TransactionsCtxProvider>
                             <JournalsCtxProvider>
                                 <Routes>
                                     <Route path="/" element={<SplashPage />} />
@@ -42,9 +42,9 @@ function App() {
                                     <Route path="/settings" element={<Layout><SettingsPage /></Layout>} />
                                 </Routes>
                             </JournalsCtxProvider>
-                        </PropertiesCtxProvider>
-                    </TransactionsCtxProvider>
-                </EntitiesCtxProvider>
+                        </TransactionsCtxProvider>
+                    </EntitiesCtxProvider>
+                </PropertiesCtxProvider>
             </AccountsCtxProvider>
         </AuthCtxProvider>
     );

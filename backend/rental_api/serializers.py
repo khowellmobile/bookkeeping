@@ -143,9 +143,30 @@ class EntitySerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = self.context["request"].user
         validated_data["user"] = user
+
+        property_id = validated_data.pop("property_id", None)
+        if property_id:
+            try:
+                prop_obj = Property.objects.get(id=property_id)
+                validated_data["property"] = prop_obj
+            except Property.DoesNotExist:
+                raise serializers.ValidationError(
+                    {"property_id": "Property with this ID does not exist."}
+                )
+
         return super().create(validated_data)
 
     def update(self, instance, validated_data):
+        property_id = validated_data.pop("property_id", None)
+        if property_id is not None:
+            try:
+                prop_obj = Property.objects.get(id=property_id)
+                instance.property = prop_obj
+            except Property.DoesNotExist:
+                raise serializers.ValidationError(
+                    {"property_id": "Property with this ID does not exist."}
+                )
+
         fields_to_update = [
             "name",
             "company",

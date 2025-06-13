@@ -154,8 +154,13 @@ class EntityListAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        entites = Entity.objects.filter(user=request.user)
-        serializer = EntitySerializer(entites, many=True)
+        print("request")
+        entities = Entity.objects.filter(user=request.user)
+
+        property_id = request.query_params.get('property_id', None)
+        entities = entities.filter(property_id = property_id)
+
+        serializer = EntitySerializer(entities, many=True)
         return Response(serializer.data)
 
     def post(self, request):

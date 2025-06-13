@@ -21,11 +21,16 @@ export function EntitiesCtxProvider(props) {
         if (ctxAccessToken) {
             populateCtxEntities();
         }
-    }, []);
+    }, [ctxActiveProperty]);
 
     const populateCtxEntities = async () => {
         try {
-            const response = await fetch("http://localhost:8000/api/entities/", {
+            const url = new URL("http://localhost:8000/api/entities/");
+            if (ctxActiveProperty && ctxActiveProperty.id) {
+                url.searchParams.append("property_id", ctxActiveProperty.id);
+            }
+
+            const response = await fetch(url.toString(), {
                 method: "GET",
                 headers: {
                     Authorization: `Bearer ${ctxAccessToken}`,
