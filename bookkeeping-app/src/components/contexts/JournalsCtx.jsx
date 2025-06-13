@@ -1,6 +1,7 @@
 import { createContext, useState, useEffect, useContext } from "react";
 
 import AuthCtx from "./AuthCtx";
+import PropertiesCtx from "./PropertiesCtx";
 
 const JournalsCtx = createContext({
     ctxJournalList: null,
@@ -12,6 +13,7 @@ const JournalsCtx = createContext({
 
 export function JournalsCtxProvider(props) {
     const { ctxAccessToken } = useContext(AuthCtx);
+    const { ctxActiveProperty } = useContext(PropertiesCtx);
 
     const [ctxJournalList, setCtxJournalList] = useState(null);
 

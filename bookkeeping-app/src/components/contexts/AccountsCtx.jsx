@@ -1,6 +1,7 @@
 import { createContext, useState, useEffect, useContext } from "react";
 
 import AuthCtx from "./AuthCtx";
+import PropertiesCtx from "./PropertiesCtx";
 
 const AccountsCtx = createContext({
     ctxActiveAccount: null,
@@ -15,6 +16,7 @@ const AccountsCtx = createContext({
 
 export function AccountsCtxProvider(props) {
     const { ctxAccessToken } = useContext(AuthCtx);
+    const { ctxActiveProperty } = useContext(PropertiesCtx);
 
     const [ctxActiveAccount, setCtxActiveAccount] = useState({ name: "None Selected" });
     const [ctxAccountList, setCtxAccountList] = useState(null);

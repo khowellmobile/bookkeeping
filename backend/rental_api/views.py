@@ -23,7 +23,7 @@ class TransactionListAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        transactions = Transaction.objects.all()
+        transactions = Transaction.objects.filter(user=request.user)
         serializer = TransactionSerializer(transactions, many=True)
         return Response(serializer.data)
 
@@ -104,7 +104,7 @@ class AccountListAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        accounts = Account.objects.all()
+        accounts = Account.objects.filter(user=request.user)
         serializer = AccountSerializer(accounts, many=True)
         return Response(serializer.data)
 
@@ -154,7 +154,7 @@ class EntityListAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        entites = Entity.objects.all()
+        entites = Entity.objects.filter(user=request.user)
         serializer = EntitySerializer(entites, many=True)
         return Response(serializer.data)
 
@@ -204,7 +204,7 @@ class JournalListAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        journals = Journal.objects.all()
+        journals = Journal.objects.filter(user=request.user)
         serializer = JournalSerializer(journals, many=True)
         return Response(serializer.data)
 
@@ -262,7 +262,7 @@ class PropertyListAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        properties = Property.objects.all()
+        properties = Property.objects.filter(user=request.user)
         serializer = PropertySerializer(properties, many=True)
         return Response(serializer.data)
 

@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState, useContext } from "react";
 
 import AuthCtx from "./AuthCtx";
+import PropertiesCtx from "./PropertiesCtx";
 
 const EntitiesCtx = createContext({
     ctxEntityList: null,
@@ -12,6 +13,7 @@ const EntitiesCtx = createContext({
 
 export function EntitiesCtxProvider(props) {
     const { ctxAccessToken } = useContext(AuthCtx);
+    const { ctxActiveProperty } = useContext(PropertiesCtx);
 
     const [ctxEntityList, setCtxEntityList] = useState([]);
 
