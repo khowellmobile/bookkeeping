@@ -1,4 +1,4 @@
-import Dropdown from "../elements/dropdowns/Dropdown";
+import Dropdown from "../elements/dropdowns/PropertyDropdown";
 import classes from "./Header.module.css";
 
 const Header = () => {

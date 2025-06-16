@@ -92,14 +92,14 @@
     background-color: var(--border-color);
 }
 
-.clientListing {
+.propertyListing {
     overflow-y: scroll;
 
     display: flex;
     flex-direction: column;
 }
 
-.clientListing > p {
+.propertyListing > p {
     padding: 0.25rem 0.5rem;
 
     font-size: 0.9rem;
@@ -109,7 +109,7 @@
     transition: all 0.25s ease;
 }
 
-.clientListing > p:hover {
+.propertyListing > p:hover {
     background-color: var(--hover-color);
     text-decoration: underline;
 }

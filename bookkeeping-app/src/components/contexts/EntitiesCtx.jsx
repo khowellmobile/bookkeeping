@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState, useContext } from "react";
 
 import AuthCtx from "./AuthCtx";
+import PropertiesCtx from "./PropertiesCtx";
 
 const EntitiesCtx = createContext({
     ctxEntityList: null,
@@ -12,6 +13,7 @@ const EntitiesCtx = createContext({
 
 export function EntitiesCtxProvider(props) {
     const { ctxAccessToken } = useContext(AuthCtx);
+    const { ctxActiveProperty } = useContext(PropertiesCtx);
 
     const [ctxEntityList, setCtxEntityList] = useState([]);
 
@@ -19,11 +21,16 @@ export function EntitiesCtxProvider(props) {
         if (ctxAccessToken) {
             populateCtxEntities();
         }
-    }, []);
+    }, [ctxActiveProperty]);
 
     const populateCtxEntities = async () => {
         try {
-            const response = await fetch("http://localhost:8000/api/entities/", {
+            const url = new URL("http://localhost:8000/api/entities/");
+            if (ctxActiveProperty && ctxActiveProperty.id) {
+                url.searchParams.append("property_id", ctxActiveProperty.id);
+            }
+
+            const response = await fetch(url.toString(), {
                 method: "GET",
                 headers: {
                     Authorization: `Bearer ${ctxAccessToken}`,
@@ -41,7 +48,12 @@ export function EntitiesCtxProvider(props) {
 
     const ctxAddEntity = async (entityToAdd) => {
         try {
-            const response = await fetch("http://127.0.0.1:8000/api/entities/", {
+            const url = new URL("http://localhost:8000/api/entities/");
+            if (ctxActiveProperty && ctxActiveProperty.id) {
+                url.searchParams.append("property_id", ctxActiveProperty.id);
+            }
+
+            const response = await fetch(url.toString(), {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

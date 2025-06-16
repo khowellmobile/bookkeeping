@@ -43,7 +43,6 @@ class AccountSerializer(serializers.ModelSerializer):
         return instance
 
 
-# New PropertySerializer
 class PropertySerializer(serializers.ModelSerializer):
     accounts = AccountSerializer(many=True, read_only=True)
     account_ids = serializers.ListField(
@@ -146,6 +145,16 @@ class EntitySerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
     def update(self, instance, validated_data):
+        property_id = validated_data.pop("property_id", None)
+        if property_id is not None:
+            try:
+                prop_obj = Property.objects.get(id=property_id)
+                instance.property = prop_obj
+            except Property.DoesNotExist:
+                raise serializers.ValidationError(
+                    {"property_id": "Property with this ID does not exist."}
+                )
+
         fields_to_update = [
             "name",
             "company",
@@ -201,7 +210,7 @@ class TransactionSerializer(serializers.ModelSerializer):
         entity_id = validated_data.pop("entity_id")
 
         try:
-            account = Account.objects.get(id=account_id)
+            account = Account.objects.get(id=account_id, user=user)
         except Account.DoesNotExist:
             raise serializers.ValidationError(
                 {"account_id": "Account with this ID does not exist."}
@@ -209,7 +218,7 @@ class TransactionSerializer(serializers.ModelSerializer):
         validated_data["account"] = account
 
         try:
-            entity = Entity.objects.get(id=entity_id)
+            entity = Entity.objects.get(id=entity_id, user=user)
         except Entity.DoesNotExist:
             raise serializers.ValidationError(
                 {"Entity_id": "Entity with this ID does not exist."}

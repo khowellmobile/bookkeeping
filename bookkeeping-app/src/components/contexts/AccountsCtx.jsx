@@ -1,6 +1,7 @@
 import { createContext, useState, useEffect, useContext } from "react";
 
 import AuthCtx from "./AuthCtx";
+import PropertiesCtx from "./PropertiesCtx";
 
 const AccountsCtx = createContext({
     ctxActiveAccount: null,
@@ -15,6 +16,7 @@ const AccountsCtx = createContext({
 
 export function AccountsCtxProvider(props) {
     const { ctxAccessToken } = useContext(AuthCtx);
+    const { ctxActiveProperty } = useContext(PropertiesCtx);
 
     const [ctxActiveAccount, setCtxActiveAccount] = useState({ name: "None Selected" });
     const [ctxAccountList, setCtxAccountList] = useState(null);
@@ -23,11 +25,16 @@ export function AccountsCtxProvider(props) {
         if (ctxAccessToken) {
             populateCtxAccounts();
         }
-    }, []);
+    }, [ctxActiveProperty]);
 
     const populateCtxAccounts = async () => {
         try {
-            const response = await fetch("http://localhost:8000/api/accounts/", {
+            const url = new URL("http://localhost:8000/api/accounts/");
+            if (ctxActiveProperty && ctxActiveProperty.id) {
+                url.searchParams.append("property_id", ctxActiveProperty.id);
+            }
+
+            const response = await fetch(url.toString(), {
                 method: "GET",
                 headers: {
                     Authorization: `Bearer ${ctxAccessToken}`,
@@ -45,7 +52,12 @@ export function AccountsCtxProvider(props) {
 
     const ctxAddAccount = async (account) => {
         try {
-            const response = await fetch("http://127.0.0.1:8000/api/accounts/", {
+            const url = new URL("http://localhost:8000/api/accounts/");
+            if (ctxActiveProperty && ctxActiveProperty.id) {
+                url.searchParams.append("property_id", ctxActiveProperty.id);
+            }
+
+            const response = await fetch(url.toString(), {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

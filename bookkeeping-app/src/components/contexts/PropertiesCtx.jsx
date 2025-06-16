@@ -3,6 +3,8 @@ import { createContext, useState, useEffect, useContext } from "react";
 import AuthCtx from "./AuthCtx";
 
 const PropertiesCtx = createContext({
+    ctxActiveProperty: null,
+    setCtxActiveProperty: () => {},
     ctxPropertyList: null,
     setCtxPropertyList: () => {},
     populateCtxProperties: () => {},
@@ -14,6 +16,7 @@ export function PropertiesCtxProvider(props) {
     const { ctxAccessToken } = useContext(AuthCtx);
 
     const [ctxPropertyList, setCtxPropertyList] = useState(null);
+    const [ctxActiveProperty, setCtxActiveProperty] = useState();
 
     useEffect(() => {
         if (ctxAccessToken) {
@@ -90,6 +93,8 @@ export function PropertiesCtxProvider(props) {
     };
 
     const context = {
+        ctxActiveProperty,
+        setCtxActiveProperty,
         ctxPropertyList,
         setCtxPropertyList,
         populateCtxProperties,

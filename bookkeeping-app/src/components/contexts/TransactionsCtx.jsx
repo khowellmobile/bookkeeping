@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState, useContext } from "react";
 
 import AuthCtx from "./AuthCtx";
+import PropertiesCtx from "./PropertiesCtx";
 
 const TransactionsCtx = createContext({
     ctxTranList: null,
@@ -12,6 +13,7 @@ const TransactionsCtx = createContext({
 
 export function TransactionsCtxProvider(props) {
     const { ctxAccessToken } = useContext(AuthCtx);
+    const { ctxActiveProperty } = useContext(PropertiesCtx);
 
     const [ctxTranList, setCtxTranList] = useState(null);
 
