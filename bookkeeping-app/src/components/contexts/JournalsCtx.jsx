@@ -21,11 +21,16 @@ export function JournalsCtxProvider(props) {
         if (ctxAccessToken) {
             populateCtxJournals();
         }
-    }, []);
+    }, [ctxActiveProperty]);
 
     const populateCtxJournals = async () => {
         try {
-            const response = await fetch("http://localhost:8000/api/journals/", {
+            const url = new URL("http://localhost:8000/api/journals/");
+            if (ctxActiveProperty && ctxActiveProperty.id) {
+                url.searchParams.append("property_id", ctxActiveProperty.id);
+            }
+
+            const response = await fetch(url.toString(), {
                 method: "GET",
                 headers: {
                     Authorization: `Bearer ${ctxAccessToken}`,
@@ -42,8 +47,14 @@ export function JournalsCtxProvider(props) {
     };
 
     const ctxUpdateJournal = async (selectedJournalId, url, method, sendData) => {
+        console.log(selectedJournalId, url, method, sendData)
         const ctxAccessToken = localStorage.getItem("accessToken");
         try {
+            const url = method == "POST" ? new URL("http://localhost:8000/api/journals/") : url;
+            if (method == "POST" && ctxActiveProperty && ctxActiveProperty.id) {
+                url.searchParams.append("property_id", ctxActiveProperty.id);
+            }
+
             const response = await fetch(url, {
                 method: method,
                 headers: {

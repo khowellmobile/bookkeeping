@@ -44,7 +44,6 @@ export function AccountsCtxProvider(props) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const data = await response.json();
-            console.log(data);
             setCtxAccountList(data);
         } catch (e) {
             console.log("Error: " + e);

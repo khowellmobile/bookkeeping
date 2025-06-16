@@ -48,7 +48,12 @@ export function EntitiesCtxProvider(props) {
 
     const ctxAddEntity = async (entityToAdd) => {
         try {
-            const response = await fetch("http://127.0.0.1:8000/api/entities/", {
+            const url = new URL("http://localhost:8000/api/entities/");
+            if (ctxActiveProperty && ctxActiveProperty.id) {
+                url.searchParams.append("property_id", ctxActiveProperty.id);
+            }
+
+            const response = await fetch(url.toString(), {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

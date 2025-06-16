@@ -204,18 +204,56 @@ class EntityListAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        property_id = request.query_params.get("property_id")
         entities = Entity.objects.filter(user=request.user)
 
-        property_id = request.query_params.get("property_id", None)
-        entities = entities.filter(property_id=property_id)
+        if property_id:
+            try:
+                entities = entities.filter(property_id=property_id)
+            except Property.DoesNotExist:
+                return Response(
+                    {
+                        "error": "Property with this ID does not exist or does not belong to the user."
+                    },
+                    status=status.HTTP_404_NOT_FOUND,
+                )
+            except ValueError:
+                return Response(
+                    {"error": "Invalid property_id provided."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
 
         serializer = EntitySerializer(entities, many=True)
         return Response(serializer.data)
 
     def post(self, request):
+        property_id = request.query_params.get("property_id")
+
+        if property_id:
+            try:
+                property_obj = Property.objects.get(id=property_id, user=request.user)
+            except Property.DoesNotExist:
+                return Response(
+                    {
+                        "error": "Property with this ID does not exist or does not belong to the user."
+                    },
+                    status=status.HTTP_404_NOT_FOUND,
+                )
+            except ValueError:
+                return Response(
+                    {"error": "Invalid property_id provided."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+        else:
+            return Response(
+                {"error": "property_id is required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
         serializer = EntitySerializer(data=request.data, context={"request": request})
+
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(user=request.user, property=property_obj)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -258,14 +296,56 @@ class JournalListAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        property_id = request.query_params.get("property_id")
         journals = Journal.objects.filter(user=request.user)
+
+        if property_id:
+            try:
+                journals = journals.filter(property_id=property_id)
+            except Property.DoesNotExist:
+                return Response(
+                    {
+                        "error": "Property with this ID does not exist or does not belong to the user."
+                    },
+                    status=status.HTTP_404_NOT_FOUND,
+                )
+            except ValueError:
+                return Response(
+                    {"error": "Invalid property_id provided."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
         serializer = JournalSerializer(journals, many=True)
         return Response(serializer.data)
 
     def post(self, request):
+        property_id = request.query_params.get("property_id")
+
+        if property_id:
+            try:
+                property_obj = Property.objects.get(id=property_id, user=request.user)
+            except Property.DoesNotExist:
+                return Response(
+                    {
+                        "error": "Property with this ID does not exist or does not belong to the user."
+                    },
+                    status=status.HTTP_404_NOT_FOUND,
+                )
+            except ValueError:
+                return Response(
+                    {"error": "Invalid property_id provided."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+        else:
+            return Response(
+                {"error": "property_id is required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
         serializer = JournalSerializer(data=request.data, context={"request": request})
+
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(user=request.user, property=property_obj)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
