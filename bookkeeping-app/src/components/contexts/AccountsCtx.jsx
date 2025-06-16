@@ -25,11 +25,16 @@ export function AccountsCtxProvider(props) {
         if (ctxAccessToken) {
             populateCtxAccounts();
         }
-    }, []);
+    }, [ctxActiveProperty]);
 
     const populateCtxAccounts = async () => {
         try {
-            const response = await fetch("http://localhost:8000/api/accounts/", {
+            const url = new URL("http://localhost:8000/api/accounts/");
+            if (ctxActiveProperty && ctxActiveProperty.id) {
+                url.searchParams.append("property_id", ctxActiveProperty.id);
+            }
+
+            const response = await fetch(url.toString(), {
                 method: "GET",
                 headers: {
                     Authorization: `Bearer ${ctxAccessToken}`,
@@ -39,6 +44,7 @@ export function AccountsCtxProvider(props) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const data = await response.json();
+            console.log(data);
             setCtxAccountList(data);
         } catch (e) {
             console.log("Error: " + e);
@@ -47,7 +53,12 @@ export function AccountsCtxProvider(props) {
 
     const ctxAddAccount = async (account) => {
         try {
-            const response = await fetch("http://127.0.0.1:8000/api/accounts/", {
+            const url = new URL("http://localhost:8000/api/accounts/");
+            if (ctxActiveProperty && ctxActiveProperty.id) {
+                url.searchParams.append("property_id", ctxActiveProperty.id);
+            }
+
+            const response = await fetch(url.toString(), {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

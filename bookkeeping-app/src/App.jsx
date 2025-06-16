@@ -24,8 +24,8 @@ import PropertiesPage from "./pages/PropertiesPage";
 function App() {
     return (
         <AuthCtxProvider>
-            <AccountsCtxProvider>
-                <PropertiesCtxProvider>
+            <PropertiesCtxProvider>
+                <AccountsCtxProvider>
                     <EntitiesCtxProvider>
                         <TransactionsCtxProvider>
                             <JournalsCtxProvider>
@@ -44,8 +44,8 @@ function App() {
                             </JournalsCtxProvider>
                         </TransactionsCtxProvider>
                     </EntitiesCtxProvider>
-                </PropertiesCtxProvider>
-            </AccountsCtxProvider>
+                </AccountsCtxProvider>
+            </PropertiesCtxProvider>
         </AuthCtxProvider>
     );
 }
