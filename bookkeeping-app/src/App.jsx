@@ -24,10 +24,10 @@ import PropertiesPage from "./pages/PropertiesPage";
 function App() {
     return (
         <AuthCtxProvider>
-            <AccountsCtxProvider>
-                <EntitiesCtxProvider>
-                    <TransactionsCtxProvider>
-                        <PropertiesCtxProvider>
+            <PropertiesCtxProvider>
+                <AccountsCtxProvider>
+                    <EntitiesCtxProvider>
+                        <TransactionsCtxProvider>
                             <JournalsCtxProvider>
                                 <Routes>
                                     <Route path="/" element={<SplashPage />} />
@@ -42,10 +42,10 @@ function App() {
                                     <Route path="/settings" element={<Layout><SettingsPage /></Layout>} />
                                 </Routes>
                             </JournalsCtxProvider>
-                        </PropertiesCtxProvider>
-                    </TransactionsCtxProvider>
-                </EntitiesCtxProvider>
-            </AccountsCtxProvider>
+                        </TransactionsCtxProvider>
+                    </EntitiesCtxProvider>
+                </AccountsCtxProvider>
+            </PropertiesCtxProvider>
         </AuthCtxProvider>
     );
 }

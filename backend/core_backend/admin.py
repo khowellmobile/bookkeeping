@@ -59,6 +59,7 @@ class DatabaseConnectionsAdmin(admin.ModelAdmin):
 class DatabaseConnectionsAdmin(admin.ModelAdmin):
     list_display = [
         "user",
+        "property",
         "name",
         "date",
         "item_list",
