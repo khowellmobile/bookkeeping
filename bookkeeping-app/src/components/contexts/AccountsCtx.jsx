@@ -25,7 +25,7 @@ export function AccountsCtxProvider(props) {
         if (ctxAccessToken) {
             populateCtxAccounts();
         }
-    }, [ctxActiveProperty]);
+    }, [ctxActiveProperty, ctxAccessToken]);
 
     const populateCtxAccounts = async () => {
         try {

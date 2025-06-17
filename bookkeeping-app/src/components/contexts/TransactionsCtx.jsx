@@ -26,7 +26,7 @@ export function TransactionsCtxProvider(props) {
         if (ctxAccessToken) {
             populateCtxTransactions(ctxFilterBy);
         }
-    }, [ctxActiveAccount, ctxActiveEntity, ctxFilterBy]);
+    }, [ctxActiveAccount, ctxActiveEntity, ctxFilterBy,ctxAccessToken]);
 
     const populateCtxTransactions = async () => {
         try {

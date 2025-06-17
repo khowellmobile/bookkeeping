@@ -21,7 +21,7 @@ export function JournalsCtxProvider(props) {
         if (ctxAccessToken) {
             populateCtxJournals();
         }
-    }, [ctxActiveProperty]);
+    }, [ctxActiveProperty,ctxAccessToken]);
 
     const populateCtxJournals = async () => {
         try {

@@ -24,7 +24,7 @@ export function EntitiesCtxProvider(props) {
         if (ctxAccessToken) {
             populateCtxEntities();
         }
-    }, [ctxActiveProperty]);
+    }, [ctxActiveProperty, ctxAccessToken]);
 
     const populateCtxEntities = async () => {
         try {
