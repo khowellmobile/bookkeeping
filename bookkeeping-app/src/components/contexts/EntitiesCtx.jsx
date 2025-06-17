@@ -6,6 +6,8 @@ import PropertiesCtx from "./PropertiesCtx";
 const EntitiesCtx = createContext({
     ctxEntityList: null,
     setCtxEntityList: () => {},
+    ctxActiveEntity: null,
+    setCtxActiveEntity: () => {},
     populateCtxEntities: () => {},
     ctxAddEntity: () => {},
     ctxUpdateEntity: () => {},
@@ -16,6 +18,7 @@ export function EntitiesCtxProvider(props) {
     const { ctxActiveProperty } = useContext(PropertiesCtx);
 
     const [ctxEntityList, setCtxEntityList] = useState([]);
+    const [ctxActiveEntity, setCtxActiveEntity] = useState();
 
     useEffect(() => {
         if (ctxAccessToken) {
@@ -103,6 +106,8 @@ export function EntitiesCtxProvider(props) {
     const context = {
         ctxEntityList,
         setCtxEntityList,
+        ctxActiveEntity,
+        setCtxActiveEntity,
         populateCtxEntities,
         ctxAddEntity,
         ctxUpdateEntity,
