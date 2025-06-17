@@ -22,7 +22,7 @@ export function PropertiesCtxProvider(props) {
         if (ctxAccessToken) {
             populateCtxProperties();
         }
-    }, []);
+    }, [ctxAccessToken]);
 
     const populateCtxProperties = async () => {
         try {
