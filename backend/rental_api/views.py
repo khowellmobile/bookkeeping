@@ -23,7 +23,31 @@ class TransactionListAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        transactions = Transaction.objects.filter(user=request.user)
+        account_id = request.query_params.get("account_id")
+
+        if account_id:
+            try:
+                transactions = Transaction.objects.filter(
+                    user=request.user, account_id=account_id
+                )
+            except Property.DoesNotExist:
+                return Response(
+                    {
+                        "error": "Property with this ID does not exist or does not belong to the user."
+                    },
+                    status=status.HTTP_404_NOT_FOUND,
+                )
+            except ValueError:
+                return Response(
+                    {"error": "Invalid property_id provided."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+        else:
+            return Response(
+                {"error": "account_id is required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
         serializer = TransactionSerializer(transactions, many=True)
         return Response(serializer.data)
 

@@ -1,7 +1,7 @@
 import { createContext, useEffect, useState, useContext } from "react";
 
 import AuthCtx from "./AuthCtx";
-import PropertiesCtx from "./PropertiesCtx";
+import AccountsCtx from "./AccountsCtx";
 
 const TransactionsCtx = createContext({
     ctxTranList: null,
@@ -13,7 +13,7 @@ const TransactionsCtx = createContext({
 
 export function TransactionsCtxProvider(props) {
     const { ctxAccessToken } = useContext(AuthCtx);
-    const { ctxActiveProperty } = useContext(PropertiesCtx);
+    const { ctxActiveAccount } = useContext(AccountsCtx);
 
     const [ctxTranList, setCtxTranList] = useState(null);
 
@@ -21,11 +21,16 @@ export function TransactionsCtxProvider(props) {
         if (ctxAccessToken) {
             populateCtxTransactions();
         }
-    }, []);
+    }, [ctxActiveAccount]);
 
     const populateCtxTransactions = async () => {
         try {
-            const response = await fetch("http://localhost:8000/api/transactions/", {
+            const url = new URL("http://localhost:8000/api/transactions/");
+            if (ctxActiveAccount && ctxActiveAccount.id) {
+                url.searchParams.append("account_id", ctxActiveAccount.id);
+            }
+
+            const response = await fetch(url.toString(), {
                 method: "GET",
                 headers: {
                     Authorization: `Bearer ${ctxAccessToken}`,
