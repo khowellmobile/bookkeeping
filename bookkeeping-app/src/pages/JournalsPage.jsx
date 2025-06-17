@@ -257,14 +257,13 @@ const JournalsPage = () => {
 
     return (
         <>
-            {isModalOpen &&
-                confirmAction.type && ( // Only render if modal is open and type is set
-                    <ConfirmationModal
-                        text={getModalText()}
-                        onConfirm={onConfirmModalAction}
-                        onCancel={onCancelModalAction}
-                    />
-                )}
+            {isModalOpen && confirmAction.type && (
+                <ConfirmationModal
+                    text={getModalText()}
+                    onConfirm={onConfirmModalAction}
+                    onCancel={onCancelModalAction}
+                />
+            )}
             <div className={classes.mainContainer}>
                 <div className={classes.journalContent}>
                     <div className={classes.journalHistory}>
