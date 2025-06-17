@@ -3,7 +3,7 @@ import classes from "./EntitiesPage.module.css";
 import EntitiesCtx from "../components/contexts/EntitiesCtx";
 import TransactionsCtx from "../components/contexts/TransactionsCtx";
 
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect, act } from "react";
 
 import penIcon from "../assets/pen-icon.svg";
 
@@ -13,10 +13,9 @@ import ConfirmationModal from "../components/elements/modals/ConfirmationModal";
 import SearchBox from "../components/elements/misc/SearchBox";
 
 const EntitiesPage = () => {
-    const { ctxEntityList, ctxUpdateEntity } = useContext(EntitiesCtx);
-    const { ctxTranList, setCtxTranList } = useContext(TransactionsCtx);
+    const { ctxEntityList, ctxUpdateEntity, ctxActiveEntity, setCtxActiveEntity } = useContext(EntitiesCtx);
+    const { ctxTranList, setCtxTranList, setCtxFilterBy } = useContext(TransactionsCtx);
 
-    const [activeEntity, setActiveEntity] = useState();
     const [inputFields, setInputFields] = useState({
         name: "",
         company: "",
@@ -32,6 +31,10 @@ const EntitiesPage = () => {
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
+    useEffect(() => {
+        setCtxFilterBy("entity");
+    }, []);
+
     const handleCloseModal = () => {
         setIsModalOpen(false);
     };
@@ -45,17 +48,17 @@ const EntitiesPage = () => {
     };
 
     const onItemClick = (item) => {
-        setActiveEntity(item);
+        setCtxActiveEntity(item);
     };
 
     const handleConfirmAction = (action) => {
         if (action == "closeEdit") {
             const entityWasEdited =
-                inputFields.name != activeEntity.name ||
-                inputFields.company != activeEntity.company ||
-                inputFields.address != activeEntity.address ||
-                inputFields.phone_number != activeEntity.phone_number ||
-                inputFields.email != activeEntity.email;
+                inputFields.name != ctxActiveEntity.name ||
+                inputFields.company != ctxActiveEntity.company ||
+                inputFields.address != ctxActiveEntity.address ||
+                inputFields.phone_number != ctxActiveEntity.phone_number ||
+                inputFields.email != ctxActiveEntity.email;
 
             if (entityWasEdited) {
                 setIsConfirmModalOpen(true);
@@ -63,7 +66,7 @@ const EntitiesPage = () => {
                 setIsEditing(false);
             }
         } else if (action == "update") {
-            ctxUpdateEntity({ id: activeEntity.id, ...inputFields });
+            ctxUpdateEntity({ id: ctxActiveEntity.id, ...inputFields });
             setIsEditing(false);
         } else if (action == "delete") {
             setIsDeleteModalOpen(true);
@@ -82,7 +85,7 @@ const EntitiesPage = () => {
     };
 
     const onConfirmDelete = () => {
-        ctxUpdateEntity({ id: activeEntity.id, is_deleted: true });
+        ctxUpdateEntity({ id: ctxActiveEntity.id, is_deleted: true });
         setIsDeleteModalOpen(false);
     };
 
@@ -92,17 +95,17 @@ const EntitiesPage = () => {
 
     // Setting fields to selected entity
     useEffect(() => {
-        if (activeEntity) {
+        if (ctxActiveEntity) {
             setInputFields({
-                name: activeEntity.name || "",
-                company: activeEntity.company || "",
-                address: activeEntity.address || "",
-                created_at: activeEntity.created_at || "",
-                phone_number: activeEntity.phone_number || "",
-                email: activeEntity.email || "",
+                name: ctxActiveEntity.name || "",
+                company: ctxActiveEntity.company || "",
+                address: ctxActiveEntity.address || "",
+                created_at: ctxActiveEntity.created_at || "",
+                phone_number: ctxActiveEntity.phone_number || "",
+                email: ctxActiveEntity.email || "",
             });
         }
-    }, [activeEntity]);
+    }, [ctxActiveEntity]);
 
     return (
         <>
@@ -162,7 +165,7 @@ const EntitiesPage = () => {
                                 </div>
                             ) : (
                                 <>
-                                    {activeEntity && (
+                                    {ctxActiveEntity && (
                                         <img
                                             src={penIcon}
                                             className={classes.icon}

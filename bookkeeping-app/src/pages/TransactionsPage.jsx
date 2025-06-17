@@ -9,13 +9,17 @@ import { useState, useContext, useEffect } from "react";
 import AddTransactionsModal from "../components/elements/modals/AddTransactionsModal";
 
 const TransactionsPage = () => {
-    const { setCtxTranList, populateCtxTransactions, ctxTranList } = useContext(TransactionsCtx);
+    const { setCtxTranList, ctxTranList, setCtxFilterBy } = useContext(TransactionsCtx);
     const { ctxActiveAccount, setCtxActiveAccount } = useContext(AccountsCtx);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const [searchTerm, setSearchTerm] = useState("");
     const [filteredTransactions, setFilteredTransactions] = useState([]);
+
+    useEffect(() => {
+        setCtxFilterBy("account");
+    }, []);
 
     const handleCloseModal = () => {
         setIsModalOpen(false);
