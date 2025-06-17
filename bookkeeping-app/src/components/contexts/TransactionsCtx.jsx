@@ -1,11 +1,14 @@
 import { createContext, useEffect, useState, useContext } from "react";
 
 import AuthCtx from "./AuthCtx";
-import PropertiesCtx from "./PropertiesCtx";
+import AccountsCtx from "./AccountsCtx";
+import EntitiesCtx from "./EntitiesCtx";
 
 const TransactionsCtx = createContext({
     ctxTranList: null,
     setCtxTranList: () => {},
+    ctxFilterBy: null,
+    setCtxFilterBy: () => {},
     populateCtxTransactions: () => {},
     ctxAddTransactions: () => {},
     ctxUpdateTransaction: () => {},
@@ -13,19 +16,28 @@ const TransactionsCtx = createContext({
 
 export function TransactionsCtxProvider(props) {
     const { ctxAccessToken } = useContext(AuthCtx);
-    const { ctxActiveProperty } = useContext(PropertiesCtx);
-
+    const { ctxActiveAccount } = useContext(AccountsCtx);
+    const { ctxActiveEntity } = useContext(EntitiesCtx);
+    
+    const [ctxFilterBy, setCtxFilterBy] = useState(null);
     const [ctxTranList, setCtxTranList] = useState(null);
 
     useEffect(() => {
         if (ctxAccessToken) {
-            populateCtxTransactions();
+            populateCtxTransactions(ctxFilterBy);
         }
-    }, []);
+    }, [ctxActiveAccount, ctxActiveEntity, ctxFilterBy]);
 
     const populateCtxTransactions = async () => {
         try {
-            const response = await fetch("http://localhost:8000/api/transactions/", {
+            const url = new URL("http://localhost:8000/api/transactions/");
+            if (ctxFilterBy == "account" && ctxActiveAccount && ctxActiveAccount.id) {
+                url.searchParams.append("account_id", ctxActiveAccount.id);
+            } else if (ctxFilterBy == "entity" && ctxActiveEntity && ctxActiveEntity.id) {
+                url.searchParams.append("entity_id", ctxActiveEntity.id);
+            }
+
+            const response = await fetch(url.toString(), {
                 method: "GET",
                 headers: {
                     Authorization: `Bearer ${ctxAccessToken}`,
@@ -110,6 +122,8 @@ export function TransactionsCtxProvider(props) {
     const context = {
         ctxTranList,
         setCtxTranList,
+        ctxFilterBy,
+        setCtxFilterBy,
         populateCtxTransactions,
         ctxAddTransactions,
         ctxUpdateTransaction,

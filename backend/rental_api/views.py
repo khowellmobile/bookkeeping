@@ -24,6 +24,44 @@ class TransactionListAPIView(APIView):
 
     def get(self, request):
         transactions = Transaction.objects.filter(user=request.user)
+        account_id = request.query_params.get("account_id")
+        entity_id = request.query_params.get("entity_id")
+
+        if account_id:
+            try:
+                transactions = Transaction.objects.filter(
+                    user=request.user, account_id=account_id
+                )
+            except Account.DoesNotExist:
+                return Response(
+                    {
+                        "error": "Account with this ID does not exist or does not belong to the user."
+                    },
+                    status=status.HTTP_404_NOT_FOUND,
+                )
+            except ValueError:
+                return Response(
+                    {"error": "Invalid account_id provided."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+        elif entity_id:
+            try:
+                transactions = Transaction.objects.filter(
+                    user=request.user, entity_id=entity_id
+                )
+            except Entity.DoesNotExist:
+                return Response(
+                    {
+                        "error": "Entity with this ID does not exist or does not belong to the user."
+                    },
+                    status=status.HTTP_404_NOT_FOUND,
+                )
+            except ValueError:
+                return Response(
+                    {"error": "Invalid entity_id provided."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
         serializer = TransactionSerializer(transactions, many=True)
         return Response(serializer.data)
 
