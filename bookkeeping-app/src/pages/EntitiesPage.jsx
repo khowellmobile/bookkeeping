@@ -29,7 +29,11 @@ const EntitiesPage = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+    const [confirmAction, setConfirmAction] = useState({
+        type: null,
+        payload: null,
+    });
 
     useEffect(() => {
         setCtxFilterBy("entity");
@@ -47,50 +51,90 @@ const EntitiesPage = () => {
         }));
     };
 
-    const onItemClick = (item) => {
-        setCtxActiveEntity(item);
+    const isEntityChanged = () => {
+        return (
+            inputFields.name != ctxActiveEntity.name ||
+            inputFields.company != ctxActiveEntity.company ||
+            inputFields.address != ctxActiveEntity.address ||
+            inputFields.phone_number != ctxActiveEntity.phone_number ||
+            inputFields.email != ctxActiveEntity.email
+        );
     };
 
-    const handleConfirmAction = (action) => {
-        if (action == "closeEdit") {
-            const entityWasEdited =
-                inputFields.name != ctxActiveEntity.name ||
-                inputFields.company != ctxActiveEntity.company ||
-                inputFields.address != ctxActiveEntity.address ||
-                inputFields.phone_number != ctxActiveEntity.phone_number ||
-                inputFields.email != ctxActiveEntity.email;
-
-            if (entityWasEdited) {
-                setIsConfirmModalOpen(true);
-            } else {
-                setIsEditing(false);
-            }
-        } else if (action == "update") {
-            ctxUpdateEntity({ id: ctxActiveEntity.id, ...inputFields });
-            setIsEditing(false);
-        } else if (action == "delete") {
-            setIsDeleteModalOpen(true);
+    const handleEntitySwitch = (item) => {
+        if (ctxActiveEntity && item.id !== ctxActiveEntity.id && isEntityChanged()) {
+            setIsConfirmModalOpen(true);
+            setConfirmAction({
+                type: "switch_active",
+                payload: item,
+            });
         } else {
-            console.error("Action not recognized");
+            setCtxActiveEntity(item);
         }
     };
 
-    const onConfirm = () => {
-        setIsConfirmModalOpen(false);
+    const handleCancelClick = () => {
+        if (isEntityChanged()) {
+            setIsConfirmModalOpen(true);
+            setConfirmAction({
+                type: "switch_active",
+                payload: ctxActiveEntity,
+            });
+        } else {
+            setIsEditing(false);
+        }
+    };
+
+    const handleDeleteClick = () => {
+        setIsConfirmModalOpen(true);
+        setConfirmAction({
+            type: "delete_entity",
+            payload: null,
+        });
+    };
+
+    const handleSaveClick = () => {
+        ctxUpdateEntity({ id: ctxActiveEntity.id, ...inputFields });
         setIsEditing(false);
     };
 
-    const onCancel = () => {
+    const onConfirmModalAction = () => {
         setIsConfirmModalOpen(false);
+        switch (confirmAction.type) {
+            case "switch_active":
+                setCtxActiveEntity(confirmAction.payload);
+                setIsEditing(false);
+                return;
+            case "delete_entity":
+                ctxUpdateEntity({ id: ctxActiveEntity.id, is_deleted: true });
+                setIsEditing(false);
+                return;
+            default:
+        }
     };
 
-    const onConfirmDelete = () => {
-        ctxUpdateEntity({ id: ctxActiveEntity.id, is_deleted: true });
-        setIsDeleteModalOpen(false);
+    const onCancelModalAction = () => {
+        setIsConfirmModalOpen(false);
+        setConfirmAction({ type: null, payload: null });
     };
 
-    const onCancelDelete = () => {
-        setIsDeleteModalOpen(false);
+    const getModalText = () => {
+        switch (confirmAction.type) {
+            case "switch_active":
+                return {
+                    msg: "You have unsaved changes. Are you sure you want to discard them?",
+                    confirm_txt: "Discard Changes",
+                    cancel_txt: "Keep Editing",
+                };
+            case "delete_entity":
+                return {
+                    msg: "Are you sure you wish to delete this Entity?",
+                    confirm_txt: "Delete",
+                    cancel_txt: "Cancel Deletion",
+                };
+            default:
+                return { msg: "", confirm_txt: "", cancel_txt: "" };
+        }
     };
 
     // Setting fields to selected entity
@@ -110,27 +154,12 @@ const EntitiesPage = () => {
     return (
         <>
             {isModalOpen && <AddEntityModal handleCloseModal={handleCloseModal} />}
-            {isConfirmModalOpen && (
-                <ConfirmationModal
-                    text={{
-                        msg: "You are above to leave without saving.",
-                        confirm_txt: "Leave",
-                        cancel_txt: "Stay",
-                    }}
-                    onConfirm={onConfirm}
-                    onCancel={onCancel}
-                />
-            )}
 
-            {isDeleteModalOpen && (
+            {isConfirmModalOpen && confirmAction.type && (
                 <ConfirmationModal
-                    text={{
-                        msg: "Are you sure you wish to delete this Entity?",
-                        confirm_txt: "Delete",
-                        cancel_txt: "Cancel Deletion",
-                    }}
-                    onConfirm={onConfirmDelete}
-                    onCancel={onCancelDelete}
+                    text={getModalText()}
+                    onConfirm={onConfirmModalAction}
+                    onCancel={onCancelModalAction}
                 />
             )}
 
@@ -138,7 +167,7 @@ const EntitiesPage = () => {
                 <SearchBox
                     itemName={"Entity"}
                     items={ctxEntityList}
-                    onItemClick={onItemClick}
+                    onItemClick={handleEntitySwitch}
                     onAddButtonClick={() => setIsModalOpen(true)}
                 />
                 <div className={classes.contentBox}>
@@ -153,13 +182,13 @@ const EntitiesPage = () => {
                             />
                             {isEditing ? (
                                 <div>
-                                    <button className={classes.button} onClick={() => handleConfirmAction("update")}>
+                                    <button className={classes.button} onClick={handleSaveClick}>
                                         Save
                                     </button>
-                                    <button className={classes.button} onClick={() => handleConfirmAction("delete")}>
+                                    <button className={classes.button} onClick={handleDeleteClick}>
                                         Delete
                                     </button>
-                                    <button className={classes.button} onClick={() => handleConfirmAction("closeEdit")}>
+                                    <button className={classes.button} onClick={handleCancelClick}>
                                         Cancel
                                     </button>
                                 </div>
