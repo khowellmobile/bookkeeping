@@ -21,14 +21,14 @@ const CreateUserModal = () => {
         setReqObj({
             chars: password.length >= 8,
             num: /\d/.test(password),
-            specChar: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~` ]/.test(password),
+            specChar: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]/.test(password),
         });
     }, [password]);
 
-    const createAccount = (event) => {
+    const createAccount = async (event) => {
         event.preventDefault();
         if (
-            !(password.length >= 8 && /\d/.test(password) && /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~` ]/.test(password))
+            !(password.length >= 8 && /\d/.test(password) && /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]/.test(password))
         ) {
             setErrorMsg("Password does not meant requirments");
         } else if (password !== passwordConfirm) {
@@ -36,11 +36,52 @@ const CreateUserModal = () => {
         } else {
             setErrorMsg("");
         }
+
+        try {
+            const response = await fetch("http://localhost:8000/api/auth/users/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    email: email,
+                    username: email,
+                    password: password,
+                    re_password: passwordConfirm,
+                }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error("Account creation failed:", errorData);
+
+                if (errorData.email) {
+                    setErrorMsg(`Email: ${errorData.email.join(" ")}`);
+                } else if (errorData.password) {
+                    setErrorMsg(`Password: ${errorData.password.join(" ")}`);
+                } else if (errorData.re_password) {
+                    setErrorMsg(`Confirm Password: ${errorData.re_password.join(" ")}`);
+                } else if (errorData.non_field_errors) {
+                    setErrorMsg(errorData.non_field_errors.join(" "));
+                } else if (errorData.detail) {
+                    setErrorMsg(errorData.detail);
+                } else {
+                    setErrorMsg("Account creation failed. Please try again.");
+                }
+                return;
+            }
+
+            const data = await response.json();
+            console.log("User created successfully:", data);
+            return data;
+        } catch (error) {
+            console.error("Network or unexpected error during account creation:", error);
+            setErrorMsg("A network error occurred. Please try again later.");
+        }
     };
 
     return (
         <div className={classes.mainContainer}>
-            return (
             <div className={classes.modalOverlay}>
                 <div className={classes.mainContainer}>
                     <form className={classes.form}>
@@ -128,7 +169,6 @@ const CreateUserModal = () => {
                     </form>
                 </div>
             </div>
-            );
         </div>
     );
 };

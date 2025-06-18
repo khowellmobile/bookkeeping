@@ -10,7 +10,6 @@ ACCOUNT_TYPE_CHOICES = [
     ("bank", "Bank"),
 ]
 
-
 class Account(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="accounts", null=True

@@ -6,8 +6,8 @@ import CreateUserModal from "../components/elements/modals/CreateUserModal";
 import { useState } from "react";
 
 const SplashPage = () => {
-    const [isModalOpen, setIsModalOpen] = useState(true);
-    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(true);
 
     const handleCloseModal = () => {
         setIsModalOpen(false);
