@@ -16,7 +16,7 @@ const LoginModal = ({ handleCloseModal }) => {
     const handleLogin = (event) => {
         event.preventDefault();
 
-        fetch("http://localhost:8000/api/token/", {
+        fetch("http://localhost:8000/api/auth/jwt/create/", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
