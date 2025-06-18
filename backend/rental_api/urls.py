@@ -1,5 +1,5 @@
 # rental_api/urls.py
-from django.urls import path
+from django.urls import path,include
 from . import views
 from rest_framework_simplejwt.views import TokenObtainPairView
 
@@ -14,5 +14,4 @@ urlpatterns = [
     path('journals/<int:pk>/', views.JournalDetailAPIView.as_view(), name='journal-detail'),
     path('properties/', views.PropertyListAPIView.as_view(), name='property-list'),
     path('properties/<int:pk>/', views.PropertyDetailAPIView.as_view(), name='property-detail'),
-    path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
 ]
