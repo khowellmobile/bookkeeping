@@ -14,4 +14,6 @@ urlpatterns = [
     path('journals/<int:pk>/', views.JournalDetailAPIView.as_view(), name='journal-detail'),
     path('properties/', views.PropertyListAPIView.as_view(), name='property-list'),
     path('properties/<int:pk>/', views.PropertyDetailAPIView.as_view(), name='property-detail'),
+    path('rentPayments/', views.RentPaymentListAPIView.as_view(), name='rentPayment-list'),
+    path('rentPayments/<int:pk>/', views.RentPaymentDetailAPIView.as_view(), name='rentPayment-detail'),
 ]
