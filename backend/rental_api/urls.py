@@ -1,5 +1,5 @@
 # rental_api/urls.py
-from django.urls import path,include
+from django.urls import path
 from . import views
 from rest_framework_simplejwt.views import TokenObtainPairView
 

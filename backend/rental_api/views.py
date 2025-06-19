@@ -494,7 +494,7 @@ class PropertyDetailAPIView(APIView):
 
 class RentPaymentListAPIView(APIView):
     """
-    API endpoint to list all entities.
+    API endpoint to list all rent Payments.
     """
 
     permission_classes = [IsAuthenticated]
