@@ -58,9 +58,7 @@ class Property(models.Model):
     )
     number_of_units = models.DecimalField(max_digits=4, decimal_places=0, null=True)
     rent = models.DecimalField(max_digits=10, decimal_places=2, null=True)
-    current_rent_due = models.DecimalField(
-        max_digits=10, decimal_places=2, null=True
-    )
+    current_rent_due = models.DecimalField(max_digits=10, decimal_places=2, null=True)
     notes = models.JSONField(null=True, blank=True)
     is_active = models.BooleanField(default=True)
     is_deleted = models.BooleanField(default=False)
@@ -151,9 +149,10 @@ class RentPayment(models.Model):
         Entity, on_delete=models.CASCADE, related_name="rent_payments", null=True
     )
     amount = models.DecimalField(max_digits=10, decimal_places=2)
+    date = models.DateField(null=True)
     is_deleted = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.entity.name + ": " + self.amount
+        return f"{self.entity.name}: ${self.amount}"

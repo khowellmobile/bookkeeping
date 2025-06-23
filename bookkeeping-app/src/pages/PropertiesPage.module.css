@@ -226,34 +226,7 @@
     border-left: 1px solid var(--border-color);
 }
 
-.transactionListing {
+.rentInfo {
     width: 100%;
-    height: calc(100% - 5rem);
-}
-
-.listingHeader {
-    width: 100%;
-
-    display: grid;
-    grid-template-columns: 0.5fr 1.25fr 1.25fr 1.75fr 0.75fr 0.5fr;
-    align-items: center;
-}
-
-.listingHeader > p {
-    padding-left: 0.5rem;
-
-    color: var(--secondary-text-color);
-    font-size: 0.9rem;
-    border-left: 1px dashed var(--border-color);
-    border-bottom: 2px solid var(--border-color);
-}
-
-.listingHeader > p:nth-child(1) {
-    border-left: none;
-}
-
-.listingItems {
-    height: calc(100% - 2rem);
-
-    overflow-y: scroll;
+    height: 70%;
 }

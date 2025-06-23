@@ -305,6 +305,7 @@ class RentPaymentSerializer(serializers.ModelSerializer):
             "entity",
             "entity_id",
             "amount",
+            "date",
             "is_deleted",
             "created_at",
             "updated_at",
@@ -336,7 +337,7 @@ class RentPaymentSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
     def update(self, instance, validated_data):
-        fields_to_update = ["property", "entity", "amount", "is_deleted"]
+        fields_to_update = ["property", "entity", "amount", "date", "is_deleted"]
 
         for attr in fields_to_update:
             if attr in validated_data:

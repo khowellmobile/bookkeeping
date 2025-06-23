@@ -10,7 +10,7 @@ import SearchBox from "../components/elements/misc/SearchBox";
 import RentInformation from "../components/elements/misc/RentInformation";
 
 const PropertiesPage = () => {
-    const { ctxPropertyList, ctxUpdateProperty } = useContext(PropertiesCtx);
+    const { ctxPropertyList, ctxUpdateProperty, setCtxActiveProperty, ctxActiveProperty } = useContext(PropertiesCtx);
 
     const [activeProperty, setActiveProperty] = useState("");
     const [inputFields, setInputFields] = useState({
@@ -33,6 +33,7 @@ const PropertiesPage = () => {
     const focusProperty = (property) => {
         if (property) {
             setActiveProperty(property);
+            setCtxActiveProperty(property);
             setInputFields({
                 name: property.name || "",
                 address: property.address || "",
@@ -129,16 +130,19 @@ const PropertiesPage = () => {
         });
     };
 
+    useEffect(() => {
+        focusProperty(ctxActiveProperty);
+    }, []);
+
     return (
         <>
-            {isModalOpen &&
-                confirmAction.type && ( // Only render if modal is open and type is set
-                    <ConfirmationModal
-                        text={getModalText()}
-                        onConfirm={onConfirmModalAction}
-                        onCancel={onCancelModalAction}
-                    />
-                )}
+            {isModalOpen && confirmAction.type && (
+                <ConfirmationModal
+                    text={getModalText()}
+                    onConfirm={onConfirmModalAction}
+                    onCancel={onCancelModalAction}
+                />
+            )}
 
             {isAddModalOpen && <AddPropertyModal handleCloseModal={() => setIsAddModalOpen(false)} />}
 
