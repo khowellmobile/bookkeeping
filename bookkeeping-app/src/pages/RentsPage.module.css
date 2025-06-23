@@ -1,0 +1,189 @@
+.icon {
+    height: 1.5rem;
+    width: 1.5rem;
+
+    cursor: pointer;
+}
+
+.mainContainer {
+    width: 100%;
+    height: 100%;
+    padding: 0.5rem;
+
+    display: flex;
+    justify-content: space-between;
+}
+
+.editRents {
+    width: calc(40% - 0.5rem);
+    height: 100%;
+
+    border-right: 1px solid var(--border-color);
+
+    display: flex;
+    flex-direction: column;
+}
+
+.editRents > h3 {
+    font-weight: 400;
+}
+
+.cluster {
+    display: flex;
+    flex-direction: column;
+}
+
+.cluster > p {
+    color: var(--secondary-text-color);
+    font-size: 0.8rem;
+}
+
+.cluster > input {
+    width: 20rem;
+    padding: 0rem 0.25rem;
+
+    background-color: var(--secondary-background-color);
+    border: 1px solid var(--border-color);
+    border-radius: 0rem;
+    outline: none;
+    font-size: 0.9rem;
+    font-family: "poppins";
+}
+
+.radioCluster {
+    width: 100%;
+
+    display: flex
+}
+
+.radioCluster > p {
+    margin-right: 0.5rem;
+}
+
+.monthlyRents {
+    width: 60%;
+    height: 100%;
+}
+
+.monthlyRents > span {
+    display: flex;
+    align-items: center;
+}
+
+.monthlyRents > span > h2 {
+    margin-right: 0.5rem;
+
+    font-weight: 400;
+}
+
+.totalsListing {
+    width: 100%;
+    height: 10%;
+
+    display: flex;
+    justify-content: space-between;
+}
+
+.rentCard {
+    width: calc(33% - 0.5rem);
+    height: 100%;
+    padding: 0.5rem;
+
+    border-radius: 0.25rem;
+    box-shadow: rgba(99, 99, 99, 0.1) 3px 3px 8px 0px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.rentCard > p {
+    color: var(--secondary-text-color);
+    font-size: 0.9rem;
+}
+
+.rentCard > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.rentCard > div > p:nth-child(1) {
+    font-size: 1.5rem;
+    font-weight: 500;
+}
+
+.rentCard > div > p:nth-child(2) {
+    color: var(--secondary-text-color);
+    font-size: 0.9rem;
+}
+
+.rentCard:nth-child(1) {
+    border-left: 5px solid rgb(255, 27, 27);
+}
+
+.rentCard:nth-child(2) {
+    border-left: 5px solid rgb(42, 42, 209);
+}
+
+.rentCard:nth-child(3) {
+    border-left: 5px solid grey;
+}
+
+.listings {
+    width: 100%;
+    height: 80%;
+    padding-top: 1rem;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.rentListing {
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.rentListing > .header {
+    height: 2rem;
+    padding: 0 0.5rem;
+
+    background-color: var(--hover-color);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.rentListing > .columnNames {
+    height: 1.5rem;
+
+    border-bottom: 1px solid var(--border-color);
+
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    align-items: center;
+}
+
+.rentListing > .columnNames > p {
+    padding-left: 0.5rem;
+
+    color: var(--secondary-text-color);
+    font-size: 0.8rem;
+}
+
+.rentItem {
+    height: 1.5rem;
+
+    border-bottom: 1px solid var(--border-color);
+
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    align-items: center;
+}
+
+.rentItem > p {
+    padding-left: 0.5rem;
+
+    font-size: 0.9rem;
+}

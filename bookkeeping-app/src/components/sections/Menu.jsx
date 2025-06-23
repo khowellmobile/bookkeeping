@@ -35,6 +35,11 @@ const Menu = () => {
                     link="/transactions"
                     icon={<img src={TransactionIcon} alt="Icon" />}
                 />
+                <MenuLineItem
+                    itemName="Rents"
+                    link="/rents"
+                    icon={<img src={TransactionIcon} alt="Icon" />}
+                />
                 <MenuLineItem itemName="Accounts" link="/accounts" icon={<img src={AccountsIcon} alt="Icon" />} />
                 <MenuLineItem itemName="Entities" link="/entities" icon={<img src={EntitiesIcon} alt="Icon" />} />
                 <MenuLineItem itemName="Journals" link="/journals" icon={<img src={JournalIcon} alt="Icon" />} />

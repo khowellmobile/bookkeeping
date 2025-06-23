@@ -102,6 +102,7 @@ class DatabaseConnectionsAdmin(admin.ModelAdmin):
         "entity",
         "amount",
         "date",
+        "status",
         "is_deleted",
         "created_at",
         "updated_at",
