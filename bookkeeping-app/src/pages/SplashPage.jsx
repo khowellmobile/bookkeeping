@@ -6,8 +6,8 @@ import CreateUserModal from "../components/elements/modals/CreateUserModal";
 import { useState } from "react";
 
 const SplashPage = () => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isCreateModalOpen, setIsCreateModalOpen] = useState(true);
+    const [isModalOpen, setIsModalOpen] = useState(true);
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
     const handleCloseModal = () => {
         setIsModalOpen(false);
@@ -17,10 +17,20 @@ const SplashPage = () => {
         setIsCreateModalOpen(false);
     }
 
+    const switchToCreateModal = () => {
+        setIsModalOpen(false);
+        setIsCreateModalOpen(true);
+    }
+
+    const switchToLoginModal = () => {
+        setIsCreateModalOpen(false);
+        setIsModalOpen(true);
+    }
+
     return (
         <>
-            {isModalOpen && <LoginModal handleCloseModal={handleCloseModal} />}
-            {isCreateModalOpen && <CreateUserModal handleCloseModal={handleCloseCreateModal} />}
+            {isModalOpen && <LoginModal handleCloseModal={handleCloseModal} switchModal={switchToCreateModal}/>}
+            {isCreateModalOpen && <CreateUserModal handleCloseModal={handleCloseCreateModal} switchModal={switchToLoginModal}/>}
 
             <div className={classes.mainContainer}>
                 <p>Splash</p>

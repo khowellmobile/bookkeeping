@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 import AuthCtx from "../../contexts/AuthCtx";
 
-const LoginModal = ({ handleCloseModal }) => {
+const LoginModal = ({ handleCloseModal, switchModal }) => {
     const { setCtxAccessToken } = useContext(AuthCtx);
 
     const navigate = useNavigate();
@@ -96,7 +96,7 @@ const LoginModal = ({ handleCloseModal }) => {
                     <button type="submit">Login</button>
                     <p>
                         Dont have an Account?
-                        <a href="">Sign Up</a>
+                        <a onClick={switchModal}>Sign Up</a>
                     </p>
                 </form>
             </div>

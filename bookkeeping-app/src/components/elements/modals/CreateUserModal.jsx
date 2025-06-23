@@ -4,7 +4,7 @@ import { useState, useContext, useEffect } from "react";
 
 import AuthCtx from "../../contexts/AuthCtx";
 
-const CreateUserModal = () => {
+const CreateUserModal = ({ handleCloseModal, switchModal }) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [passwordConfirm, setPasswordConfirm] = useState("");
@@ -164,7 +164,7 @@ const CreateUserModal = () => {
                         <button onClick={createAccount}>Create Account</button>
                         <p>
                             Already Have an Account?
-                            <a href="">Login</a>
+                            <a onClick={switchModal}>Login</a>
                         </p>
                     </form>
                 </div>
