@@ -10,6 +10,7 @@ ACCOUNT_TYPE_CHOICES = [
     ("bank", "Bank"),
 ]
 
+
 class Account(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="accounts", null=True
@@ -57,6 +58,7 @@ class Property(models.Model):
     )
     number_of_units = models.DecimalField(max_digits=4, decimal_places=0, null=True)
     rent = models.DecimalField(max_digits=10, decimal_places=2, null=True)
+    current_rent_due = models.DecimalField(max_digits=10, decimal_places=2, null=True)
     notes = models.JSONField(null=True, blank=True)
     is_active = models.BooleanField(default=True)
     is_deleted = models.BooleanField(default=False)
@@ -134,3 +136,23 @@ class Journal(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class RentPayment(models.Model):
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="rent_payments", null=True
+    )
+    property = models.ForeignKey(
+        Property, on_delete=models.CASCADE, related_name="rent_payments", null=True
+    )
+    entity = models.ForeignKey(
+        Entity, on_delete=models.CASCADE, related_name="rent_payments", null=True
+    )
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    date = models.DateField(null=True)
+    is_deleted = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.entity.name}: ${self.amount}"

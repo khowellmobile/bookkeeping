@@ -1,6 +1,13 @@
 # rental_api/serializers.py
 from rest_framework import serializers
-from core_backend.models import Transaction, Account, Entity, Journal, Property
+from core_backend.models import (
+    Transaction,
+    Account,
+    Entity,
+    Journal,
+    Property,
+    RentPayment,
+)
 
 
 class AccountSerializer(serializers.ModelSerializer):
@@ -59,17 +66,18 @@ class PropertySerializer(serializers.ModelSerializer):
             "id",
             "user",
             "address",
+            "accounts",
+            "account_ids",
             "name",
             "property_type",
             "number_of_units",
             "rent",
+            "current_rent_due",
             "notes",
             "is_active",
             "is_deleted",
             "created_at",
             "updated_at",
-            "accounts",
-            "account_ids",
         )
         read_only_fields = ("id", "created_at", "updated_at")
 
@@ -95,6 +103,7 @@ class PropertySerializer(serializers.ModelSerializer):
             "property_type",
             "number_of_units",
             "rent",
+            "current_rent_due",
             "notes",
             "is_active",
             "is_deleted",
@@ -270,6 +279,65 @@ class JournalSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         fields_to_update = ["name", "date", "item_list", "is_deleted"]
+
+        for attr in fields_to_update:
+            if attr in validated_data:
+                setattr(instance, attr, validated_data[attr])
+
+        instance.save()
+        return instance
+
+
+class RentPaymentSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
+    property = PropertySerializer(read_only=True)
+    property_id = serializers.IntegerField(write_only=True)
+    entity = EntitySerializer(read_only=True)
+    entity_id = serializers.IntegerField(write_only=True)
+
+    class Meta:
+        model = RentPayment
+        fields = (
+            "id",
+            "user",
+            "property",
+            "property_id",
+            "entity",
+            "entity_id",
+            "amount",
+            "date",
+            "is_deleted",
+            "created_at",
+            "updated_at",
+        )
+        read_only_fields = ("id", "created_at", "updated_at")
+
+    def create(self, validated_data):
+        user = self.context["request"].user
+        validated_data["user"] = user
+        property_id = validated_data.pop("property_id")
+        entity_id = validated_data.pop("entity_id")
+
+        try:
+            property = Property.objects.get(id=property_id, user=user)
+        except Property.DoesNotExist:
+            raise serializers.ValidationError(
+                {"property_id": "Property with this ID does not exist."}
+            )
+        validated_data["property"] = property
+
+        try:
+            entity = Entity.objects.get(id=entity_id, user=user)
+        except Entity.DoesNotExist:
+            raise serializers.ValidationError(
+                {"Entity_id": "Entity with this ID does not exist."}
+            )
+        validated_data["entity"] = entity
+
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        fields_to_update = ["property", "entity", "amount", "date", "is_deleted"]
 
         for attr in fields_to_update:
             if attr in validated_data:

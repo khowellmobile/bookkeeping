@@ -10,8 +10,16 @@ from .serializers import (
     EntitySerializer,
     JournalSerializer,
     PropertySerializer,
+    RentPaymentSerializer,
 )
-from core_backend.models import Transaction, Account, Entity, Journal, Property
+from core_backend.models import (
+    Transaction,
+    Account,
+    Entity,
+    Journal,
+    Property,
+    RentPayment,
+)
 from rest_framework.permissions import IsAuthenticated
 
 
@@ -481,4 +489,76 @@ class PropertyDetailAPIView(APIView):
         if property:
             property.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+class RentPaymentListAPIView(APIView):
+    """
+    API endpoint to list all rent Payments.
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        property_id = request.query_params.get("property_id")
+        rent_payments = RentPayment.objects.filter(user=request.user)
+
+        if property_id:
+            try:
+                rent_payments = rent_payments.filter(property_id=property_id)
+            except Property.DoesNotExist:
+                return Response(
+                    {
+                        "error": "Property with this ID does not exist or does not belong to the user."
+                    },
+                    status=status.HTTP_404_NOT_FOUND,
+                )
+            except ValueError:
+                return Response(
+                    {"error": "Invalid property_id provided."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+        serializer = RentPaymentSerializer(rent_payments, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = RentPaymentSerializer(
+            data=request.data, context={"request": request}
+        )
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class RentPaymentDetailAPIView(APIView):
+    """
+    API endpoint to retrieve a single rent payment by its primary key (id).
+    """
+
+    def get_object(self, pk):
+        try:
+            return RentPayment.objects.get(pk=pk, user=self.request.user)
+        except RentPayment.DoesNotExist:
+            return None
+
+    def get(self, request, pk):
+        try:
+            rent_payment = RentPayment.objects.get(pk=pk)
+        except RentPayment.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        serializer = RentPaymentSerializer(rent_payment)
+        return Response(serializer.data)
+
+    def put(self, request, pk):
+        rent_payment = self.get_object(pk)
+        if rent_payment:
+            serializer = RentPaymentSerializer(
+                rent_payment, data=request.data, partial=True
+            )
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(status=status.HTTP_404_NOT_FOUND)
