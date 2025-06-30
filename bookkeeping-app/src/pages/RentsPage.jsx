@@ -11,7 +11,14 @@ import AddRentModal from "../components/elements/modals/AddRentModal";
 const RentsPage = () => {
     const { ctxPaymentList } = useContext(RentPaymentsCtx);
 
-    const [isModalOpen, setIsModalOpen] = useState(true);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [days, setDays] = useState(() => {
+        const initialDays = [];
+        for (let i = 1; i <= 35; i++) {
+            initialDays.push({ id: i });
+        }
+        return initialDays;
+    });
 
     const handleCloseModal = () => {
         setIsModalOpen(false);
@@ -22,122 +29,44 @@ const RentsPage = () => {
             {isModalOpen && <AddRentModal handleCloseModal={handleCloseModal} />}
 
             <div className={classes.mainContainer}>
-                <button onClick={() => setIsModalOpen(true)}>Add Payment</button>
-                <div className={classes.monthlyRents}>
-                    <span>
-                        <h2>June 2025 Rents</h2>
-                        <img className={classes.icon} src={chevDownIcon} alt="Icon" />
-                    </span>
-                    <section className={classes.totalsListing}>
-                        <div className={classes.rentCard}>
-                            <p>Due</p>
-                            <div>
-                                <p>$1500</p>
-                                <p>1 Transactions</p>
-                            </div>
+                <span>
+                    <h2>June 2025 Rents</h2>
+                    <img className={classes.icon} src={chevDownIcon} alt="Icon" />
+                </span>
+                <section className={classes.calendar}>
+                    <div className={classes.columnNames}>
+                        <div>
+                            <p>Sunday</p>
                         </div>
-                        <div className={classes.rentCard}>
-                            <p>Scheduled</p>
-                            <div>
-                                <p>$3500</p>
-                                <p>3 Transactions</p>
-                            </div>
+                        <div>
+                            <p>Monday</p>
                         </div>
-                        <div className={classes.rentCard}>
-                            <p>Paid</p>
-                            <div>
-                                <p>$4500</p>
-                                <p>7 Transactions</p>
-                            </div>
+                        <div>
+                            <p>Tuesday</p>
                         </div>
-                    </section>
-                    <section className={classes.listings}>
-                        <section className={`${classes.rentListing} ${classes.rentsDue}`}>
-                            <div className={classes.header}>
-                                <p>Due</p>
-                                <img className={classes.icon} src={chevDownIcon} alt="Icon" />
-                            </div>
-                            <div className={classes.columnNames}>
-                                <p>Due Date</p>
-                                <p>Status</p>
-                                <p>Description</p>
-                                <p>Amount</p>
-                            </div>
-                            <div className={classes.rentList}>
-                                {ctxPaymentList && ctxPaymentList.length > 0 ? (
-                                    ctxPaymentList.map((pymt, index) => {
-                                        return (
-                                            <div className={classes.rentItem} key={index}>
-                                                <p>{pymt.date}</p>
-                                                <p>{pymt.status}</p>
-                                                <p>{pymt.amount}</p>
-                                                <p>{pymt.amount}</p>
-                                            </div>
-                                        );
-                                    })
-                                ) : (
-                                    <p>No Payments</p>
-                                )}
-                            </div>
-                        </section>
-                        <section className={`${classes.rentListing} ${classes.rentsScheduled}`}>
-                            <div className={classes.header}>
-                                <p>Scheduled</p>
-                                <img className={classes.icon} src={chevDownIcon} alt="Icon" />
-                            </div>
-                            <div className={classes.columnNames}>
-                                <p>Due Date</p>
-                                <p>Status</p>
-                                <p>Description</p>
-                                <p>Amount</p>
-                            </div>
-                            <div className={classes.rentList}>
-                                {ctxPaymentList && ctxPaymentList.length > 0 ? (
-                                    ctxPaymentList.map((pymt, index) => {
-                                        return (
-                                            <div className={classes.rentItem} key={index}>
-                                                <p>{pymt.date}</p>
-                                                <p>{pymt.status}</p>
-                                                <p>{pymt.amount}</p>
-                                                <p>{pymt.amount}</p>
-                                            </div>
-                                        );
-                                    })
-                                ) : (
-                                    <p>No Payments</p>
-                                )}
-                            </div>
-                        </section>
-                        <section className={`${classes.rentListing} ${classes.rentsPaid}`}>
-                            <div className={classes.header}>
-                                <p>Paid</p>
-                                <img className={classes.icon} src={chevDownIcon} alt="Icon" />
-                            </div>
-                            <div className={classes.columnNames}>
-                                <p>Due Date</p>
-                                <p>Status</p>
-                                <p>Description</p>
-                                <p>Amount</p>
-                            </div>
-                            <div className={classes.rentList}>
-                                {ctxPaymentList && ctxPaymentList.length > 0 ? (
-                                    ctxPaymentList.map((pymt, index) => {
-                                        return (
-                                            <div className={classes.rentItem} key={index}>
-                                                <p>{pymt.date}</p>
-                                                <p>{pymt.status}</p>
-                                                <p>{pymt.amount}</p>
-                                                <p>{pymt.amount}</p>
-                                            </div>
-                                        );
-                                    })
-                                ) : (
-                                    <p>No Payments</p>
-                                )}
-                            </div>
-                        </section>
-                    </section>
-                </div>
+                        <div>
+                            <p>Wednesday</p>
+                        </div>
+                        <div>
+                            <p>Thursday</p>
+                        </div>
+                        <div>
+                            <p>Friday</p>
+                        </div>
+                        <div>
+                            <p>Saturday</p>
+                        </div>
+                    </div>
+                    <div className={classes.days}>
+                        {days.map((val, index) => {
+                            return (
+                                <div className={classes.dayBox} key={index}>
+                                    {index}
+                                </div>
+                            );
+                        })}
+                    </div>
+                </section>
             </div>
         </>
     );
