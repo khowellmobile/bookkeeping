@@ -1,0 +1,111 @@
+.mainContainer {
+    width: 100%;
+    margin-bottom: 0.5rem;
+
+    outline: 1px solid red;
+
+    position: relative;
+}
+
+.placeholder {
+    width: 100%;
+    height: 1rem;
+}
+
+.itemBox {
+    width: 100%;
+    height: 1rem;
+
+    cursor: pointer;
+    border-radius: 0.5rem;
+
+    transition: all ease 0.4s;
+}
+
+.clicked {
+    width: 25rem;
+    height: 15rem;
+
+    background-color: rgb(247, 247, 247);
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+
+    position: relative;
+    z-index: 1000;
+}
+
+.absPos {
+    position: absolute;
+    top: 0rem;
+}
+
+.content {
+    transition: all ease 0.4s;
+}
+
+.abbreviatedContent {
+    width: 100%;
+    height: 1rem;
+
+    display: flex;
+
+    transition: all ease 0.4s;
+}
+
+.expandedContent {
+    width: 100%;
+    height: 100%;
+}
+
+.header {
+    width: 100%;
+    padding: 0rem 0.5rem;
+
+    border-radius: 0.5rem 0.5rem 0 0;
+
+    display: flex;
+}
+
+.header > p {
+    transition: all ease 0.4s;
+}
+
+/* .abbreviatedContent .header {
+    height: 100%;
+}
+ */
+.abbreviatedContent .header > p {
+    font-size: 0.8rem;
+}
+
+/* .expandedContent .header {
+    height: 15%;
+} */
+
+.expandedContent .header > p {
+    color: white;
+    font-size: 1rem;
+    margin: 0.3rem;
+
+    align-self: center;
+}
+
+.statIndicator {
+    width: 0.6rem;
+    height: 0.6rem;
+    margin-right: 0.5rem;
+
+    border-radius: 50%;
+
+    position: relative;
+    top: 0.25rem;
+}
+
+.stat1 {
+    background-color: rgba(11, 33, 233, 0.705);
+    background-color: rgb(82, 99, 255);
+}
+
+.stat2 {
+    background-color: rgba(90, 214, 66, 0.705);
+    background-color: rgb(96, 224, 124);
+}

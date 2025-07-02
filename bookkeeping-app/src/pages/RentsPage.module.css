@@ -11,18 +11,25 @@
     padding: 0.5rem;
 
     display: flex;
-    flex-direction: column;
     justify-content: space-between;
 }
 
-.mainContainer > span {
+.calendarContainer {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.calendarContainer > span {
     height: 3rem;
 
     display: flex;
     align-items: center;
 }
 
-.mainContainer > span > h2 {
+.calendarContainer > span > h2 {
     margin-right: 0.5rem;
 
     font-weight: 400;
@@ -60,20 +67,28 @@
 .days {
     width: 100%;
     height: calc(100% - 2rem);
+    max-height: calc(100% - 2rem);
 
     background-color: var(--border-color);
     border: 1px solid var(--border-color);
 
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    grid-template-rows: repeat(5, 1fr);
+    grid-template-columns: repeat(7, calc(100% / 7));
+    grid-template-rows: repeat(5, calc(100% / 5));
     gap: 1px;
 }
 
 .dayBox {
     width: 100%;
     height: 100%;
+    max-height: 100%;
     padding: 0.5rem;
 
     background-color: white;
+
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+
+
 }
