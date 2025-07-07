@@ -106,17 +106,50 @@
 }
 
 .stat1 {
-    background-color: rgba(11, 33, 233, 0.705);
     background-color: rgb(82, 99, 255);
 }
 
 .stat2 {
-    background-color: rgba(90, 214, 66, 0.705);
     background-color: rgb(96, 224, 124);
 }
 
+.stat3 {
+    background-color: rgb(255, 82, 82);
+}
+
+.stat4 {
+    background-color: rgb(255, 137, 69);
+}
+
+.stat0 {
+    background-color: rgb(39, 39, 39);
+}
+
+.statTags {
+    width: 100%;
+    margin-bottom: 0.5rem;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.statTags > p {
+    width: calc(100% / 4 - 0.25rem);
+    padding: 0.25rem 0;
+
+    color: white;
+    border-radius: 0.25rem;
+    font-size: 0.8rem;
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .inputCluster {
-    margin-bottom: 0.55rem;
+    margin-bottom: 0.5rem;
 
     display: flex;
     align-items: center;

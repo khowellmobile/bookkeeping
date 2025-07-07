@@ -73,7 +73,8 @@
     border: 1px solid var(--border-color);
 
     display: grid;
-    grid-template-columns: repeat(7, calc(100% / 7));
+    /* Columns may need to be set like rows */
+    grid-template-columns: repeat(7, 1fr);
     grid-template-rows: repeat(5, calc(100% / 5));
     gap: 1px;
 }
@@ -89,6 +90,4 @@
     display: flex;
     flex-direction: column;
     align-items: end;
-
-
 }

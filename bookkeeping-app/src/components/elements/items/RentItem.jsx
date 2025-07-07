@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import classes from "./RentItem.module.css";
-import AddInputCluster from "../misc/AddInputCluster";
 
-const RentItem = ({ item }) => {
+const RentItem = ({ item, dayIndex, changeStatus }) => {
     const [isClicked, setIsClicked] = useState(false);
     const [isAbsolute, setIsAbsolute] = useState(false);
     const [inputFields, setInputFields] = useState({
@@ -26,15 +25,24 @@ const RentItem = ({ item }) => {
         }
     };
 
-    const handleClick = () => {
-        setIsClicked((prev) => !prev);
-        if (!isAbsolute) {
+    const handleOpen = () => {
+        if (!isClicked) {
+            setIsClicked(true);
             setIsAbsolute(true);
-        } else {
+        }
+    };
+
+    const handleClose = () => {
+        if (isClicked) {
+            setIsClicked(false);
             setTimeout(() => {
                 setIsAbsolute(false);
             }, 400);
         }
+    };
+
+    const handleTagClick = (statName) => {
+        changeStatus(dayIndex, item.id, statName);
     };
 
     // Ensures click spams do not cause isAbsolute to be false when isClicked is true
@@ -49,7 +57,8 @@ const RentItem = ({ item }) => {
             {isAbsolute && <div className={classes.placeholder} />}
             <div
                 className={`${classes.itemBox} ${isClicked && classes.clicked} ${isAbsolute && classes.absPos}`}
-                onClick={handleClick}
+                onClick={handleOpen}
+                onMouseLeave={handleClose}
             >
                 <div
                     className={`${classes.content} ${
@@ -61,6 +70,32 @@ const RentItem = ({ item }) => {
                         <p>{item.title}</p>
                     </div>
                     <div className={`${classes.rentInfo} ${!isClicked && classes.noDisplay}`}>
+                        <div className={classes.statTags}>
+                            <p
+                                className={`${item.status == "stat1" ? classes.stat1 : classes.stat0}`}
+                                onClick={() => handleTagClick("stat1")}
+                            >
+                                Scheduled
+                            </p>
+                            <p
+                                className={`${item.status == "stat2" ? classes.stat2 : classes.stat0}`}
+                                onClick={() => handleTagClick("stat2")}
+                            >
+                                Due
+                            </p>
+                            <p
+                                className={`${item.status == "stat3" ? classes.stat3 : classes.stat0}`}
+                                onClick={() => handleTagClick("stat3")}
+                            >
+                                Paid
+                            </p>
+                            <p
+                                className={`${item.status == "stat4" ? classes.stat4 : classes.stat0}`}
+                                onClick={() => handleTagClick("stat4")}
+                            >
+                                Overdue
+                            </p>
+                        </div>
                         <div className={classes.inputCluster}>
                             <p className={classes.label}>Amount</p>
                             <input type="text" name="amount" value={inputFields.amount} onChange={handleInputChange} />

@@ -20,10 +20,10 @@ const RentsPage = () => {
             days.push([]);
         }
 
-        days[7].push({ date: "2025-07-08", title: "Test Payment 1", amount: 1000, status: "stat1" });
-        days[8].push({ date: "2025-07-09", title: "Test Payment 2", amount: 2000, status: "stat1" });
-        days[8].push({ date: "2025-07-09", title: "Test Payment 3", amount: 3000, status: "stat2" });
-1
+        days[7].push({ id: "p1", date: "2025-07-08", title: "Test Payment 1", amount: 1000, status: "stat1" });
+        days[8].push({ id: "p2", date: "2025-07-09", title: "Test Payment 2", amount: 2000, status: "stat1" });
+        days[8].push({ id: "p3", date: "2025-07-09", title: "Test Payment 3", amount: 3000, status: "stat2" });
+        1;
         return days;
     });
 
@@ -79,9 +79,7 @@ const RentsPage = () => {
         return initialDays;
     });
 
-    console.log(calendar);
-
-    // Update calendar to reflect change in month and year
+    // Update calendar to reflect change in month, year, and payments
     useEffect(() => {
         const newDays = [];
         const numDaysInMonth = getDaysInMonth(currentYear, currentMonth);
@@ -91,11 +89,11 @@ const RentsPage = () => {
             newDays.push({ id: `empty-${i}`, isEmpty: true });
         }
 
-        for (let i = 1; i <= numDaysInMonth; i++) {
+        for (let i = 0; i < numDaysInMonth; i++) {
             newDays.push({
                 id: i,
-                hasEvent: tPymtList[i - 1]?.length > 0,
-                items: tPymtList[i - 1] || [],
+                hasEvent: tPymtList[i]?.length > 0,
+                items: tPymtList[i] || [],
                 dayOfMonth: i,
             });
         }
@@ -105,10 +103,29 @@ const RentsPage = () => {
         }
 
         setCalendar(newDays);
-    }, [currentMonth, currentYear]);
+    }, [currentMonth, currentYear, tPymtList]);
 
     const handleCloseModal = () => {
         setIsModalOpen(false);
+    };
+
+    const changeStatus = (dayIndex, paymentId, newStatus) => {
+        setTPymtList((prev) => {
+            const newTPymtList = [...prev];
+
+            const dayToUpdate = [...newTPymtList[dayIndex]];
+
+            const updatedDayPayments = dayToUpdate.map((payment) => {
+                if (payment.id === paymentId) {
+                    return { ...payment, status: newStatus };
+                }
+                return payment;
+            });
+
+            newTPymtList[dayIndex] = updatedDayPayments;
+
+            return newTPymtList;
+        });
     };
 
     return (
@@ -154,7 +171,14 @@ const RentsPage = () => {
                                     {day.hasEvent &&
                                         day.items.length > 0 &&
                                         day.items.map((item, itemIndex) => {
-                                            return <RentItem item={item} key={item.title} />;
+                                            return (
+                                                <RentItem
+                                                    item={item}
+                                                    dayIndex={day.id}
+                                                    changeStatus={changeStatus}
+                                                    key={item.title}
+                                                />
+                                            );
                                         })}
                                 </div>
                             ))}
