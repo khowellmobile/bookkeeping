@@ -7,6 +7,7 @@ const RentPaymentsCtx = createContext({
     ctxPaymentList: null,
     setCtxPaymentList: () => {},
     populateCtxPayments: () => {},
+    getCtxPaymentsByMonth: () => {},
     ctxAddPayment: () => {},
     ctxUpdatePayment: () => {},
 });
@@ -41,6 +42,35 @@ export function RentPaymentsCtxProvider(props) {
             }
             const data = await response.json();
             setCtxPaymentList(data);
+        } catch (e) {
+            console.log("Error: " + e);
+        }
+    };
+
+    const getCtxPaymentsByMonth = async (month, year) => {
+        try {
+            const url = new URL("http://localhost:8000/api/rentPayments/");
+            if (ctxActiveProperty && ctxActiveProperty.id) {
+                url.searchParams.append("property_id", ctxActiveProperty.id);
+            }
+
+            if (month && year) {
+                url.searchParams.append("year", year);
+                url.searchParams.append("month", month);
+                url.searchParams.append("foramt_by_day", true);
+            }
+
+            const response = await fetch(url.toString(), {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${ctxAccessToken}`,
+                },
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            console.log(data);
         } catch (e) {
             console.log("Error: " + e);
         }
@@ -106,6 +136,7 @@ export function RentPaymentsCtxProvider(props) {
         ctxPaymentList,
         setCtxPaymentList,
         populateCtxPayments,
+        getCtxPaymentsByMonth,
         ctxAddPayment,
         ctxUpdatePayment,
     };

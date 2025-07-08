@@ -103,7 +103,7 @@ const RentItem = ({ item, dayIndex, changeStatus }) => {
                         </div>
                         <div className={classes.inputCluster}>
                             <p className={classes.label}>Payee</p>
-                            <input type="text" name="payee" value={inputFields.payee} onChange={handleInputChange} />
+                            <EntityDropdown altClass={"altStyle"} />
                         </div>
                         <div className={classes.inputCluster}>
                             {/* <p className={classes.label}>Payee</p> */}

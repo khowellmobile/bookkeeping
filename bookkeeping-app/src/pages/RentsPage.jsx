@@ -11,7 +11,7 @@ import RentItem from "../components/elements/items/RentItem";
 import EntityDropdown from "../components/elements/dropdowns/EntityDropdown"
 
 const RentsPage = () => {
-    const { ctxPaymentList } = useContext(RentPaymentsCtx);
+    const { ctxPaymentList, getCtxPaymentsByMonth } = useContext(RentPaymentsCtx);
 
     const [activeDate, setActiveDate] = useState(new Date());
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -129,6 +129,10 @@ const RentsPage = () => {
         });
     };
 
+    const getPymts = () => {
+        const monthPymts = getCtxPaymentsByMonth(6, 2025);
+    }
+
     return (
         <>
             {isModalOpen && <AddRentModal handleCloseModal={handleCloseModal} />}
@@ -140,6 +144,7 @@ const RentsPage = () => {
                             {displayedMonthName} {activeDate.getFullYear()} Rents
                         </h2>
                         <img className={classes.icon} src={chevDownIcon} alt="Icon" />
+                        <button onClick={getPymts}>GET PYMTS</button>
                     </span>
                     <section className={classes.calendar}>
                         <div className={classes.columnNames}>
