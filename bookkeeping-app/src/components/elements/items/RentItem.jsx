@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import classes from "./RentItem.module.css";
+import EntityDropdown from "../dropdowns/EntityDropdown";
 
 const RentItem = ({ item, dayIndex, changeStatus }) => {
     const [isClicked, setIsClicked] = useState(false);
@@ -33,12 +34,12 @@ const RentItem = ({ item, dayIndex, changeStatus }) => {
     };
 
     const handleClose = () => {
-        if (isClicked) {
+        /* if (isClicked) {
             setIsClicked(false);
             setTimeout(() => {
                 setIsAbsolute(false);
             }, 400);
-        }
+        } */
     };
 
     const handleTagClick = (statName) => {

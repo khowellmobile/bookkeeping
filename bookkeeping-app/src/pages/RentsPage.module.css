@@ -73,9 +73,8 @@
     border: 1px solid var(--border-color);
 
     display: grid;
-    /* Columns may need to be set like rows */
     grid-template-columns: repeat(7, 1fr);
-    grid-template-rows: repeat(5, calc(100% / 5));
+    grid-template-rows: repeat(5, 1fr);
     gap: 1px;
 }
 

@@ -8,11 +8,13 @@ import chevDownIcon from "../assets/chevron-down-icon.svg";
 
 import AddRentModal from "../components/elements/modals/AddRentModal";
 import RentItem from "../components/elements/items/RentItem";
+import EntityDropdown from "../components/elements/dropdowns/EntityDropdown"
 
 const RentsPage = () => {
     const { ctxPaymentList } = useContext(RentPaymentsCtx);
 
     const [activeDate, setActiveDate] = useState(new Date());
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const [tPymtList, setTPymtList] = useState(() => {
         const days = [];
 
@@ -26,8 +28,6 @@ const RentsPage = () => {
         1;
         return days;
     });
-
-    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const currentMonth = activeDate.getMonth();
     const currentYear = activeDate.getFullYear();
@@ -51,6 +51,7 @@ const RentsPage = () => {
         return new Date(year, month + 1, 0).getDate();
     };
 
+    // Calendar is formatted paymentList
     const [calendar, setCalendar] = useState(() => {
         const initialDays = [];
         const numDaysInCurrentMonth = getDaysInMonth(currentYear, currentMonth);
@@ -167,7 +168,7 @@ const RentsPage = () => {
                         <div className={classes.days}>
                             {calendar.map((day, dayIndex) => (
                                 <div className={classes.dayBox} key={day.id}>
-                                    <p>{day.id}</p>
+                                    <p>{day.id + 1}</p>
                                     {day.hasEvent &&
                                         day.items.length > 0 &&
                                         day.items.map((item, itemIndex) => {
