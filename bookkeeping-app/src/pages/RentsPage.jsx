@@ -10,7 +10,7 @@ import AddRentModal from "../components/elements/modals/AddRentModal";
 import RentItem from "../components/elements/items/RentItem";
 
 const RentsPage = () => {
-    const { ctxPaymentList, getCtxPaymentsByMonth } = useContext(RentPaymentsCtx);
+    const { getCtxPaymentsByMonth } = useContext(RentPaymentsCtx);
 
     const [activeDate, setActiveDate] = useState(new Date());
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -110,63 +110,6 @@ const RentsPage = () => {
         setIsModalOpen(false);
     };
 
-    const changeStatus = (dayIndex, paymentId, newStatus) => {
-        setTPymtList((prev) => {
-            const newTPymtList = [...prev];
-
-            const dayToUpdate = [...newTPymtList[dayIndex]];
-
-            const updatedDayPayments = dayToUpdate.map((payment) => {
-                if (payment.id === paymentId) {
-                    return { ...payment, status: newStatus };
-                }
-                return payment;
-            });
-
-            newTPymtList[dayIndex] = updatedDayPayments;
-
-            return newTPymtList;
-        });
-    };
-
-    const changeAmount = (dayIndex, paymentId, newAmount) => {
-        setTPymtList((prev) => {
-            const newTPymtList = [...prev];
-
-            const dayToUpdate = [...newTPymtList[dayIndex]];
-
-            const updatedDayPayments = dayToUpdate.map((payment) => {
-                if (payment.id === paymentId) {
-                    return { ...payment, amount: newAmount };
-                }
-                return payment;
-            });
-
-            newTPymtList[dayIndex] = updatedDayPayments;
-
-            return newTPymtList;
-        });
-    };
-
-    const changeEntity = (dayIndex, paymentId, newEntity) => {
-        setTPymtList((prev) => {
-            const newTPymtList = [...prev];
-
-            const dayToUpdate = [...newTPymtList[dayIndex]];
-
-            const updatedDayPayments = dayToUpdate.map((payment) => {
-                if (payment.id === paymentId) {
-                    return { ...payment, entity: newEntity };
-                }
-                return payment;
-            });
-
-            newTPymtList[dayIndex] = updatedDayPayments;
-
-            return newTPymtList;
-        });
-    };
-
     const updateFields = (dayIndex, paymentId, newValues) => {
         setTPymtList((prev) => {
             const newTPymtList = [...prev];
@@ -185,14 +128,6 @@ const RentsPage = () => {
             return newTPymtList;
         });
     };
-
-    useEffect(() => {
-        console.log(tPymtList);
-    }, [tPymtList]);
-
-    /* useEffect(() => {
-        console.log(calendar);
-    }, [calendar]); */
 
     return (
         <>
