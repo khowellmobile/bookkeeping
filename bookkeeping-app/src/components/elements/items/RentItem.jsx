@@ -7,6 +7,7 @@ const RentItem = ({ item, dayIndex, updateFields }) => {
 
     const [isClicked, setIsClicked] = useState(false);
     const [isAbsolute, setIsAbsolute] = useState(false);
+    const [isChanged, setIsChanged] = useState(false);
     const [inputFields, setInputFields] = useState({
         status: item.status,
         amount: item.amount,
@@ -27,6 +28,8 @@ const RentItem = ({ item, dayIndex, updateFields }) => {
                 [name]: value,
             }));
         }
+
+        setIsChanged(true);
     };
 
     const handleOpen = () => {
@@ -44,16 +47,21 @@ const RentItem = ({ item, dayIndex, updateFields }) => {
             }, 400);
         }
 
-        updateFields(dayIndex, item.id, inputFields);
+        if (isChanged) {
+            updateFields(dayIndex, item.id, inputFields);
+            setIsChanged(false);
+        }
     };
 
     const handleTagClick = (statName) => {
         setInputFields((prev) => ({ ...prev, status: statName }));
+        setIsChanged(true);
     };
 
     const handleEntityChange = (entity) => {
-        setInputFields((prev) => ({...prev, entity: entity}))
-    }
+        setInputFields((prev) => ({ ...prev, entity: entity }));
+        setIsChanged(true);
+    };
 
     // Ensures click spams do not cause isAbsolute to be false when isClicked is true
     useEffect(() => {
@@ -133,7 +141,11 @@ const RentItem = ({ item, dayIndex, updateFields }) => {
                         </div>
                         <div className={classes.inputCluster}>
                             <p className={classes.label}>Payee</p>
-                            <EntityDropdown initalVal={item.entity} onChange={handleEntityChange} altClass={"altStyle"} />
+                            <EntityDropdown
+                                initalVal={item.entity}
+                                onChange={handleEntityChange}
+                                altClass={"altStyle"}
+                            />
                         </div>
                         <div className={classes.inputCluster}>
                             <textarea name="description" value={inputFields.payee} onChange={handleInputChange} />
