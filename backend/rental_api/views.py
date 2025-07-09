@@ -4,6 +4,8 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from datetime import date, timedelta
+import calendar
 from .serializers import (
     TransactionSerializer,
     AccountSerializer,
@@ -501,10 +503,16 @@ class RentPaymentListAPIView(APIView):
 
     def get(self, request):
         property_id = request.query_params.get("property_id")
+        year = request.query_params.get("year")
+        month = request.query_params.get("month")
+        format_by_day = request.query_params.get("foramt_by_day", "false").lower()
+
         rent_payments = RentPayment.objects.filter(user=request.user)
 
         if property_id:
             try:
+                # Ensures property belongs to user
+                Property.objects.get(id=property_id, user=request.user)
                 rent_payments = rent_payments.filter(property_id=property_id)
             except Property.DoesNotExist:
                 return Response(
@@ -519,8 +527,50 @@ class RentPaymentListAPIView(APIView):
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
-        serializer = RentPaymentSerializer(rent_payments, many=True)
-        return Response(serializer.data)
+        # data ranged by year and month
+        if year and month:
+            try:
+                year = int(year)
+                month = int(month)
+                if not (1 <= month <= 12):
+                    raise ValueError("Month must be between 1 and 12")
+
+                rent_payments = rent_payments.filter(date__year=year, date__month=month)
+            except ValueError as e:
+                return Response(
+                    {"error": f"Invalid year or month provided: {e}"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+        elif year or month:
+            return Response(
+                {
+                    "error": "Both 'year' and 'month' must be provided to filter by month."
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        
+        # data grouped into payments by days
+        if format_by_day and year and month:
+
+            num_days = calendar.monthrange(year, month)[1]
+
+            payments_by_day = [[] for _ in range(num_days)]
+
+            serializer = RentPaymentSerializer(rent_payments, many=True)
+
+            for payment_data in serializer.data:
+                payment_date_str = payment_data.get("date")
+                if payment_date_str:
+                    try:
+                        payment_day = date.fromisoformat(payment_date_str).day
+                        payments_by_day[payment_day - 1].append(payment_data)
+                    except ValueError:
+                        pass
+
+            return Response(payments_by_day)
+        else:
+            serializer = RentPaymentSerializer(rent_payments, many=True)
+            return Response(serializer.data)
 
     def post(self, request):
         serializer = RentPaymentSerializer(
