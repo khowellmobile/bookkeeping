@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import classes from "./RentItem.module.css";
 import EntityDropdown from "../dropdowns/EntityDropdown";
 
-const RentItem = ({ item, dayIndex, updateFields }) => {
+const RentItem = ({ item, dayIndex, updateFields, pushLeft, pushUp }) => {
     const itemBoxRef = useRef(null);
 
     const [isClicked, setIsClicked] = useState(false);
@@ -13,6 +13,11 @@ const RentItem = ({ item, dayIndex, updateFields }) => {
         amount: item.amount,
         entity: item.entity,
     });
+
+    const pushStyle = {
+        top: pushUp && isClicked ? "-8.1rem" : "0",
+        left: pushLeft && isClicked? "-11.6rem" : "0",
+    };
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -95,6 +100,7 @@ const RentItem = ({ item, dayIndex, updateFields }) => {
             <div
                 className={`${classes.itemBox} ${isClicked && classes.clicked} ${isAbsolute && classes.absPos}`}
                 onClick={handleOpen}
+                style={pushStyle}
                 ref={itemBoxRef}
             >
                 <div

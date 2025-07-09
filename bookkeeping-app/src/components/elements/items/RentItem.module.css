@@ -17,6 +17,7 @@
     cursor: pointer;
     border-radius: 0.5rem;
 
+    position: relative;
     transition: all ease 0.4s;
 }
 
@@ -24,16 +25,14 @@
     width: 25rem;
     height: 15rem;
 
-    background-color: rgb(247, 247, 247);
+    background-color: var(--background-color);
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 
-    position: relative;
-    z-index: 1000;
+    z-index: 100;
 }
 
 .absPos {
     position: absolute;
-    top: 0rem;
 }
 
 .content {

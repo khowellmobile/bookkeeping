@@ -14,6 +14,8 @@ const RentsPage = () => {
 
     const [activeDate, setActiveDate] = useState(new Date());
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isExpanded, setIsExpanded] = useState(false);
+    const [daysOverflow, setDaysOverflow] = useState(false);
     const [tPymtList, setTPymtList] = useState([]);
 
     const currentMonth = activeDate.getMonth();
@@ -33,6 +35,9 @@ const RentsPage = () => {
         "December",
     ];
     const displayedMonthName = monthNames[currentMonth];
+    const daysStyle = {
+        gridTemplateRows: daysOverflow ? "repeat(6, 1fr)" : "repeat(5, 1fr)",
+    };
 
     useEffect(() => {
         const fetchPayments = async () => {
@@ -54,16 +59,22 @@ const RentsPage = () => {
     // Calendar is formatted paymentList
     const [calendar, setCalendar] = useState(() => {
         const initialDays = [];
-        const numDaysInCurrentMonth = getDaysInMonth(currentYear, currentMonth);
+        const numDaysInMonth = getDaysInMonth(currentYear, currentMonth);
 
         const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
+
+        if (firstDayOfMonth + numDaysInMonth > 35) {
+            setDaysOverflow(true);
+        } else {
+            setDaysOverflow(false);
+        }
 
         // Days before start of month
         for (let i = 0; i < firstDayOfMonth; i++) {
             initialDays.push({ id: `empty-${i}`, isEmpty: true });
         }
 
-        for (let i = 1; i <= numDaysInCurrentMonth; i++) {
+        for (let i = 1; i <= numDaysInMonth; i++) {
             initialDays.push({
                 id: i,
                 hasEvent: tPymtList[i - 1]?.length > 0,
@@ -73,7 +84,8 @@ const RentsPage = () => {
         }
 
         // Days after end of month
-        while (initialDays.length < 35) {
+        const totalDays = daysOverflow ? 42 : 35;
+        while (initialDays.length < totalDays) {
             initialDays.push({ id: `empty-${initialDays.length}`, isEmpty: true });
         }
 
@@ -90,6 +102,12 @@ const RentsPage = () => {
             newDays.push({ id: `empty-${i}`, isEmpty: true });
         }
 
+        if (firstDayOfMonth + numDaysInMonth > 35) {
+            setDaysOverflow(true);
+        } else {
+            setDaysOverflow(false);
+        }
+
         for (let i = 0; i < numDaysInMonth; i++) {
             newDays.push({
                 id: i,
@@ -99,7 +117,8 @@ const RentsPage = () => {
             });
         }
 
-        while (newDays.length < 35) {
+        const totalDays = daysOverflow ? 42 : 35;
+        while (newDays.length < totalDays) {
             newDays.push({ id: `empty-${newDays.length}`, isEmpty: true });
         }
 
@@ -129,6 +148,15 @@ const RentsPage = () => {
         });
     };
 
+    const handleMonthClick = (monthIndex) => {
+        setActiveDate((prev) => new Date(prev.getFullYear(), monthIndex));
+        setIsExpanded(false);
+    };
+
+    const handleYearClick = (year) => {
+        setActiveDate((prev) => new Date(year, prev.getMonth()));
+    };
+
     return (
         <>
             {isModalOpen && <AddRentModal handleCloseModal={handleCloseModal} />}
@@ -136,10 +164,51 @@ const RentsPage = () => {
             <div className={classes.mainContainer}>
                 <div className={classes.calendarContainer}>
                     <span>
-                        <h2>
-                            {displayedMonthName} {activeDate.getFullYear()} Rents
-                        </h2>
-                        <img className={classes.icon} src={chevDownIcon} alt="Icon" />
+                        <div className={classes.dateDisplay}>
+                            <h2>
+                                {displayedMonthName} {activeDate.getFullYear()} Rents
+                            </h2>
+                            <img
+                                className={classes.icon}
+                                src={isExpanded ? chevUpIcon : chevDownIcon}
+                                onClick={() => setIsExpanded((prev) => !prev)}
+                                alt="Icon"
+                            />
+                        </div>
+                        {isExpanded && (
+                            <div className={classes.anchor}>
+                                <div className={classes.dropDownContent}>
+                                    <span>
+                                        <img
+                                            className={classes.icon}
+                                            src={chevDownIcon}
+                                            onClick={() => handleYearClick(currentYear - 1)}
+                                            alt="Icon"
+                                        />
+                                        <p>{currentYear}</p>
+                                        <img
+                                            className={classes.icon}
+                                            src={chevDownIcon}
+                                            onClick={() => handleYearClick(currentYear + 1)}
+                                            alt="Icon"
+                                        />
+                                    </span>
+                                    <div className={classes.months}>
+                                        {monthNames.map((val, index) => {
+                                            return (
+                                                <p
+                                                    className={`${currentMonth == index && classes.active}`}
+                                                    onClick={() => handleMonthClick(index)}
+                                                    key={index}
+                                                >
+                                                    {val.slice(0, 3)}
+                                                </p>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </span>
                     <section className={classes.calendar}>
                         <div className={classes.columnNames}>
@@ -165,10 +234,15 @@ const RentsPage = () => {
                                 <p>Saturday</p>
                             </div>
                         </div>
-                        <div className={classes.days}>
+                        <div className={classes.days} style={daysStyle}>
                             {calendar.map((day, dayIndex) => (
-                                <div className={classes.dayBox} key={day.id}>
-                                    <p>{day.id + 1}</p>
+                                <div
+                                    className={`${classes.dayBox} ${
+                                        String(day.id).startsWith("empty") && classes.emptyBox
+                                    }`}
+                                    key={day.id}
+                                >
+                                    {!String(day.id).startsWith("empty") && <p>{day.id + 1}</p>}
                                     {day.hasEvent &&
                                         day.items.length > 0 &&
                                         day.items.map((item, itemIndex) => {
@@ -178,6 +252,8 @@ const RentsPage = () => {
                                                     dayIndex={day.id}
                                                     updateFields={updateFields}
                                                     key={item.id}
+                                                    pushLeft={dayIndex % 7 == 6}
+                                                    pushUp={dayIndex >= calendar.length - 7}
                                                 />
                                             );
                                         })}

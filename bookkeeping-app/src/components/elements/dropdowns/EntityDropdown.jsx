@@ -16,14 +16,14 @@ const EntityDropdown = ({ initalVal, onChange, altClass }) => {
 
     const dropdownRef = useRef(null);
 
-    let upChevIcon, downChevIcon
+    let upChevIcon, downChevIcon;
 
     if (altClass) {
-        upChevIcon = upChevIconW
-        downChevIcon = downChevIconW
+        upChevIcon = upChevIconW;
+        downChevIcon = downChevIconW;
     } else {
-        upChevIcon = upChevIconB
-        downChevIcon = downChevIconB
+        upChevIcon = upChevIconB;
+        downChevIcon = downChevIconB;
     }
 
     const clickEntityHandler = (entity) => {
@@ -46,7 +46,7 @@ const EntityDropdown = ({ initalVal, onChange, altClass }) => {
     }, []);
 
     return (
-        <div className={`${classes.mainContainer} ${classes[altClass] || ''}`} ref={dropdownRef}>
+        <div className={`${classes.mainContainer} ${classes[altClass] || ""}`} ref={dropdownRef}>
             <div className={classes.display} onClick={() => setIsExpanded((preVal) => !preVal)}>
                 <p>{activeEntity && activeEntity.name}</p>
             </div>
