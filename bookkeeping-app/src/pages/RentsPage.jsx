@@ -8,26 +8,13 @@ import chevDownIcon from "../assets/chevron-down-icon.svg";
 
 import AddRentModal from "../components/elements/modals/AddRentModal";
 import RentItem from "../components/elements/items/RentItem";
-import EntityDropdown from "../components/elements/dropdowns/EntityDropdown"
 
 const RentsPage = () => {
     const { ctxPaymentList, getCtxPaymentsByMonth } = useContext(RentPaymentsCtx);
 
     const [activeDate, setActiveDate] = useState(new Date());
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [tPymtList, setTPymtList] = useState(() => {
-        const days = [];
-
-        for (let i = 0; i < 31; i++) {
-            days.push([]);
-        }
-
-        days[7].push({ id: "p1", date: "2025-07-08", title: "Test Payment 1", amount: 1000, status: "stat1" });
-        days[8].push({ id: "p2", date: "2025-07-09", title: "Test Payment 2", amount: 2000, status: "stat1" });
-        days[8].push({ id: "p3", date: "2025-07-09", title: "Test Payment 3", amount: 3000, status: "stat2" });
-        1;
-        return days;
-    });
+    const [tPymtList, setTPymtList] = useState([]);
 
     const currentMonth = activeDate.getMonth();
     const currentYear = activeDate.getFullYear();
@@ -46,6 +33,19 @@ const RentsPage = () => {
         "December",
     ];
     const displayedMonthName = monthNames[currentMonth];
+
+    useEffect(() => {
+        const fetchPayments = async () => {
+            try {
+                const payments = await getCtxPaymentsByMonth(currentMonth + 1, currentYear);
+                setTPymtList(payments);
+            } catch (error) {
+                console.error("Failed to fetch payments:", error);
+            }
+        };
+
+        fetchPayments();
+    }, [currentMonth, currentYear, getCtxPaymentsByMonth]);
 
     const getDaysInMonth = (year, month) => {
         return new Date(year, month + 1, 0).getDate();
@@ -129,9 +129,70 @@ const RentsPage = () => {
         });
     };
 
-    const getPymts = () => {
-        const monthPymts = getCtxPaymentsByMonth(6, 2025);
-    }
+    const changeAmount = (dayIndex, paymentId, newAmount) => {
+        setTPymtList((prev) => {
+            const newTPymtList = [...prev];
+
+            const dayToUpdate = [...newTPymtList[dayIndex]];
+
+            const updatedDayPayments = dayToUpdate.map((payment) => {
+                if (payment.id === paymentId) {
+                    return { ...payment, amount: newAmount };
+                }
+                return payment;
+            });
+
+            newTPymtList[dayIndex] = updatedDayPayments;
+
+            return newTPymtList;
+        });
+    };
+
+    const changeEntity = (dayIndex, paymentId, newEntity) => {
+        setTPymtList((prev) => {
+            const newTPymtList = [...prev];
+
+            const dayToUpdate = [...newTPymtList[dayIndex]];
+
+            const updatedDayPayments = dayToUpdate.map((payment) => {
+                if (payment.id === paymentId) {
+                    return { ...payment, entity: newEntity };
+                }
+                return payment;
+            });
+
+            newTPymtList[dayIndex] = updatedDayPayments;
+
+            return newTPymtList;
+        });
+    };
+
+    const updateFields = (dayIndex, paymentId, newValues) => {
+        setTPymtList((prev) => {
+            const newTPymtList = [...prev];
+
+            const dayToUpdate = [...newTPymtList[dayIndex]];
+
+            const updatedDayPayments = dayToUpdate.map((payment) => {
+                if (payment.id === paymentId) {
+                    return { ...payment, ...newValues };
+                }
+                return payment;
+            });
+
+            newTPymtList[dayIndex] = updatedDayPayments;
+
+            return newTPymtList;
+        });
+    };
+
+    useEffect(() => {
+        console.log(tPymtList);
+    }, [tPymtList]);
+
+    /* useEffect(() => {
+        console.log(calendar);
+    }, [calendar]); */
 
     return (
         <>
@@ -144,7 +205,6 @@ const RentsPage = () => {
                             {displayedMonthName} {activeDate.getFullYear()} Rents
                         </h2>
                         <img className={classes.icon} src={chevDownIcon} alt="Icon" />
-                        <button onClick={getPymts}>GET PYMTS</button>
                     </span>
                     <section className={classes.calendar}>
                         <div className={classes.columnNames}>
@@ -181,8 +241,8 @@ const RentsPage = () => {
                                                 <RentItem
                                                     item={item}
                                                     dayIndex={day.id}
-                                                    changeStatus={changeStatus}
-                                                    key={item.title}
+                                                    updateFields={updateFields}
+                                                    key={item.id}
                                                 />
                                             );
                                         })}
