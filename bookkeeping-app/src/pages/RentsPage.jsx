@@ -5,18 +5,18 @@ import classes from "./RentsPage.module.css";
 import RentPaymentsCtx from "../components/contexts/RentPaymentsCtx";
 import chevUpIcon from "../assets/chevron-up-icon.svg";
 import chevDownIcon from "../assets/chevron-down-icon.svg";
+import plusIcon from "../assets/plus-icon.svg";
 
 import AddRentModal from "../components/elements/modals/AddRentModal";
 import RentItem from "../components/elements/items/RentItem";
 
 const RentsPage = () => {
-    const { getCtxPaymentsByMonth } = useContext(RentPaymentsCtx);
+    const { getCtxPaymentsByMonth, ctxMonthPaymentList, setCtxMonthPaymentList, ctxAddPayment } =
+        useContext(RentPaymentsCtx);
 
     const [activeDate, setActiveDate] = useState(new Date());
-    const [isModalOpen, setIsModalOpen] = useState(false);
     const [isExpanded, setIsExpanded] = useState(false);
     const [daysOverflow, setDaysOverflow] = useState(false);
-    const [tPymtList, setTPymtList] = useState([]);
 
     const currentMonth = activeDate.getMonth();
     const currentYear = activeDate.getFullYear();
@@ -34,23 +34,16 @@ const RentsPage = () => {
         "November",
         "December",
     ];
+    const weekdayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
     const displayedMonthName = monthNames[currentMonth];
     const daysStyle = {
         gridTemplateRows: daysOverflow ? "repeat(6, 1fr)" : "repeat(5, 1fr)",
     };
 
     useEffect(() => {
-        const fetchPayments = async () => {
-            try {
-                const payments = await getCtxPaymentsByMonth(currentMonth + 1, currentYear);
-                setTPymtList(payments);
-            } catch (error) {
-                console.error("Failed to fetch payments:", error);
-            }
-        };
-
-        fetchPayments();
-    }, [currentMonth, currentYear, getCtxPaymentsByMonth]);
+        getCtxPaymentsByMonth(currentMonth + 1, currentYear);
+    }, [currentMonth, currentYear]);
 
     const getDaysInMonth = (year, month) => {
         return new Date(year, month + 1, 0).getDate();
@@ -77,8 +70,8 @@ const RentsPage = () => {
         for (let i = 1; i <= numDaysInMonth; i++) {
             initialDays.push({
                 id: i,
-                hasEvent: tPymtList[i - 1]?.length > 0,
-                items: tPymtList[i - 1] || [],
+                hasEvent: ctxMonthPaymentList[i - 1]?.length > 0,
+                items: ctxMonthPaymentList[i - 1] || [],
                 dayOfMonth: i,
             });
         }
@@ -111,8 +104,8 @@ const RentsPage = () => {
         for (let i = 0; i < numDaysInMonth; i++) {
             newDays.push({
                 id: i,
-                hasEvent: tPymtList[i]?.length > 0,
-                items: tPymtList[i] || [],
+                hasEvent: ctxMonthPaymentList[i]?.length > 0,
+                items: ctxMonthPaymentList[i] || [],
                 dayOfMonth: i,
             });
         }
@@ -123,17 +116,13 @@ const RentsPage = () => {
         }
 
         setCalendar(newDays);
-    }, [currentMonth, currentYear, tPymtList]);
-
-    const handleCloseModal = () => {
-        setIsModalOpen(false);
-    };
+    }, [currentMonth, currentYear, ctxMonthPaymentList]);
 
     const updateFields = (dayIndex, paymentId, newValues) => {
-        setTPymtList((prev) => {
-            const newTPymtList = [...prev];
+        setCtxMonthPaymentList((prev) => {
+            const newPymtList = [...prev];
 
-            const dayToUpdate = [...newTPymtList[dayIndex]];
+            const dayToUpdate = [...newPymtList[dayIndex]];
 
             const updatedDayPayments = dayToUpdate.map((payment) => {
                 if (payment.id === paymentId) {
@@ -142,9 +131,9 @@ const RentsPage = () => {
                 return payment;
             });
 
-            newTPymtList[dayIndex] = updatedDayPayments;
+            newPymtList[dayIndex] = updatedDayPayments;
 
-            return newTPymtList;
+            return newPymtList;
         });
     };
 
@@ -157,13 +146,65 @@ const RentsPage = () => {
         setActiveDate((prev) => new Date(year, prev.getMonth()));
     };
 
+    const addRentItem = (dayIndex, dayId) => {
+        const newRentItem = {
+            id: `temp-${dayId}`,
+            status: "",
+            amount: "",
+            entity: "",
+            date: `${currentYear}-${currentMonth + 1}-${dayIndex - 1}`,
+        };
+        setCtxMonthPaymentList((prevPymtList) => {
+            const updatedPymtList = [...prevPymtList];
+
+            const targetIndex = dayId;
+
+            if (!updatedPymtList[targetIndex]) {
+                updatedPymtList[targetIndex] = [];
+            }
+
+            updatedPymtList[targetIndex] = [...updatedPymtList[targetIndex], newRentItem];
+
+            return updatedPymtList;
+        });
+    };
+
+    const removePayment = (dayIndex, paymentId) => {
+        setCtxMonthPaymentList((prev) => {
+            const oldPymtItems = [...prev];
+            const dayItems = prev[dayIndex];
+
+            const newDayItems = dayItems.filter((item) => item.id !== paymentId);
+
+            oldPymtItems[dayIndex] = newDayItems;
+
+            return oldPymtItems;
+        });
+    };
+
+    const handleSaveRentPayment = async (dayIndex, payment) => {
+        const newPayment = await ctxAddPayment(payment);
+        setCtxMonthPaymentList((prev) => {
+            const pymtItemsCopy = [...prev];
+            const dayItems = pymtItemsCopy[dayIndex];
+
+            const newDayItems = [...dayItems, newPayment];
+
+            pymtItemsCopy[dayIndex] = newDayItems;
+
+            return pymtItemsCopy;
+        });
+    };
+
+    /* useEffect(() => {
+        console.log(ctxMonthPaymentList);
+    }, [ctxMonthPaymentList]); */
+
     return (
         <>
-            {isModalOpen && <AddRentModal handleCloseModal={handleCloseModal} />}
-
             <div className={classes.mainContainer}>
-                <div className={classes.calendarContainer}>
-                    <span>
+                <section className={classes.header}>
+                    <div className={classes.headerInfo}>
                         <div className={classes.dateDisplay}>
                             <h2>
                                 {displayedMonthName} {activeDate.getFullYear()} Rents
@@ -209,59 +250,55 @@ const RentsPage = () => {
                                 </div>
                             </div>
                         )}
-                    </span>
-                    <section className={classes.calendar}>
-                        <div className={classes.columnNames}>
-                            <div>
-                                <p>Sunday</p>
-                            </div>
-                            <div>
-                                <p>Monday</p>
-                            </div>
-                            <div>
-                                <p>Tuesday</p>
-                            </div>
-                            <div>
-                                <p>Wednesday</p>
-                            </div>
-                            <div>
-                                <p>Thursday</p>
-                            </div>
-                            <div>
-                                <p>Friday</p>
-                            </div>
-                            <div>
-                                <p>Saturday</p>
-                            </div>
-                        </div>
-                        <div className={classes.days} style={daysStyle}>
-                            {calendar.map((day, dayIndex) => (
-                                <div
-                                    className={`${classes.dayBox} ${
-                                        String(day.id).startsWith("empty") && classes.emptyBox
-                                    }`}
-                                    key={day.id}
-                                >
-                                    {!String(day.id).startsWith("empty") && <p>{day.id + 1}</p>}
-                                    {day.hasEvent &&
-                                        day.items.length > 0 &&
-                                        day.items.map((item, itemIndex) => {
-                                            return (
-                                                <RentItem
-                                                    item={item}
-                                                    dayIndex={day.id}
-                                                    updateFields={updateFields}
-                                                    key={item.id}
-                                                    pushLeft={dayIndex % 7 == 6}
-                                                    pushUp={dayIndex >= calendar.length - 7}
-                                                />
-                                            );
-                                        })}
+                    </div>
+                    <button onClick={() => removePayment(9, "temp-9")}>Add Rent Payment</button>
+                </section>
+                <section className={classes.calendar}>
+                    <div className={classes.columnNames}>
+                        {weekdayNames.map((val, index) => {
+                            return (
+                                <div key={index}>
+                                    <p>{val}</p>
                                 </div>
-                            ))}
-                        </div>
-                    </section>
-                </div>
+                            );
+                        })}
+                    </div>
+                    <div className={classes.days} style={daysStyle}>
+                        {calendar.map((day, dayIndex) => (
+                            <div
+                                className={`${classes.dayBox} ${
+                                    String(day.id).startsWith("empty") && classes.emptyBox
+                                }`}
+                                key={day.id}
+                            >
+                                {!String(day.id).startsWith("empty") && (
+                                    <div className={classes.header}>
+                                        <div onClick={() => addRentItem(dayIndex, day.id)}>
+                                            <img className={classes.icon} src={plusIcon} alt="Icon" />
+                                        </div>
+                                        <p>{day.id + 1}</p>
+                                    </div>
+                                )}
+                                {day.hasEvent &&
+                                    day.items.length > 0 &&
+                                    day.items.map((item, itemIndex) => {
+                                        return (
+                                            <RentItem
+                                                item={item}
+                                                dayIndex={day.id}
+                                                updateFields={updateFields}
+                                                removePayment={removePayment}
+                                                handleSaveRentPayment={handleSaveRentPayment}
+                                                key={item.id}
+                                                pushLeft={dayIndex % 7 == 6}
+                                                pushUp={dayIndex >= calendar.length - 7}
+                                            />
+                                        );
+                                    })}
+                            </div>
+                        ))}
+                    </div>
+                </section>
             </div>
         </>
     );

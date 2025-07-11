@@ -1,12 +1,17 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
+
 import classes from "./RentItem.module.css";
+
+import RentPaymentsCtx from "../../contexts/RentPaymentsCtx";
 import EntityDropdown from "../dropdowns/EntityDropdown";
 
-const RentItem = ({ item, dayIndex, updateFields, pushLeft, pushUp }) => {
+const RentItem = ({ item, dayIndex, updateFields, removePayment, handleSaveRentPayment, pushLeft, pushUp }) => {
+    const { ctxUpdatePayment } = useContext(RentPaymentsCtx);
+
     const itemBoxRef = useRef(null);
 
-    const [isClicked, setIsClicked] = useState(false);
-    const [isAbsolute, setIsAbsolute] = useState(false);
+    const [isClicked, setIsClicked] = useState(String(item.id).startsWith("temp"));
+    const [isAbsolute, setIsAbsolute] = useState(String(item.id).startsWith("temp"));
     const [isChanged, setIsChanged] = useState(false);
     const [inputFields, setInputFields] = useState({
         status: item.status,
@@ -16,7 +21,7 @@ const RentItem = ({ item, dayIndex, updateFields, pushLeft, pushUp }) => {
 
     const pushStyle = {
         top: pushUp && isClicked ? "-8.1rem" : "0",
-        left: pushLeft && isClicked? "-11.6rem" : "0",
+        left: pushLeft && isClicked ? "-11.6rem" : "0",
     };
 
     const handleInputChange = (e) => {
@@ -52,9 +57,24 @@ const RentItem = ({ item, dayIndex, updateFields, pushLeft, pushUp }) => {
             }, 400);
         }
 
-        if (isChanged) {
+        if (String(item.id).startsWith("temp")) {
+            removePayment(dayIndex, item.id);
+        } else if (isChanged) {
             updateFields(dayIndex, item.id, inputFields);
             setIsChanged(false);
+            ctxUpdatePayment({ ...item, ...inputFields });
+        }
+    };
+
+    const handleSave = () => {
+        if (inputFields.amount != "" && inputFields.entity != "" && inputFields.status != "") {
+            const savePayment = {
+                ...inputFields,
+                date: item.date,
+            };
+            handleSaveRentPayment(dayIndex, savePayment);
+        } else {
+            handleClose();
         }
     };
 
@@ -94,6 +114,10 @@ const RentItem = ({ item, dayIndex, updateFields, pushLeft, pushUp }) => {
         };
     }, [isClicked]);
 
+    useEffect(() => {
+        console.log(item);
+    }, []);
+
     return (
         <div className={classes.mainContainer}>
             {isAbsolute && <div className={classes.placeholder} />}
@@ -111,7 +135,8 @@ const RentItem = ({ item, dayIndex, updateFields, pushLeft, pushUp }) => {
                     <div className={`${classes.header} ${isClicked && classes[inputFields.status]}`}>
                         <div className={`${classes.statIndicator} ${classes[inputFields.status]}`}></div>
                         <p>
-                            {item.entity.name} paid {item.amount}
+                            {inputFields.entity?.name ? inputFields.entity.name : "Unknown"} paid{" "}
+                            {inputFields.amount ? inputFields.amount : 0.0}
                         </p>
                     </div>
                     <div className={`${classes.rentInfo} ${!isClicked && classes.noDisplay}`}>
@@ -160,6 +185,12 @@ const RentItem = ({ item, dayIndex, updateFields, pushLeft, pushUp }) => {
                             <button className={`${isClicked && classes[inputFields.status]}`} onClick={handleClose}>
                                 Close
                             </button>
+
+                            {String(item.id).startsWith("temp") && (
+                                <button className={`${isClicked && classes[inputFields.status]}`} onClick={handleSave}>
+                                    Save
+                                </button>
+                            )}
                         </div>
                     </div>
                 </div>
