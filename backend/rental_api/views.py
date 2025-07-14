@@ -617,7 +617,7 @@ class RentPaymentDetailAPIView(APIView):
 
     def get(self, request, pk):
         try:
-            rent_payment = RentPayment.objects.get(pk=pk)
+            rent_payment = self.get_object(pk)
         except RentPayment.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = RentPaymentSerializer(rent_payment)

@@ -7,7 +7,6 @@ import chevUpIcon from "../assets/chevron-up-icon.svg";
 import chevDownIcon from "../assets/chevron-down-icon.svg";
 import plusIcon from "../assets/plus-icon.svg";
 
-import AddRentModal from "../components/elements/modals/AddRentModal";
 import RentItem from "../components/elements/items/RentItem";
 
 const RentsPage = () => {
@@ -96,7 +95,7 @@ const RentsPage = () => {
         } else {
             setDaysOverflow(false);
         }
-        
+
         for (let i = 0; i < firstDayOfMonth; i++) {
             newDays.push({ id: `empty-${i}`, isEmpty: true });
         }
@@ -195,10 +194,6 @@ const RentsPage = () => {
             return pymtItemsCopy;
         });
     };
-
-    /* useEffect(() => {
-        console.log(ctxMonthPaymentList);
-    }, [ctxMonthPaymentList]); */
 
     return (
         <>

@@ -4,12 +4,14 @@ import classes from "./RentItem.module.css";
 
 import RentPaymentsCtx from "../../contexts/RentPaymentsCtx";
 import EntityDropdown from "../dropdowns/EntityDropdown";
+import ConfirmationModal from "../modals/ConfirmationModal";
 
 const RentItem = ({ item, dayIndex, updateFields, removePayment, handleSaveRentPayment, pushLeft, pushUp }) => {
     const { ctxUpdatePayment } = useContext(RentPaymentsCtx);
 
     const itemBoxRef = useRef(null);
 
+    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
     const [isClicked, setIsClicked] = useState(String(item.id).startsWith("temp"));
     const [isAbsolute, setIsAbsolute] = useState(String(item.id).startsWith("temp"));
     const [isChanged, setIsChanged] = useState(false);
@@ -81,6 +83,10 @@ const RentItem = ({ item, dayIndex, updateFields, removePayment, handleSaveRentP
         }
     };
 
+    const handleDelete = () => {
+        setIsConfirmModalOpen(true);
+    };
+
     const handleTagClick = (statName) => {
         setInputFields((prev) => ({ ...prev, status: statName }));
         setIsChanged(true);
@@ -117,90 +123,132 @@ const RentItem = ({ item, dayIndex, updateFields, removePayment, handleSaveRentP
         };
     }, [isClicked]);
 
-    return (
-        <div className={classes.mainContainer}>
-            {isAbsolute && <div className={classes.placeholder} />}
-            <div
-                className={`${classes.itemBox} ${isClicked && classes.clicked} ${isAbsolute && classes.absPos}`}
-                onClick={handleOpen}
-                style={pushStyle}
-                ref={itemBoxRef}
-            >
-                <div
-                    className={`${classes.content} ${
-                        !isClicked ? classes.abbreviatedContent : classes.expandedContent
-                    }`}
-                >
-                    <div className={`${classes.header} ${isClicked && classes[inputFields.status]}`}>
-                        <div className={`${classes.statIndicator} ${classes[inputFields.status]}`}></div>
-                        <p>
-                            {inputFields.entity?.name ? inputFields.entity.name : "Unknown"} paid $
-                            {inputFields.amount ? inputFields.amount : 0.0}
-                        </p>
-                    </div>
-                    <div className={`${classes.rentInfo} ${!isClicked && classes.noDisplay}`}>
-                        <div className={classes.statTags}>
-                            <p
-                                className={`${inputFields.status == "scheduled" ? classes.scheduled : classes.stat0}`}
-                                onClick={() => handleTagClick("scheduled")}
-                            >
-                                Scheduled
-                            </p>
-                            <p
-                                className={`${inputFields.status == "due" ? classes.due : classes.stat0}`}
-                                onClick={() => handleTagClick("due")}
-                            >
-                                Due
-                            </p>
-                            <p
-                                className={`${inputFields.status == "paid" ? classes.paid : classes.stat0}`}
-                                onClick={() => handleTagClick("paid")}
-                            >
-                                Paid
-                            </p>
-                            <p
-                                className={`${inputFields.status == "overdue" ? classes.overdue : classes.stat0}`}
-                                onClick={() => handleTagClick("overdue")}
-                            >
-                                Overdue
-                            </p>
-                        </div>
-                        <div className={classes.inputCluster}>
-                            <p className={classes.label}>Amount</p>
-                            <input type="text" name="amount" value={inputFields.amount} onChange={handleInputChange} />
-                        </div>
-                        <div className={classes.inputCluster}>
-                            <p className={classes.label}>Payee</p>
-                            <EntityDropdown
-                                initalVal={item.entity}
-                                onChange={handleEntityChange}
-                                altClass={"altStyle"}
-                            />
-                        </div>
-                        <div className={classes.inputCluster}>
-                            <textarea name="description" value={inputFields.payee} onChange={handleInputChange} />
-                        </div>
-                        <div className={classes.tools}>
-                            <p>{errorText}</p>
-                            <div className={classes.buttons}>
-                                <button className={`${isClicked && classes[inputFields.status]}`} onClick={handleClose}>
-                                    {String(item.id).startsWith("temp") ? "Cancel" : "Close"}
-                                </button>
+    const onConfirmModalAction = () => {
+        removePayment(dayIndex, item.id);
+        ctxUpdatePayment({ id: item.id, is_deleted: true });
+        setIsConfirmModalOpen(false);
+    };
 
-                                {String(item.id).startsWith("temp") && (
+    const onCancelModalAction = () => {
+        setIsConfirmModalOpen(false);
+    };
+
+    return (
+        <>
+            {isConfirmModalOpen && (
+                <ConfirmationModal
+                    text={{
+                        msg: "Are you sure you wish to delete this Payment?",
+                        confirm_txt: "Delete",
+                        cancel_txt: "Cancel Deletion",
+                    }}
+                    onConfirm={onConfirmModalAction}
+                    onCancel={onCancelModalAction}
+                />
+            )}
+
+            <div className={classes.mainContainer}>
+                {isAbsolute && <div className={classes.placeholder} />}
+                <div
+                    className={`${classes.itemBox} ${isClicked && classes.clicked} ${isAbsolute && classes.absPos}`}
+                    onClick={handleOpen}
+                    style={pushStyle}
+                    ref={itemBoxRef}
+                >
+                    <div
+                        className={`${classes.content} ${
+                            !isClicked ? classes.abbreviatedContent : classes.expandedContent
+                        }`}
+                    >
+                        <div className={`${classes.header} ${isClicked && classes[inputFields.status]}`}>
+                            <div className={`${classes.statIndicator} ${classes[inputFields.status]}`}></div>
+                            <p>
+                                {inputFields.entity?.name ? inputFields.entity.name : "Unknown"} paid $
+                                {inputFields.amount ? inputFields.amount : 0.0}
+                            </p>
+                        </div>
+                        <div className={`${classes.rentInfo} ${!isClicked && classes.noDisplay}`}>
+                            <div className={classes.statTags}>
+                                <p
+                                    className={`${
+                                        inputFields.status == "scheduled" ? classes.scheduled : classes.stat0
+                                    }`}
+                                    onClick={() => handleTagClick("scheduled")}
+                                >
+                                    Scheduled
+                                </p>
+                                <p
+                                    className={`${inputFields.status == "due" ? classes.due : classes.stat0}`}
+                                    onClick={() => handleTagClick("due")}
+                                >
+                                    Due
+                                </p>
+                                <p
+                                    className={`${inputFields.status == "paid" ? classes.paid : classes.stat0}`}
+                                    onClick={() => handleTagClick("paid")}
+                                >
+                                    Paid
+                                </p>
+                                <p
+                                    className={`${inputFields.status == "overdue" ? classes.overdue : classes.stat0}`}
+                                    onClick={() => handleTagClick("overdue")}
+                                >
+                                    Overdue
+                                </p>
+                            </div>
+                            <div className={classes.inputCluster}>
+                                <p className={classes.label}>Amount</p>
+                                <input
+                                    type="text"
+                                    name="amount"
+                                    value={inputFields.amount}
+                                    onChange={handleInputChange}
+                                />
+                            </div>
+                            <div className={classes.inputCluster}>
+                                <p className={classes.label}>Payee</p>
+                                <EntityDropdown
+                                    initalVal={item.entity}
+                                    onChange={handleEntityChange}
+                                    altClass={"altStyle"}
+                                />
+                            </div>
+                            <div className={classes.inputCluster}>
+                                <textarea name="description" value={inputFields.payee} onChange={handleInputChange} />
+                            </div>
+                            <div className={classes.tools}>
+                                <p>{errorText}</p>
+                                <div className={classes.buttons}>
+                                    {!String(item.id).startsWith("temp") && (
+                                        <button
+                                            className={`${isClicked && classes[inputFields.status]}`}
+                                            onClick={handleDelete}
+                                        >
+                                            Delete
+                                        </button>
+                                    )}
                                     <button
                                         className={`${isClicked && classes[inputFields.status]}`}
-                                        onClick={handleSave}
+                                        onClick={handleClose}
                                     >
-                                        Save
+                                        {String(item.id).startsWith("temp") ? "Cancel" : "Close"}
                                     </button>
-                                )}
+
+                                    {String(item.id).startsWith("temp") && (
+                                        <button
+                                            className={`${isClicked && classes[inputFields.status]}`}
+                                            onClick={handleSave}
+                                        >
+                                            Save
+                                        </button>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 };
 
