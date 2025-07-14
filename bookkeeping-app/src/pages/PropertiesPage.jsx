@@ -191,58 +191,62 @@ const PropertiesPage = () => {
                         <div className={classes.inputs}>
                             <div className={classes.genInfo}>
                                 <h3>General Information</h3>
-                                <div className={`${classes.cluster} ${isEditing ? classes.editing : ""}`}>
-                                    <p>Address:</p>
-                                    <input
-                                        type="text"
-                                        name="address"
-                                        value={inputFields.address}
-                                        onChange={handleInputChange}
-                                        disabled={!isEditing}
-                                    />
-                                </div>
-                                <div className={`${classes.cluster} ${isEditing ? classes.editing : ""}`}>
-                                    <p>Property Type:</p>
-                                    <input
-                                        type="text"
-                                        name="property_type"
-                                        value={inputFields.property_type}
-                                        onChange={handleInputChange}
-                                        disabled={!isEditing}
-                                    />
-                                </div>
-                                <div className={`${classes.cluster} ${isEditing ? classes.editing : ""}`}>
-                                    <p>Is Active:</p>
-                                    <input
-                                        type="text"
-                                        name="is_active"
-                                        value={inputFields.is_active}
-                                        onChange={handleInputChange}
-                                        disabled={!isEditing}
-                                    />
+                                <div>
+                                    <div className={`${classes.cluster} ${isEditing ? classes.editing : ""}`}>
+                                        <p>Address:</p>
+                                        <input
+                                            type="text"
+                                            name="address"
+                                            value={inputFields.address}
+                                            onChange={handleInputChange}
+                                            disabled={!isEditing}
+                                        />
+                                    </div>
+                                    <div className={`${classes.cluster} ${isEditing ? classes.editing : ""}`}>
+                                        <p>Property Type:</p>
+                                        <input
+                                            type="text"
+                                            name="property_type"
+                                            value={inputFields.property_type}
+                                            onChange={handleInputChange}
+                                            disabled={!isEditing}
+                                        />
+                                    </div>
+                                    <div className={`${classes.cluster} ${isEditing ? classes.editing : ""}`}>
+                                        <p>Is Active:</p>
+                                        <input
+                                            type="text"
+                                            name="is_active"
+                                            value={inputFields.is_active}
+                                            onChange={handleInputChange}
+                                            disabled={!isEditing}
+                                        />
+                                    </div>
                                 </div>
                             </div>
                             <div className={classes.financialInfo}>
                                 <h3>Financial Information</h3>
-                                <div className={`${classes.cluster} ${isEditing ? classes.editing : ""}`}>
-                                    <p>Rent:</p>
-                                    <input
-                                        type="text"
-                                        name="rent"
-                                        value={inputFields.rent}
-                                        onChange={handleInputChange}
-                                        disabled={!isEditing}
-                                    />
-                                </div>
-                                <div className={`${classes.cluster} ${isEditing ? classes.editing : ""}`}>
-                                    <p>Units:</p>
-                                    <input
-                                        type="text"
-                                        name="number_of_units"
-                                        value={inputFields.number_of_units}
-                                        onChange={handleInputChange}
-                                        disabled={!isEditing}
-                                    />
+                                <div>
+                                    <div className={`${classes.cluster} ${isEditing ? classes.editing : ""}`}>
+                                        <p>Rent:</p>
+                                        <input
+                                            type="text"
+                                            name="rent"
+                                            value={inputFields.rent}
+                                            onChange={handleInputChange}
+                                            disabled={!isEditing}
+                                        />
+                                    </div>
+                                    <div className={`${classes.cluster} ${isEditing ? classes.editing : ""}`}>
+                                        <p>Units:</p>
+                                        <input
+                                            type="text"
+                                            name="number_of_units"
+                                            value={inputFields.number_of_units}
+                                            onChange={handleInputChange}
+                                            disabled={!isEditing}
+                                        />
+                                    </div>
                                 </div>
                             </div>
                         </div>

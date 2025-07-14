@@ -7,7 +7,7 @@
     cursor: pointer;
     font-family: "poppins";
     font-weight: 500;
-    font-size: 0.8rem;
+    font-size: var(--small-font-size);
     border-radius: 0.25rem;
     border: none;
     outline: none;
@@ -78,7 +78,7 @@
     border: 1px solid rgb(0, 0, 0, 0);
     border-radius: 0rem;
     outline: none;
-    font-size: 1.5rem;
+    font-size: var(--large-header-font-size);
     font-family: "poppins";
 
     position: relative;
@@ -107,6 +107,7 @@
 
     border-bottom: 1px solid var(--border-color);
     font-weight: 400;
+    font-size: var(--base-font-size);
 
     display: flex;
     align-items: center;
@@ -124,6 +125,8 @@
 
     display: flex;
     flex-direction: column;
+
+    outline: 1px solid red;
 }
 
 .cluster {
@@ -133,7 +136,7 @@
 
 .cluster > p {
     color: var(--secondary-text-color);
-    font-size: 0.8rem;
+    font-size: var(--small-font-size);
 }
 
 .cluster > input {
@@ -144,7 +147,7 @@
     border: 1px solid rgb(0, 0, 0, 0);
     border-radius: 0rem;
     outline: none;
-    font-size: 0.9rem;
+    font-size: var(--base-font-size);
     font-family: "poppins";
 }
 
@@ -180,7 +183,7 @@
     padding-left: 0.5rem;
 
     color: var(--secondary-text-color);
-    font-size: 0.9rem;
+    font-size: var(--small-font-size);
     border-left: 1px dashed var(--border-color);
     border-bottom: 2px solid var(--border-color);
 }

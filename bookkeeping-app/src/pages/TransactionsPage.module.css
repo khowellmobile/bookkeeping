@@ -10,6 +10,8 @@
 
 .tranasctionsHeader > h2 {
     height: 2rem;
+
+    font-size: var(--large-header-font-size);
     font-weight: 400;
 }
 
@@ -39,7 +41,7 @@
     color: var(--primary-text-color);
     background-color: var(--secondary-background-color);
     font-family: "poppins";
-    font-size: 0.8rem;
+    font-size: var(--small-font-size);
     line-height: 1.5rem;
     border: 1px solid var(--border-color);
     border-radius: 0.15rem;

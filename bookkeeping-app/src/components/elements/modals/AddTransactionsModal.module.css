@@ -107,7 +107,7 @@
 
 .columnNames div > p {
     color: var(--secondary-text-color);
-    font-size: 0.9rem;
+    font-size: var(--small-font-size);
 }
 
 .items {

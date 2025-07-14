@@ -10,6 +10,8 @@
 
 .accountsHeader > h2 {
     height: 2rem;
+
+    font-size: var(--large-header-font-size);
     font-weight: 400;
 }
 

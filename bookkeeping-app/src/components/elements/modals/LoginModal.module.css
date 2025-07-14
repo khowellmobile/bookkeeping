@@ -60,13 +60,13 @@
 }
 
 .header > b {
-    font-size: 1.5rem;
+    font-size: var(--large-header-font-size);
 }
 
 .header > p {
     margin-top: 0.2rem;
 
-    font-size: 0.8rem;
+    font-size: var(--small-font-size);
 }
 
 .inputs {
@@ -92,7 +92,7 @@
 .formCluster > p {
     margin: 0px;
 
-    font-size: 0.8rem;
+    font-size: var(--small-font-size);
     transition: all ease-out 0.2s;
 
     position: relative;
@@ -114,11 +114,11 @@
 }
 
 .formCluster > input[type="text"] {
-    font-size: 0.9rem;
+    font-size: var(--small-font-size);
 }
 
 .formCluster > input[type="password"] {
-    font-size: 0.9rem;
+    font-size: var(--small-font-size);
 }
 
 .formCluster > input,
@@ -161,7 +161,7 @@
 
 .form > button {
     color: white;
-    font-size: 1rem;
+    font-size: var(--base-font-size);
 }
 
 .form > button:hover,
@@ -178,7 +178,7 @@
 }
 
 .form > p {
-    font-size: 0.9rem;
+    font-size: var(--small-font-size);
 }
 
 .form > p > a {

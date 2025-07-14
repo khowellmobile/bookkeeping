@@ -70,7 +70,7 @@
 }
 
 .abbreviatedContent .header > p {
-    font-size: 0.8rem;
+    font-size: var(--small-font-size);
 
     position: relative;
     left: 0rem;
@@ -78,7 +78,7 @@
 
 .expandedContent .header > p {
     color: white;
-    font-size: 1rem;
+    font-size: var(--base-font-size);
     margin: 0.3rem;
 
     align-self: center;
@@ -148,7 +148,7 @@
 
     color: white;
     border-radius: 0.25rem;
-    font-size: 0.8rem;
+    font-size: var(--small-font-size);
     cursor: pointer;
 
     display: flex;
@@ -171,7 +171,7 @@
 
     color: white;
     background-color: rgb(49, 40, 40);
-    font-size: 0.8rem;
+    font-size: var(--small-font-size);
     border-right: none;
 
     display: flex;
@@ -208,7 +208,7 @@
 
 .tools > p {
     color: red;
-    font-size: 0.8rem;
+    font-size: var(--small-font-size);
 }
 
 .buttons {
@@ -227,7 +227,7 @@
     cursor: pointer;
     font-family: "poppins";
     font-weight: 500;
-    font-size: 0.8rem;
+    font-size: var(--small-font-size);
     border-radius: 0.25rem;
     border: none;
     outline: none;

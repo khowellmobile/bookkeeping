@@ -27,6 +27,7 @@
 
 .top > h2 {
     font-weight: 400;
+    font-size: var(--header-font-size);
 }
 
 .seperatorH {

@@ -40,7 +40,7 @@
 .header h2 {
     margin-left: 0.5rem;
 
-    font-size: 1.3rem;
+    font-size: var(--header-font-size);
     font-weight: 400;
 }
 
@@ -60,7 +60,7 @@
     cursor: pointer;
     font-family: "poppins";
     font-weight: 500;
-    font-size: 0.8rem;
+    font-size: var(--small-font-size);
     border-radius: 0.25rem;
     border: none;
     outline: none;
@@ -97,11 +97,13 @@
 
 .titleDate > input:first-child {
     width: 80%;
-    font-size: 1.1rem;
+    font-size: var(--base-font-size);
 }
 
 .titleDate > input:last-child {
     width: 20%;
+
+    font-size: var(--base-font-size);
     border-left: 1px solid var(--border-color);
 }
 
@@ -137,7 +139,7 @@
 
 .columnNames div > p {
     color: var(--secondary-text-color);
-    font-size: 0.9rem;
+    font-size: var(--small-font-size);
 }
 
 .items {
@@ -167,7 +169,7 @@
     padding: 0.25rem 0 0.25rem 0.5rem;
 
     border-left: 1px dashed var(--border-color);
-    font-size: 0.9rem;
+    font-size: var(--small-font-size);
 }
 
 .historyEntry > p:nth-child(1) {
@@ -196,7 +198,7 @@
 
     padding-left: 0.5rem;
     border-left: 1px dashed var(--border-color);
-    font-size: 0.9rem;
+    font-size: var(--small-font-size);
 
     display: flex;
     align-items: center;
