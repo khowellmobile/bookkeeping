@@ -251,7 +251,6 @@ const RentsPage = () => {
                             </div>
                         )}
                     </div>
-                    <button onClick={() => removePayment(9, "temp-9")}>Add Rent Payment</button>
                 </section>
                 <section className={classes.calendar}>
                     <div className={classes.columnNames}>
