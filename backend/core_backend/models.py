@@ -150,6 +150,16 @@ class RentPayment(models.Model):
     )
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     date = models.DateField(null=True)
+    status = models.CharField(
+        max_length=25,
+        choices=[
+            ("scheduled", "Scheduled"),
+            ("paid", "Paid"),
+            ("due", "Due"),
+            ("overdue", "Overdue"),
+        ],
+        default="residential",
+    )
     is_deleted = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

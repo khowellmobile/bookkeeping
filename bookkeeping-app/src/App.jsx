@@ -13,6 +13,7 @@ import { RentPaymentsCtxProvider } from "./components/contexts/RentPaymentsCtx";
 
 import HomePage from "./pages/HomePage";
 import TransactionsPage from "./pages/TransactionsPage";
+import RentsPage from "./pages/RentsPage";
 import AccountsPage from "./pages/AccountsPage";
 import JournalsPage from "./pages/JournalsPage";
 import ReportsPage from "./pages/ReportsPage";
@@ -35,6 +36,7 @@ function App() {
                                         <Route path="/" element={<SplashPage />} />
                                         <Route path="/home" element={<Layout><HomePage /></Layout>} />
                                         <Route path="/transactions" element={<Layout><TransactionsPage /></Layout>} />
+                                        <Route path="/rents" element={<Layout><RentsPage /></Layout>} />
                                         <Route path="/accounts" element={<Layout><AccountsPage /></Layout>} />
                                         <Route path="/journals" element={<Layout><JournalsPage /></Layout>} />
                                         <Route path="/entities" element={<Layout><EntitiesPage /></Layout>} />

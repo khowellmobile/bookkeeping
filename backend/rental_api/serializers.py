@@ -291,7 +291,7 @@ class JournalSerializer(serializers.ModelSerializer):
 class RentPaymentSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(read_only=True)
     property = PropertySerializer(read_only=True)
-    property_id = serializers.IntegerField(write_only=True)
+    property_id = serializers.IntegerField(required=False, write_only=True)
     entity = EntitySerializer(read_only=True)
     entity_id = serializers.IntegerField(write_only=True)
 
@@ -306,6 +306,7 @@ class RentPaymentSerializer(serializers.ModelSerializer):
             "entity_id",
             "amount",
             "date",
+            "status",
             "is_deleted",
             "created_at",
             "updated_at",
@@ -315,16 +316,7 @@ class RentPaymentSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = self.context["request"].user
         validated_data["user"] = user
-        property_id = validated_data.pop("property_id")
         entity_id = validated_data.pop("entity_id")
-
-        try:
-            property = Property.objects.get(id=property_id, user=user)
-        except Property.DoesNotExist:
-            raise serializers.ValidationError(
-                {"property_id": "Property with this ID does not exist."}
-            )
-        validated_data["property"] = property
 
         try:
             entity = Entity.objects.get(id=entity_id, user=user)
@@ -337,7 +329,14 @@ class RentPaymentSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
     def update(self, instance, validated_data):
-        fields_to_update = ["property", "entity", "amount", "date", "is_deleted"]
+        fields_to_update = [
+            "property",
+            "entity",
+            "amount",
+            "date",
+            "status",
+            "is_deleted",
+        ]
 
         for attr in fields_to_update:
             if attr in validated_data:
