@@ -12,132 +12,237 @@
 
     display: flex;
     justify-content: space-between;
+    flex-direction: column;
 }
 
-.monthlyRents {
-    width: 60%;
-    height: 100%;
+.mainContainer > .header {
+    height: 2.5rem;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.monthlyRents > span {
+.headerInfo {
+    display: flex;
+    flex-direction: column;
+}
+
+.header > button {
+    padding: 0.25rem 0.5rem;
+
+    background-color: var(--primary-color);
+    color: white;
+    cursor: pointer;
+    font-family: "poppins";
+    font-weight: 500;
+    font-size: 0.8rem;
+    border-radius: 0.25rem;
+    border: none;
+    outline: none;
+
+    transition: all ease 0.25s;
+}
+
+.header > button:hover {
+    transform: translateY(-1px);
+}
+
+.header > button:active {
+    transform: translateY(1px);
+}
+
+.dateDisplay {
+    width: 20rem;
+
     display: flex;
     align-items: center;
 }
 
-.monthlyRents > span > h2 {
+.dateDisplay > h2 {
     margin-right: 0.5rem;
 
     font-weight: 400;
 }
 
-.totalsListing {
-    width: 100%;
-    height: 10%;
-
-    display: flex;
-    justify-content: space-between;
+.anchor {
+    position: relative;
 }
 
-.rentCard {
-    width: calc(33% - 0.5rem);
-    height: 100%;
+.dropDownContent {
     padding: 0.5rem;
 
+    background-color: var(--background-color);
+    color: black;
+    user-select: none;
+    outline: 1px solid var(--border-color);
+
+    display: flex;
+    flex-direction: column;
+
+    position: absolute;
+}
+
+.dropDownContent > span {
+    margin-bottom: 0.5rem;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dropDownContent > span .icon:first-child {
+    width: 1rem;
+    height: 1rem;
+
+    transform: rotate(90deg);
+}
+
+.dropDownContent > span .icon:last-child {
+    width: 1rem;
+    height: 1rem;
+
+    transform: rotate(-90deg);
+}
+
+.dropDownContent > span > p {
+    font-size: 0.9rem;
+    line-height: 0.9rem;
+    font-weight: 400;
+}
+
+.dropDownContent .months {
+    text-align: center;
+
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 0.25rem;
+}
+
+.dropDownContent .months > p {
+    padding: 0.25rem;
+
     border-radius: 0.25rem;
-    box-shadow: rgba(99, 99, 99, 0.1) 3px 3px 8px 0px;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-.rentCard > p {
-    color: var(--secondary-text-color);
     font-size: 0.9rem;
+    cursor: pointer;
 }
 
-.rentCard > div {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.dropDownContent .months > p:hover {
+    background-color: rgb(0, 0, 0, 0.5);
 }
 
-.rentCard > div > p:nth-child(1) {
-    font-size: 1.5rem;
-    font-weight: 500;
+.active {
+    background-color: rgb(29, 29, 29);
+    color: white;
 }
 
-.rentCard > div > p:nth-child(2) {
-    color: var(--secondary-text-color);
-    font-size: 0.9rem;
-}
-
-.rentCard:nth-child(1) {
-    border-left: 5px solid rgb(255, 27, 27);
-}
-
-.rentCard:nth-child(2) {
-    border-left: 5px solid rgb(42, 42, 209);
-}
-
-.rentCard:nth-child(3) {
-    border-left: 5px solid grey;
-}
-
-.listings {
+.calendar {
     width: 100%;
-    height: 80%;
-    padding-top: 1rem;
-
-    display: flex;
-    flex-direction: column;
+    height: calc(100% - 2.5rem);
 }
 
-.rentListing {
+.columnNames {
     width: 100%;
-    margin-bottom: 1rem;
-}
-
-.rentListing > .header {
     height: 2rem;
-    padding: 0 0.5rem;
 
-    background-color: var(--hover-color);
+    background-color: var(--border-color);
+    border: 1px solid var(--border-color);
+    border-bottom: none;
+
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 1px;
+}
+
+.columnNames > div {
+    height: 100%;
+    width: 100%;
+
+    background-color: white;
 
     display: flex;
     align-items: center;
+    justify-content: center;
+}
+
+.days {
+    width: 100%;
+    height: calc(100% - 2rem);
+    max-height: calc(100% - 2rem);
+
+    background-color: var(--border-color);
+    border: 1px solid var(--border-color);
+
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 1px;
+}
+
+.dayBox {
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+    padding: 0.5rem;
+
+    background-color: var(--background-color);
+
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+}
+
+.emptyBox {
+    background-color: grey;
+}
+
+.dayBox .header {
+    width: 100%;
+    height: 1rem;
+
+    display: flex;
     justify-content: space-between;
-}
-
-.rentListing > .columnNames {
-    height: 1.5rem;
-
-    border-bottom: 1px solid var(--border-color);
-
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
     align-items: center;
 }
 
-.rentListing > .columnNames > p {
-    padding-left: 0.5rem;
+.dayBox .header > div {
+    height: 3rem;
+    width: 3rem;
+    padding: 0.15rem;
 
-    color: var(--secondary-text-color);
-    font-size: 0.8rem;
+    background-color: transparent;
+    cursor: pointer;
+    overflow: hidden;
+
+    display: flex;
+    align-items: start;
+    justify-content: start;
+
+    position: relative;
+    left: -0.5rem;
+    top: calc(0.45rem + 1px);
+
+    opacity: 0;
+    transition: opacity ease 0.5s;
+    z-index: 0;
 }
 
-.rentItem {
-    height: 1.5rem;
+.dayBox .header > div::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
 
-    border-bottom: 1px solid var(--border-color);
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.247), rgba(0, 0, 0, 0) 50%);
 
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    align-items: center;
+    opacity: 0;
+    transition: opacity ease 0.5s;
+    z-index: 0;
 }
 
-.rentItem > p {
-    padding-left: 0.5rem;
-
-    font-size: 0.9rem;
+.dayBox .header > div:hover::before,
+.dayBox .header > div:hover {
+    opacity: 1;
 }

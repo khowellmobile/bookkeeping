@@ -53,8 +53,8 @@
     flex-direction: column;
 
     position: absolute;
-    top: calc(2rem);
-    right: calc(0rem + 1px);
+    top: 2rem;
+    right: 1px;
 }
 
 .dropDownContent > p:nth-child(1) {
@@ -113,3 +113,28 @@
     background-color: var(--hover-color);
     text-decoration: underline;
 }
+
+/* AltStyle begins below this comment */
+
+.altStyle {
+    height: 1.5rem;
+}
+
+.altStyle .display {
+    background-color: var(--secondary-background-color);
+}
+
+.altStyle .display > p {
+    font-size: 0.8rem;
+}
+
+.altStyle .arrow {
+    width: 1.5rem;
+    background-color: rgb(49, 40, 40);
+}
+
+.altStyle .dropDownContent {
+    width: calc(18.5rem - 2px);
+    top: 1.5rem
+}
+

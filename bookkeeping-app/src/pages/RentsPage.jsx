@@ -5,139 +5,300 @@ import classes from "./RentsPage.module.css";
 import RentPaymentsCtx from "../components/contexts/RentPaymentsCtx";
 import chevUpIcon from "../assets/chevron-up-icon.svg";
 import chevDownIcon from "../assets/chevron-down-icon.svg";
+import plusIcon from "../assets/plus-icon.svg";
 
 import AddRentModal from "../components/elements/modals/AddRentModal";
+import RentItem from "../components/elements/items/RentItem";
 
 const RentsPage = () => {
-    const { ctxPaymentList } = useContext(RentPaymentsCtx);
+    const { getCtxPaymentsByMonth, ctxMonthPaymentList, setCtxMonthPaymentList, ctxAddPayment } =
+        useContext(RentPaymentsCtx);
 
-    const [isModalOpen, setIsModalOpen] = useState(true);
+    const [activeDate, setActiveDate] = useState(new Date());
+    const [isExpanded, setIsExpanded] = useState(false);
+    const [daysOverflow, setDaysOverflow] = useState(false);
 
-    const handleCloseModal = () => {
-        setIsModalOpen(false);
+    const currentMonth = activeDate.getMonth();
+    const currentYear = activeDate.getFullYear();
+    const monthNames = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+    ];
+    const weekdayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+    const displayedMonthName = monthNames[currentMonth];
+    const daysStyle = {
+        gridTemplateRows: daysOverflow ? "repeat(6, 1fr)" : "repeat(5, 1fr)",
     };
+
+    useEffect(() => {
+        getCtxPaymentsByMonth(currentMonth + 1, currentYear);
+    }, [currentMonth, currentYear]);
+
+    const getDaysInMonth = (year, month) => {
+        return new Date(year, month + 1, 0).getDate();
+    };
+
+    // Calendar is formatted paymentList
+    const [calendar, setCalendar] = useState(() => {
+        const initialDays = [];
+        const numDaysInMonth = getDaysInMonth(currentYear, currentMonth);
+
+        const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
+
+        if (firstDayOfMonth + numDaysInMonth > 35) {
+            setDaysOverflow(true);
+        } else {
+            setDaysOverflow(false);
+        }
+
+        // Days before start of month
+        for (let i = 0; i < firstDayOfMonth; i++) {
+            initialDays.push({ id: `empty-${i}`, isEmpty: true });
+        }
+
+        for (let i = 1; i <= numDaysInMonth; i++) {
+            initialDays.push({
+                id: i,
+                hasEvent: ctxMonthPaymentList[i - 1]?.length > 0,
+                items: ctxMonthPaymentList[i - 1] || [],
+                dayOfMonth: i,
+            });
+        }
+
+        // Days after end of month
+        const totalDays = daysOverflow ? 42 : 35;
+        while (initialDays.length < totalDays) {
+            initialDays.push({ id: `empty-${initialDays.length}`, isEmpty: true });
+        }
+
+        return initialDays;
+    });
+
+    // Update calendar to reflect change in month, year, and payments
+    useEffect(() => {
+        const newDays = [];
+        const numDaysInMonth = getDaysInMonth(currentYear, currentMonth);
+        const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
+
+        if (firstDayOfMonth + numDaysInMonth > 35) {
+            setDaysOverflow(true);
+        } else {
+            setDaysOverflow(false);
+        }
+        
+        for (let i = 0; i < firstDayOfMonth; i++) {
+            newDays.push({ id: `empty-${i}`, isEmpty: true });
+        }
+
+        for (let i = 0; i < numDaysInMonth; i++) {
+            newDays.push({
+                id: i,
+                hasEvent: ctxMonthPaymentList[i]?.length > 0,
+                items: ctxMonthPaymentList[i] || [],
+                dayOfMonth: i,
+            });
+        }
+
+        const totalDays = daysOverflow ? 42 : 35;
+        while (newDays.length < totalDays) {
+            newDays.push({ id: `empty-${newDays.length}`, isEmpty: true });
+        }
+
+        setCalendar(newDays);
+    }, [currentMonth, currentYear, ctxMonthPaymentList]);
+
+    const updateFields = (dayIndex, paymentId, newValues) => {
+        setCtxMonthPaymentList((prev) => {
+            const newPymtList = [...prev];
+
+            const dayToUpdate = [...newPymtList[dayIndex]];
+
+            const updatedDayPayments = dayToUpdate.map((payment) => {
+                if (payment.id === paymentId) {
+                    return { ...payment, ...newValues };
+                }
+                return payment;
+            });
+
+            newPymtList[dayIndex] = updatedDayPayments;
+
+            return newPymtList;
+        });
+    };
+
+    const handleMonthClick = (monthIndex) => {
+        setActiveDate((prev) => new Date(prev.getFullYear(), monthIndex));
+        setIsExpanded(false);
+    };
+
+    const handleYearClick = (year) => {
+        setActiveDate((prev) => new Date(year, prev.getMonth()));
+    };
+
+    const addRentItem = (dayIndex, dayId) => {
+        const newRentItem = {
+            id: `temp-${dayId}`,
+            status: "",
+            amount: "",
+            entity: "",
+            date: `${currentYear}-${currentMonth + 1}-${dayIndex - 1}`,
+        };
+        setCtxMonthPaymentList((prevPymtList) => {
+            const updatedPymtList = [...prevPymtList];
+
+            const targetIndex = dayId;
+
+            if (!updatedPymtList[targetIndex]) {
+                updatedPymtList[targetIndex] = [];
+            }
+
+            updatedPymtList[targetIndex] = [...updatedPymtList[targetIndex], newRentItem];
+
+            return updatedPymtList;
+        });
+    };
+
+    const removePayment = (dayIndex, paymentId) => {
+        setCtxMonthPaymentList((prev) => {
+            const oldPymtItems = [...prev];
+            const dayItems = prev[dayIndex];
+
+            const newDayItems = dayItems.filter((item) => item.id !== paymentId);
+
+            oldPymtItems[dayIndex] = newDayItems;
+
+            return oldPymtItems;
+        });
+    };
+
+    const handleSaveRentPayment = async (dayIndex, payment) => {
+        const newPayment = await ctxAddPayment(payment);
+        setCtxMonthPaymentList((prev) => {
+            const pymtItemsCopy = [...prev];
+            const dayItems = pymtItemsCopy[dayIndex];
+
+            const newDayItems = [...dayItems, newPayment];
+
+            pymtItemsCopy[dayIndex] = newDayItems;
+
+            return pymtItemsCopy;
+        });
+    };
+
+    /* useEffect(() => {
+        console.log(ctxMonthPaymentList);
+    }, [ctxMonthPaymentList]); */
 
     return (
         <>
-            {isModalOpen && <AddRentModal handleCloseModal={handleCloseModal} />}
-
             <div className={classes.mainContainer}>
-                <button onClick={() => setIsModalOpen(true)}>Add Payment</button>
-                <div className={classes.monthlyRents}>
-                    <span>
-                        <h2>June 2025 Rents</h2>
-                        <img className={classes.icon} src={chevDownIcon} alt="Icon" />
-                    </span>
-                    <section className={classes.totalsListing}>
-                        <div className={classes.rentCard}>
-                            <p>Due</p>
-                            <div>
-                                <p>$1500</p>
-                                <p>1 Transactions</p>
-                            </div>
+                <section className={classes.header}>
+                    <div className={classes.headerInfo}>
+                        <div className={classes.dateDisplay}>
+                            <h2>
+                                {displayedMonthName} {activeDate.getFullYear()} Rents
+                            </h2>
+                            <img
+                                className={classes.icon}
+                                src={isExpanded ? chevUpIcon : chevDownIcon}
+                                onClick={() => setIsExpanded((prev) => !prev)}
+                                alt="Icon"
+                            />
                         </div>
-                        <div className={classes.rentCard}>
-                            <p>Scheduled</p>
-                            <div>
-                                <p>$3500</p>
-                                <p>3 Transactions</p>
+                        {isExpanded && (
+                            <div className={classes.anchor}>
+                                <div className={classes.dropDownContent}>
+                                    <span>
+                                        <img
+                                            className={classes.icon}
+                                            src={chevDownIcon}
+                                            onClick={() => handleYearClick(currentYear - 1)}
+                                            alt="Icon"
+                                        />
+                                        <p>{currentYear}</p>
+                                        <img
+                                            className={classes.icon}
+                                            src={chevDownIcon}
+                                            onClick={() => handleYearClick(currentYear + 1)}
+                                            alt="Icon"
+                                        />
+                                    </span>
+                                    <div className={classes.months}>
+                                        {monthNames.map((val, index) => {
+                                            return (
+                                                <p
+                                                    className={`${currentMonth == index && classes.active}`}
+                                                    onClick={() => handleMonthClick(index)}
+                                                    key={index}
+                                                >
+                                                    {val.slice(0, 3)}
+                                                </p>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div className={classes.rentCard}>
-                            <p>Paid</p>
-                            <div>
-                                <p>$4500</p>
-                                <p>7 Transactions</p>
-                            </div>
-                        </div>
-                    </section>
-                    <section className={classes.listings}>
-                        <section className={`${classes.rentListing} ${classes.rentsDue}`}>
-                            <div className={classes.header}>
-                                <p>Due</p>
-                                <img className={classes.icon} src={chevDownIcon} alt="Icon" />
-                            </div>
-                            <div className={classes.columnNames}>
-                                <p>Due Date</p>
-                                <p>Status</p>
-                                <p>Description</p>
-                                <p>Amount</p>
-                            </div>
-                            <div className={classes.rentList}>
-                                {ctxPaymentList && ctxPaymentList.length > 0 ? (
-                                    ctxPaymentList.map((pymt, index) => {
-                                        return (
-                                            <div className={classes.rentItem} key={index}>
-                                                <p>{pymt.date}</p>
-                                                <p>{pymt.status}</p>
-                                                <p>{pymt.amount}</p>
-                                                <p>{pymt.amount}</p>
-                                            </div>
-                                        );
-                                    })
-                                ) : (
-                                    <p>No Payments</p>
+                        )}
+                    </div>
+                    <button onClick={() => removePayment(9, "temp-9")}>Add Rent Payment</button>
+                </section>
+                <section className={classes.calendar}>
+                    <div className={classes.columnNames}>
+                        {weekdayNames.map((val, index) => {
+                            return (
+                                <div key={index}>
+                                    <p>{val}</p>
+                                </div>
+                            );
+                        })}
+                    </div>
+                    <div className={classes.days} style={daysStyle}>
+                        {calendar.map((day, dayIndex) => (
+                            <div
+                                className={`${classes.dayBox} ${
+                                    String(day.id).startsWith("empty") && classes.emptyBox
+                                }`}
+                                key={day.id}
+                            >
+                                {!String(day.id).startsWith("empty") && (
+                                    <div className={classes.header}>
+                                        <div onClick={() => addRentItem(dayIndex, day.id)}>
+                                            <img className={classes.icon} src={plusIcon} alt="Icon" />
+                                        </div>
+                                        <p>{day.id + 1}</p>
+                                    </div>
                                 )}
-                            </div>
-                        </section>
-                        <section className={`${classes.rentListing} ${classes.rentsScheduled}`}>
-                            <div className={classes.header}>
-                                <p>Scheduled</p>
-                                <img className={classes.icon} src={chevDownIcon} alt="Icon" />
-                            </div>
-                            <div className={classes.columnNames}>
-                                <p>Due Date</p>
-                                <p>Status</p>
-                                <p>Description</p>
-                                <p>Amount</p>
-                            </div>
-                            <div className={classes.rentList}>
-                                {ctxPaymentList && ctxPaymentList.length > 0 ? (
-                                    ctxPaymentList.map((pymt, index) => {
+                                {day.hasEvent &&
+                                    day.items.length > 0 &&
+                                    day.items.map((item, itemIndex) => {
                                         return (
-                                            <div className={classes.rentItem} key={index}>
-                                                <p>{pymt.date}</p>
-                                                <p>{pymt.status}</p>
-                                                <p>{pymt.amount}</p>
-                                                <p>{pymt.amount}</p>
-                                            </div>
+                                            <RentItem
+                                                item={item}
+                                                dayIndex={day.id}
+                                                updateFields={updateFields}
+                                                removePayment={removePayment}
+                                                handleSaveRentPayment={handleSaveRentPayment}
+                                                key={item.id}
+                                                pushLeft={dayIndex % 7 == 6}
+                                                pushUp={dayIndex >= calendar.length - 7}
+                                            />
                                         );
-                                    })
-                                ) : (
-                                    <p>No Payments</p>
-                                )}
+                                    })}
                             </div>
-                        </section>
-                        <section className={`${classes.rentListing} ${classes.rentsPaid}`}>
-                            <div className={classes.header}>
-                                <p>Paid</p>
-                                <img className={classes.icon} src={chevDownIcon} alt="Icon" />
-                            </div>
-                            <div className={classes.columnNames}>
-                                <p>Due Date</p>
-                                <p>Status</p>
-                                <p>Description</p>
-                                <p>Amount</p>
-                            </div>
-                            <div className={classes.rentList}>
-                                {ctxPaymentList && ctxPaymentList.length > 0 ? (
-                                    ctxPaymentList.map((pymt, index) => {
-                                        return (
-                                            <div className={classes.rentItem} key={index}>
-                                                <p>{pymt.date}</p>
-                                                <p>{pymt.status}</p>
-                                                <p>{pymt.amount}</p>
-                                                <p>{pymt.amount}</p>
-                                            </div>
-                                        );
-                                    })
-                                ) : (
-                                    <p>No Payments</p>
-                                )}
-                            </div>
-                        </section>
-                    </section>
-                </div>
+                        ))}
+                    </div>
+                </section>
             </div>
         </>
     );

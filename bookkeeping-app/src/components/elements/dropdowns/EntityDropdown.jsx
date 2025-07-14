@@ -3,16 +3,28 @@ import classes from "./EntityDropdown.module.css";
 import { useState, useContext, useEffect, useRef } from "react";
 import EntitiesCtx from "../../contexts/EntitiesCtx";
 
-import upChevIcon from "../../../assets/chevron-up-icon.svg";
-import downChevIcon from "../../../assets/chevron-down-icon.svg";
+import upChevIconB from "../../../assets/chevron-up-icon.svg";
+import downChevIconB from "../../../assets/chevron-down-icon.svg";
+import upChevIconW from "../../../assets/chevron-up-icon-white.svg";
+import downChevIconW from "../../../assets/chevron-down-icon-white.svg";
 
-const EntityDropdown = ({ initalVal, onChange }) => {
+const EntityDropdown = ({ initalVal, onChange, altClass }) => {
     const { ctxEntityList } = useContext(EntitiesCtx);
 
     const [activeEntity, setActiveEntity] = useState(initalVal);
     const [isExpanded, setIsExpanded] = useState(false);
 
     const dropdownRef = useRef(null);
+
+    let upChevIcon, downChevIcon;
+
+    if (altClass) {
+        upChevIcon = upChevIconW;
+        downChevIcon = downChevIconW;
+    } else {
+        upChevIcon = upChevIconB;
+        downChevIcon = downChevIconB;
+    }
 
     const clickEntityHandler = (entity) => {
         setActiveEntity(entity);
@@ -34,7 +46,7 @@ const EntityDropdown = ({ initalVal, onChange }) => {
     }, []);
 
     return (
-        <div className={classes.mainContainer} ref={dropdownRef}>
+        <div className={`${classes.mainContainer} ${classes[altClass] || ""}`} ref={dropdownRef}>
             <div className={classes.display} onClick={() => setIsExpanded((preVal) => !preVal)}>
                 <p>{activeEntity && activeEntity.name}</p>
             </div>
