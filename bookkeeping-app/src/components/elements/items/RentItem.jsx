@@ -13,6 +13,7 @@ const RentItem = ({ item, dayIndex, updateFields, removePayment, handleSaveRentP
     const [isClicked, setIsClicked] = useState(String(item.id).startsWith("temp"));
     const [isAbsolute, setIsAbsolute] = useState(String(item.id).startsWith("temp"));
     const [isChanged, setIsChanged] = useState(false);
+    const [errorText, setErrorText] = useState("");
     const [inputFields, setInputFields] = useState({
         status: item.status,
         amount: item.amount,
@@ -73,8 +74,10 @@ const RentItem = ({ item, dayIndex, updateFields, removePayment, handleSaveRentP
                 date: item.date,
             };
             handleSaveRentPayment(dayIndex, savePayment);
-        } else {
             handleClose();
+            setErrorText("");
+        } else {
+            setErrorText("Please fill all fields or cancel");
         }
     };
 
@@ -114,10 +117,6 @@ const RentItem = ({ item, dayIndex, updateFields, removePayment, handleSaveRentP
         };
     }, [isClicked]);
 
-    useEffect(() => {
-        console.log(item);
-    }, []);
-
     return (
         <div className={classes.mainContainer}>
             {isAbsolute && <div className={classes.placeholder} />}
@@ -135,7 +134,7 @@ const RentItem = ({ item, dayIndex, updateFields, removePayment, handleSaveRentP
                     <div className={`${classes.header} ${isClicked && classes[inputFields.status]}`}>
                         <div className={`${classes.statIndicator} ${classes[inputFields.status]}`}></div>
                         <p>
-                            {inputFields.entity?.name ? inputFields.entity.name : "Unknown"} paid{" "}
+                            {inputFields.entity?.name ? inputFields.entity.name : "Unknown"} paid $
                             {inputFields.amount ? inputFields.amount : 0.0}
                         </p>
                     </div>
@@ -181,16 +180,22 @@ const RentItem = ({ item, dayIndex, updateFields, removePayment, handleSaveRentP
                         <div className={classes.inputCluster}>
                             <textarea name="description" value={inputFields.payee} onChange={handleInputChange} />
                         </div>
-                        <div className={classes.buttons}>
-                            <button className={`${isClicked && classes[inputFields.status]}`} onClick={handleClose}>
-                                Close
-                            </button>
-
-                            {String(item.id).startsWith("temp") && (
-                                <button className={`${isClicked && classes[inputFields.status]}`} onClick={handleSave}>
-                                    Save
+                        <div className={classes.tools}>
+                            <p>{errorText}</p>
+                            <div className={classes.buttons}>
+                                <button className={`${isClicked && classes[inputFields.status]}`} onClick={handleClose}>
+                                    {String(item.id).startsWith("temp") ? "Cancel" : "Close"}
                                 </button>
-                            )}
+
+                                {String(item.id).startsWith("temp") && (
+                                    <button
+                                        className={`${isClicked && classes[inputFields.status]}`}
+                                        onClick={handleSave}
+                                    >
+                                        Save
+                                    </button>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>

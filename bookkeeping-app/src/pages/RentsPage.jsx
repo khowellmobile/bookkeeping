@@ -91,14 +91,14 @@ const RentsPage = () => {
         const numDaysInMonth = getDaysInMonth(currentYear, currentMonth);
         const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
 
-        for (let i = 0; i < firstDayOfMonth; i++) {
-            newDays.push({ id: `empty-${i}`, isEmpty: true });
-        }
-
         if (firstDayOfMonth + numDaysInMonth > 35) {
             setDaysOverflow(true);
         } else {
             setDaysOverflow(false);
+        }
+        
+        for (let i = 0; i < firstDayOfMonth; i++) {
+            newDays.push({ id: `empty-${i}`, isEmpty: true });
         }
 
         for (let i = 0; i < numDaysInMonth; i++) {
