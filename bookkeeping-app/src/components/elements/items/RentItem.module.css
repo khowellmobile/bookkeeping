@@ -14,7 +14,6 @@
     width: 100%;
     height: 1rem;
 
-    cursor: pointer;
     border-radius: 0.5rem;
 
     position: relative;
@@ -42,6 +41,8 @@
 .abbreviatedContent {
     width: 100%;
     height: 1rem;
+
+    cursor: pointer;
 
     display: flex;
 
@@ -195,8 +196,22 @@
     resize: none;
 }
 
-.buttons {
+.tools {
     width: 100%;
+
+    height: 1.5rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.tools > p {
+    color: red;
+    font-size: 0.8rem;
+}
+
+.buttons {
     height: 1.5rem;
 
     display: flex;
@@ -205,6 +220,7 @@
 }
 
 .buttons > button {
+    margin-left: 0.25rem;
     padding: 0.25rem 0.5rem;
 
     color: white;

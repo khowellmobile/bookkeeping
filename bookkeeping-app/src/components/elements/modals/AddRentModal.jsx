@@ -1,13 +1,16 @@
 import { useState } from "react";
 
 import classes from "./AddModalStyle.module.css";
+import specClasses from "./AddRentModal.module.css"
 
 import BaseAddModal from "./BaseAddModal";
 import AddInputCluster from "../misc/AddInputCluster";
+import EntityEntryDropdown from "../dropdowns/EntityEntryDropdown";
+import EntityDropdown from "../dropdowns/EntityDropdown";
 
 const AddRentModal = ({ handleCloseModal }) => {
     const [inputFields, setInputFields] = useState({
-        payee: "",
+        entity: "",
         date: "",
         description: "",
         isRecurring: false,
@@ -27,6 +30,12 @@ const AddRentModal = ({ handleCloseModal }) => {
                 [name]: value,
             }));
         }
+    };
+
+    const handleEntitySelect = (entity) => {
+        setInputFields((prev) => {
+            return { ...prev, entity: entity };
+        });
     };
 
     const hasUnsavedChanges = inputFields.payee !== "" || inputFields.date !== "" || inputFields.description !== "";
@@ -53,19 +62,14 @@ const AddRentModal = ({ handleCloseModal }) => {
             title="Add Payment"
         >
             <AddInputCluster
-                label="Payment made by"
-                placeholder="Select Payee"
-                name="payee"
-                value={inputFields.payee}
-                onChange={handleInputChange}
-            />
-            <AddInputCluster
                 label="Payment Date"
                 placeholder="Enter payment date"
                 name="date"
                 value={inputFields.date}
                 onChange={handleInputChange}
             />
+            <p className={classes.label}>Payment Made By</p>
+            <EntityDropdown onChange={handleEntitySelect} />
             <AddInputCluster
                 label="Payment Description"
                 placeholder="Enter Description"

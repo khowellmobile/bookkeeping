@@ -573,11 +573,33 @@ class RentPaymentListAPIView(APIView):
             return Response(serializer.data)
 
     def post(self, request):
-        serializer = RentPaymentSerializer(
-            data=request.data, context={"request": request}
-        )
+        property_id = request.query_params.get("property_id")
+
+        if property_id:
+            try:
+                property_obj = Property.objects.get(id=property_id, user=request.user)
+            except Property.DoesNotExist:
+                return Response(
+                    {
+                        "error": "Property with this ID does not exist or does not belong to the user."
+                    },
+                    status=status.HTTP_404_NOT_FOUND,
+                )
+            except ValueError:
+                return Response(
+                    {"error": "Invalid property_id provided."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+        else:
+            return Response(
+                {"error": "property_id is required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        serializer = RentPaymentSerializer(data=request.data, context={"request": request})
+
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(user=request.user, property=property_obj)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
