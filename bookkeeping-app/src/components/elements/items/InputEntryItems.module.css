@@ -16,7 +16,7 @@
 
     color: var(--primary-text-color);
     background-color: var(--secondary-background-color);
-    font-size: 0.9rem;
+    font-size: var(--small-font-size);
     border: none;
     outline: none;
     border-bottom: 1px solid var(--border-color);

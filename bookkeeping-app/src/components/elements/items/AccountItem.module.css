@@ -80,7 +80,7 @@
     padding: 0.25rem;
 
     border-bottom: 1px solid var(--border-color);
-    font-size: 0.8rem;
+    font-size: var(--small-font-size);
 }
 
 .actionDropdown > div:hover {

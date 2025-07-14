@@ -28,30 +28,6 @@
     flex-direction: column;
 }
 
-.header > button {
-    padding: 0.25rem 0.5rem;
-
-    background-color: var(--primary-color);
-    color: white;
-    cursor: pointer;
-    font-family: "poppins";
-    font-weight: 500;
-    font-size: 0.8rem;
-    border-radius: 0.25rem;
-    border: none;
-    outline: none;
-
-    transition: all ease 0.25s;
-}
-
-.header > button:hover {
-    transform: translateY(-1px);
-}
-
-.header > button:active {
-    transform: translateY(1px);
-}
-
 .dateDisplay {
     width: 20rem;
 
@@ -106,7 +82,7 @@
 }
 
 .dropDownContent > span > p {
-    font-size: 0.9rem;
+    font-size: var(--small-font-size);
     line-height: 0.9rem;
     font-weight: 400;
 }
@@ -124,7 +100,7 @@
     padding: 0.25rem;
 
     border-radius: 0.25rem;
-    font-size: 0.9rem;
+    font-size: var(--small-font-size);
     cursor: pointer;
 }
 

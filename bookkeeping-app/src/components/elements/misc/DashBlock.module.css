@@ -40,5 +40,5 @@
 }
 
 .blockText {
-    font-size: 0.9rem;
+    font-size: var(--small-font-size);
 }

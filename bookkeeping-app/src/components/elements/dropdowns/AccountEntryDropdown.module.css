@@ -17,7 +17,7 @@
 
     color: var(--primary-text-color);
     background-color: var(--secondary-background-color);
-    font-size: 0.9rem;
+    font-size: var(--small-font-size);
     border: none;
     outline: none;
     border-bottom: 1px solid var(--border-color);
@@ -79,7 +79,7 @@
 .accountListing > p {
     padding: 0.25rem 0.5rem;
 
-    font-size: 0.9rem;
+    font-size: var(--small-font-size);
     font-weight: 300;
     cursor: pointer;
 

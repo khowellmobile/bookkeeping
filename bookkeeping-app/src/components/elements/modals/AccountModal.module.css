@@ -26,6 +26,7 @@
 
 .mainContainer > h2 {
     font-weight: 400;
+    font-size: var(--header-font-size);
 }
 
 .seperatorH {
@@ -42,7 +43,7 @@
 
 .inputCluster > p {
     color: rgb(53, 53, 53);
-    font-size: 0.8rem;
+    font-size: var(--small-font-size);
 }
 
 .inputCluster > input,
@@ -67,12 +68,12 @@
 }
 
 .accountTypeDiv > p {
-    font-size: 0.8rem;
+    font-size: var(--small-font-size);
 }
 
 .placeholder {
     color: var(--secondary-text-color);
-    font-size: 0.8rem;
+    font-size: var(--small-font-size);
     user-select: none;
 }
 
@@ -111,7 +112,7 @@
     width: 100%;
     padding-left: 0.25rem;
 
-    font-size: 0.8rem;
+    font-size: var(--small-font-size);
     cursor: pointer;
 }
 

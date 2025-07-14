@@ -23,7 +23,7 @@
 .header h2 {
     margin-left: 0.5rem;
 
-    font-size: 1.3rem;
+    font-size: var(--header-font-size);
     font-weight: 400;
 }
 
@@ -46,7 +46,7 @@
 
 .columnNames div > p {
     color: var(--secondary-text-color);
-    font-size: 0.9rem;
+    font-size: var(--small-font-size);
 }
 
 .items {

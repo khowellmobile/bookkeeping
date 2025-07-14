@@ -28,7 +28,7 @@
     padding: 0.25rem;
 
     font-family: "poppins";
-    font-size: 0.8rem;
+    font-size: var(--small-font-size);
     line-height: 1.5rem;
     border: 1px solid var(--border-color);
     border-radius: 0.15rem;
@@ -127,7 +127,7 @@
 
 .columnNames div > p {
     color: var(--secondary-text-color);
-    font-size: 0.9rem;
+    font-size: var(--small-font-size);
 }
 
 .items {
@@ -160,7 +160,7 @@
 
     border-left: 1px dashed var(--border-color);
     color: var(--primary-text-color);
-    font-size: 0.9rem;
+    font-size: var(--small-font-size);
 }
 
 .historyEntry > p:nth-child(1) {
