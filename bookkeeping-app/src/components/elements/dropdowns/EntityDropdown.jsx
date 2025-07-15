@@ -13,9 +13,14 @@ const EntityDropdown = ({ initalVal, onChange, altClass }) => {
 
     const [activeEntity, setActiveEntity] = useState(initalVal);
     const [isExpanded, setIsExpanded] = useState(false);
+    const [isOffBotScreen, setIsOffBotScreen] = useState(false);
 
+    const displayRef = useRef(null);
     const dropdownRef = useRef(null);
 
+    const topOffsetStyle = {
+        top: altClass ? (isOffBotScreen ? "-20rem" : "1.5rem") : "2rem",
+    };
     let upChevIcon, downChevIcon;
 
     if (altClass) {
@@ -25,12 +30,6 @@ const EntityDropdown = ({ initalVal, onChange, altClass }) => {
         upChevIcon = upChevIconB;
         downChevIcon = downChevIconB;
     }
-
-    const clickEntityHandler = (entity) => {
-        setActiveEntity(entity);
-        setIsExpanded(false);
-        onChange(entity);
-    };
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -45,8 +44,33 @@ const EntityDropdown = ({ initalVal, onChange, altClass }) => {
         };
     }, []);
 
+    const clickEntityHandler = (entity) => {
+        setActiveEntity(entity);
+        setIsExpanded(false);
+        onChange(entity);
+    };
+
+    const checkOffScreen = () => {
+        try {
+            const r = dropdownRef.current;
+
+            if (r) {
+                const rectR = r.getBoundingClientRect();
+                const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+                const isOffScreenBottom = rectR.bottom + 320 > windowHeight;
+                setIsOffBotScreen(isOffScreenBottom);
+            }
+        } catch (error) {
+            console.log(error, "Safe to ignore");
+        }
+    };
+
     return (
-        <div className={`${classes.mainContainer} ${classes[altClass] || ""}`} ref={dropdownRef}>
+        <div
+            className={`${classes.mainContainer} ${classes[altClass] || ""}`}
+            ref={dropdownRef}
+            onClick={checkOffScreen}
+        >
             <div className={classes.display} onClick={() => setIsExpanded((preVal) => !preVal)}>
                 <p>{activeEntity && activeEntity.name}</p>
             </div>
@@ -55,7 +79,7 @@ const EntityDropdown = ({ initalVal, onChange, altClass }) => {
             </div>
             {isExpanded && (
                 <div className={classes.anchor}>
-                    <div className={classes.dropDownContent}>
+                    <div className={classes.dropDownContent} style={topOffsetStyle}>
                         <p>Find Payee</p>
                         <input type="text" placeholder="Search..." spellCheck="false"></input>
                         <p>All Payees</p>
