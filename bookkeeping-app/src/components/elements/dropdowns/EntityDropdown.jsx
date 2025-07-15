@@ -15,7 +15,6 @@ const EntityDropdown = ({ initalVal, onChange, altClass }) => {
     const [isExpanded, setIsExpanded] = useState(false);
     const [isOffBotScreen, setIsOffBotScreen] = useState(false);
 
-    const displayRef = useRef(null);
     const dropdownRef = useRef(null);
 
     const topOffsetStyle = {
