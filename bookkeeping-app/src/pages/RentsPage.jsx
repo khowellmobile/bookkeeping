@@ -14,6 +14,7 @@ const RentsPage = () => {
         useContext(RentPaymentsCtx);
 
     const [activeDate, setActiveDate] = useState(new Date());
+    const [tempDate, setTempDate] = useState(new Date());
     const [isExpanded, setIsExpanded] = useState(false);
     const [daysOverflow, setDaysOverflow] = useState(false);
 
@@ -117,6 +118,12 @@ const RentsPage = () => {
         setCalendar(newDays);
     }, [currentMonth, currentYear, ctxMonthPaymentList]);
 
+    useEffect(() => {
+        if (!isExpanded) {
+            setActiveDate(tempDate);
+        }
+    }, [isExpanded]);
+
     const updateFields = (dayIndex, paymentId, newValues) => {
         setCtxMonthPaymentList((prev) => {
             const newPymtList = [...prev];
@@ -137,12 +144,12 @@ const RentsPage = () => {
     };
 
     const handleMonthClick = (monthIndex) => {
-        setActiveDate((prev) => new Date(prev.getFullYear(), monthIndex));
+        setTempDate((prev) => new Date(prev.getFullYear(), monthIndex));
         setIsExpanded(false);
     };
 
     const handleYearClick = (year) => {
-        setActiveDate((prev) => new Date(year, prev.getMonth()));
+        setTempDate((prev) => new Date(year, prev.getMonth()));
     };
 
     const addRentItem = (dayIndex, dayId) => {
@@ -218,14 +225,14 @@ const RentsPage = () => {
                                         <img
                                             className={classes.icon}
                                             src={chevDownIcon}
-                                            onClick={() => handleYearClick(currentYear - 1)}
+                                            onClick={() => handleYearClick(tempDate.getFullYear() - 1)}
                                             alt="Icon"
                                         />
-                                        <p>{currentYear}</p>
+                                        <p>{tempDate.getFullYear()}</p>
                                         <img
                                             className={classes.icon}
                                             src={chevDownIcon}
-                                            onClick={() => handleYearClick(currentYear + 1)}
+                                            onClick={() => handleYearClick(tempDate.getFullYear() + 1)}
                                             alt="Icon"
                                         />
                                     </span>
@@ -233,7 +240,7 @@ const RentsPage = () => {
                                         {monthNames.map((val, index) => {
                                             return (
                                                 <p
-                                                    className={`${currentMonth == index && classes.active}`}
+                                                    className={`${tempDate.getMonth() == index && classes.active}`}
                                                     onClick={() => handleMonthClick(index)}
                                                     key={index}
                                                 >
