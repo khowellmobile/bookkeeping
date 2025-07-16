@@ -4,6 +4,7 @@ import Shortcuts from "../components/elements/misc/Shortcuts";
 import DashBlock from "../components/elements/misc/DashBlock";
 
 import { AccountListing, PropertyListing, ReportListing } from "../components/elements/listings/DashListings";
+import ToastNotification from "../components/elements/misc/ToastNotification";
 
 const HomePage = () => {
 
@@ -12,6 +13,7 @@ const HomePage = () => {
 
     return (
         <div className={classes.featuresContainer}>
+            <ToastNotification text={'hello'} type='Success'/>
             <div className={classes.featuresSubOne}>
                 <div className={classes.temp1}>
                     <Shortcuts />
