@@ -36,11 +36,17 @@ class TransactionListAPIView(APIView):
         account_id = request.query_params.get("account_id")
         entity_id = request.query_params.get("entity_id")
 
+        if not account_id and not entity_id:
+            return Response(
+                {"error": "You must provide an entity ID or an account ID."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        transactions = Transaction.objects.filter(user=request.user)
+
         if account_id:
             try:
-                transactions = Transaction.objects.filter(
-                    user=request.user, account_id=account_id
-                )
+                transactions = transactions.filter(account_id=account_id)
             except Account.DoesNotExist:
                 return Response(
                     {
@@ -55,9 +61,7 @@ class TransactionListAPIView(APIView):
                 )
         elif entity_id:
             try:
-                transactions = Transaction.objects.filter(
-                    user=request.user, entity_id=entity_id
-                )
+                transactions = transactions.filter(entity_id=entity_id)
             except Entity.DoesNotExist:
                 return Response(
                     {

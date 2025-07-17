@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback } from "react";
+import { createContext, useContext, useState, useCallback, useEffect } from "react";
 
 import ToastNotification from "../elements/misc/ToastNotification";
 
@@ -27,7 +27,7 @@ export const ToastCtxProvider = ({ children }) => {
     }, []);
 
     const contextValue = { showToast, hideToast };
-
+    
     return (
         <ToastCtx.Provider value={contextValue}>
             {children}
