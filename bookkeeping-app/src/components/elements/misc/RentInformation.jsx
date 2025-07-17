@@ -3,6 +3,7 @@ import { useState, useContext } from "react";
 import classes from "./RentInformation.module.css";
 
 import RentPaymentsCtx from "../../contexts/RentPaymentsCtx";
+import NoResultsDisplay from "./NoResultsDisplay";
 
 const RentInformation = () => {
     const { ctxPaymentList } = useContext(RentPaymentsCtx);
@@ -26,7 +27,10 @@ const RentInformation = () => {
                         );
                     })
                 ) : (
-                    <p>No Payments found</p>
+                    <NoResultsDisplay
+                        mainText={"No Transactions to load."}
+                        guideText={"Have you chosen a Property and Entity?"}
+                    />
                 )}
             </section>
         </div>

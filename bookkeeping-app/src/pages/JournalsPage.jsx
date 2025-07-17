@@ -1,11 +1,11 @@
-import { useState, useCallback, useMemo, useEffect, useRef, useContext } from "react";
+import { useState, useCallback, useMemo, useRef, useContext } from "react";
 
 import classes from "./JournalsPage.module.css";
 
 import JournalsCtx from "../components/contexts/JournalsCtx";
-
 import { JournalEntryItem } from "../components/elements/items/InputEntryItems";
 import ConfirmationModal from "../components/elements/modals/ConfirmationModal";
+import NoResultsDisplay from "../components/elements/misc/NoResultsDisplay";
 
 const JournalsPage = () => {
     const { ctxJournalList, populateCtxJournals, ctxUpdateJournal, ctxDeleteJournal } = useContext(JournalsCtx);
@@ -291,7 +291,10 @@ const JournalsPage = () => {
                                     </div>
                                 ))
                             ) : (
-                                <p>No Journals</p>
+                                <NoResultsDisplay
+                                mainText={"No Journals to load."}
+                                guideText={"Have you chosen a Property?"}
+                            />
                             )}
                         </section>
                     </div>

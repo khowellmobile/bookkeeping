@@ -1,8 +1,11 @@
-import classes from "./AccountsPage.module.css";
-import AccountsCtx from "../components/contexts/AccountsCtx";
 import { useContext, useState, useEffect } from "react";
+
+import classes from "./AccountsPage.module.css";
+
+import AccountsCtx from "../components/contexts/AccountsCtx";
 import AddAccountModal from "../components/elements/modals/AddAccountModal";
 import AccountItem from "../components/elements/items/AccountItem";
+import NoResultsDisplay from "../components/elements/misc/NoResultsDisplay";
 
 const AccountsPage = () => {
     const { ctxAccountList } = useContext(AccountsCtx);
@@ -28,10 +31,6 @@ const AccountsPage = () => {
             setFilteredAccounts(filtered);
         }
     }, [searchTerm, ctxAccountList]);
-
-    if (!ctxAccountList) {
-        return <div>Accounts not loaded. Refresh Page.</div>;
-    }
 
     return (
         <>
@@ -70,7 +69,10 @@ const AccountsPage = () => {
                         {filteredAccounts && filteredAccounts.length > 0 ? (
                             filteredAccounts.map((account, index) => <AccountItem account={account} key={index} />)
                         ) : (
-                            <p>No matching accounts found.</p>
+                            <NoResultsDisplay
+                                mainText={"No Accounts to load."}
+                                guideText={"Have you chosen a Property?"}
+                            />
                         )}
                     </div>
                 </div>

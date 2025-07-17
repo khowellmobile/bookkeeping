@@ -1,16 +1,15 @@
+import { useState, useContext, useEffect } from "react";
+
 import classes from "./EntitiesPage.module.css";
 
 import EntitiesCtx from "../components/contexts/EntitiesCtx";
 import TransactionsCtx from "../components/contexts/TransactionsCtx";
-
-import { useState, useContext, useEffect, act } from "react";
-
 import penIcon from "../assets/pen-icon.svg";
-
 import TransactionItem from "../components/elements/items/TransactionItem";
 import AddEntityModal from "../components/elements/modals/AddEntityModal";
 import ConfirmationModal from "../components/elements/modals/ConfirmationModal";
 import SearchBox from "../components/elements/misc/SearchBox";
+import NoResultsDisplay from "../components/elements/misc/NoResultsDisplay";
 
 const EntitiesPage = () => {
     const { ctxEntityList, ctxUpdateEntity, ctxActiveEntity, setCtxActiveEntity } = useContext(EntitiesCtx);
@@ -277,7 +276,10 @@ const EntitiesPage = () => {
                                     <TransactionItem vals={transaction} setPageTrans={setCtxTranList} key={index} />
                                 ))
                             ) : (
-                                <p>No matching transactions listed.</p>
+                                <NoResultsDisplay
+                                    mainText={"No Transactions to load."}
+                                    guideText={"Have you chosen a Property and Entity?"}
+                                />
                             )}
                         </div>
                     </div>
