@@ -33,7 +33,6 @@ class TransactionListAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        transactions = Transaction.objects.filter(user=request.user)
         account_id = request.query_params.get("account_id")
         entity_id = request.query_params.get("entity_id")
 
