@@ -7,6 +7,7 @@ import AccountsCtx from "../components/contexts/AccountsCtx";
 
 import { useState, useContext, useEffect } from "react";
 import AddTransactionsModal from "../components/elements/modals/AddTransactionsModal";
+import NoResultsDisplay from "../components/elements/misc/NoResultsDisplay";
 
 const TransactionsPage = () => {
     const { setCtxTranList, ctxTranList, setCtxFilterBy } = useContext(TransactionsCtx);
@@ -85,7 +86,10 @@ const TransactionsPage = () => {
                                 <TransactionItem vals={transaction} setPageTrans={setCtxTranList} key={index} />
                             ))
                         ) : (
-                            <p>No matching transactions found.</p>
+                            <NoResultsDisplay
+                                mainText={"No Transactions to load."}
+                                guideText={"Have you chosen a Property and Account?"}
+                            />
                         )}
                     </div>
                 </div>
