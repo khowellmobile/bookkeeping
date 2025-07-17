@@ -1,0 +1,37 @@
+.mainContainer {
+    width: 100%;
+    height: 100%;
+
+    background-color: var(--hover-color);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    position: relative;
+    z-index: -10;
+}
+
+.icon {
+    height: 75%;
+
+    opacity: 0.04;
+
+    position: absolute;
+}
+
+.textContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.textContainer > p:first-child {
+    color: var(--secondary-text-color);
+    font-size: var(--header-font-size);
+}
+
+.textContainer > p:last-child {
+    color: var(--secondary-text-color);
+    font-size: var(--small-font-size);
+}

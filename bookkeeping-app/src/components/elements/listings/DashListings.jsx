@@ -1,10 +1,11 @@
+import { useContext } from "react";
+
 import classes from "./DashListings.module.css";
 
 import AccountsCtx from "../../contexts/AccountsCtx.jsx";
 import PropertiesCtx from "../../contexts/PropertiesCtx.jsx";
-import { useContext } from "react";
-
 import { AccountListItem, PropertyListItem, ReportListItem } from "../items/DashListItems.jsx";
+import NoResultsDisplay from "../misc/NoResultsDisplay.jsx";
 
 const AccountListing = () => {
     const { ctxAccountList } = useContext(AccountsCtx);
@@ -26,10 +27,13 @@ const AccountListing = () => {
                 </div>
             </section>
             <section className={classes.items}>
-                {ctxAccountList &&
+                {ctxAccountList ? (
                     ctxAccountList.map((account, index) => {
                         return <AccountListItem key={index} account={account} />;
-                    })}
+                    })
+                ) : (
+                    <NoResultsDisplay mainText={"No Accounts to load."} guideText={"Have you chosen a Property?"} />
+                )}
             </section>
         </div>
     );
