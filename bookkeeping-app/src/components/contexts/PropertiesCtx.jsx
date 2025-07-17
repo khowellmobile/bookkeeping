@@ -1,4 +1,5 @@
 import { createContext, useState, useEffect, useContext } from "react";
+import { useToast } from "./ToastCtx";
 
 import AuthCtx from "./AuthCtx";
 
@@ -13,6 +14,8 @@ const PropertiesCtx = createContext({
 });
 
 export function PropertiesCtxProvider(props) {
+    const { showToast } = useToast();
+
     const { ctxAccessToken } = useContext(AuthCtx);
 
     const [ctxPropertyList, setCtxPropertyList] = useState(null);
@@ -23,6 +26,12 @@ export function PropertiesCtxProvider(props) {
             populateCtxProperties();
         }
     }, [ctxAccessToken]);
+
+    useEffect(() => {
+        if (!ctxActiveProperty) {
+            showToast("Please select a Property", "warning", 5000);
+        }
+    }, [ctxActiveProperty]);
 
     const populateCtxProperties = async () => {
         try {
