@@ -1,4 +1,5 @@
 import { createContext, useEffect, useState, useContext } from "react";
+import { useToast } from "./ToastCtx";
 
 import AuthCtx from "./AuthCtx";
 import PropertiesCtx from "./PropertiesCtx";
@@ -14,6 +15,8 @@ const EntitiesCtx = createContext({
 });
 
 export function EntitiesCtxProvider(props) {
+    const { showToast } = useToast();
+
     const { ctxAccessToken } = useContext(AuthCtx);
     const { ctxActiveProperty } = useContext(PropertiesCtx);
 
@@ -68,14 +71,17 @@ export function EntitiesCtxProvider(props) {
             if (!response.ok) {
                 const errorData = await response.json();
                 console.error("Backend Error:", errorData);
+                showToast("Error adding entity", "error", 5000);
             } else {
                 const newEntity = await response.json();
                 setCtxEntityList((prev) => {
                     return [...prev, newEntity];
                 });
+                showToast("Entity added", "success", 3000);
             }
         } catch (error) {
             console.error("Error:", error);
+            showToast("Error adding entity", "error", 5000);
         }
     };
 
@@ -91,15 +97,18 @@ export function EntitiesCtxProvider(props) {
             });
 
             if (!response.ok) {
+                showToast("Error updating entity", "error", 5000);
                 throw new Error(`HTTP error! status: ${response.status}`);
             } else {
                 const returnedEntity = await response.json();
                 setCtxEntityList((prevEntityList) => {
                     return prevEntityList.map((entity) => (entity.id === returnedEntity.id ? returnedEntity : entity));
                 });
+                showToast("Entity updated", "success", 3000);
             }
         } catch (e) {
             console.log("Error: " + e);
+            showToast("Error updating entity", "error", 5000);
         }
     };
 

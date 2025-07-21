@@ -1,4 +1,5 @@
 import { createContext, useEffect, useState, useContext } from "react";
+import { useToast } from "./ToastCtx";
 
 import AuthCtx from "./AuthCtx";
 import AccountsCtx from "./AccountsCtx";
@@ -15,10 +16,12 @@ const TransactionsCtx = createContext({
 });
 
 export function TransactionsCtxProvider(props) {
+    const { showToast } = useToast();
+
     const { ctxAccessToken } = useContext(AuthCtx);
     const { ctxActiveAccount } = useContext(AccountsCtx);
     const { ctxActiveEntity } = useContext(EntitiesCtx);
-    
+
     const [ctxFilterBy, setCtxFilterBy] = useState(null);
     const [ctxTranList, setCtxTranList] = useState(null);
 
@@ -26,7 +29,7 @@ export function TransactionsCtxProvider(props) {
         if (ctxAccessToken) {
             populateCtxTransactions(ctxFilterBy);
         }
-    }, [ctxActiveAccount, ctxActiveEntity, ctxFilterBy,ctxAccessToken]);
+    }, [ctxActiveAccount, ctxActiveEntity, ctxFilterBy, ctxAccessToken]);
 
     const populateCtxTransactions = async () => {
         try {
@@ -77,13 +80,16 @@ export function TransactionsCtxProvider(props) {
 
             if (!response.ok) {
                 console.log(response.error);
+                showToast("Error adding transactions", "error", 5000);
                 return;
             }
 
             const newData = await response.json();
             setCtxTranList((prev) => [...prev, ...newData]);
+            showToast("Transactions added", "success", 3000);
         } catch (error) {
             console.error("Error sending transactions:", error);
+            showToast("Error adding transactions", "error", 5000);
         }
     };
 
@@ -100,6 +106,7 @@ export function TransactionsCtxProvider(props) {
 
             if (!response.ok) {
                 console.log("Error:", response.error);
+                showToast("Error updating transactions", "error", 5000);
                 return;
             }
 
@@ -114,8 +121,10 @@ export function TransactionsCtxProvider(props) {
                     }
                 })
             );
+            showToast("Transaction updated", "success", 3000);
         } catch (error) {
             console.error("Error editing transaction:", error);
+            showToast("Error updating transactions", "error", 5000);
         }
     };
 

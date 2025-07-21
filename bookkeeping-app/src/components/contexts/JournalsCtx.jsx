@@ -1,4 +1,5 @@
 import { createContext, useState, useEffect, useContext } from "react";
+import { useToast } from "./ToastCtx";
 
 import AuthCtx from "./AuthCtx";
 import PropertiesCtx from "./PropertiesCtx";
@@ -12,6 +13,8 @@ const JournalsCtx = createContext({
 });
 
 export function JournalsCtxProvider(props) {
+    const { showToast } = useToast();
+    
     const { ctxAccessToken } = useContext(AuthCtx);
     const { ctxActiveProperty } = useContext(PropertiesCtx);
 
@@ -21,7 +24,7 @@ export function JournalsCtxProvider(props) {
         if (ctxAccessToken) {
             populateCtxJournals();
         }
-    }, [ctxActiveProperty,ctxAccessToken]);
+    }, [ctxActiveProperty, ctxAccessToken]);
 
     const populateCtxJournals = async () => {
         try {
@@ -47,15 +50,14 @@ export function JournalsCtxProvider(props) {
     };
 
     const ctxUpdateJournal = async (selectedJournalId, url, method, sendData) => {
-        console.log(selectedJournalId, url, method, sendData)
         const ctxAccessToken = localStorage.getItem("accessToken");
         try {
-            const url = method == "POST" ? new URL("http://localhost:8000/api/journals/") : url;
+            const finalUrl = method == "POST" ? new URL("http://localhost:8000/api/journals/") : url;
             if (method == "POST" && ctxActiveProperty && ctxActiveProperty.id) {
-                url.searchParams.append("property_id", ctxActiveProperty.id);
+                finalUrl.searchParams.append("property_id", ctxActiveProperty.id);
             }
 
-            const response = await fetch(url, {
+            const response = await fetch(finalUrl, {
                 method: method,
                 headers: {
                     "Content-Type": "application/json",
@@ -65,6 +67,7 @@ export function JournalsCtxProvider(props) {
             });
 
             if (!response.ok) {
+                showToast("Error saving journal", "error", 5000);
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
@@ -73,7 +76,7 @@ export function JournalsCtxProvider(props) {
                 setCtxJournalList((prev) => {
                     return [...prev, returnedJournal];
                 });
-
+                showToast("Journal saved", "success", 3000);
                 return returnedJournal;
             } else if (method == "PUT") {
                 setCtxJournalList((prevJournalList) => {
@@ -81,10 +84,12 @@ export function JournalsCtxProvider(props) {
                         journal.id === selectedJournalId ? returnedJournal : journal
                     );
                 });
+                showToast("Journal saved", "success", 3000);
                 return returnedJournal;
             }
         } catch (e) {
             console.log("Error: " + e);
+            showToast("Error saving journal", "error", 5000);
         }
     };
 

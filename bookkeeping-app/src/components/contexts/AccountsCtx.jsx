@@ -1,4 +1,5 @@
 import { createContext, useState, useEffect, useContext } from "react";
+import { useToast } from "./ToastCtx";
 
 import AuthCtx from "./AuthCtx";
 import PropertiesCtx from "./PropertiesCtx";
@@ -15,6 +16,8 @@ const AccountsCtx = createContext({
 });
 
 export function AccountsCtxProvider(props) {
+    const { showToast } = useToast();
+
     const { ctxAccessToken } = useContext(AuthCtx);
     const { ctxActiveProperty } = useContext(PropertiesCtx);
 
@@ -68,8 +71,10 @@ export function AccountsCtxProvider(props) {
 
             const newAccount = await response.json();
             setCtxAccountList((prev) => [...prev, newAccount]);
+            showToast("Account added", "success", 3000);
         } catch (error) {
             console.error("Error sending Account Info:", error);
+            showToast("Error adding Account", "error", 5000);
         }
     };
 
@@ -100,8 +105,10 @@ export function AccountsCtxProvider(props) {
                     }
                 })
             );
+            showToast("Account added", "success", 3000);
         } catch (error) {
             console.error("Error editing account:", error);
+            showToast("Error updating Account", "error", 5000);
         }
     };
 

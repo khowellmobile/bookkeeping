@@ -1,4 +1,5 @@
 import { createContext, useEffect, useState, useContext } from "react";
+import { useToast } from "./ToastCtx";
 
 import AuthCtx from "./AuthCtx";
 import PropertiesCtx from "./PropertiesCtx";
@@ -15,6 +16,8 @@ const RentPaymentsCtx = createContext({
 });
 
 export function RentPaymentsCtxProvider(props) {
+    const { showToast } = useToast();
+
     const { ctxAccessToken } = useContext(AuthCtx);
     const { ctxActiveProperty } = useContext(PropertiesCtx);
 
@@ -105,16 +108,18 @@ export function RentPaymentsCtxProvider(props) {
             if (!response.ok) {
                 const errorData = await response.json();
                 console.error("Backend Error:", errorData);
+                showToast("Error adding payment", "error", 5000);
             } else {
                 const newPayment = await response.json();
                 setCtxPaymentList((prev) => {
                     return [...prev, newPayment];
                 });
-                console.log(newPayment);
+                showToast("Payment added", "success", 3000);
                 return newPayment;
             }
         } catch (error) {
             console.error("Error:", error);
+            showToast("Error adding payment", "error", 5000);
         }
     };
 
@@ -139,9 +144,11 @@ export function RentPaymentsCtxProvider(props) {
                         payment.id === returnedPayment.id ? returnedPayment : payment
                     );
                 });
+                showToast("Payment updated", "success", 3000);
             }
         } catch (e) {
             console.log("Error: " + e);
+            showToast("Error updating payment", "error", 5000);
         }
     };
 
