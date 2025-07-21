@@ -38,6 +38,8 @@ export function TransactionsCtxProvider(props) {
                 url.searchParams.append("account_id", ctxActiveAccount.id);
             } else if (ctxFilterBy == "entity" && ctxActiveEntity && ctxActiveEntity.id) {
                 url.searchParams.append("entity_id", ctxActiveEntity.id);
+            } else {
+                return;
             }
 
             const response = await fetch(url.toString(), {
@@ -46,6 +48,7 @@ export function TransactionsCtxProvider(props) {
                     Authorization: `Bearer ${ctxAccessToken}`,
                 },
             });
+
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }

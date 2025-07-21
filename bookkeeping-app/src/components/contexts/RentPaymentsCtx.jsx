@@ -35,6 +35,8 @@ export function RentPaymentsCtxProvider(props) {
             const url = new URL("http://localhost:8000/api/rentPayments/");
             if (ctxActiveProperty && ctxActiveProperty.id) {
                 url.searchParams.append("property_id", ctxActiveProperty.id);
+            } else {
+                return;
             }
 
             const response = await fetch(url.toString(), {
@@ -58,6 +60,8 @@ export function RentPaymentsCtxProvider(props) {
             const url = new URL("http://localhost:8000/api/rentPayments/");
             if (ctxActiveProperty && ctxActiveProperty.id) {
                 url.searchParams.append("property_id", ctxActiveProperty.id);
+            } else {
+                return;
             }
 
             if (month && year) {

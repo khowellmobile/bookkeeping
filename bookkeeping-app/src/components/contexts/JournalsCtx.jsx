@@ -14,7 +14,7 @@ const JournalsCtx = createContext({
 
 export function JournalsCtxProvider(props) {
     const { showToast } = useToast();
-    
+
     const { ctxAccessToken } = useContext(AuthCtx);
     const { ctxActiveProperty } = useContext(PropertiesCtx);
 
@@ -31,6 +31,8 @@ export function JournalsCtxProvider(props) {
             const url = new URL("http://localhost:8000/api/journals/");
             if (ctxActiveProperty && ctxActiveProperty.id) {
                 url.searchParams.append("property_id", ctxActiveProperty.id);
+            } else {
+                return;
             }
 
             const response = await fetch(url.toString(), {
