@@ -112,9 +112,11 @@ export function PropertiesCtxProvider(props) {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             } else {
-                const returnedEntity = await response.json();
-                setCtxEntityList((prevEntityList) => {
-                    return prevEntityList.map((entity) => (entity.id === returnedEntity.id ? returnedEntity : entity));
+                const returnedProperty = await response.json();
+                setCtxPropertyList((prevPropList) => {
+                    return prevPropList.map((property) =>
+                        property.id === returnedProperty.id ? returnedProperty : property
+                    );
                 });
                 showToast("Property updated", "success", 3000);
             }
