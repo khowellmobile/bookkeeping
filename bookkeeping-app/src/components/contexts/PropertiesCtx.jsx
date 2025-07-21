@@ -28,8 +28,12 @@ export function PropertiesCtxProvider(props) {
     }, [ctxAccessToken]);
 
     useEffect(() => {
-        if (!ctxActiveProperty) {
+        if (!ctxActiveProperty && !sessionStorage.getItem("activePropertyId")) {
             showToast("Please select a Property", "warning", 5000);
+        }
+
+        if (ctxActiveProperty) {
+            sessionStorage.setItem("activePropertyId", JSON.stringify(ctxActiveProperty.id));
         }
     }, [ctxActiveProperty]);
 
@@ -46,6 +50,20 @@ export function PropertiesCtxProvider(props) {
             }
             const data = await response.json();
             setCtxPropertyList(data);
+
+            const storedPropertyId = sessionStorage.getItem("activePropertyId");
+            if (storedPropertyId) {
+                const id = parseInt(storedPropertyId, 10);
+
+                const foundProperty = data.find((property) => property.id === id);
+
+                if (foundProperty) {
+                    setCtxActiveProperty(foundProperty);
+                } else {
+                    console.warn(`Stored property ID ${storedPropertyId} not found in fetched data.`);
+                    sessionStorage.removeItem("activePropertyId");
+                }
+            }
         } catch (e) {
             console.log("Error: " + e);
         }
@@ -94,9 +112,11 @@ export function PropertiesCtxProvider(props) {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             } else {
-                const returnedEntity = await response.json();
-                setCtxEntityList((prevEntityList) => {
-                    return prevEntityList.map((entity) => (entity.id === returnedEntity.id ? returnedEntity : entity));
+                const returnedProperty = await response.json();
+                setCtxPropertyList((prevPropList) => {
+                    return prevPropList.map((property) =>
+                        property.id === returnedProperty.id ? returnedProperty : property
+                    );
                 });
                 showToast("Property updated", "success", 3000);
             }
