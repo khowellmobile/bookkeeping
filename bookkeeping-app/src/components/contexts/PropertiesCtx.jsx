@@ -66,14 +66,17 @@ export function PropertiesCtxProvider(props) {
             if (!response.ok) {
                 const errorData = await response.json();
                 console.error("Backend Error:", errorData);
+                showToast("Error adding Property", "error", 5000);
             } else {
                 const newProperty = await response.json();
                 setCtxPropertyList((prev) => {
                     return [...prev, newProperty];
                 });
+                showToast("Property added", "success", 3000);
             }
-        } catch (error) {
-            console.error("Error:", error);
+        } catch (e) {
+            console.error("Error:", e);
+            showToast("Error adding Property", "error", 5000);
         }
     };
 
@@ -95,9 +98,11 @@ export function PropertiesCtxProvider(props) {
                 setCtxEntityList((prevEntityList) => {
                     return prevEntityList.map((entity) => (entity.id === returnedEntity.id ? returnedEntity : entity));
                 });
+                showToast("Property updated", "success", 3000);
             }
         } catch (e) {
             console.log("Error: " + e);
+            showToast("Error adding Property", "error", 5000);
         }
     };
 
