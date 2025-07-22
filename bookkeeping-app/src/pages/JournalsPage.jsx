@@ -292,9 +292,9 @@ const JournalsPage = () => {
                                 ))
                             ) : (
                                 <NoResultsDisplay
-                                mainText={"No Journals to load."}
-                                guideText={"Have you chosen a Property?"}
-                            />
+                                    mainText={"No Journals to load."}
+                                    guideText={"Have you chosen a Property?"}
+                                />
                             )}
                         </section>
                     </div>

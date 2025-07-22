@@ -277,7 +277,7 @@ const EntitiesPage = () => {
                                 ))
                             ) : (
                                 <NoResultsDisplay
-                                    mainText={"No Transactions to load."}
+                                    mainText={"No Transactions to Load."}
                                     guideText={"Have you chosen a Property and Entity?"}
                                 />
                             )}
