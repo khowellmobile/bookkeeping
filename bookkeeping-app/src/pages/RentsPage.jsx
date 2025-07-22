@@ -10,8 +10,14 @@ import plusIcon from "../assets/plus-icon.svg";
 import RentItem from "../components/elements/items/RentItem";
 
 const RentsPage = () => {
-    const { getCtxPaymentsByMonth, ctxMonthPaymentList, setCtxMonthPaymentList, ctxAddPayment, ctxActiveDate, setCtxActiveDate } =
-        useContext(RentPaymentsCtx);
+    const {
+        getCtxPaymentsByMonth,
+        ctxMonthPaymentList,
+        setCtxMonthPaymentList,
+        ctxAddPayment,
+        ctxActiveDate,
+        setCtxActiveDate,
+    } = useContext(RentPaymentsCtx);
 
     const [tempDate, setTempDate] = useState(new Date());
     const [isExpanded, setIsExpanded] = useState(false);
