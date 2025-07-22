@@ -9,6 +9,8 @@ const RentPaymentsCtx = createContext({
     setCtxPaymentList: () => {},
     ctxMonthPaymentList: null,
     setCtxMonthPaymentList: () => {},
+    ctxActiveDate: null,
+    setCtxActiveDate: () => {},
     populateCtxPayments: () => {},
     getCtxPaymentsByMonth: () => {},
     ctxAddPayment: () => {},
@@ -23,12 +25,17 @@ export function RentPaymentsCtxProvider(props) {
 
     const [ctxPaymentList, setCtxPaymentList] = useState([]);
     const [ctxMonthPaymentList, setCtxMonthPaymentList] = useState([]);
+    const [ctxActiveDate, setCtxActiveDate] = useState(new Date());
 
     useEffect(() => {
         if (ctxAccessToken) {
             populateCtxPayments();
         }
     }, [ctxActiveProperty, ctxAccessToken]);
+
+    useEffect(() => {
+        getCtxPaymentsByMonth(ctxActiveDate.getMonth() + 1, ctxActiveDate.getFullYear());
+    }, [ctxActiveProperty]);
 
     const populateCtxPayments = async () => {
         try {
@@ -161,6 +168,8 @@ export function RentPaymentsCtxProvider(props) {
         setCtxPaymentList,
         ctxMonthPaymentList,
         setCtxMonthPaymentList,
+        ctxActiveDate,
+        setCtxActiveDate,
         populateCtxPayments,
         getCtxPaymentsByMonth,
         ctxAddPayment,

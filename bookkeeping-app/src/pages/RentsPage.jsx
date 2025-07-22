@@ -10,16 +10,15 @@ import plusIcon from "../assets/plus-icon.svg";
 import RentItem from "../components/elements/items/RentItem";
 
 const RentsPage = () => {
-    const { getCtxPaymentsByMonth, ctxMonthPaymentList, setCtxMonthPaymentList, ctxAddPayment } =
+    const { getCtxPaymentsByMonth, ctxMonthPaymentList, setCtxMonthPaymentList, ctxAddPayment, ctxActiveDate, setCtxActiveDate } =
         useContext(RentPaymentsCtx);
 
-    const [activeDate, setActiveDate] = useState(new Date());
     const [tempDate, setTempDate] = useState(new Date());
     const [isExpanded, setIsExpanded] = useState(false);
     const [daysOverflow, setDaysOverflow] = useState(false);
 
-    const currentMonth = activeDate.getMonth();
-    const currentYear = activeDate.getFullYear();
+    const currentMonth = ctxActiveDate.getMonth();
+    const currentYear = ctxActiveDate.getFullYear();
     const monthNames = [
         "January",
         "February",
@@ -120,7 +119,7 @@ const RentsPage = () => {
 
     useEffect(() => {
         if (!isExpanded) {
-            setActiveDate(tempDate);
+            setCtxActiveDate(tempDate);
         }
     }, [isExpanded]);
 
@@ -209,7 +208,7 @@ const RentsPage = () => {
                     <div className={classes.headerInfo}>
                         <div className={classes.dateDisplay}>
                             <h2>
-                                {displayedMonthName} {activeDate.getFullYear()} Rents
+                                {displayedMonthName} {ctxActiveDate.getFullYear()} Rents
                             </h2>
                             <img
                                 className={classes.icon}
