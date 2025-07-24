@@ -32,7 +32,7 @@ const ProfileInformation = () => {
                     <div className={classes.profileIcon} />
                     <div className={classes.headerText}>
                         <p>
-                            {profileData.firstName} {profileData.lastName}
+                            {profileData.first_name} {profileData.last_name}
                         </p>
                         <p>HA Bookkeeper</p>
                     </div>
@@ -47,7 +47,7 @@ const ProfileInformation = () => {
                         <input
                             type="text"
                             name="firstName"
-                            value={profileData.first_name.charAt(0).toUpperCase() + profileData.first_name.slice(1)}
+                            value={profileData?.first_name.charAt(0).toUpperCase() + profileData?.first_name.slice(1)}
                             onChange={handleInputChange}
                         />
                     </div>
@@ -56,7 +56,7 @@ const ProfileInformation = () => {
                         <input
                             type="text"
                             name="lastName"
-                            value={profileData.last_name.charAt(0).toUpperCase() + profileData.last_name.slice(1)}
+                            value={profileData?.last_name.charAt(0).toUpperCase() + profileData?.last_name.slice(1)}
                             onChange={handleInputChange}
                         />
                     </div>

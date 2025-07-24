@@ -3,6 +3,7 @@ import classes from "./Menu.module.css";
 import { useContext } from "react";
 import AuthCtx from "../contexts/AuthCtx";
 
+import CalendarIcon from "../../assets/calendar-icon.svg"
 import AccountsIcon from "../../assets/accounts-icon.svg";
 import EntitiesIcon from "../../assets/entities-icon.svg";
 import DashIcon from "../../assets/dashboard-icon.svg";
@@ -38,7 +39,7 @@ const Menu = () => {
                 <MenuLineItem
                     itemName="Rents"
                     link="/rents"
-                    icon={<img src={TransactionIcon} alt="Icon" />}
+                    icon={<img src={CalendarIcon} alt="Icon" />}
                 />
                 <MenuLineItem itemName="Accounts" link="/accounts" icon={<img src={AccountsIcon} alt="Icon" />} />
                 <MenuLineItem itemName="Entities" link="/entities" icon={<img src={EntitiesIcon} alt="Icon" />} />
