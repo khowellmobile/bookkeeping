@@ -7,6 +7,7 @@ from core_backend.models import (
     Journal,
     Property,
     RentPayment,
+    User,
 )
 
 
@@ -336,6 +337,54 @@ class RentPaymentSerializer(serializers.ModelSerializer):
             "date",
             "status",
             "is_deleted",
+        ]
+
+        for attr in fields_to_update:
+            if attr in validated_data:
+                setattr(instance, attr, validated_data[attr])
+
+        instance.save()
+        return instance
+
+
+class UserSerializer(serializers.ModelSerializer):
+    """
+    Serializer for the User model, focused on user-editable profile fields.
+    Does NOT include sensitive fields like password.
+    """
+
+    class Meta:
+        model = User
+        fields = (
+            "id",
+            "username",
+            "email",
+            "first_name",
+            "last_name",
+            "is_active",
+            "date_joined",
+            "last_login",
+        )
+        read_only_fields = (
+            "id",
+            "username",
+            "date_joined",
+            "last_login",
+        )
+
+    def update(self, instance, validated_data):
+        """
+        Custom update method for the User model.
+        Handles specific fields for user profile updates.
+        """
+
+        validated_data.pop("username", None)
+
+        fields_to_update = [
+            "email",
+            "first_name",
+            "last_name",
+            "is_active",
         ]
 
         for attr in fields_to_update:

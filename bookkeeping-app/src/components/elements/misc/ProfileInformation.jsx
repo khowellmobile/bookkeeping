@@ -1,18 +1,14 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 
 import classes from "./ProfileInformation.module.css";
 
+import AuthCtx from "../../contexts/AuthCtx";
 import penIcon from "../../../assets/pen-icon.svg";
 
 const ProfileInformation = () => {
-    const [profileData, setProfileData] = useState({
-        firstName: "John",
-        lastName: "Smith",
-        email: "jsmith@gmail.com",
-        // Initialize password fields as empty or with appropriate default values
-        password: "",
-        passwordConfirm: "",
-    });
+    const { ctxUpdateUser, ctxUserData } = useContext(AuthCtx);
+
+    const [profileData, setProfileData] = useState(ctxUserData);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -20,6 +16,13 @@ const ProfileInformation = () => {
             ...prev,
             [name]: value,
         }));
+    };
+
+    const changeProf = () => {
+        const mutatedData = profileData;
+        delete mutatedData.password;
+        delete mutatedData.passwordConfirm;
+        ctxUpdateUser(profileData);
     };
 
     return (
@@ -44,13 +47,18 @@ const ProfileInformation = () => {
                         <input
                             type="text"
                             name="firstName"
-                            value={profileData.firstName}
+                            value={profileData.first_name.charAt(0).toUpperCase() + profileData.first_name.slice(1)}
                             onChange={handleInputChange}
                         />
                     </div>
                     <div className={classes.cluster}>
                         <p>Last name</p>
-                        <input type="text" name="lastName" value={profileData.lastName} onChange={handleInputChange} />
+                        <input
+                            type="text"
+                            name="lastName"
+                            value={profileData.last_name.charAt(0).toUpperCase() + profileData.last_name.slice(1)}
+                            onChange={handleInputChange}
+                        />
                     </div>
                 </div>
             </section>
@@ -64,7 +72,7 @@ const ProfileInformation = () => {
                         <p>Email</p>
                         <input type="text" name="email" value={profileData.email} onChange={handleInputChange} />
                     </div>
-                    <button>
+                    <button onClick={changeProf}>
                         <img src={penIcon} className={classes.icon} alt="pen icon" /> Change Email
                     </button>
                 </div>
