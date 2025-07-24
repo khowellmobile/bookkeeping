@@ -1,3 +1,4 @@
+import ProfileInformation from "../components/elements/misc/ProfileInformation";
 import classes from "./SettingsPage.module.css";
 
 import { useState } from "react";
@@ -20,7 +21,7 @@ const SettingsPage = () => {
                 <section className={classes.contentHeader}>
                     <h2>{activeGroup}</h2>
                 </section>
-                <section className={classes.content}></section>
+                <section className={classes.content}>{activeGroup == "Profile" && <ProfileInformation />}</section>
             </div>
         </div>
     );

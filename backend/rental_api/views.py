@@ -13,6 +13,7 @@ from .serializers import (
     JournalSerializer,
     PropertySerializer,
     RentPaymentSerializer,
+    UserSerializer,
 )
 from core_backend.models import (
     Transaction,
@@ -21,6 +22,7 @@ from core_backend.models import (
     Journal,
     Property,
     RentPayment,
+    User,
 )
 from rest_framework.permissions import IsAuthenticated
 
@@ -664,3 +666,29 @@ class RentPaymentDetailAPIView(APIView):
                 return Response(serializer.data)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+class UserProfileAPIView(APIView):
+    """
+    API endpoint to retrieve and update the authenticated user's profile.
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        """
+        Retrieves the profile of the authenticated user.
+        """
+        serializer = UserSerializer(request.user)
+        return Response(serializer.data)
+
+    def put(self, request):
+        """
+        Updates the profile of the authenticated user.
+        """
+
+        serializer = UserSerializer(request.user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
