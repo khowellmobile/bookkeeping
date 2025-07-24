@@ -1,0 +1,139 @@
+.mainContainer {
+    width: 100%;
+    height: 100%;
+    padding: 0.5rem 1.5rem;
+
+    overflow: scroll;
+}
+
+.mainContainer > section {
+    height: 8rem;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
+
+    border-bottom: 2px solid var(--border-color);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.mainContainer > section:nth-child(2) {
+    height: 7rem;
+}
+
+.mainContainer > section > p:first-child,
+.email > div > p:first-child,
+.password > div > p:first-child,
+.tools > div > p:first-child {
+    font-weight: 500;
+    font-size: var(--base-font-size);
+}
+
+.mainContainer > section > p:nth-child(2),
+.email > div > p:nth-child(2),
+.password > div > p:nth-child(2),
+.tools > div > p:nth-child(2) {
+    color: var(--secondary-text-color);
+    font-weight: 400;
+    font-size: var(--small-font-size);
+}
+
+.header {
+    height: 8rem;
+    margin-bottom: 0.5rem;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.leftHeader {
+    display: flex;
+    align-items: center;
+}
+
+.profileIcon {
+    height: 7rem;
+    width: 7rem;
+
+    background-color: grey;
+    border-radius: 50%;
+}
+
+.headerText {
+    margin-left: 1rem;
+}
+
+.headerText > P:nth-child(1) {
+    font-size: var(--header-font-size);
+    font-weight: 500;
+}
+
+.headerText > P:nth-child(2) {
+    color: var(--secondary-text-color);
+    font-size: var(--small-font-size);
+}
+
+.icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-right: 0.25rem;
+}
+
+.fields {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.fields button {
+    height: 2rem;
+    padding: 0rem 0.5rem;
+
+    background-color: var(--background-color);
+    border: 1px solid var(--border-color);
+    border-radius: 0.25rem;
+    cursor: pointer;
+    outline: none;
+
+    display: flex;
+    align-items: center;
+    align-self: end;
+
+    transition: all ease 0.25s;
+}
+
+.fields > button:hover {
+    transform: translateY(-1px);
+}
+
+.fields > button:active {
+    transform: translateY(1px);
+}
+
+.cluster {
+    width: calc(50% - 0.5rem);
+
+    display: flex;
+    flex-direction: column;
+}
+
+.cluster > p {
+    color: var(--secondary-text-color);
+    font-size: var(--small-font-size);
+    font-weight: 500;
+}
+
+.cluster > input {
+    width: 100%;
+    height: 2rem;
+    padding: 0.5rem;
+
+    border-radius: 0.25rem;
+    border: 1px solid var(--border-color);
+    outline: none;
+    font-family: var(--primary-font);
+}
