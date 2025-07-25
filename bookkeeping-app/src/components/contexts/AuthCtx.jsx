@@ -1,4 +1,5 @@
 import { createContext, useState, useEffect } from "react";
+import { useToast } from "./ToastCtx";
 
 const AuthCtx = createContext({
     ctxAccessToken: null,
@@ -9,6 +10,8 @@ const AuthCtx = createContext({
 });
 
 export function AuthCtxProvider(props) {
+    const { showToast } = useToast();
+
     const [ctxAccessToken, setCtxAccessToken] = useState(localStorage.getItem("accessToken") || null);
     const [ctxUserData, setCtxUserData] = useState({});
 

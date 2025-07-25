@@ -50,7 +50,7 @@ const ProfileInformation = () => {
                         <p>First name</p>
                         <input
                             type="text"
-                            name="firstName"
+                            name="first_name"
                             value={capitilizeFirst(profileData.first_name)}
                             onChange={handleInputChange}
                         />
@@ -59,7 +59,7 @@ const ProfileInformation = () => {
                         <p>Last name</p>
                         <input
                             type="text"
-                            name="lastName"
+                            name="last_name"
                             value={capitilizeFirst(profileData.last_name)}
                             onChange={handleInputChange}
                         />
