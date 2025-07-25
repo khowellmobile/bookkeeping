@@ -25,7 +25,7 @@ const Layout = (props) => {
                         </div>
                         <div>
                             <p className={classes.userEmail}>
-                                {ctxUserData?.email.charAt(0).toUpperCase() + ctxUserData?.email.slice(1)}
+                                {ctxUserData.email && ctxUserData.email.charAt(0).toUpperCase() + ctxUserData.email.slice(1)}
                             </p>
                             <img className={classes.icon} src={UserIcon} alt="Icon" />
                         </div>

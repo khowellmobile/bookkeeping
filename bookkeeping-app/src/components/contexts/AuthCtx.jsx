@@ -37,7 +37,6 @@ export function AuthCtxProvider(props) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             } else {
                 const returnedProfile = await response.json();
-                console.log(returnedProfile);
                 setCtxUserData(returnedProfile);
             }
         } catch (e) {

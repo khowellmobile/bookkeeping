@@ -25,6 +25,10 @@ const ProfileInformation = () => {
         ctxUpdateUser(profileData);
     };
 
+    const capitilizeFirst = (str) => {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    };
+
     return (
         <div className={classes.mainContainer}>
             <div className={classes.header}>
@@ -32,7 +36,7 @@ const ProfileInformation = () => {
                     <div className={classes.profileIcon} />
                     <div className={classes.headerText}>
                         <p>
-                            {profileData.first_name} {profileData.last_name}
+                            {capitilizeFirst(profileData.first_name)} {capitilizeFirst(profileData.last_name)}
                         </p>
                         <p>HA Bookkeeper</p>
                     </div>
@@ -47,7 +51,7 @@ const ProfileInformation = () => {
                         <input
                             type="text"
                             name="firstName"
-                            value={profileData?.first_name.charAt(0).toUpperCase() + profileData?.first_name.slice(1)}
+                            value={capitilizeFirst(profileData.first_name)}
                             onChange={handleInputChange}
                         />
                     </div>
@@ -56,7 +60,7 @@ const ProfileInformation = () => {
                         <input
                             type="text"
                             name="lastName"
-                            value={profileData?.last_name.charAt(0).toUpperCase() + profileData?.last_name.slice(1)}
+                            value={capitilizeFirst(profileData.last_name)}
                             onChange={handleInputChange}
                         />
                     </div>
