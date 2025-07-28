@@ -1,14 +1,23 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 
 import classes from "./ProfileInformation.module.css";
 
 import AuthCtx from "../../contexts/AuthCtx";
-import penIcon from "../../../assets/pen-icon.svg";
+import penIcon from "../../../assets/pen-icon-grey.svg";
 
 const ProfileInformation = () => {
     const { ctxUpdateUser, ctxUserData } = useContext(AuthCtx);
 
     const [profileData, setProfileData] = useState(ctxUserData);
+    const [inputState, setInputState] = useState({
+        first_name: false,
+        last_name: false,
+        email: false,
+    });
+
+    const disabledStyle = {
+        backgroundColor: "var(--border-color)",
+    };
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -18,12 +27,25 @@ const ProfileInformation = () => {
         }));
     };
 
+    const changeInputState = (name) => {
+        setInputState((prev) => ({
+            ...prev,
+            [name]: !prev[name],
+        }));
+    };
+
     const changeProf = () => {
         const mutatedData = profileData;
         delete mutatedData.password;
         delete mutatedData.passwordConfirm;
         ctxUpdateUser(profileData);
     };
+
+    useEffect(() => {
+        if (JSON.stringify(profileData) !== JSON.stringify(ctxUserData)) {
+            changeProf();
+        }
+    }, [profileData, ctxUserData]);
 
     const capitilizeFirst = (str) => {
         return str.charAt(0).toUpperCase() + str.slice(1);
@@ -48,21 +70,35 @@ const ProfileInformation = () => {
                 <div className={classes.fields}>
                     <div className={classes.cluster}>
                         <p>First name</p>
-                        <input
-                            type="text"
-                            name="first_name"
-                            value={capitilizeFirst(profileData.first_name)}
-                            onChange={handleInputChange}
-                        />
+                        <span>
+                            <input
+                                type="text"
+                                name="first_name"
+                                style={!inputState.first_name ? disabledStyle : null}
+                                value={capitilizeFirst(profileData.first_name)}
+                                onChange={handleInputChange}
+                                disabled={!inputState.first_name}
+                            />
+                            <div onClick={() => changeInputState("first_name")}>
+                                <img src={penIcon} className={classes.icon} alt="pen icon" />
+                            </div>
+                        </span>
                     </div>
                     <div className={classes.cluster}>
                         <p>Last name</p>
-                        <input
-                            type="text"
-                            name="last_name"
-                            value={capitilizeFirst(profileData.last_name)}
-                            onChange={handleInputChange}
-                        />
+                        <span>
+                            <input
+                                type="text"
+                                name="last_name"
+                                style={!inputState.last_name ? disabledStyle : null}
+                                value={capitilizeFirst(profileData.last_name)}
+                                onChange={handleInputChange}
+                                disabled={!inputState.last_name}
+                            />
+                            <div onClick={() => changeInputState("last_name")}>
+                                <img src={penIcon} className={classes.icon} alt="pen icon" />
+                            </div>
+                        </span>
                     </div>
                 </div>
             </section>
@@ -74,11 +110,20 @@ const ProfileInformation = () => {
                 <div className={classes.fields}>
                     <div className={classes.cluster}>
                         <p>Email</p>
-                        <input type="text" name="email" value={profileData.email} onChange={handleInputChange} />
+                        <span>
+                            <input
+                                type="text"
+                                name="email"
+                                value={profileData.email}
+                                style={!inputState.email ? disabledStyle : null}
+                                onChange={handleInputChange}
+                                disabled={!inputState.email}
+                            />
+                            <div onClick={() => changeInputState("email")}>
+                                <img src={penIcon} className={classes.icon} alt="pen icon" />
+                            </div>
+                        </span>
                     </div>
-                    <button onClick={changeProf}>
-                        <img src={penIcon} className={classes.icon} alt="pen icon" /> Change Email
-                    </button>
                 </div>
             </section>
             <section className={classes.password}>
@@ -89,21 +134,31 @@ const ProfileInformation = () => {
                 <div className={classes.fields}>
                     <div className={classes.cluster}>
                         <p>Password</p>
-                        <input
-                            type="password"
-                            name="password"
-                            value={profileData.password}
-                            onChange={handleInputChange}
-                        />
+                        <span>
+                            <input
+                                type="password"
+                                name="password"
+                                value={profileData.password}
+                                onChange={handleInputChange}
+                            />
+                            <div>
+                                <img src={penIcon} className={classes.icon} alt="pen icon" />
+                            </div>
+                        </span>
                     </div>
                     <div className={classes.cluster}>
                         <p>Password confirm</p>
-                        <input
-                            type="password"
-                            name="passwordConfirm"
-                            value={profileData.passwordConfirm}
-                            onChange={handleInputChange}
-                        />
+                        <span>
+                            <input
+                                type="password"
+                                name="passwordConfirm"
+                                value={profileData.passwordConfirm}
+                                onChange={handleInputChange}
+                            />
+                            <div>
+                                <img src={penIcon} className={classes.icon} alt="pen icon" />
+                            </div>
+                        </span>
                     </div>
                 </div>
             </section>
