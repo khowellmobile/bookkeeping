@@ -4,11 +4,13 @@ import classes from "./ProfileInformation.module.css";
 
 import AuthCtx from "../../contexts/AuthCtx";
 import penIcon from "../../../assets/pen-icon-grey.svg";
+import saveIcon from "../../../assets/save-icon-grey.svg";
 
 const ProfileInformation = () => {
     const { ctxUpdateUser, ctxUserData } = useContext(AuthCtx);
 
     const [profileData, setProfileData] = useState(ctxUserData);
+    const [initalData, setInitialData] = useState(ctxUserData);
     const [inputState, setInputState] = useState({
         first_name: false,
         last_name: false,
@@ -27,25 +29,30 @@ const ProfileInformation = () => {
         }));
     };
 
-    const changeInputState = (name) => {
-        setInputState((prev) => ({
-            ...prev,
-            [name]: !prev[name],
-        }));
+    const changeInputStateAndSave = (name) => {
+        setInputState((prev) => {
+            const newState = { ...prev, [name]: !prev[name] };
+            if (prev[name] === true && newState[name] === false) {
+                updateBackendProfile();
+            }
+            return newState;
+        });
     };
 
-    const changeProf = () => {
-        const mutatedData = profileData;
-        delete mutatedData.password;
-        delete mutatedData.passwordConfirm;
-        ctxUpdateUser(profileData);
-    };
-
-    useEffect(() => {
-        if (JSON.stringify(profileData) !== JSON.stringify(ctxUserData)) {
-            changeProf();
+    const updateBackendProfile = () => {
+        if (JSON.stringify(profileData) === JSON.stringify(initalData)) {
+            return;
         }
-    }, [profileData, ctxUserData]);
+
+        const dataToSend = {
+            first_name: profileData.first_name,
+            last_name: profileData.last_name,
+            email: profileData.email,
+        };
+
+        ctxUpdateUser(dataToSend);
+        setInitialData((prev) => ({ ...prev, ...dataToSend }));
+    };
 
     const capitilizeFirst = (str) => {
         return str.charAt(0).toUpperCase() + str.slice(1);
@@ -79,8 +86,12 @@ const ProfileInformation = () => {
                                 onChange={handleInputChange}
                                 disabled={!inputState.first_name}
                             />
-                            <div onClick={() => changeInputState("first_name")}>
-                                <img src={penIcon} className={classes.icon} alt="pen icon" />
+                            <div onClick={() => changeInputStateAndSave("first_name")}>
+                                <img
+                                    src={!inputState.first_name ? penIcon : saveIcon}
+                                    className={classes.icon}
+                                    alt="pen icon"
+                                />
                             </div>
                         </span>
                     </div>
@@ -95,8 +106,12 @@ const ProfileInformation = () => {
                                 onChange={handleInputChange}
                                 disabled={!inputState.last_name}
                             />
-                            <div onClick={() => changeInputState("last_name")}>
-                                <img src={penIcon} className={classes.icon} alt="pen icon" />
+                            <div onClick={() => changeInputStateAndSave("last_name")}>
+                                <img
+                                    src={!inputState.last_name ? penIcon : saveIcon}
+                                    className={classes.icon}
+                                    alt="pen icon"
+                                />
                             </div>
                         </span>
                     </div>
@@ -119,8 +134,12 @@ const ProfileInformation = () => {
                                 onChange={handleInputChange}
                                 disabled={!inputState.email}
                             />
-                            <div onClick={() => changeInputState("email")}>
-                                <img src={penIcon} className={classes.icon} alt="pen icon" />
+                            <div onClick={() => changeInputStateAndSave("email")}>
+                                <img
+                                    src={!inputState.email ? penIcon : saveIcon}
+                                    className={classes.icon}
+                                    alt="pen icon"
+                                />
                             </div>
                         </span>
                     </div>
