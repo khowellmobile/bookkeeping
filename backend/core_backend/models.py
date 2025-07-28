@@ -32,6 +32,20 @@ class Account(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def update_balance(self, transaction, is_reversal=False):
+        amount = transaction.amount
+        if transaction.type == "debit":
+            if is_reversal:
+                self.balance += amount
+            else:
+                self.balance -= amount
+        elif transaction.type == "credit":
+            if is_reversal:
+                self.balance -= amount
+            else:
+                self.balance += amount
+        self.save()
+
     def __str__(self):
         return self.name
 
