@@ -163,8 +163,7 @@ const RentItem = ({ item, dayIndex, updateFields, removePayment, handleSaveRentP
                         <div className={`${classes.header} ${isClicked && classes[inputFields.status]}`}>
                             <div className={`${classes.statIndicator} ${classes[inputFields.status]}`}></div>
                             <p>
-                                {inputFields.entity?.name ? inputFields.entity.name : "Unknown"} paid $
-                                {inputFields.amount ? inputFields.amount : 0.0}
+                                ${inputFields.amount ? inputFields.amount : 0.0},  {inputFields.entity?.name ? inputFields.entity.name : "Unknown"}
                             </p>
                         </div>
                         <div className={`${classes.rentInfo} ${!isClicked && classes.noDisplay}`}>
