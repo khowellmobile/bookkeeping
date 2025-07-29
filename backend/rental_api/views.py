@@ -83,11 +83,7 @@ class TransactionListAPIView(APIView):
     def post(self, request):
         data = request.data
 
-        print(data)
-
         property_id = request.query_params.get("property_id")
-
-        print(property_id)
 
         if not property_id:
             return Response(
@@ -123,12 +119,12 @@ class TransactionListAPIView(APIView):
                 transaction_instance = serializer.save(
                     user=request.user, property=property_obj
                 )
-                """ if (
-                    hasattr(transaction_instance, "account")
-                    and transaction_instance.account
-                ):
-                    transaction_instance.account.update_balance(transaction_instance)
-                saved_transactions.append(serializer.instance) """
+                if (hasattr(transaction_instance, "account") and transaction_instance.account):
+                    print("Running update")
+                    account_to_update = transaction_instance.account
+                    account_to_update.update_balance(transaction_instance)
+                    account_to_update.save(update_fields=['balance'])
+                    saved_transactions.append(serializer.instance)
             else:
                 # Handle validation errors for each transaction
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -137,7 +133,6 @@ class TransactionListAPIView(APIView):
             serializer = TransactionSerializer(saved_transactions, many=True)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
-            print("CATCH")
             return Response(
                 {"message": "No valid transactions were processed."},
                 status=status.HTTP_200_OK,
