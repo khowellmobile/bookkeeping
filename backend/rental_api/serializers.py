@@ -186,7 +186,7 @@ class TransactionSerializer(serializers.ModelSerializer):
     account = AccountSerializer(read_only=True)
     account_id = serializers.IntegerField(write_only=True)
     property = PropertySerializer(read_only=True)
-    property_id = serializers.IntegerField(write_only=True)
+    property_id = serializers.IntegerField(required=False, write_only=True)
     entity = EntitySerializer(read_only=True)
     entity_id = serializers.IntegerField(write_only=True)
     date = serializers.DateField(required=False)
