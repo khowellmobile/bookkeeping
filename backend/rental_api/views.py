@@ -83,9 +83,36 @@ class TransactionListAPIView(APIView):
     def post(self, request):
         data = request.data
 
-        if not isinstance(data, list):
+        print(data)
+
+        property_id = request.query_params.get("property_id")
+
+        print(property_id)
+
+        if not property_id:
             return Response(
-                {"error": "Expected a list of transactions."},
+                {"error": "property_id is required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if property_id:
+            try:
+                property_obj = Property.objects.get(id=property_id, user=request.user)
+            except Property.DoesNotExist:
+                return Response(
+                    {
+                        "error": "Property with this ID does not exist or does not belong to the user."
+                    },
+                    status=status.HTTP_404_NOT_FOUND,
+                )
+            except ValueError:
+                return Response(
+                    {"error": "Invalid property_id provided."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+        else:
+            return Response(
+                {"error": "property_id is required."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -93,8 +120,15 @@ class TransactionListAPIView(APIView):
         for item in data:
             serializer = TransactionSerializer(data=item, context={"request": request})
             if serializer.is_valid():
-                serializer.save()
-                saved_transactions.append(serializer.instance)
+                transaction_instance = serializer.save(
+                    user=request.user, property=property_obj
+                )
+                """ if (
+                    hasattr(transaction_instance, "account")
+                    and transaction_instance.account
+                ):
+                    transaction_instance.account.update_balance(transaction_instance)
+                saved_transactions.append(serializer.instance) """
             else:
                 # Handle validation errors for each transaction
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -103,6 +137,7 @@ class TransactionListAPIView(APIView):
             serializer = TransactionSerializer(saved_transactions, many=True)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
+            print("CATCH")
             return Response(
                 {"message": "No valid transactions were processed."},
                 status=status.HTTP_200_OK,
