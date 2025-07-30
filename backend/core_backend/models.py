@@ -36,14 +36,14 @@ class Account(models.Model):
         amount = transaction.amount
         if transaction.type == "debit":
             if is_reversal:
-                self.balance += amount
-            else:
                 self.balance -= amount
+            else:
+                self.balance += amount
         elif transaction.type == "credit":
             if is_reversal:
-                self.balance -= amount
-            else:
                 self.balance += amount
+            else:
+                self.balance -= amount
         self.save()
 
     def __str__(self):
