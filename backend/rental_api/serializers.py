@@ -190,7 +190,7 @@ class TransactionSerializer(serializers.ModelSerializer):
     entity = EntitySerializer(read_only=True)
     entity_id = serializers.IntegerField(write_only=True)
     date = serializers.DateField(required=False)
-    type = serializers.CharField(read_only=True, required=False)
+    type = serializers.CharField(required=False)
 
     class Meta:
         model = Transaction
