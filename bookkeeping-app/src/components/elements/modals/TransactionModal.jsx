@@ -14,8 +14,8 @@ const TransactionModal = ({ vals, handleCloseModal }) => {
     const [transPayee, setTransPayee] = useState(vals.entity);
     const [transAccount, setTransAccount] = useState(vals.account);
     const [transMemo, setTransMemo] = useState(vals.memo);
-    const [transDebit, setTransDebit] = useState(vals.amount < 0 ? vals.amount * -1 : "");
-    const [transCredit, setTransCredit] = useState(vals.amount > 0 ? vals.amount : "");
+    const [transType, setTransType] = useState(vals.type);
+    const [transAmount, setTransAmount] = useState(vals.amount);
 
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -39,15 +39,15 @@ const TransactionModal = ({ vals, handleCloseModal }) => {
 
     const handleDebitChange = (event) => {
         const newAmount = checkAmount(event.target.value);
-        setTransDebit(newAmount);
-        setTransCredit("");
-        setEditedTransaction((prev) => ({ ...prev, amount: newAmount * -1 }));
+        setTransType("debit");
+        setTransAmount(newAmount);
+        setEditedTransaction((prev) => ({ ...prev, amount: newAmount }));
     };
 
     const handleCreditChange = (event) => {
         const newAmount = checkAmount(event.target.value);
-        setTransCredit(newAmount);
-        setTransDebit("");
+        setTransType("credit");
+        setTransAmount(newAmount);
         setEditedTransaction((prev) => ({ ...prev, amount: newAmount }));
     };
 
@@ -155,15 +155,17 @@ const TransactionModal = ({ vals, handleCloseModal }) => {
                                 <div>Debit</div>
                                 <input
                                     type="text"
+                                    name="debit"
                                     className={classes.debit}
-                                    value={transDebit}
+                                    value={transType == "debit" ? transAmount : ""}
                                     onChange={handleDebitChange}
                                 />
                                 <div>Credit</div>
                                 <input
                                     type="text"
+                                    name="credit"
                                     className={classes.credit}
-                                    value={transCredit}
+                                    value={transType == "credit" ? transAmount : ""}
                                     onChange={handleCreditChange}
                                 />
                             </div>
