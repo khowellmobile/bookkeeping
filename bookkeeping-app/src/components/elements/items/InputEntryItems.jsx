@@ -2,7 +2,7 @@ import AccountEntryDropdown from "../dropdowns/AccountEntryDropdown";
 import EntityEntryDropdown from "../dropdowns/EntityEntryDropdown";
 import classes from "./InputEntryItems.module.css";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 const JournalEntryItem = ({ vals, index, onFocus, onItemChange, scrollRef }) => {
     const handleAccountChange = (account) => {
@@ -38,6 +38,9 @@ const TransactionEntryItem = ({ vals, index, onFocus, onItemChange, scrollRef })
     const [debit, setDebit] = useState(vals.amount > 0 ? vals.amount : "");
     const [credit, setCredit] = useState(vals.amount < 0 ? vals.amount : "");
 
+    const [amount, setAmount] = useState(vals.amount);
+    const [type, setType] = useState(vals.type);
+
     const handleDateChange = (event) => {
         const newValue = event.target.value;
         onItemChange(index, "date", newValue);
@@ -58,15 +61,17 @@ const TransactionEntryItem = ({ vals, index, onFocus, onItemChange, scrollRef })
 
     const handleDebitChange = (event) => {
         const newValue = checkAmount(event.target.value);
-        setDebit(newValue);
-        setCredit("");
-        onItemChange(index, "amount", -1 * newValue);
+        setType("debit");
+        onItemChange(index, "type", "debit");
+        setAmount(newValue);
+        onItemChange(index, "amount", newValue);
     };
 
     const handleCreditChange = (event) => {
         const newValue = checkAmount(event.target.value);
-        setCredit(newValue);
-        setDebit("");
+        setType("credit");
+        onItemChange(index, "type", "credit");
+        setAmount(newValue);
         onItemChange(index, "amount", newValue);
     };
 
@@ -84,8 +89,8 @@ const TransactionEntryItem = ({ vals, index, onFocus, onItemChange, scrollRef })
             <EntityEntryDropdown scrollRef={scrollRef} onChange={handleEntityChange} />
             <AccountEntryDropdown scrollRef={scrollRef} onChange={handleAccountChange} />
             <input type="text" value={vals.memo} onChange={handleMemoChange} />
-            <input type="text" value={debit} onChange={handleDebitChange} />
-            <input type="text" value={credit} onChange={handleCreditChange} />
+            <input type="text" value={type == "debit" ? amount : ""} onChange={handleDebitChange} />
+            <input type="text" value={type == "credit" ? amount : ""} onChange={handleCreditChange} />
         </div>
     );
 };

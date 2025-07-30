@@ -24,6 +24,7 @@ const AddTransactionsModal = ({ ctxActiveAccount, handleCloseModal }) => {
                 account: "",
                 memo: "",
                 amount: "",
+                type: "",
                 is_reconciled: false,
             }))
     );
@@ -53,6 +54,8 @@ const AddTransactionsModal = ({ ctxActiveAccount, handleCloseModal }) => {
                 updatedItem.memo = value;
             } else if (name === "amount") {
                 updatedItem.amount = checkAmount(value);
+            } else if (name == "type") {
+                updatedItem.type = value;
             }
 
             newTransactionItems[index] = updatedItem;
