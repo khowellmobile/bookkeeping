@@ -33,21 +33,17 @@ class Account(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def update_balance(self, transaction, is_reversal=False):
-        print(transaction.amount)
-        print(transaction.type)
         amount = transaction.amount
         if transaction.type == "debit":
-            print("debit")
             if is_reversal:
-                self.balance += amount
-            else:
                 self.balance -= amount
+            else:
+                self.balance += amount
         elif transaction.type == "credit":
-            print("credit")
             if is_reversal:
-                self.balance -= amount
-            else:
                 self.balance += amount
+            else:
+                self.balance -= amount
         self.save()
 
     def __str__(self):
@@ -108,7 +104,11 @@ class Entity(models.Model):
         return self.name
 
 
-TRANSACTION_TYPE_CHOICES = [("journal", "Journal"), ("account", "Account"), ("credit", "Credit")]
+TRANSACTION_TYPE_CHOICES = [
+    ("credit", "Credit"),
+    ("debit", "Debit"),
+    ("noType", "NoType"),
+]
 
 
 class Transaction(models.Model):
@@ -124,7 +124,7 @@ class Transaction(models.Model):
     type = models.CharField(
         max_length=10,
         choices=TRANSACTION_TYPE_CHOICES,
-        default="credit",
+        default="noType",
     )
     date = models.DateField()
     amount = models.DecimalField(max_digits=10, decimal_places=2)

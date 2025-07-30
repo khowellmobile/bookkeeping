@@ -119,11 +119,12 @@ class TransactionListAPIView(APIView):
                 transaction_instance = serializer.save(
                     user=request.user, property=property_obj
                 )
-                if (hasattr(transaction_instance, "account") and transaction_instance.account):
+                if (
+                    hasattr(transaction_instance, "account")
+                    and transaction_instance.account
+                ):
                     print("Running update")
-                    account_to_update = transaction_instance.account
-                    account_to_update.update_balance(transaction_instance)
-                    account_to_update.save(update_fields=['balance'])
+                    transaction_instance.account.update_balance(transaction_instance)
                     saved_transactions.append(serializer.instance)
             else:
                 # Handle validation errors for each transaction
