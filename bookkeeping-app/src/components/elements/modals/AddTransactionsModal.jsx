@@ -1,6 +1,6 @@
 import classes from "./AddTransactionsModal.module.css";
 
-import { useState, useCallback, useRef, useContext } from "react";
+import { useState, useCallback, useRef, useContext, useEffect } from "react";
 
 import TransactionsCtx from "../../contexts/TransactionsCtx";
 
@@ -30,13 +30,24 @@ const AddTransactionsModal = ({ ctxActiveAccount, handleCloseModal }) => {
     );
 
     const handleFocusLastItem = useCallback(
-        (index) => {
-            if (index === transactionItems.length - 1) {
-                setTransactionItems([...transactionItems, ["", "", "", ""]]);
-            }
-        },
-        [transactionItems, setTransactionItems]
-    );
+    (index) => {
+        if (index === transactionItems.length - 1) {
+            setTransactionItems([
+                ...transactionItems,
+                {
+                    date: "",
+                    entity: "",
+                    account: "",
+                    memo: "",
+                    amount: "",
+                    type: "",
+                    is_reconciled: false,
+                },
+            ]);
+        }
+    },
+    [transactionItems, setTransactionItems]
+);
 
     const handleItemChange = useCallback(
         (index, name, value) => {
@@ -54,16 +65,22 @@ const AddTransactionsModal = ({ ctxActiveAccount, handleCloseModal }) => {
                 updatedItem.memo = value;
             } else if (name === "amount") {
                 updatedItem.amount = checkAmount(value);
-            } else if (name == "type") {
+            } else if (name === "type") {
                 updatedItem.type = value;
             }
 
-            newTransactionItems[index] = updatedItem;
+            console.log("updatedItem just before assigning to newTransactionItems:", {...updatedItem});
+
+            newTransactionItems[index] = { ...updatedItem };
 
             setTransactionItems(newTransactionItems);
         },
         [transactionItems, setTransactionItems]
     );
+
+    useEffect(() => {
+        console.log("transactionItems state updated to:", transactionItems);
+    }, [transactionItems]);
 
     const checkAmount = (val) => {
         if (!isNaN(parseFloat(val))) {
@@ -81,6 +98,7 @@ const AddTransactionsModal = ({ ctxActiveAccount, handleCloseModal }) => {
             return values.some((value) => typeof value === "string" && value.trim() !== "");
         });
 
+        console.log(nonEmptyItems);
         ctxAddTransactions(nonEmptyItems);
         handleCloseModal();
     };

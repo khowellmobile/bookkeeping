@@ -114,6 +114,7 @@ class TransactionListAPIView(APIView):
 
         saved_transactions = []
         for item in data:
+            print(item)
             serializer = TransactionSerializer(data=item, context={"request": request})
             if serializer.is_valid():
                 transaction_instance = serializer.save(
@@ -123,7 +124,6 @@ class TransactionListAPIView(APIView):
                     hasattr(transaction_instance, "account")
                     and transaction_instance.account
                 ):
-                    print("Running update")
                     transaction_instance.account.update_balance(transaction_instance)
                     saved_transactions.append(serializer.instance)
             else:
