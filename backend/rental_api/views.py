@@ -114,7 +114,6 @@ class TransactionListAPIView(APIView):
 
         saved_transactions = []
         for item in data:
-            print(item)
             serializer = TransactionSerializer(data=item, context={"request": request})
             if serializer.is_valid():
                 transaction_instance = serializer.save(
