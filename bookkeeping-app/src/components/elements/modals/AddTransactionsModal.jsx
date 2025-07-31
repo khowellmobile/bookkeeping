@@ -30,53 +30,32 @@ const AddTransactionsModal = ({ ctxActiveAccount, handleCloseModal }) => {
     );
 
     const handleFocusLastItem = useCallback(
-    (index) => {
-        if (index === transactionItems.length - 1) {
-            setTransactionItems([
-                ...transactionItems,
-                {
-                    date: "",
-                    entity: "",
-                    account: "",
-                    memo: "",
-                    amount: "",
-                    type: "",
-                    is_reconciled: false,
-                },
-            ]);
-        }
-    },
-    [transactionItems, setTransactionItems]
-);
-
-    const handleItemChange = useCallback(
-        (index, name, value) => {
-            const newTransactionItems = [...transactionItems];
-
-            const updatedItem = { ...newTransactionItems[index] };
-
-            if (name === "date") {
-                updatedItem.date = value;
-            } else if (name === "entity") {
-                updatedItem.entity = value;
-            } else if (name === "account") {
-                updatedItem.account = value;
-            } else if (name === "memo") {
-                updatedItem.memo = value;
-            } else if (name === "amount") {
-                updatedItem.amount = checkAmount(value);
-            } else if (name === "type") {
-                updatedItem.type = value;
+        (index) => {
+            if (index === transactionItems.length - 1) {
+                setTransactionItems([
+                    ...transactionItems,
+                    {
+                        date: "",
+                        entity: "",
+                        account: "",
+                        memo: "",
+                        amount: "",
+                        type: "",
+                        is_reconciled: false,
+                    },
+                ]);
             }
-
-            console.log("updatedItem just before assigning to newTransactionItems:", {...updatedItem});
-
-            newTransactionItems[index] = { ...updatedItem };
-
-            setTransactionItems(newTransactionItems);
         },
         [transactionItems, setTransactionItems]
     );
+
+    const handleChange = (index, newItem) => {
+        const newTransactionItems = [...transactionItems];
+
+        newTransactionItems[index] = newItem;
+
+        setTransactionItems(newTransactionItems);
+    };
 
     useEffect(() => {
         console.log("transactionItems state updated to:", transactionItems);
@@ -182,7 +161,7 @@ const AddTransactionsModal = ({ ctxActiveAccount, handleCloseModal }) => {
                                     key={index}
                                     index={index}
                                     onFocus={() => handleFocusLastItem(index)}
-                                    onItemChange={handleItemChange}
+                                    onItemChange={handleChange}
                                     scrollRef={scrollRef}
                                 />
                             ))}
