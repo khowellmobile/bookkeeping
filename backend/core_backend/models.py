@@ -138,6 +138,29 @@ class Transaction(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 
+class JournalItem(models.Model):
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="journal_items", null=True
+    )
+    property = models.ForeignKey(
+        Property, on_delete=models.CASCADE, related_name="journal_items", null=True
+    )
+    account = models.ForeignKey(
+        Account, on_delete=models.CASCADE, related_name="journal_items"
+    )
+    type = models.CharField(
+        max_length=10,
+        choices=[
+            ("credit", "Credit"),
+            ("debit", "Debit"),
+            ("noType", "NoType"),
+        ],
+        default="noType",
+    )
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    memo = models.TextField(blank=True, null=True)
+
+
 class Journal(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="journals", null=True
