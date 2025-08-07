@@ -106,13 +106,29 @@ const JournalsPage = () => {
         [journalItems, setJournalItems]
     );
 
-    const handleChange = (index, newItem) => {
-        const newJournalItems = [...journalItems];
+    const handleItemChange = useCallback(
+        (index, name, value) => {
+            // Shallow copy
+            const newJournalItems = [...journalItems];
 
-        newJournalItems[index] = newItem;
+            // Deep copy
+            const updatedItem = { ...newJournalItems[index] };
 
-        setJournalItems(newJournalItems);
-    };
+            if (name === "account") {
+                updatedItem.account = value;
+            } else if (name === "debit" || name === "credit") {
+                updatedItem.type = name;
+                updatedItem.amount = checkAmount(value);
+            } else if (name === "memo") {
+                updatedItem.memo = value;
+            }
+
+            newJournalItems[index] = updatedItem;
+
+            setJournalItems(newJournalItems);
+        },
+        [journalItems, setJournalItems]
+    );
 
     /* useEffect(() => {
         console.log(journalItems);
@@ -332,7 +348,7 @@ const JournalsPage = () => {
                                         key={index}
                                         index={index}
                                         onFocus={() => handleFocusLastItem(index)}
-                                        onItemChange={handleChange}
+                                        onItemChange={handleItemChange}
                                         scrollRef={scrollRef}
                                     />
                                 ))}
