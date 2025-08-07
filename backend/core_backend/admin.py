@@ -1,5 +1,13 @@
 from django.contrib import admin
-from .models import Transaction, Account, Entity, Journal, Property, RentPayment
+from .models import (
+    Transaction,
+    Account,
+    Entity,
+    Journal,
+    Property,
+    RentPayment,
+    JournalItem,
+)
 
 
 @admin.register(Transaction)
@@ -41,6 +49,7 @@ class DatabaseConnectionsAdmin(admin.ModelAdmin):
 @admin.register(Entity)
 class DatabaseConnectionsAdmin(admin.ModelAdmin):
     list_display = [
+        "id",
         "user",
         "property",
         "name",
@@ -55,9 +64,26 @@ class DatabaseConnectionsAdmin(admin.ModelAdmin):
     ]
 
 
+@admin.register(JournalItem)
+class DatabaseConnectionsAdmin(admin.ModelAdmin):
+    list_display = [
+        "id",
+        "user",
+        "journal",
+        "account",
+        "type",
+        "amount",
+        "memo",
+        "is_deleted",
+        "created_at",
+        "updated_at",
+    ]
+
+
 @admin.register(Journal)
 class DatabaseConnectionsAdmin(admin.ModelAdmin):
     list_display = [
+        "id",
         "user",
         "property",
         "name",
@@ -72,6 +98,7 @@ class DatabaseConnectionsAdmin(admin.ModelAdmin):
 @admin.register(Property)
 class DatabaseConnectionsAdmin(admin.ModelAdmin):
     list_display = [
+        "id",
         "user",
         "address",
         "name",

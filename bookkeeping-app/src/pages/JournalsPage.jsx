@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useRef, useContext } from "react";
+import { useState, useCallback, useMemo, useRef, useContext, useEffect } from "react";
 
 import classes from "./JournalsPage.module.css";
 
@@ -8,12 +8,13 @@ import ConfirmationModal from "../components/elements/modals/ConfirmationModal";
 import NoResultsDisplay from "../components/elements/misc/NoResultsDisplay";
 
 const JournalsPage = () => {
-    const { ctxJournalList, populateCtxJournals, ctxUpdateJournal, ctxDeleteJournal } = useContext(JournalsCtx);
+    const { ctxJournalList, ctxUpdateJournal, ctxDeleteJournal } = useContext(JournalsCtx);
 
     const scrollRef = useRef();
 
     const [isEditing, setIsEditing] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
+
     const [activeJournal, setActiveJournal] = useState(null);
     const [journalName, setJournalName] = useState("");
     const [journalDate, setJournalDate] = useState("");
@@ -35,7 +36,7 @@ const JournalsPage = () => {
 
     const saveInfo = async () => {
         // Getting non-empty items
-        const item_list = journalItems.filter((item) => {
+        const journal_items = journalItems.filter((item) => {
             return (
                 (item.account !== "" && item.account !== null && item.account !== undefined) ||
                 (item.debit !== "" && item.debit !== null && item.debit !== undefined && item.debit !== 0) ||
@@ -57,14 +58,14 @@ const JournalsPage = () => {
         const sendData = {
             name: name,
             date: date,
-            item_list: item_list,
+            journal_items: journal_items,
         };
 
         const returnedJournal = await ctxUpdateJournal(id, url, method, sendData);
         setActiveJournal(returnedJournal);
         setJournalName(returnedJournal.name);
         setJournalDate(returnedJournal.date);
-        setJournalItems(returnedJournal.item_list);
+        setJournalItems(returnedJournal.journal_items);
         setIsEditing(true);
     };
 
@@ -99,38 +100,23 @@ const JournalsPage = () => {
     const handleFocusLastItem = useCallback(
         (index) => {
             if (index === journalItems.length - 1) {
-                setJournalItems([...journalItems, { account: "", debit: "", credit: "", memo: "" }]);
+                setJournalItems([...journalItems, { account: "", amount: "", memo: "", type: "" }]);
             }
         },
         [journalItems, setJournalItems]
     );
 
-    const handleItemChange = useCallback(
-        (index, name, value) => {
-            // Shallow copy
-            const newJournalItems = [...journalItems];
+    const handleChange = (index, newItem) => {
+        const newJournalItems = [...journalItems];
 
-            // Deep copy
-            const updatedItem = { ...newJournalItems[index] };
+        newJournalItems[index] = newItem;
 
-            if (name === "account") {
-                updatedItem.account = value.id;
-            } else if (name === "debit") {
-                updatedItem.credit = "";
-                updatedItem.debit = checkAmount(value);
-            } else if (name === "credit") {
-                updatedItem.debit = "";
-                updatedItem.credit = checkAmount(value);
-            } else if (name === "memo") {
-                updatedItem.memo = value;
-            }
+        setJournalItems(newJournalItems);
+    };
 
-            newJournalItems[index] = updatedItem;
-
-            setJournalItems(newJournalItems);
-        },
-        [journalItems, setJournalItems]
-    );
+    /* useEffect(() => {
+        console.log(journalItems);
+    }, [journalItems]); */
 
     const isJournalChanged = () => {
         if (!activeJournal) {
@@ -144,7 +130,7 @@ const JournalsPage = () => {
         return (
             journalName != activeJournal.name ||
             journalDate != activeJournal.date ||
-            JSON.stringify(journalItems) != JSON.stringify(activeJournal.item_list)
+            JSON.stringify(journalItems) != JSON.stringify(activeJournal.journal_items)
         );
     };
 
@@ -181,7 +167,8 @@ const JournalsPage = () => {
     };
 
     const setToEditIndex = (index) => {
-        setJournalItems(ctxJournalList[index]?.item_list || []);
+        console.log("SETTING");
+        setJournalItems(ctxJournalList[index]?.journal_items || []);
         setJournalDate(ctxJournalList[index]?.date || "");
         setJournalName(ctxJournalList[index]?.name || "");
         setActiveJournal(ctxJournalList[index] || {});
@@ -189,6 +176,7 @@ const JournalsPage = () => {
     };
 
     const clearInputs = () => {
+        console.log("CLEARING");
         setJournalDate("");
         setJournalName("");
         setActiveJournal(null);
@@ -344,7 +332,7 @@ const JournalsPage = () => {
                                         key={index}
                                         index={index}
                                         onFocus={() => handleFocusLastItem(index)}
-                                        onItemChange={handleItemChange}
+                                        onItemChange={handleChange}
                                         scrollRef={scrollRef}
                                     />
                                 ))}

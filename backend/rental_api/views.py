@@ -393,7 +393,7 @@ class JournalListAPIView(APIView):
         if property_id:
             try:
                 property_obj = Property.objects.get(id=property_id, user=request.user)
-                journals_queryset = property_obj.journals.all()
+                journals_queryset = property_obj.journals.all().prefetch_related('journal_items__account')
             except Property.DoesNotExist:
                 return Response(
                     {

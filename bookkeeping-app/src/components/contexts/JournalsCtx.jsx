@@ -46,6 +46,7 @@ export function JournalsCtxProvider(props) {
             }
             const data = await response.json();
             setCtxJournalList(data);
+            /* console.log(data); */
         } catch (e) {
             console.log("Error: " + e);
         }

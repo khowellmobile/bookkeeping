@@ -4,6 +4,7 @@ from core_backend.models import (
     Transaction,
     Account,
     Entity,
+    JournalItem,
     Journal,
     Property,
     RentPayment,
@@ -256,17 +257,20 @@ class TransactionSerializer(serializers.ModelSerializer):
         return instance
 
 
-class JournalSerializer(serializers.ModelSerializer):
+class JournalItemSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(read_only=True)
+    account = AccountSerializer(read_only=True)
+    account_id = serializers.IntegerField(write_only=True)
 
     class Meta:
-        model = Journal
+        model = JournalItem
         fields = (
-            "id",
             "user",
-            "name",
-            "date",
-            "item_list",
+            "account",
+            "account_id",
+            "type",
+            "amount",
+            "memo",
             "is_deleted",
             "created_at",
             "updated_at",
@@ -279,7 +283,54 @@ class JournalSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
     def update(self, instance, validated_data):
-        fields_to_update = ["name", "date", "item_list", "is_deleted"]
+        fields_to_update = [
+            "account",
+            "type",
+            "amount",
+            "memo",
+            "is_deleted",
+        ]
+
+        for attr in fields_to_update:
+            if attr in validated_data:
+                setattr(instance, attr, validated_data[attr])
+
+        instance.save()
+        return instance
+
+
+class JournalSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
+    journal_items = JournalItemSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Journal
+        fields = (
+            "id",
+            "user",
+            "name",
+            "date",
+            "journal_items", 
+            "is_deleted",
+            "created_at",
+            "updated_at",
+        )
+        read_only_fields = ("id", "created_at", "updated_at")
+
+    def create(self, validated_data):
+        user = self.context["request"].user
+        journal_items_data = validated_data.pop("journal_items")
+
+        journal = Journal.objects.create(user=user, **validated_data)
+
+        for item_data in journal_items_data:
+            JournalItem.objects.create(journal=journal, user=user, **item_data)
+
+        return journal
+
+    def update(self, instance, validated_data):
+        fields_to_update = ["name", "date", "is_deleted"]
+        # The update method should handle journal_items separately if needed
 
         for attr in fields_to_update:
             if attr in validated_data:
