@@ -265,6 +265,7 @@ class JournalItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = JournalItem
         fields = (
+            "id",
             "user",
             "account",
             "account_id",
@@ -305,7 +306,7 @@ class JournalSerializer(serializers.ModelSerializer):
             "user",
             "name",
             "date",
-            "journal_items", 
+            "journal_items",
             "is_deleted",
             "created_at",
             "updated_at",
@@ -324,14 +325,46 @@ class JournalSerializer(serializers.ModelSerializer):
         return journal
 
     def update(self, instance, validated_data):
-        fields_to_update = ["name", "date", "is_deleted"]
-        # The update method should handle journal_items separately if needed
+        journal_items_data = validated_data.pop("journal_items", [])
 
-        for attr in fields_to_update:
-            if attr in validated_data:
-                setattr(instance, attr, validated_data[attr])
-
+        instance.name = validated_data.get("name", instance.name)
+        instance.date = validated_data.get("date", instance.date)
+        instance.is_deleted = validated_data.get("is_deleted", instance.is_deleted)
         instance.save()
+
+        existing_items = {item.id: item for item in instance.journal_items.all()}
+        items_to_keep = []
+
+        for item in existing_items:
+            print(item)
+
+        print(journal_items_data)
+
+        for item_data in journal_items_data:
+            item_id = item_data.get("id")
+            print(item_id, "----------------------")
+            if item_id in existing_items:
+                print("updating")
+                # Update existing item
+                item = existing_items[item_id]
+                for attr, value in item_data.items():
+                    setattr(item, attr, value)
+                item.save()
+                items_to_keep.append(item_id)
+            else:
+                print("creating")
+                # Create new item if not present
+                item_data.pop("id", None)
+                JournalItem.objects.create(
+                    journal=instance, user=instance.user, **item_data
+                )
+
+        # Remove items that exist in db but not in request
+        items_to_delete = set(existing_items.keys()) - set(items_to_keep)
+        if items_to_delete:
+            print("removing")
+            JournalItem.objects.filter(id__in=items_to_delete).delete()
+
         return instance
 
 

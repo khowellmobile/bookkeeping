@@ -393,7 +393,9 @@ class JournalListAPIView(APIView):
         if property_id:
             try:
                 property_obj = Property.objects.get(id=property_id, user=request.user)
-                journals_queryset = property_obj.journals.all().prefetch_related('journal_items__account')
+                journals_queryset = property_obj.journals.all().prefetch_related(
+                    "journal_items__account"
+                )
             except Property.DoesNotExist:
                 return Response(
                     {
@@ -416,6 +418,7 @@ class JournalListAPIView(APIView):
         return Response(serializer.data)
 
     def post(self, request):
+        # ID ISSUE. ID FOR JOURNAL ITEM ISNT COMING THROUGH
         print(request.data)
         property_id = request.query_params.get("property_id")
 
