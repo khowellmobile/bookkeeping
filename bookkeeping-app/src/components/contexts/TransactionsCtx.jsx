@@ -73,8 +73,6 @@ export function TransactionsCtxProvider(props) {
             delete transaction.account;
         }); 
 
-        console.log(transformedTransactionsArray);
-
         try {
             const url = new URL("http://localhost:8000/api/transactions/");
             if (ctxActiveProperty && ctxActiveProperty.id) {

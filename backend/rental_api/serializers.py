@@ -277,11 +277,6 @@ class JournalItemSerializer(serializers.ModelSerializer):
         )
         read_only_fields = ("id", "created_at", "updated_at")
 
-    def create(self, validated_data):
-        user = self.context["request"].user
-        validated_data["user"] = user
-        return super().create(validated_data)
-
     def update(self, instance, validated_data):
         fields_to_update = [
             "account",
@@ -301,7 +296,7 @@ class JournalItemSerializer(serializers.ModelSerializer):
 
 class JournalSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(read_only=True)
-    journal_items = JournalItemSerializer(many=True, read_only=True)
+    journal_items = JournalItemSerializer(many=True)
 
     class Meta:
         model = Journal

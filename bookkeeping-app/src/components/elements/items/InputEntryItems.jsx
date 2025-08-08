@@ -6,7 +6,6 @@ import { useState } from "react";
 
 const JournalEntryItem = ({ vals, index, onFocus, onItemChange, scrollRef }) => {
     const handleAccountChange = (account) => {
-        console.log(account, "ACCOUNT");
         onItemChange(index, "account", account);
     };
 

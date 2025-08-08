@@ -416,6 +416,7 @@ class JournalListAPIView(APIView):
         return Response(serializer.data)
 
     def post(self, request):
+        print(request.data)
         property_id = request.query_params.get("property_id")
 
         if property_id:
@@ -442,7 +443,7 @@ class JournalListAPIView(APIView):
         serializer = JournalSerializer(data=request.data, context={"request": request})
 
         if serializer.is_valid():
-            serializer.save(user=request.user, property=property_obj)
+            serializer.save(property=property_obj)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

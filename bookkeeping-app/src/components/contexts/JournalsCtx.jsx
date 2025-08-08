@@ -54,6 +54,23 @@ export function JournalsCtxProvider(props) {
 
     const ctxUpdateJournal = async (selectedJournalId, url, method, sendData) => {
         const ctxAccessToken = localStorage.getItem("accessToken");
+
+        console.log(sendData);
+
+        const tranformedJournalItems = sendData.journal_items.map((item) => ({
+            ...item,
+            account_id: item.account.id,
+        }));
+
+        tranformedJournalItems.forEach((item) => {
+            delete item.account;
+        });
+
+        sendData = {
+            ...sendData,
+            journal_items: tranformedJournalItems,
+        }
+
         try {
             const finalUrl = method == "POST" ? new URL("http://localhost:8000/api/journals/") : url;
             if (method == "POST" && ctxActiveProperty && ctxActiveProperty.id) {
