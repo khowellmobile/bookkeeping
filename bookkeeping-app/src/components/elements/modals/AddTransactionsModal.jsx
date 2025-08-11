@@ -1,6 +1,6 @@
 import classes from "./AddTransactionsModal.module.css";
 
-import { useState, useCallback, useRef, useContext } from "react";
+import { useState, useCallback, useRef, useContext, useEffect } from "react";
 
 import TransactionsCtx from "../../contexts/TransactionsCtx";
 
@@ -24,6 +24,7 @@ const AddTransactionsModal = ({ ctxActiveAccount, handleCloseModal }) => {
                 account: "",
                 memo: "",
                 amount: "",
+                type: "",
                 is_reconciled: false,
             }))
     );
@@ -31,36 +32,30 @@ const AddTransactionsModal = ({ ctxActiveAccount, handleCloseModal }) => {
     const handleFocusLastItem = useCallback(
         (index) => {
             if (index === transactionItems.length - 1) {
-                setTransactionItems([...transactionItems, ["", "", "", ""]]);
+                setTransactionItems([
+                    ...transactionItems,
+                    {
+                        date: "",
+                        entity: "",
+                        account: "",
+                        memo: "",
+                        amount: "",
+                        type: "",
+                        is_reconciled: false,
+                    },
+                ]);
             }
         },
         [transactionItems, setTransactionItems]
     );
 
-    const handleItemChange = useCallback(
-        (index, name, value) => {
-            const newTransactionItems = [...transactionItems];
+    const handleChange = (index, newItem) => {
+        const newTransactionItems = [...transactionItems];
 
-            const updatedItem = { ...newTransactionItems[index] };
+        newTransactionItems[index] = newItem;
 
-            if (name === "date") {
-                updatedItem.date = value;
-            } else if (name === "entity") {
-                updatedItem.entity = value;
-            } else if (name === "account") {
-                updatedItem.account = value;
-            } else if (name === "memo") {
-                updatedItem.memo = value;
-            } else if (name === "amount") {
-                updatedItem.amount = checkAmount(value);
-            }
-
-            newTransactionItems[index] = updatedItem;
-
-            setTransactionItems(newTransactionItems);
-        },
-        [transactionItems, setTransactionItems]
-    );
+        setTransactionItems(newTransactionItems);
+    };
 
     const checkAmount = (val) => {
         if (!isNaN(parseFloat(val))) {
@@ -161,7 +156,7 @@ const AddTransactionsModal = ({ ctxActiveAccount, handleCloseModal }) => {
                                     key={index}
                                     index={index}
                                     onFocus={() => handleFocusLastItem(index)}
-                                    onItemChange={handleItemChange}
+                                    onItemChange={handleChange}
                                     scrollRef={scrollRef}
                                 />
                             ))}

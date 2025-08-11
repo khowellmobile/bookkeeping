@@ -66,16 +66,12 @@ export function TransactionsCtxProvider(props) {
             ...transaction,
             entity_id: transaction.entity.id,
             account_id: transaction.account.id,
-            type: transaction.amount <= 0 ? "debit" : "credit",
-            amount: Math.abs(transaction.amount),
         }));
 
         transformedTransactionsArray.forEach((transaction) => {
             delete transaction.entity;
             delete transaction.account;
         }); 
-
-        console.log(transformedTransactionsArray);
 
         try {
             const url = new URL("http://localhost:8000/api/transactions/");
