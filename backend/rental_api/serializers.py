@@ -261,7 +261,7 @@ class JournalItemSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(read_only=True)
     account = AccountSerializer(read_only=True)
     account_id = serializers.IntegerField(write_only=True)
-    id = serializers.IntegerField()
+    id = serializers.IntegerField(required=False)
 
     class Meta:
         model = JournalItem
@@ -339,7 +339,6 @@ class JournalSerializer(serializers.ModelSerializer):
         for item_data in journal_items_data:
             item_id = item_data.get("id")
             if item_id in existing_items:
-                print("updating")
                 # Update existing item
                 item = existing_items[item_id]
                 for attr, value in item_data.items():
@@ -347,7 +346,6 @@ class JournalSerializer(serializers.ModelSerializer):
                 item.save()
                 items_to_keep.append(item_id)
             else:
-                print("creating")
                 # Create new item if not present
                 item_data.pop("id", None)
                 JournalItem.objects.create(
@@ -357,7 +355,6 @@ class JournalSerializer(serializers.ModelSerializer):
         # Remove items that exist in db but not in request
         items_to_delete = set(existing_items.keys()) - set(items_to_keep)
         if items_to_delete:
-            print("removing")
             JournalItem.objects.filter(id__in=items_to_delete).delete()
 
         return instance
