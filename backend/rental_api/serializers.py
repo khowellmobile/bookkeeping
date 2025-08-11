@@ -261,6 +261,7 @@ class JournalItemSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(read_only=True)
     account = AccountSerializer(read_only=True)
     account_id = serializers.IntegerField(write_only=True)
+    id = serializers.IntegerField()
 
     class Meta:
         model = JournalItem
@@ -276,7 +277,7 @@ class JournalItemSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         )
-        read_only_fields = ("id", "created_at", "updated_at")
+        read_only_fields = ("created_at", "updated_at")
 
     def update(self, instance, validated_data):
         fields_to_update = [
@@ -335,14 +336,8 @@ class JournalSerializer(serializers.ModelSerializer):
         existing_items = {item.id: item for item in instance.journal_items.all()}
         items_to_keep = []
 
-        for item in existing_items:
-            print(item)
-
-        print(journal_items_data)
-
         for item_data in journal_items_data:
             item_id = item_data.get("id")
-            print(item_id, "----------------------")
             if item_id in existing_items:
                 print("updating")
                 # Update existing item

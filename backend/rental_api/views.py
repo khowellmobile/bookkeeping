@@ -418,8 +418,6 @@ class JournalListAPIView(APIView):
         return Response(serializer.data)
 
     def post(self, request):
-        # ID ISSUE. ID FOR JOURNAL ITEM ISNT COMING THROUGH
-        print(request.data)
         property_id = request.query_params.get("property_id")
 
         if property_id:

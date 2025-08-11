@@ -54,6 +54,8 @@ const JournalsPage = () => {
             url = url + `${activeJournal.id}/`;
         }
 
+        console.log(url);
+
         const sendData = {
             name: name,
             date: date,
