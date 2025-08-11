@@ -393,7 +393,9 @@ class JournalListAPIView(APIView):
         if property_id:
             try:
                 property_obj = Property.objects.get(id=property_id, user=request.user)
-                journals_queryset = property_obj.journals.all()
+                journals_queryset = property_obj.journals.all().prefetch_related(
+                    "journal_items__account"
+                )
             except Property.DoesNotExist:
                 return Response(
                     {
@@ -442,7 +444,7 @@ class JournalListAPIView(APIView):
         serializer = JournalSerializer(data=request.data, context={"request": request})
 
         if serializer.is_valid():
-            serializer.save(user=request.user, property=property_obj)
+            serializer.save(property=property_obj)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

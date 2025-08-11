@@ -57,10 +57,6 @@ const AddTransactionsModal = ({ ctxActiveAccount, handleCloseModal }) => {
         setTransactionItems(newTransactionItems);
     };
 
-    useEffect(() => {
-        console.log("transactionItems state updated to:", transactionItems);
-    }, [transactionItems]);
-
     const checkAmount = (val) => {
         if (!isNaN(parseFloat(val))) {
             return val;
@@ -77,7 +73,6 @@ const AddTransactionsModal = ({ ctxActiveAccount, handleCloseModal }) => {
             return values.some((value) => typeof value === "string" && value.trim() !== "");
         });
 
-        console.log(nonEmptyItems);
         ctxAddTransactions(nonEmptyItems);
         handleCloseModal();
     };
