@@ -61,7 +61,6 @@ const JournalsPage = () => {
         };
 
         const returnedJournal = await ctxUpdateJournal(id, url, method, sendData);
-        console.log(returnedJournal);
         setActiveJournal(returnedJournal);
         setJournalName(returnedJournal.name);
         setJournalDate(returnedJournal.date);
