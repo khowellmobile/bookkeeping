@@ -37,18 +37,13 @@ const TransactionModal = ({ vals, handleCloseModal }) => {
         setEditedTransaction((prev) => ({ ...prev, memo: event.target.value }));
     };
 
-    const handleDebitChange = (event) => {
+    const handleAmountChange = (event) => {
         const newAmount = checkAmount(event.target.value);
-        setTransType("debit");
-        setTransAmount(newAmount);
-        setEditedTransaction((prev) => ({ ...prev, amount: newAmount }));
-    };
+        const newType = event.target.name;
 
-    const handleCreditChange = (event) => {
-        const newAmount = checkAmount(event.target.value);
-        setTransType("credit");
+        setTransType(newType);
         setTransAmount(newAmount);
-        setEditedTransaction((prev) => ({ ...prev, amount: newAmount }));
+        setEditedTransaction((prev) => ({ ...prev, type: newType, amount: newAmount }));
     };
 
     const handleAccountClick = (account) => {
@@ -158,7 +153,7 @@ const TransactionModal = ({ vals, handleCloseModal }) => {
                                     name="debit"
                                     className={classes.debit}
                                     value={transType == "debit" ? transAmount : ""}
-                                    onChange={handleDebitChange}
+                                    onChange={handleAmountChange}
                                 />
                                 <div>Credit</div>
                                 <input
@@ -166,7 +161,7 @@ const TransactionModal = ({ vals, handleCloseModal }) => {
                                     name="credit"
                                     className={classes.credit}
                                     value={transType == "credit" ? transAmount : ""}
-                                    onChange={handleCreditChange}
+                                    onChange={handleAmountChange}
                                 />
                             </div>
                         </div>

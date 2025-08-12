@@ -35,6 +35,7 @@ class DatabaseConnectionsAdmin(admin.ModelAdmin):
         "user",
         "name",
         "type",
+        "normal_balance",
         "balance",
         "initial_balance",
         "description",

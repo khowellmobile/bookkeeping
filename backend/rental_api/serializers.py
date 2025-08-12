@@ -244,6 +244,7 @@ class TransactionSerializer(serializers.ModelSerializer):
             "payee",
             "memo",
             "amount",
+            "type",
             "account_id",
             "entity_id",
             "is_deleted",
