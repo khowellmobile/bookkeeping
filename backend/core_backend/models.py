@@ -23,6 +23,17 @@ class Account(models.Model):
         null=True,
         blank=True,
     )
+    normal_balance = models.CharField(
+        max_length=10,
+        choices=[
+            ("debit", "Debit"),
+            ("credit", "Credit"),
+            ("na", "Na"),
+        ],
+        default="na",
+        null=True,
+        blank=True,
+    )
     balance = models.DecimalField(max_digits=15, decimal_places=2, default=0.00)
     initial_balance = models.DecimalField(max_digits=15, decimal_places=2, default=0.00)
     description = models.TextField(blank=True, null=True)
@@ -32,14 +43,15 @@ class Account(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    def update_balance(self, transaction, is_reversal=False):
-        amount = transaction.amount
-        if transaction.type == "debit":
+    def update_balance(self, item, is_reversal=False):
+        amount = item.amount
+        print(amount, "amount")
+        if item.type == "debit":
             if is_reversal:
                 self.balance -= amount
             else:
                 self.balance += amount
-        elif transaction.type == "credit":
+        elif item.type == "credit":
             if is_reversal:
                 self.balance += amount
             else:
@@ -154,6 +166,32 @@ class Journal(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class JournalItem(models.Model):
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="journal_items", null=True
+    )
+    journal = models.ForeignKey(
+        Journal, on_delete=models.CASCADE, related_name="journal_items", null=True
+    )
+    account = models.ForeignKey(
+        Account, on_delete=models.CASCADE, related_name="journal_items"
+    )
+    type = models.CharField(
+        max_length=10,
+        choices=[
+            ("credit", "Credit"),
+            ("debit", "Debit"),
+            ("noType", "NoType"),
+        ],
+        default="noType",
+    )
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    memo = models.TextField(blank=True, null=True)
+    is_deleted = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
 class RentPayment(models.Model):

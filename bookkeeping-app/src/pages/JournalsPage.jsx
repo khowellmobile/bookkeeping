@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useRef, useContext } from "react";
+import { useState, useCallback, useMemo, useRef, useContext, useEffect } from "react";
 
 import classes from "./JournalsPage.module.css";
 
@@ -8,12 +8,13 @@ import ConfirmationModal from "../components/elements/modals/ConfirmationModal";
 import NoResultsDisplay from "../components/elements/misc/NoResultsDisplay";
 
 const JournalsPage = () => {
-    const { ctxJournalList, populateCtxJournals, ctxUpdateJournal, ctxDeleteJournal } = useContext(JournalsCtx);
+    const { ctxJournalList, ctxUpdateJournal, ctxDeleteJournal } = useContext(JournalsCtx);
 
     const scrollRef = useRef();
 
     const [isEditing, setIsEditing] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
+
     const [activeJournal, setActiveJournal] = useState(null);
     const [journalName, setJournalName] = useState("");
     const [journalDate, setJournalDate] = useState("");
@@ -22,9 +23,9 @@ const JournalsPage = () => {
             .fill(null)
             .map(() => ({
                 account: "",
-                debit: "",
-                credit: "",
+                amount: "",
                 memo: "",
+                type: "",
             }))
     );
 
@@ -35,11 +36,10 @@ const JournalsPage = () => {
 
     const saveInfo = async () => {
         // Getting non-empty items
-        const item_list = journalItems.filter((item) => {
+        const journal_items = journalItems.filter((item) => {
             return (
                 (item.account !== "" && item.account !== null && item.account !== undefined) ||
-                (item.debit !== "" && item.debit !== null && item.debit !== undefined && item.debit !== 0) ||
-                (item.credit !== "" && item.credit !== null && item.credit !== undefined && item.credit !== 0) ||
+                (item.amount !== "" && item.amount !== null && item.amount !== undefined && item.amount !== 0) ||
                 (item.memo && item.memo.trim() !== "")
             );
         });
@@ -57,22 +57,25 @@ const JournalsPage = () => {
         const sendData = {
             name: name,
             date: date,
-            item_list: item_list,
+            journal_items: journal_items,
         };
 
         const returnedJournal = await ctxUpdateJournal(id, url, method, sendData);
         setActiveJournal(returnedJournal);
         setJournalName(returnedJournal.name);
         setJournalDate(returnedJournal.date);
-        setJournalItems(returnedJournal.item_list);
+        setJournalItems(returnedJournal.journal_items);
         setIsEditing(true);
     };
 
     const debitTotal = useMemo(() => {
         if (journalItems) {
             return journalItems.reduce((sum, item) => {
-                const amount = parseFloat(item.debit) || 0;
-                return sum + (amount > 0 ? amount : 0);
+                if (item.type == "debit") {
+                    const amount = parseFloat(item.amount);
+                    return sum + (isNaN(amount) ? 0 : amount);
+                }
+                return sum;
             }, 0);
         } else {
             return 0;
@@ -82,8 +85,11 @@ const JournalsPage = () => {
     const creditTotal = useMemo(() => {
         if (journalItems) {
             return journalItems.reduce((sum, item) => {
-                const amount = parseFloat(item.credit) || 0;
-                return sum + (amount > 0 ? amount : 0);
+                if (item.type == "credit") {
+                    const amount = parseFloat(item.amount);
+                    return sum + (isNaN(amount) ? 0 : amount);
+                }
+                return sum;
             }, 0);
         } else {
             return 0;
@@ -91,15 +97,13 @@ const JournalsPage = () => {
     }, [journalItems]);
 
     const isJournalItemsEmpty = useMemo(() => {
-        return journalItems.every(
-            (item) => item.account === "" && item.debit === "" && item.credit === "" && item.memo === ""
-        );
+        return journalItems.every((item) => item.account === "" && item.amount === "" && item.memo === "");
     }, [journalItems]);
 
     const handleFocusLastItem = useCallback(
         (index) => {
             if (index === journalItems.length - 1) {
-                setJournalItems([...journalItems, { account: "", debit: "", credit: "", memo: "" }]);
+                setJournalItems([...journalItems, { account: "", amount: "", memo: "", type: "" }]);
             }
         },
         [journalItems, setJournalItems]
@@ -114,13 +118,10 @@ const JournalsPage = () => {
             const updatedItem = { ...newJournalItems[index] };
 
             if (name === "account") {
-                updatedItem.account = value.id;
-            } else if (name === "debit") {
-                updatedItem.credit = "";
-                updatedItem.debit = checkAmount(value);
-            } else if (name === "credit") {
-                updatedItem.debit = "";
-                updatedItem.credit = checkAmount(value);
+                updatedItem.account = value;
+            } else if (name === "debit" || name === "credit") {
+                updatedItem.type = name;
+                updatedItem.amount = checkAmount(value);
             } else if (name === "memo") {
                 updatedItem.memo = value;
             }
@@ -144,7 +145,7 @@ const JournalsPage = () => {
         return (
             journalName != activeJournal.name ||
             journalDate != activeJournal.date ||
-            JSON.stringify(journalItems) != JSON.stringify(activeJournal.item_list)
+            JSON.stringify(journalItems) != JSON.stringify(activeJournal.journal_items)
         );
     };
 
@@ -181,7 +182,7 @@ const JournalsPage = () => {
     };
 
     const setToEditIndex = (index) => {
-        setJournalItems(ctxJournalList[index]?.item_list || []);
+        setJournalItems(ctxJournalList[index]?.journal_items || []);
         setJournalDate(ctxJournalList[index]?.date || "");
         setJournalName(ctxJournalList[index]?.name || "");
         setActiveJournal(ctxJournalList[index] || {});
@@ -197,9 +198,9 @@ const JournalsPage = () => {
                 .fill(null)
                 .map(() => ({
                     account: "",
-                    debit: "",
-                    credit: "",
+                    amount: "",
                     memo: "",
+                    type: "",
                 }))
         );
         setIsEditing(false);
