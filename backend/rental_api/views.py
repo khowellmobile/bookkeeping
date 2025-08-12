@@ -180,6 +180,7 @@ class TransactionDetailAPIView(APIView):
     def delete(self, request, pk):
         transaction = self.get_object(pk)
         if transaction:
+            transaction.account.update_balance(transaction, is_reversal=True)
             transaction.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_404_NOT_FOUND)
@@ -450,7 +451,11 @@ class JournalListAPIView(APIView):
         serializer = JournalSerializer(data=request.data, context={"request": request})
 
         if serializer.is_valid():
-            serializer.save(property=property_obj)
+            journal_instance = serializer.save(property=property_obj)
+
+            for item in journal_instance.journal_items.all():
+                item.account.update_balance(item)
+
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -477,10 +482,23 @@ class JournalDetailAPIView(APIView):
 
     def put(self, request, pk):
         journal = self.get_object(pk)
+
+        prev_journal_items = journal.journal_items.all()
+
         if journal:
             serializer = JournalSerializer(journal, data=request.data, partial=True)
             if serializer.is_valid():
-                serializer.save()
+
+                for item in prev_journal_items:
+                    print(item.id, "undone")
+                    item.account.update_balance(item, is_reversal=True)
+
+                journal_instance = serializer.save()
+
+                for item in journal_instance.journal_items.all():
+                    print(item.id, "done")
+                    item.account.update_balance(item)
+
                 return Response(serializer.data)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(status=status.HTTP_404_NOT_FOUND)
