@@ -490,13 +490,11 @@ class JournalDetailAPIView(APIView):
             if serializer.is_valid():
 
                 for item in prev_journal_items:
-                    print(item.id, "undone")
                     item.account.update_balance(item, is_reversal=True)
 
                 journal_instance = serializer.save()
 
                 for item in journal_instance.journal_items.all():
-                    print(item.id, "done")
                     item.account.update_balance(item)
 
                 return Response(serializer.data)
@@ -506,7 +504,12 @@ class JournalDetailAPIView(APIView):
     def delete(self, request, pk):
         journal = self.get_object(pk)
         if journal:
+
+            for item in journal.journal_items.all():
+                item.account.update_balance(item, is_reversal=True)
+
             journal.delete()
+            
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_404_NOT_FOUND)
 
