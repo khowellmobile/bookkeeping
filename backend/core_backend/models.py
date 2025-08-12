@@ -23,6 +23,17 @@ class Account(models.Model):
         null=True,
         blank=True,
     )
+    normal_balance = models.CharField(
+        max_length=10,
+        choices=[
+            ("debit", "Debit"),
+            ("credit", "Credit"),
+            ("na", "Na"),
+        ],
+        default="na",
+        null=True,
+        blank=True,
+    )
     balance = models.DecimalField(max_digits=15, decimal_places=2, default=0.00)
     initial_balance = models.DecimalField(max_digits=15, decimal_places=2, default=0.00)
     description = models.TextField(blank=True, null=True)
@@ -154,7 +165,8 @@ class Journal(models.Model):
 
     def __str__(self):
         return self.name
-    
+
+
 class JournalItem(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="journal_items", null=True
