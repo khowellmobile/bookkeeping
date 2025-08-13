@@ -2,21 +2,17 @@ import AccountEntryDropdown from "../dropdowns/AccountEntryDropdown";
 import EntityEntryDropdown from "../dropdowns/EntityEntryDropdown";
 import classes from "./InputEntryItems.module.css";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 const JournalEntryItem = ({ vals, index, onFocus, onItemChange, scrollRef }) => {
     const handleAccountChange = (account) => {
         onItemChange(index, "account", account);
     };
 
-    const handleDebitChange = (event) => {
+    const handleAmountChange = (event) => {
         const inputStr = event.target.value;
-        onItemChange(index, "debit", inputStr);
-    };
-
-    const handleCreditChange = (event) => {
-        const inputStr = event.target.value;
-        onItemChange(index, "credit", inputStr);
+        const type = event.target.name;
+        onItemChange(index, type, inputStr);
     };
 
     const handleMemoChange = (event) => {
@@ -25,49 +21,71 @@ const JournalEntryItem = ({ vals, index, onFocus, onItemChange, scrollRef }) => 
     };
 
     return (
+        // tabIndex for making the component able to be tabbed through
         <div className={`${classes.mainContainer} ${classes.journalGridTemplate}`} onFocus={onFocus} tabIndex={0}>
             <AccountEntryDropdown vals={vals} scrollRef={scrollRef} onChange={handleAccountChange} />
-            <input type="text" value={vals.debit} onChange={handleDebitChange} />
-            <input type="text" value={vals.credit} onChange={handleCreditChange} />
+            <input
+                type="text"
+                name="debit"
+                value={vals.type == "debit" ? vals.amount : ""}
+                onChange={handleAmountChange}
+            />
+            <input
+                type="text"
+                name="credit"
+                value={vals.type == "credit" ? vals.amount : ""}
+                onChange={handleAmountChange}
+            />
             <input type="text" value={vals.memo} onChange={handleMemoChange} />
         </div>
     );
 };
 
 const TransactionEntryItem = ({ vals, index, onFocus, onItemChange, scrollRef }) => {
-    const [debit, setDebit] = useState(vals.amount > 0 ? vals.amount : "");
-    const [credit, setCredit] = useState(vals.amount < 0 ? vals.amount : "");
+    const [inputFields, setInputFields] = useState({
+        date: vals.date,
+        entity: vals.entity,
+        account: vals.account,
+        memo: vals.memo,
+        amount: vals.memo,
+        type: vals.type,
+        is_reconciled: false,
+    });
 
-    const handleDateChange = (event) => {
+    const valueChange = (event) => {
+        const name = event.target.name;
         const newValue = event.target.value;
-        onItemChange(index, "date", newValue);
+
+        if (name == "debit" || name == "credit") {
+            setInputFields((prev) => ({
+                ...prev,
+                amount: checkAmount(newValue),
+                type: name,
+            }));
+        } else {
+            setInputFields((prev) => ({
+                ...prev,
+                [name]: newValue,
+            }));
+        }
     };
 
     const handleEntityChange = (entity) => {
-        onItemChange(index, "entity", entity);
+        setInputFields((prev) => ({
+            ...prev,
+            entity: entity,
+        }));
     };
 
     const handleAccountChange = (account) => {
-        onItemChange(index, "account", account);
+        setInputFields((prev) => ({
+            ...prev,
+            account: account,
+        }));
     };
 
-    const handleMemoChange = (event) => {
-        const newValue = event.target.value;
-        onItemChange(index, "memo", newValue);
-    };
-
-    const handleDebitChange = (event) => {
-        const newValue = checkAmount(event.target.value);
-        setDebit(newValue);
-        setCredit("");
-        onItemChange(index, "amount", -1 * newValue);
-    };
-
-    const handleCreditChange = (event) => {
-        const newValue = checkAmount(event.target.value);
-        setCredit(newValue);
-        setDebit("");
-        onItemChange(index, "amount", newValue);
+    const handleBlur = () => {
+        onItemChange(index, inputFields);
     };
 
     const checkAmount = (val) => {
@@ -79,13 +97,29 @@ const TransactionEntryItem = ({ vals, index, onFocus, onItemChange, scrollRef })
     };
 
     return (
-        <div className={`${classes.mainContainer} ${classes.transactionGridTemplate}`} onFocus={onFocus} tabIndex={0}>
-            <input type="text" value={vals.date} onChange={handleDateChange} />
+        // tabIndex for making the component able to be tabbed through
+        <div
+            className={`${classes.mainContainer} ${classes.transactionGridTemplate}`}
+            onFocus={onFocus}
+            onBlur={handleBlur}
+            tabIndex={0}
+        >
+            <input type="text" name="date" value={inputFields.date} onChange={valueChange} />
             <EntityEntryDropdown scrollRef={scrollRef} onChange={handleEntityChange} />
             <AccountEntryDropdown scrollRef={scrollRef} onChange={handleAccountChange} />
-            <input type="text" value={vals.memo} onChange={handleMemoChange} />
-            <input type="text" value={debit} onChange={handleDebitChange} />
-            <input type="text" value={credit} onChange={handleCreditChange} />
+            <input type="text" name="memo" value={inputFields.memo} onChange={valueChange} />
+            <input
+                type="text"
+                name="debit"
+                value={inputFields.type == "debit" ? inputFields.amount : ""}
+                onChange={valueChange}
+            />
+            <input
+                type="text"
+                name="credit"
+                value={inputFields.type == "credit" ? inputFields.amount : ""}
+                onChange={valueChange}
+            />
         </div>
     );
 };

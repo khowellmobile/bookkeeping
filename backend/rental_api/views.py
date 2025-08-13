@@ -83,9 +83,32 @@ class TransactionListAPIView(APIView):
     def post(self, request):
         data = request.data
 
-        if not isinstance(data, list):
+        property_id = request.query_params.get("property_id")
+
+        if not property_id:
             return Response(
-                {"error": "Expected a list of transactions."},
+                {"error": "property_id is required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if property_id:
+            try:
+                property_obj = Property.objects.get(id=property_id, user=request.user)
+            except Property.DoesNotExist:
+                return Response(
+                    {
+                        "error": "Property with this ID does not exist or does not belong to the user."
+                    },
+                    status=status.HTTP_404_NOT_FOUND,
+                )
+            except ValueError:
+                return Response(
+                    {"error": "Invalid property_id provided."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+        else:
+            return Response(
+                {"error": "property_id is required."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -93,8 +116,15 @@ class TransactionListAPIView(APIView):
         for item in data:
             serializer = TransactionSerializer(data=item, context={"request": request})
             if serializer.is_valid():
-                serializer.save()
-                saved_transactions.append(serializer.instance)
+                transaction_instance = serializer.save(
+                    user=request.user, property=property_obj
+                )
+                if (
+                    hasattr(transaction_instance, "account")
+                    and transaction_instance.account
+                ):
+                    transaction_instance.account.update_balance(transaction_instance)
+                    saved_transactions.append(serializer.instance)
             else:
                 # Handle validation errors for each transaction
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -131,19 +161,26 @@ class TransactionDetailAPIView(APIView):
 
     def put(self, request, pk):
         transaction = self.get_object(pk)
-        if transaction:
-            serializer = TransactionSerializer(
-                transaction, data=request.data, partial=True
-            )
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        if not transaction:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        original_account = transaction.account
+
+        serializer = TransactionSerializer(transaction, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            original_account.update_balance(transaction, is_reversal=True)
+            updated_transaction = serializer.save()
+            updated_transaction.account.update_balance(updated_transaction)
+
+            return Response(serializer.data)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk):
         transaction = self.get_object(pk)
         if transaction:
+            transaction.account.update_balance(transaction, is_reversal=True)
             transaction.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_404_NOT_FOUND)
@@ -363,7 +400,9 @@ class JournalListAPIView(APIView):
         if property_id:
             try:
                 property_obj = Property.objects.get(id=property_id, user=request.user)
-                journals_queryset = property_obj.journals.all()
+                journals_queryset = property_obj.journals.all().prefetch_related(
+                    "journal_items__account"
+                )
             except Property.DoesNotExist:
                 return Response(
                     {
@@ -412,7 +451,11 @@ class JournalListAPIView(APIView):
         serializer = JournalSerializer(data=request.data, context={"request": request})
 
         if serializer.is_valid():
-            serializer.save(user=request.user, property=property_obj)
+            journal_instance = serializer.save(property=property_obj)
+
+            for item in journal_instance.journal_items.all():
+                item.account.update_balance(item)
+
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -439,10 +482,21 @@ class JournalDetailAPIView(APIView):
 
     def put(self, request, pk):
         journal = self.get_object(pk)
+
+        prev_journal_items = journal.journal_items.all()
+
         if journal:
             serializer = JournalSerializer(journal, data=request.data, partial=True)
             if serializer.is_valid():
-                serializer.save()
+
+                for item in prev_journal_items:
+                    item.account.update_balance(item, is_reversal=True)
+
+                journal_instance = serializer.save()
+
+                for item in journal_instance.journal_items.all():
+                    item.account.update_balance(item)
+
                 return Response(serializer.data)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(status=status.HTTP_404_NOT_FOUND)
@@ -450,7 +504,12 @@ class JournalDetailAPIView(APIView):
     def delete(self, request, pk):
         journal = self.get_object(pk)
         if journal:
+
+            for item in journal.journal_items.all():
+                item.account.update_balance(item, is_reversal=True)
+
             journal.delete()
+            
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_404_NOT_FOUND)
 

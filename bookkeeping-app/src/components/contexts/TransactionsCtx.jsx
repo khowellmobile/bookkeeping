@@ -4,6 +4,7 @@ import { useToast } from "./ToastCtx";
 import AuthCtx from "./AuthCtx";
 import AccountsCtx from "./AccountsCtx";
 import EntitiesCtx from "./EntitiesCtx";
+import PropertiesCtx from "./PropertiesCtx";
 
 const TransactionsCtx = createContext({
     ctxTranList: null,
@@ -21,6 +22,7 @@ export function TransactionsCtxProvider(props) {
     const { ctxAccessToken } = useContext(AuthCtx);
     const { ctxActiveAccount } = useContext(AccountsCtx);
     const { ctxActiveEntity } = useContext(EntitiesCtx);
+    const { ctxActiveProperty } = useContext(PropertiesCtx);
 
     const [ctxFilterBy, setCtxFilterBy] = useState(null);
     const [ctxTranList, setCtxTranList] = useState(null);
@@ -69,10 +71,17 @@ export function TransactionsCtxProvider(props) {
         transformedTransactionsArray.forEach((transaction) => {
             delete transaction.entity;
             delete transaction.account;
-        });
+        }); 
 
         try {
-            const response = await fetch("http://127.0.0.1:8000/api/transactions/", {
+            const url = new URL("http://localhost:8000/api/transactions/");
+            if (ctxActiveProperty && ctxActiveProperty.id) {
+                url.searchParams.append("property_id", ctxActiveProperty.id);
+            } else {
+                return;
+            }
+
+            const response = await fetch(url, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -88,7 +97,7 @@ export function TransactionsCtxProvider(props) {
             }
 
             const newData = await response.json();
-            setCtxTranList((prev) => [...prev, ...newData]);
+            setCtxTranList((prev) => [...(prev || []), ...newData]);
             showToast("Transactions added", "success", 3000);
         } catch (error) {
             console.error("Error sending transactions:", error);

@@ -4,6 +4,7 @@ from core_backend.models import (
     Transaction,
     Account,
     Entity,
+    JournalItem,
     Journal,
     Property,
     RentPayment,
@@ -186,11 +187,11 @@ class TransactionSerializer(serializers.ModelSerializer):
     account = AccountSerializer(read_only=True)
     account_id = serializers.IntegerField(write_only=True)
     property = PropertySerializer(read_only=True)
-    property_id = serializers.IntegerField(write_only=True)
+    property_id = serializers.IntegerField(required=False, write_only=True)
     entity = EntitySerializer(read_only=True)
     entity_id = serializers.IntegerField(write_only=True)
     date = serializers.DateField(required=False)
-    type = serializers.CharField(read_only=True, required=False)
+    type = serializers.CharField(required=False)
 
     class Meta:
         model = Transaction
@@ -243,6 +244,7 @@ class TransactionSerializer(serializers.ModelSerializer):
             "payee",
             "memo",
             "amount",
+            "type",
             "account_id",
             "entity_id",
             "is_deleted",
@@ -256,8 +258,48 @@ class TransactionSerializer(serializers.ModelSerializer):
         return instance
 
 
+class JournalItemSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
+    account = AccountSerializer(read_only=True)
+    account_id = serializers.IntegerField(write_only=True)
+    id = serializers.IntegerField(required=False)
+
+    class Meta:
+        model = JournalItem
+        fields = (
+            "id",
+            "user",
+            "account",
+            "account_id",
+            "type",
+            "amount",
+            "memo",
+            "is_deleted",
+            "created_at",
+            "updated_at",
+        )
+        read_only_fields = ("created_at", "updated_at")
+
+    def update(self, instance, validated_data):
+        fields_to_update = [
+            "account",
+            "type",
+            "amount",
+            "memo",
+            "is_deleted",
+        ]
+
+        for attr in fields_to_update:
+            if attr in validated_data:
+                setattr(instance, attr, validated_data[attr])
+
+        instance.save()
+        return instance
+
+
 class JournalSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(read_only=True)
+    journal_items = JournalItemSerializer(many=True)
 
     class Meta:
         model = Journal
@@ -266,7 +308,7 @@ class JournalSerializer(serializers.ModelSerializer):
             "user",
             "name",
             "date",
-            "item_list",
+            "journal_items",
             "is_deleted",
             "created_at",
             "updated_at",
@@ -275,17 +317,47 @@ class JournalSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user = self.context["request"].user
-        validated_data["user"] = user
-        return super().create(validated_data)
+        journal_items_data = validated_data.pop("journal_items")
+
+        journal = Journal.objects.create(user=user, **validated_data)
+
+        for item_data in journal_items_data:
+            JournalItem.objects.create(journal=journal, user=user, **item_data)
+
+        return journal
 
     def update(self, instance, validated_data):
-        fields_to_update = ["name", "date", "item_list", "is_deleted"]
+        journal_items_data = validated_data.pop("journal_items", [])
 
-        for attr in fields_to_update:
-            if attr in validated_data:
-                setattr(instance, attr, validated_data[attr])
-
+        instance.name = validated_data.get("name", instance.name)
+        instance.date = validated_data.get("date", instance.date)
+        instance.is_deleted = validated_data.get("is_deleted", instance.is_deleted)
         instance.save()
+
+        existing_items = {item.id: item for item in instance.journal_items.all()}
+        items_to_keep = []
+
+        for item_data in journal_items_data:
+            item_id = item_data.get("id")
+            if item_id in existing_items:
+                # Update existing item
+                item = existing_items[item_id]
+                for attr, value in item_data.items():
+                    setattr(item, attr, value)
+                item.save()
+                items_to_keep.append(item_id)
+            else:
+                # Create new item if not present
+                item_data.pop("id", None)
+                JournalItem.objects.create(
+                    journal=instance, user=instance.user, **item_data
+                )
+
+        # Remove items that exist in db but not in request
+        items_to_delete = set(existing_items.keys()) - set(items_to_keep)
+        if items_to_delete:
+            JournalItem.objects.filter(id__in=items_to_delete).delete()
+
         return instance
 
 
