@@ -10,45 +10,53 @@ import ConfirmationModal from "./ConfirmationModal.jsx";
 const TransactionModal = ({ vals, handleCloseModal }) => {
     const { ctxUpdateTransaction } = useContext(TransactionsCtx);
 
-    const [transDate, setTransDate] = useState(vals.date);
-    const [transPayee, setTransPayee] = useState(vals.entity);
-    const [transAccount, setTransAccount] = useState(vals.account);
-    const [transMemo, setTransMemo] = useState(vals.memo);
-    const [transType, setTransType] = useState(vals.type);
-    const [transAmount, setTransAmount] = useState(vals.amount);
+    const [inputFields, setInputFields] = useState({
+        date: vals.date,
+        entity: vals.entity,
+        account: vals.account,
+        amount: vals.amount,
+        type: vals.type,
+        memo: vals.memo,
+    });
+    const [editedTransaction, setEditedTransaction] = useState({});
 
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-    const [editedTransaction, setEditedTransaction] = useState({});
+    const handleValueChange = (event) => {
+        const name = event.target.name;
+        const newValue = event.target.value;
 
-    const handleDateChange = (event) => {
-        setTransDate(event.target.value);
-        setEditedTransaction((prev) => ({ ...prev, date: event.target.value }));
-    };
-
-    const handlePayeeChange = (entity) => {
-        setTransPayee(entity.id);
-        setEditedTransaction((prev) => ({ ...prev, entity_id: entity.id }));
-    };
-
-    const handleMemoChange = (event) => {
-        setTransMemo(event.target.value);
-        setEditedTransaction((prev) => ({ ...prev, memo: event.target.value }));
-    };
-
-    const handleAmountChange = (event) => {
-        const newAmount = checkAmount(event.target.value);
-        const newType = event.target.name;
-
-        setTransType(newType);
-        setTransAmount(newAmount);
-        setEditedTransaction((prev) => ({ ...prev, type: newType, amount: newAmount }));
+        if (name == "debit" || name == "credit") {
+            setInputFields((prev) => ({
+                ...prev,
+                amount: checkAmount(newValue),
+                type: name,
+            }));
+            setEditedTransaction((prev) => ({ ...prev, type: name, amount: newValue }));
+        } else {
+            setInputFields((prev) => ({
+                ...prev,
+                [name]: newValue,
+            }));
+            setEditedTransaction((prev) => ({ ...prev, [name]: newValue }));
+        }
     };
 
     const handleAccountClick = (account) => {
-        setTransAccount(account.id);
-        setEditedTransaction((prev) => ({ ...prev, account_id: account.id }));
+        setInputFields((prev) => ({
+            ...prev,
+            account: account,
+        }));
+        setEditedTransaction((prev) => ({ ...prev, account: account }));
+    };
+
+    const handlePayeeChange = (entity) => {
+        setInputFields((prev) => ({
+            ...prev,
+            entity: entity,
+        }));
+        setEditedTransaction((prev) => ({ ...prev, entity: entity }));
     };
 
     const handleDeleteClick = () => {
@@ -133,16 +141,16 @@ const TransactionModal = ({ vals, handleCloseModal }) => {
                     <h2>Edit Transaction</h2>
                     <div className={classes.seperatorH} />
                     <div className={`${classes.cluster} ${classes.dateCluster}`}>
-                        <input type="date" value={transDate} onChange={handleDateChange} />
+                        <input type="date" name="date" value={inputFields.date} onChange={handleValueChange} />
                     </div>
                     <div className={`${classes.cluster} ${classes.dropdownCluster}`}>
                         <p>Account</p>
-                        <AccountDropdown initalVal={transAccount} onChange={handleAccountClick} />
+                        <AccountDropdown initalVal={inputFields.account} onChange={handleAccountClick} />
                     </div>
                     <div>
                         <div className={`${classes.cluster} ${classes.dropdownCluster}`}>
                             <p>Payee</p>
-                            <EntityDropdown initalVal={transPayee} onChange={handlePayeeChange} />
+                            <EntityDropdown initalVal={inputFields.entity} onChange={handlePayeeChange} />
                         </div>
                         <div className={`${classes.cluster} ${classes.amountCluster}`}>
                             <p>Amount</p>
@@ -152,23 +160,23 @@ const TransactionModal = ({ vals, handleCloseModal }) => {
                                     type="text"
                                     name="debit"
                                     className={classes.debit}
-                                    value={transType == "debit" ? transAmount : ""}
-                                    onChange={handleAmountChange}
+                                    value={inputFields.type == "debit" ? inputFields.amount : ""}
+                                    onChange={handleValueChange}
                                 />
                                 <div>Credit</div>
                                 <input
                                     type="text"
                                     name="credit"
                                     className={classes.credit}
-                                    value={transType == "credit" ? transAmount : ""}
-                                    onChange={handleAmountChange}
+                                    value={inputFields.type == "credit" ? inputFields.amount : ""}
+                                    onChange={handleValueChange}
                                 />
                             </div>
                         </div>
                     </div>
                     <div className={`${classes.cluster} ${classes.memoCluster}`}>
                         <p>Memo</p>
-                        <input type="text" value={transMemo} onChange={handleMemoChange} />
+                        <input type="text" name="memo" value={inputFields.memo} onChange={handleValueChange} />
                     </div>
                     <p>{vals.is_reconciled ? "☑️" : "❌"}</p>
                     <div className={classes.buttons}>

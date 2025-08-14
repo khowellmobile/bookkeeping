@@ -71,7 +71,7 @@ export function TransactionsCtxProvider(props) {
         transformedTransactionsArray.forEach((transaction) => {
             delete transaction.entity;
             delete transaction.account;
-        }); 
+        });
 
         try {
             const url = new URL("http://localhost:8000/api/transactions/");
@@ -105,15 +105,27 @@ export function TransactionsCtxProvider(props) {
         }
     };
 
-    const ctxUpdateTransaction = async (updatedTransaction) => {
+    const ctxUpdateTransaction = async (transaction) => {
+        const transformedTransaction = { ...transaction };
+
+        if (transaction.entity) {
+            transformedTransaction.entity_id = transaction.entity.id;
+            delete transformedTransaction.entity;
+        }
+
+        if (transaction.account) {
+            transformedTransaction.account_id = transaction.account.id;
+            delete transformedTransaction.account;
+        }
+
         try {
-            const response = await fetch(`http://127.0.0.1:8000/api/transactions/${updatedTransaction.id}/`, {
+            const response = await fetch(`http://127.0.0.1:8000/api/transactions/${transaction.id}/`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${ctxAccessToken}`,
                 },
-                body: JSON.stringify(updatedTransaction),
+                body: JSON.stringify(transformedTransaction),
             });
 
             if (!response.ok) {
@@ -126,7 +138,7 @@ export function TransactionsCtxProvider(props) {
 
             setCtxTranList((prevTransactions) =>
                 prevTransactions.map((transaction) => {
-                    if (transaction.id === updatedTransaction.id) {
+                    if (transaction.id === updatedData.id) {
                         return updatedData;
                     } else {
                         return transaction;
