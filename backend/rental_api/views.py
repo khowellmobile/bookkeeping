@@ -509,7 +509,7 @@ class JournalDetailAPIView(APIView):
                 item.account.update_balance(item, is_reversal=True)
 
             journal.delete()
-            
+
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_404_NOT_FOUND)
 
