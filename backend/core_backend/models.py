@@ -45,18 +45,48 @@ class Account(models.Model):
 
     def update_balance(self, item, is_reversal=False):
         amount = item.amount
-        print(amount, "amount")
-        if item.type == "debit":
-            if is_reversal:
-                self.balance -= amount
-            else:
-                self.balance += amount
-        elif item.type == "credit":
-            if is_reversal:
-                self.balance += amount
-            else:
-                self.balance -= amount
+
+        # Determine increase
+        is_increase = (self.normal_balance == "debit" and item.type == "debit") or (
+            self.normal_balance == "credit" and item.type == "credit"
+        )
+
+        # Adjust for reversal
+        if is_reversal:
+            is_increase = not is_increase
+
+        # Update the balance
+        if is_increase:
+            self.balance += amount
+        else:
+            self.balance -= amount
+
         self.save()
+
+    def audit_balance(self):
+        balance = self.initial_balance
+
+        for item in self.transactions.all():
+            is_increase = (self.normal_balance == "debit" and item.type == "debit") or (
+                self.normal_balance == "credit" and item.type == "credit"
+            )
+
+            if is_increase:
+                balance += item.amount
+            else:
+                balance -= item.amount
+
+        for item in self.journal_items.all():
+            is_increase = (self.normal_balance == "debit" and item.type == "debit") or (
+                self.normal_balance == "credit" and item.type == "credit"
+            )
+
+            if is_increase:
+                balance += item.amount
+            else:
+                balance -= item.amount
+
+        return balance
 
     def __str__(self):
         return self.name
