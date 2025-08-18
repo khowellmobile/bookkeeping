@@ -118,7 +118,7 @@ class DatabaseConnectionsAdmin(admin.ModelAdmin):
         """
         Returns a comma-separated string of account names for the Property.
         """
-        return ", ".join([account.name for account in obj.accounts.all()])
+        return ", ".join([str(account) for account in obj.accounts.all()])
 
 
 @admin.register(RentPayment)

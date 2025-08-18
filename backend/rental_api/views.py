@@ -529,7 +529,45 @@ class PropertyListAPIView(APIView):
     def post(self, request):
         serializer = PropertySerializer(data=request.data, context={"request": request})
         if serializer.is_valid():
-            serializer.save()
+            property_instance = serializer.save()
+
+            created_accounts = []
+
+            account_names = [
+                "asset",
+                "liability",
+                "equity",
+                "income",
+                "expense",
+            ]
+
+            for i in range(len(account_names)):
+                acccount_data = {
+                    "name": account_names[i],
+                    "type": account_names[i],
+                    "normal_balance": "na",
+                    "balance": 0,
+                    "initial_balance": 0,
+                }
+
+                account_serializer = AccountSerializer(
+                    data=acccount_data, context={"request": request}
+                )
+                if account_serializer.is_valid():
+                    account = account_serializer.save()
+                    created_accounts.append(account)
+                else:
+                    print(f"Error creating account {i}: {account_serializer.errors}")
+
+            if created_accounts:
+                property_instance.accounts.add(*created_accounts)
+                response_serializer = PropertySerializer(
+                    property_instance, context={"request": request}
+                )
+                return Response(
+                    response_serializer.data, status=status.HTTP_201_CREATED
+                )
+
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
