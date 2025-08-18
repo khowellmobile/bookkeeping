@@ -8,6 +8,7 @@ ACCOUNT_TYPE_CHOICES = [
     ("income", "Income"),
     ("expense", "Expense"),
     ("bank", "Bank"),
+    ("credit-card", "Credit-Card")
 ]
 
 
@@ -17,7 +18,7 @@ class Account(models.Model):
     )
     name = models.CharField(max_length=255)
     type = models.CharField(
-        max_length=10,
+        max_length=15,
         choices=ACCOUNT_TYPE_CHOICES,
         default="asset",
         null=True,
@@ -89,7 +90,7 @@ class Account(models.Model):
         return balance
 
     def __str__(self):
-        return self.name
+        return self.name + "_" + str(self.id)
 
 
 class Property(models.Model):
@@ -103,7 +104,7 @@ class Property(models.Model):
         choices=[
             ("residential", "Residential"),
             ("commercial", "Commercial"),
-            ("multi_unit", "Multi-Unit"),
+            ("multi-unit", "Multi-Unit"),
         ],
         default="residential",
     )
