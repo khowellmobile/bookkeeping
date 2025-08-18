@@ -543,7 +543,7 @@ class PropertyListAPIView(APIView):
 
             for i in range(len(account_names)):
                 acccount_data = {
-                    "name": account_names[i],
+                    "name": account_names[i].capitalize(),
                     "type": account_names[i],
                     "normal_balance": "na",
                     "balance": 0,
