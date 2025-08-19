@@ -155,3 +155,44 @@ input:checked + .slider:before {
 .slider.round:before {
     border-radius: 50%;
 }
+
+.subHeader {
+    font-weight: 400;
+    font-size: var(--header-font-size);
+}
+
+/* .seperatorH {
+    width: 100%;
+    height: 1px;
+    margin-bottom: 1rem;
+
+    background-color: var(--border-color);
+} */
+
+.listing {
+    height: 16rem;
+    width: 100%;
+
+    border: 1px solid var(--border-color);
+
+    display: flex;
+    flex-direction: column;
+    overflow: scroll;
+}
+
+.listingItem {
+    width: 100%;
+    height: 2rem;
+    padding: 0.25rem;
+
+    border-bottom: 1px solid var(--border-color);
+}
+
+.listingItem > p {
+    font-size: var(--base-font-sizes);
+}
+
+.listingItem:hover {
+    background-color: var(--hover-color);
+    cursor: pointer;
+}

@@ -8,6 +8,7 @@ const AccountsCtx = createContext({
     ctxActiveAccount: null,
     ctxAccountList: null,
     populateCtxAccounts: () => {},
+    ctxGetNonPropertyAccounts: () => {},
     setCtxActiveAccount: () => {},
     setCtxAccountList: () => {},
     ctxAddAccount: () => {},
@@ -55,12 +56,41 @@ export function AccountsCtxProvider(props) {
         }
     };
 
-    const ctxAddAccount = async (account) => {
+    const ctxGetNonPropertyAccounts = async () => {
         try {
             const url = new URL("http://localhost:8000/api/accounts/");
             if (ctxActiveProperty && ctxActiveProperty.id) {
                 url.searchParams.append("property_id", ctxActiveProperty.id);
+                url.searchParams.append("get_non_property_accounts", true);
+            } else {
+                return;
             }
+
+            const response = await fetch(url.toString(), {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${ctxAccessToken}`,
+                },
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            return data;
+        } catch (e) {
+            console.log("Error: " + e);
+        }
+    };
+
+    const ctxAddAccount = async (account, addExisting = false) => {
+        try {
+            const url = new URL("http://localhost:8000/api/accounts/");
+            if (ctxActiveProperty && ctxActiveProperty.id) {
+                url.searchParams.append("property_id", ctxActiveProperty.id);
+                if (addExisting) url.searchParams.append("add_existing", true);
+            }
+
+            console.log(account);
 
             const response = await fetch(url.toString(), {
                 method: "POST",
@@ -138,6 +168,7 @@ export function AccountsCtxProvider(props) {
         ctxActiveAccount,
         ctxAccountList,
         populateCtxAccounts,
+        ctxGetNonPropertyAccounts,
         setCtxActiveAccount,
         setCtxAccountList,
         ctxAddAccount,
