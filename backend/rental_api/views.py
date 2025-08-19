@@ -209,9 +209,10 @@ class AccountListAPIView(APIView):
             property_obj = Property.objects.get(id=property_id, user=request.user)
 
             if get_non_property_accounts:
-                account_queryset = Account.objects.filter(user=request.user).exclude(
-                    properties=property_obj
-                )
+                included_types = ["bank", "credit-card"]
+                account_queryset = Account.objects.filter(
+                    user=request.user, type__in=included_types
+                ).exclude(properties=property_obj)
             else:
                 account_queryset = property_obj.accounts.all()
         except Property.DoesNotExist:
