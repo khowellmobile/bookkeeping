@@ -195,6 +195,9 @@ class AccountListAPIView(APIView):
 
     def get(self, request):
         property_id = request.query_params.get("property_id")
+        get_non_property_accounts = request.query_params.get(
+            "get_non_property_accounts"
+        )
 
         if not property_id:
             return Response(
@@ -204,7 +207,13 @@ class AccountListAPIView(APIView):
 
         try:
             property_obj = Property.objects.get(id=property_id, user=request.user)
-            account_queryset = property_obj.accounts.all()
+
+            if get_non_property_accounts:
+                account_queryset = Account.objects.filter(user=request.user).exclude(
+                    properties=property_obj
+                )
+            else:
+                account_queryset = property_obj.accounts.all()
         except Property.DoesNotExist:
             return Response(
                 {
@@ -223,23 +232,41 @@ class AccountListAPIView(APIView):
 
     def post(self, request):
         property_id = request.query_params.get("property_id")
+        add_existing = request.query_params.get("add_existing")
 
         if property_id:
             try:
                 property_obj = Property.objects.get(id=property_id, user=request.user)
-                serializer = AccountSerializer(
-                    data=request.data, context={"request": request}
-                )
 
-                if serializer.is_valid():
-                    new_account = serializer.save()
-                    property_obj.accounts.add(new_account)
-
-                    return Response(serializer.data, status=status.HTTP_201_CREATED)
+                if add_existing:
+                    try:
+                        account_obj = Account.objects.get(
+                            pk=request.data["id"], user=self.request.user
+                        )
+                        property_obj.accounts.add(account_obj)
+                        serializer = AccountSerializer(account_obj)
+                        return Response(serializer.data, status=status.HTTP_201_CREATED)
+                    except Account.DoesNotExist:
+                        return Response(
+                            {
+                                "error": "Account with this ID does not exist or does not belong to the user."
+                            },
+                            status=status.HTTP_404_NOT_FOUND,
+                        )
                 else:
-                    return Response(
-                        serializer.errors, status=status.HTTP_400_BAD_REQUEST
+                    serializer = AccountSerializer(
+                        data=request.data, context={"request": request}
                     )
+
+                    if serializer.is_valid():
+                        new_account = serializer.save()
+                        property_obj.accounts.add(new_account)
+
+                        return Response(serializer.data, status=status.HTTP_201_CREATED)
+                    else:
+                        return Response(
+                            serializer.errors, status=status.HTTP_400_BAD_REQUEST
+                        )
 
             except Property.DoesNotExist:
                 return Response(

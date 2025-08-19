@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import classes from "./AddModalStyle.module.css";
 
@@ -7,10 +7,12 @@ import BaseAddModal from "./BaseAddModal";
 import AddInputCluster from "../misc/AddInputCluster";
 import upChevIcon from "../../../assets/chevron-up-icon.svg";
 import downChevIcon from "../../../assets/chevron-down-icon.svg";
+import NoResultsDisplay from "../misc/NoResultsDisplay";
 
 const AddAccountModal = ({ handleCloseModal }) => {
-    const { ctxAddAccount } = useContext(AccountsCtx);
+    const { ctxAddAccount, ctxGetNonPropertyAccounts } = useContext(AccountsCtx);
 
+    const [nonPropertyAccounts, setNonPropertyAccounts] = useState({});
     const [inputFields, setInputFields] = useState({
         name: "",
         type: "",
@@ -19,6 +21,16 @@ const AddAccountModal = ({ handleCloseModal }) => {
         account_number: "",
     });
     const [isExpanded, setIsExpanded] = useState(false);
+
+    useEffect(() => {
+        const fetchAccounts = async () => {
+            const accountsData = await ctxGetNonPropertyAccounts();
+            console.log(accountsData);
+            setNonPropertyAccounts(accountsData);
+        };
+
+        fetchAccounts();
+    }, []);
 
     const hasUnsavedChanges =
         inputFields.name !== "" ||
@@ -46,6 +58,11 @@ const AddAccountModal = ({ handleCloseModal }) => {
         ctxAddAccount(accountToAdd);
     };
 
+    const addExistingAccount = async (account) => {
+        ctxAddAccount(account, true);
+        handleCloseModal();
+    };
+
     const handleSaveClick = () => {
         addAccount();
         handleCloseModal();
@@ -64,7 +81,7 @@ const AddAccountModal = ({ handleCloseModal }) => {
             handleCloseModal={handleCloseModal}
             hasUnsavedChanges={hasUnsavedChanges}
             handleSaveClick={handleSaveClick}
-            title="New Account Creation"
+            title="New Account"
         >
             <AddInputCluster
                 label="Account Name"
@@ -116,6 +133,19 @@ const AddAccountModal = ({ handleCloseModal }) => {
                 name="description"
                 onChange={handleInputChange}
             ></textarea>
+            <h3 className={classes.subHeader}>Add Existing Account</h3>
+            {/* <div className={classes.seperatorH} /> */}
+            <div className={classes.listing}>
+                {nonPropertyAccounts && nonPropertyAccounts.length > 0 ? (
+                    nonPropertyAccounts.map((account, index) => (
+                        <div className={classes.listingItem} key={index} onClick={() => addExistingAccount(account)}>
+                            <p>{account.name}</p>
+                        </div>
+                    ))
+                ) : (
+                    <NoResultsDisplay mainText={"No Accounts to load."} guideText={"Have you chosen a Property?"} />
+                )}
+            </div>
         </BaseAddModal>
     );
 };
