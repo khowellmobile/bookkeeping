@@ -5,10 +5,10 @@ ACCOUNT_TYPE_CHOICES = [
     ("asset", "Asset"),
     ("liability", "Liability"),
     ("equity", "Equity"),
-    ("income", "Income"),
+    ("revenue", "Revenue"),
     ("expense", "Expense"),
     ("bank", "Bank"),
-    ("credit-card", "Credit-Card")
+    ("credit-card", "Credit-Card"),
 ]
 
 
@@ -86,6 +86,11 @@ class Account(models.Model):
                 balance += item.amount
             else:
                 balance -= item.amount
+
+        if self.type == "revenue":
+            for property in self.properties.all():
+                for rent_payment in property.rent_payments.filter(status="paid"):
+                    balance += rent_payment.amount
 
         return balance
 
