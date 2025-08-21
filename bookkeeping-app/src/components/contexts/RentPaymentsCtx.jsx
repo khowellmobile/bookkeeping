@@ -135,7 +135,6 @@ export function RentPaymentsCtxProvider(props) {
     };
 
     const ctxUpdatePayment = async (updatedPayment) => {
-        console.log(updatedPayment);
         try {
             const response = await fetch(`http://localhost:8000/api/rentPayments/${updatedPayment.id}/`, {
                 method: "PUT",
