@@ -72,11 +72,11 @@ const RentsPage = () => {
             initialDays.push({ id: `empty-${i}`, isEmpty: true });
         }
 
-        for (let i = 1; i <= numDaysInMonth; i++) {
+        for (let i = 0; i < numDaysInMonth; i++) {
             initialDays.push({
                 id: i,
-                hasEvent: ctxMonthPaymentList[i - 1]?.length > 0,
-                items: ctxMonthPaymentList[i - 1] || [],
+                hasEvent: ctxMonthPaymentList[i]?.length > 0,
+                items: ctxMonthPaymentList[i] || [],
                 dayOfMonth: i,
             });
         }
@@ -163,7 +163,7 @@ const RentsPage = () => {
             status: "",
             amount: "",
             entity: "",
-            date: `${currentYear}-${currentMonth + 1}-${dayIndex - 1}`,
+            date: `${currentYear}-${currentMonth + 1}-${dayId + 1}`,
         };
         setCtxMonthPaymentList((prevPymtList) => {
             const updatedPymtList = [...prevPymtList];
