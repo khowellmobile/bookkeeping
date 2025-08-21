@@ -796,20 +796,22 @@ class RentPaymentDetailAPIView(APIView):
         rent_payment = self.get_object(pk)
         property_obj = rent_payment.property
         previous_status = rent_payment.status
+
         if rent_payment:
             serializer = RentPaymentSerializer(
                 rent_payment, data=request.data, partial=True
             )
             if serializer.is_valid():
                 revenue_account = property_obj.accounts.get(type="revenue")
-                revenue_account.update_balance(rent_payment, is_reversal=True)
+
+                # Was effecting balance
+                if previous_status == "paid":
+                    revenue_account.update_balance(rent_payment, is_reversal=True)
+
                 updated_item = serializer.save()
 
-                if (
-                    previous_status != "paid"
-                    and updated_item.status == "paid"
-                    and not updated_item.is_deleted
-                ):  # Status changed to paid
+                # Should now be effecting balance
+                if updated_item.status == "paid" and not updated_item.is_deleted:
                     revenue_account.update_balance(updated_item)
 
                 return Response(serializer.data)
