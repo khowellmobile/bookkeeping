@@ -47,20 +47,29 @@ class Account(models.Model):
     def update_balance(self, item, is_reversal=False):
         amount = item.amount
 
-        # Determine increase
-        is_increase = (self.normal_balance == "debit" and item.type == "debit") or (
-            self.normal_balance == "credit" and item.type == "credit"
-        )
+        if isinstance(item, RentPayment):
+            is_increase = True if self.normal_balance == "credit" else False
+            
+            if is_reversal:
+                is_increase = not is_increase
 
-        # Adjust for reversal
-        if is_reversal:
-            is_increase = not is_increase
+            if is_increase:
+                self.balance += amount
+            else:
+                self.balance -= amount
 
-        # Update the balance
-        if is_increase:
-            self.balance += amount
-        else:
-            self.balance -= amount
+        elif hasattr(item, 'type'):
+            is_increase = (self.normal_balance == "debit" and item.type == "debit") or (
+                self.normal_balance == "credit" and item.type == "credit"
+            )
+
+            if is_reversal:
+                is_increase = not is_increase
+
+            if is_increase:
+                self.balance += amount
+            else:
+                self.balance -= amount
 
         self.save()
 

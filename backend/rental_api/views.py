@@ -760,14 +760,15 @@ class RentPaymentListAPIView(APIView):
                 user=request.user, property=property_obj
             )
 
-            try:
-                revenue_account = property_obj.accounts.get(type="revenue")
-                revenue_account.update_balance(rent_payment_instance)
-            except Account.DoesNotExist:
-                return Response(
-                    {"error": "Revenue account not found for this property."},
-                    status=status.HTTP_404_NOT_FOUND,
-                )
+            if serializer.validated_data["status"] == "paid":
+                try:
+                    revenue_account = property_obj.accounts.get(type="revenue")
+                    revenue_account.update_balance(rent_payment_instance)
+                except Account.DoesNotExist:
+                    return Response(
+                        {"error": "Revenue account not found for this property."},
+                        status=status.HTTP_404_NOT_FOUND,
+                    )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -794,16 +795,25 @@ class RentPaymentDetailAPIView(APIView):
     def put(self, request, pk):
         rent_payment = self.get_object(pk)
         property_obj = rent_payment.property
+        previous_status = rent_payment.status
+
         if rent_payment:
             serializer = RentPaymentSerializer(
                 rent_payment, data=request.data, partial=True
             )
             if serializer.is_valid():
                 revenue_account = property_obj.accounts.get(type="revenue")
-                revenue_account.update_balance(rent_payment, is_reveral=True)
+
+                # Was effecting balance
+                if previous_status == "paid":
+                    revenue_account.update_balance(rent_payment, is_reversal=True)
+
                 updated_item = serializer.save()
-                if "is_deleted" in serializer.validated_data:
+
+                # Should now be effecting balance
+                if updated_item.status == "paid" and not updated_item.is_deleted:
                     revenue_account.update_balance(updated_item)
+
                 return Response(serializer.data)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(status=status.HTTP_404_NOT_FOUND)
