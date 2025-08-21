@@ -805,16 +805,12 @@ class RentPaymentDetailAPIView(APIView):
                 revenue_account.update_balance(rent_payment, is_reversal=True)
                 updated_item = serializer.save()
 
-                if "is_deleted" in serializer.validated_data:
-                    revenue_account.update_balance(updated_item, is_reversal=True)
-                elif (
-                    previous_status != "paid" and updated_item.status == "paid"
+                if (
+                    previous_status != "paid"
+                    and updated_item.status == "paid"
+                    and not updated_item.is_deleted
                 ):  # Status changed to paid
                     revenue_account.update_balance(updated_item)
-                elif (
-                    previous_status == "paid" and updated_item.status != "paid"
-                ):  # Status changed to unpaid
-                    revenue_account.update_balance(updated_item, is_reversal=True)
 
                 return Response(serializer.data)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
