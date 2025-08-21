@@ -39,7 +39,7 @@ const AddAccountModal = ({ handleCloseModal }) => {
         inputFields.initial_balance !== "" ||
         inputFields.description !== "";
 
-    const accountTypes = ["Asset", "Bank", "Equity", "Liability"];
+    const accountTypes = ["Asset", "Bank", "Equity", "Liability", "Revenue"];
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
