@@ -3,6 +3,7 @@ import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 
 import AuthCtx from "../../contexts/AuthCtx";
+import errorIcon from "../../../assets/error-icon.svg";
 
 const LoginModal = ({ handleCloseModal, switchModal }) => {
     const { setCtxAccessToken } = useContext(AuthCtx);
@@ -52,6 +53,9 @@ const LoginModal = ({ handleCloseModal, switchModal }) => {
     return (
         <div className={classes.modalOverlay}>
             <div className={classes.mainContainer}>
+                <div className={classes.goBack}>
+                    <img src={errorIcon} alt="Go Back icon" onClick={handleCloseModal} />
+                </div>
                 <form className={classes.form} onSubmit={handleLogin}>
                     <section className={classes.logo}>
                         <b>H</b>

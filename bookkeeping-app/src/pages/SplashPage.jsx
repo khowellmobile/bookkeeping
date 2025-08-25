@@ -15,26 +15,40 @@ const SplashPage = () => {
 
     const handleCloseCreateModal = () => {
         setIsCreateModalOpen(false);
-    }
+    };
 
     const switchToCreateModal = () => {
         setIsModalOpen(false);
         setIsCreateModalOpen(true);
-    }
+    };
 
     const switchToLoginModal = () => {
         setIsCreateModalOpen(false);
         setIsModalOpen(true);
-    }
+    };
 
     return (
         <>
-            {isModalOpen && <LoginModal handleCloseModal={handleCloseModal} switchModal={switchToCreateModal}/>}
-            {isCreateModalOpen && <CreateUserModal handleCloseModal={handleCloseCreateModal} switchModal={switchToLoginModal}/>}
-
             <div className={classes.mainContainer}>
-                <p>Splash</p>
-                <button className={classes.loginButton}>Login</button>
+                <div className={classes.header}>
+                    <h2>Howell Associates</h2>
+                </div>
+                <div className={classes.content}>
+                    <div className={classes.contentInfo}>
+                        <h1>Rental Bookkeeping Made Easy</h1>
+                    </div>
+                    <div className={classes.loginBox}>
+                        {isModalOpen && (
+                            <LoginModal handleCloseModal={handleCloseModal} switchModal={switchToCreateModal} />
+                        )}
+                        {isCreateModalOpen && (
+                            <CreateUserModal
+                                handleCloseModal={handleCloseCreateModal}
+                                switchModal={switchToLoginModal}
+                            />
+                        )}
+                    </div>
+                </div>
             </div>
         </>
     );
