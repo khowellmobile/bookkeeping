@@ -45,7 +45,7 @@ const AccountDropdown = ({ initalVal, onChange }) => {
                         <input type="text" placeholder="Search..." spellCheck="false"></input>
                         <p>All Accounts</p>
                         <div className={classes.separatorH}></div>
-                        <div className={classes.clientListing}>
+                        <div className={classes.accountListing}>
                             {ctxAccountList &&
                                 ctxAccountList.map((account, index) => {
                                     return (
