@@ -7,18 +7,35 @@
     animation: gradient 45s linear infinite;
 }
 
+@keyframes gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
 .header {
     width: 100%;
     height: 15%;
     padding: 1rem;
 
-    /* outline: 1px solid red; */
+    display: flex;
+    align-items: center;
 }
 
 .header > h2 {
     color: white;
     font-size: 1.5rem;
     font-weight: 300;
+}
+
+.header > h2 > strong {
+    font-weight: 600;
 }
 
 .content {
@@ -31,23 +48,32 @@
 .contentInfo {
     width: 50%;
     height: 100%;
+    padding: 11rem 2rem 0 10rem;
 
     display: flex;
     flex-direction: column;
-    align-items: center;
 
-    /* outline: 1px solid yellow; */
 }
 
 .contentInfo > h1 {
+    margin-bottom: 2rem;
+
     color: white;
     font-size: 2rem;
     font-weight: 400;
 }
 
+.contentInfo > p {
+    color: white;
+
+    line-height: 2rem;
+}
+
 .loginBox {
     width: 50%;
     height: 100%;
+    padding-top: 5rem;
 
-    /* outline: 1px solid green; */
+    display: flex;
+    justify-content: center;
 }

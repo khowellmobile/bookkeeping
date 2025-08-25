@@ -3,7 +3,6 @@ import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 
 import AuthCtx from "../../contexts/AuthCtx";
-import errorIcon from "../../../assets/error-icon.svg";
 
 const LoginModal = ({ handleCloseModal, switchModal }) => {
     const { setCtxAccessToken } = useContext(AuthCtx);
@@ -51,59 +50,54 @@ const LoginModal = ({ handleCloseModal, switchModal }) => {
     };
 
     return (
-        <div className={classes.modalOverlay}>
-            <div className={classes.mainContainer}>
-                <div className={classes.goBack}>
-                    <img src={errorIcon} alt="Go Back icon" onClick={handleCloseModal} />
-                </div>
-                <form className={classes.form} onSubmit={handleLogin}>
-                    <section className={classes.logo}>
-                        <b>H</b>
+        <div className={classes.mainContainer}>
+            <form className={classes.form} onSubmit={handleLogin}>
+                <section className={classes.logo}>
+                    <b>H</b>
+                </section>
+                <section className={classes.header}>
+                    <b>Welcome Back</b>
+                    <p>Please enter your details</p>
+                </section>
+                {errorMsg && (
+                    <section className={classes.errors}>
+                        <p>{errorMsg}</p>
                     </section>
-                    <section className={classes.header}>
-                        <b>Welcome Back</b>
-                        <p>Please enter your details</p>
-                    </section>
-                    {errorMsg && (
-                        <section className={classes.errors}>
-                            <p>{errorMsg}</p>
-                        </section>
-                    )}
-                    <section className={classes.inputs}>
-                        <div className={classes.formCluster}>
-                            <input
-                                type="text"
-                                className={classes.formInput}
-                                value={email}
-                                id="email"
-                                name="email"
-                                placeholder=""
-                                required
-                                onChange={(e) => setEmail(e.target.value)}
-                            />
-                            <p className={classes.formLabel}>Email</p>
-                        </div>
-                        <div className={classes.formCluster}>
-                            <input
-                                type="password"
-                                className={classes.formInput}
-                                value={password}
-                                id="password"
-                                name="password"
-                                placeholder=""
-                                required
-                                onChange={(e) => setPassword(e.target.value)}
-                            />
-                            <p className={classes.formLabel}>Password</p>
-                        </div>
-                    </section>
-                    <button type="submit">Login</button>
-                    <p>
-                        Dont have an Account?
-                        <a onClick={switchModal}>Sign Up</a>
-                    </p>
-                </form>
-            </div>
+                )}
+                <section className={classes.inputs}>
+                    <div className={classes.formCluster}>
+                        <input
+                            type="text"
+                            className={classes.formInput}
+                            value={email}
+                            id="email"
+                            name="email"
+                            placeholder=""
+                            required
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
+                        <p className={classes.formLabel}>Email</p>
+                    </div>
+                    <div className={classes.formCluster}>
+                        <input
+                            type="password"
+                            className={classes.formInput}
+                            value={password}
+                            id="password"
+                            name="password"
+                            placeholder=""
+                            required
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
+                        <p className={classes.formLabel}>Password</p>
+                    </div>
+                </section>
+                <button type="submit">Login</button>
+                <p>
+                    Dont have an Account?
+                    <a onClick={switchModal}>Sign Up</a>
+                </p>
+            </form>
         </div>
     );
 };

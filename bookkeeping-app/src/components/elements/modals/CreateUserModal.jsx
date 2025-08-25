@@ -2,8 +2,6 @@ import { useState, useEffect } from "react";
 
 import classes from "./CreateUserModal.module.css";
 
-import errorIcon from "../../../assets/error-icon.svg"
-
 const CreateUserModal = ({ handleCloseModal, switchModal }) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -81,95 +79,90 @@ const CreateUserModal = ({ handleCloseModal, switchModal }) => {
     };
 
     return (
-        <div className={classes.modalOverlay}>
-            <div className={classes.mainContainer}>
-                <div className={classes.goBack}>
-                    <img src={errorIcon} alt="Go Back icon" onClick={handleCloseModal} />
-                </div>
-                <form className={classes.form}>
-                    <section className={classes.logo}>
-                        <b>H</b>
+        <div className={classes.mainContainer}>
+            <form className={classes.form}>
+                <section className={classes.logo}>
+                    <b>H</b>
+                </section>
+                <section className={classes.header}>
+                    <b>Create Account</b>
+                    <p>Please enter your details</p>
+                </section>
+                {errorMsg && (
+                    <section className={classes.errors}>
+                        <p>{errorMsg}</p>
                     </section>
-                    <section className={classes.header}>
-                        <b>Create Account</b>
-                        <p>Please enter your details</p>
-                    </section>
-                    {errorMsg && (
-                        <section className={classes.errors}>
-                            <p>{errorMsg}</p>
-                        </section>
-                    )}
-                    <section className={classes.inputs}>
-                        <div className={classes.formCluster}>
-                            <input
-                                type="text"
-                                className={classes.formInput}
-                                value={email}
-                                name="email"
-                                placeholder=""
-                                required
-                                onChange={(e) => setEmail(e.target.value)}
-                            />
-                            <p className={classes.formLabel}>Email</p>
-                        </div>
-                        <div className={classes.formCluster}>
-                            <input
-                                type="password"
-                                className={classes.formInput}
-                                value={password}
-                                name="password"
-                                placeholder=""
-                                required
-                                onChange={(e) => setPassword(e.target.value)}
-                                onFocus={() => setIsExpanded(true)}
-                                onBlur={() => setIsExpanded(false)}
-                            />
-                            <p className={classes.formLabel}>Password</p>
-                        </div>
-                        {isExpanded && (
-                            <div className={classes.anchor}>
-                                <div className={classes.passwordReqs}>
-                                    <span>
-                                        <div className={`${reqObj.chars ? classes.true : classes.false}`}>
-                                            {reqObj.chars ? "✔" : "x"}
-                                        </div>
-                                        <p>8 or More Characters</p>
-                                    </span>
-                                    <span>
-                                        <div className={`${reqObj.num ? classes.true : classes.false}`}>
-                                            {reqObj.num ? "✔" : "x"}
-                                        </div>
-                                        <p>Number</p>
-                                    </span>
-                                    <span>
-                                        <div className={`${reqObj.specChar ? classes.true : classes.false}`}>
-                                            {reqObj.specChar ? "✔" : "x"}
-                                        </div>
-                                        <p>Special Character</p>
-                                    </span>
-                                </div>
+                )}
+                <section className={classes.inputs}>
+                    <div className={classes.formCluster}>
+                        <input
+                            type="text"
+                            className={classes.formInput}
+                            value={email}
+                            name="email"
+                            placeholder=""
+                            required
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
+                        <p className={classes.formLabel}>Email</p>
+                    </div>
+                    <div className={classes.formCluster}>
+                        <input
+                            type="password"
+                            className={classes.formInput}
+                            value={password}
+                            name="password"
+                            placeholder=""
+                            required
+                            onChange={(e) => setPassword(e.target.value)}
+                            onFocus={() => setIsExpanded(true)}
+                            onBlur={() => setIsExpanded(false)}
+                        />
+                        <p className={classes.formLabel}>Password</p>
+                    </div>
+                    {isExpanded && (
+                        <div className={classes.anchor}>
+                            <div className={classes.passwordReqs}>
+                                <span>
+                                    <div className={`${reqObj.chars ? classes.true : classes.false}`}>
+                                        {reqObj.chars ? "✔" : "x"}
+                                    </div>
+                                    <p>8 or More Characters</p>
+                                </span>
+                                <span>
+                                    <div className={`${reqObj.num ? classes.true : classes.false}`}>
+                                        {reqObj.num ? "✔" : "x"}
+                                    </div>
+                                    <p>Number</p>
+                                </span>
+                                <span>
+                                    <div className={`${reqObj.specChar ? classes.true : classes.false}`}>
+                                        {reqObj.specChar ? "✔" : "x"}
+                                    </div>
+                                    <p>Special Character</p>
+                                </span>
                             </div>
-                        )}
-                        <div className={classes.formCluster}>
-                            <input
-                                type="password"
-                                className={classes.formInput}
-                                value={passwordConfirm}
-                                name="password"
-                                placeholder=""
-                                required
-                                onChange={(e) => setPasswordConfirm(e.target.value)}
-                            />
-                            <p className={classes.formLabel}>Confirm Password</p>
                         </div>
-                    </section>
-                    <button onClick={createAccount}>Create Account</button>
-                    <p>
-                        Already Have an Account?
-                        <a onClick={switchModal}>Login</a>
-                    </p>
-                </form>
-            </div>
+                    )}
+                    <div className={classes.formCluster}>
+                        <input
+                            type="password"
+                            className={classes.formInput}
+                            value={passwordConfirm}
+                            name="password"
+                            placeholder=""
+                            required
+                            onChange={(e) => setPasswordConfirm(e.target.value)}
+                        />
+                        <p className={classes.formLabel}>Confirm Password</p>
+                    </div>
+                </section>
+                <button onClick={createAccount}>Create Account</button>
+                <p>
+                    Already Have an Account?
+                    <a onClick={switchModal}>Login</a>
+                </p>
+            </form>
         </div>
     );
 };
