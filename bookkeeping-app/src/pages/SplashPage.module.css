@@ -1,16 +1,79 @@
 .mainContainer {
     width: 100vw;
     height: 100vh;
+
+    background: linear-gradient(-45deg, rgb(105, 105, 236), rgb(17, 17, 53), rgb(105, 105, 236), rgb(35, 35, 75));
+    background-size: 400% 400%;
+    animation: gradient 45s linear infinite;
 }
 
-.loginButton {
-    width: 5rem;
-    height: 2rem;
+@keyframes gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
 
-    background-color: black;
+.header {
+    width: 100%;
+    height: 15%;
+    padding: 1rem;
+
+    display: flex;
+    align-items: center;
+}
+
+.header > h2 {
     color: white;
-    border: none;
-    outline: none;
+    font-size: 1.5rem;
+    font-weight: 300;
+}
 
-    cursor: pointer;
+.header > h2 > strong {
+    font-weight: 600;
+}
+
+.content {
+    width: 100%;
+    height: 85%;
+
+    display: flex;
+}
+
+.contentInfo {
+    width: 50%;
+    height: 100%;
+    padding: 11rem 2rem 0 10rem;
+
+    display: flex;
+    flex-direction: column;
+
+}
+
+.contentInfo > h1 {
+    margin-bottom: 2rem;
+
+    color: white;
+    font-size: 2rem;
+    font-weight: 400;
+}
+
+.contentInfo > p {
+    color: white;
+
+    line-height: 2rem;
+}
+
+.loginBox {
+    width: 50%;
+    height: 100%;
+    padding-top: 5rem;
+
+    display: flex;
+    justify-content: center;
 }
