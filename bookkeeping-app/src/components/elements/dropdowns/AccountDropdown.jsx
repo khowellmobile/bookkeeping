@@ -1,7 +1,8 @@
-import classes from "./AccountDropdown.module.css";
-import AccountsCtx from "../../contexts/AccountsCtx";
 import { useState, useEffect, useRef, useContext } from "react";
 
+import classes from "./AccountDropdown.module.css";
+
+import AccountsCtx from "../../contexts/AccountsCtx";
 import upChevIcon from "../../../assets/chevron-up-icon.svg";
 import downChevIcon from "../../../assets/chevron-down-icon.svg";
 
@@ -29,6 +30,11 @@ const AccountDropdown = ({ initalVal, onChange }) => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, []);
+
+    /* Ensures activeAccount stays consistent with passed value */
+    useEffect(() => {
+        setActiveAccount(initalVal);
+    }, [initalVal]);
 
     return (
         <div className={classes.mainContainer} ref={dropdownRef}>
