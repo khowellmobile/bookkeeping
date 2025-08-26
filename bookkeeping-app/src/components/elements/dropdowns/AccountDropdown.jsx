@@ -31,6 +31,7 @@ const AccountDropdown = ({ initalVal, onChange }) => {
         };
     }, []);
 
+    /* Ensures activeAccount stays consistent with passed value */
     useEffect(() => {
         setActiveAccount(initalVal);
     }, [initalVal]);
