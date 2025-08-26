@@ -31,11 +31,17 @@ export function TransactionsCtxProvider(props) {
         if (ctxAccessToken) {
             populateCtxTransactions(ctxFilterBy);
         }
-    }, [ctxActiveAccount, ctxActiveEntity, ctxFilterBy, ctxAccessToken]);
+    }, [ctxActiveProperty, ctxActiveAccount, ctxActiveEntity, ctxFilterBy, ctxAccessToken]);
 
     const populateCtxTransactions = async () => {
         try {
             const url = new URL("http://localhost:8000/api/transactions/");
+            if (ctxActiveProperty && ctxActiveProperty.id) {
+                url.searchParams.append("property_id", ctxActiveProperty.id);
+            } else {
+                return;
+            }
+
             if (ctxFilterBy == "account" && ctxActiveAccount && ctxActiveAccount.id) {
                 url.searchParams.append("account_id", ctxActiveAccount.id);
             } else if (ctxFilterBy == "entity" && ctxActiveEntity && ctxActiveEntity.id) {
