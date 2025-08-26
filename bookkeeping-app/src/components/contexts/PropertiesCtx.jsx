@@ -28,7 +28,7 @@ export function PropertiesCtxProvider(props) {
     }, [ctxAccessToken]);
 
     useEffect(() => {
-        if (!ctxActiveProperty && !sessionStorage.getItem("activePropertyId")) {
+        if (!ctxActiveProperty && !sessionStorage.getItem("activePropertyId") && ctxAccessToken) {
             showToast("Please select a Property", "warning", 5000);
         }
 

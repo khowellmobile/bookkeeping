@@ -19,8 +19,18 @@ import SettingsPage from "../../pages/SettingsPage";
 import EntitiesPage from "../../pages/EntitiesPage";
 import PropertiesPage from "../../pages/PropertiesPage";
 import Layout from "../layout/Layout";
+import ProtectedRoute from "./ProtectedRoute";
 
 function AuthenticatedApp() {
+
+    const wrapPage = (PageComponent) => {
+        return (
+            <ProtectedRoute>
+                <Layout><PageComponent /></Layout>
+            </ProtectedRoute>
+        )
+    }
+
     return (
             <AuthCtxProvider>
                 <PropertiesCtxProvider>
@@ -30,16 +40,16 @@ function AuthenticatedApp() {
                                 <JournalsCtxProvider>
                                     <RentPaymentsCtxProvider>
                                         <Routes>
-                                            <Route path="/home" element={<Layout><HomePage /></Layout>} />
-                                            <Route path="/transactions" element={<Layout><TransactionsPage /></Layout>} />
-                                            <Route path="/rents" element={<Layout><RentsPage /></Layout>} />
-                                            <Route path="/accounts" element={<Layout><AccountsPage /></Layout>} />
-                                            <Route path="/journals" element={<Layout><JournalsPage /></Layout>} />
-                                            <Route path="/entities" element={<Layout><EntitiesPage /></Layout>} />
-                                            <Route path="/reports" element={<Layout><ReportsPage /></Layout>} />
-                                            <Route path="/properties" element={<Layout><PropertiesPage /></Layout>} />
-                                            <Route path="/support" element={<Layout><SupportPage /></Layout>} />
-                                            <Route path="/settings" element={<Layout><SettingsPage /></Layout>} />
+                                            <Route path="/home" element={wrapPage(HomePage)} />
+                                            <Route path="/transactions" element={wrapPage(TransactionsPage)} />
+                                            <Route path="/rents" element={wrapPage(RentsPage)} />
+                                            <Route path="/accounts" element={wrapPage(AccountsPage)} />
+                                            <Route path="/journals" element={wrapPage(JournalsPage)} />
+                                            <Route path="/entities" element={wrapPage(EntitiesPage)} />
+                                            <Route path="/reports" element={wrapPage(ReportsPage)} />
+                                            <Route path="/properties" element={wrapPage(PropertiesPage)} />
+                                            <Route path="/support" element={wrapPage(SupportPage)} />
+                                            <Route path="/settings" element={wrapPage(SettingsPage)} />
                                         </Routes>
                                     </RentPaymentsCtxProvider>
                                 </JournalsCtxProvider>
