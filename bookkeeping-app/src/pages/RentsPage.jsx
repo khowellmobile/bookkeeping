@@ -46,10 +46,6 @@ const RentsPage = () => {
         gridTemplateRows: daysOverflow ? "repeat(6, 1fr)" : "repeat(5, 1fr)",
     };
 
-    useEffect(() => {
-        getCtxPaymentsByMonth(currentMonth + 1, currentYear);
-    }, [currentMonth, currentYear]);
-
     const getDaysInMonth = (year, month) => {
         return new Date(year, month + 1, 0).getDate();
     };
