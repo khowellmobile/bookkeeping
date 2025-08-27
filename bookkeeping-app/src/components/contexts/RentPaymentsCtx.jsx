@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState, useContext } from "react";
+import { createContext, useEffect, useState, useContext, useRef } from "react";
 import { useToast } from "./ToastCtx";
 
 import AuthCtx from "./AuthCtx";
@@ -17,25 +17,45 @@ const RentPaymentsCtx = createContext({
     ctxUpdatePayment: () => {},
 });
 
+const getInitialDate = () => {
+    const storedDate = sessionStorage.getItem("activeDate");
+    return storedDate ? new Date(JSON.parse(storedDate)) : new Date();
+};
+
 export function RentPaymentsCtxProvider(props) {
     const { showToast } = useToast();
 
     const { ctxAccessToken } = useContext(AuthCtx);
     const { ctxActiveProperty } = useContext(PropertiesCtx);
 
+    const prevDateRef = useRef({ month: null, year: null });
+
     const [ctxPaymentList, setCtxPaymentList] = useState([]);
     const [ctxMonthPaymentList, setCtxMonthPaymentList] = useState([]);
-    const [ctxActiveDate, setCtxActiveDate] = useState(new Date());
+    const [ctxActiveDate, setCtxActiveDate] = useState(getInitialDate());
 
-    useEffect(() => {
+    /* useEffect(() => {
         if (ctxAccessToken) {
             populateCtxPayments();
         }
     }, [ctxActiveProperty, ctxAccessToken]);
-
+ */
     useEffect(() => {
-        getCtxPaymentsByMonth(ctxActiveDate.getMonth() + 1, ctxActiveDate.getFullYear());
-    }, [ctxActiveProperty]);
+        if (!ctxActiveProperty || !ctxAccessToken) {
+            return;
+        }
+
+        const currentMonth = ctxActiveDate.getMonth();
+        const currentYear = ctxActiveDate.getFullYear();
+
+        if (prevDateRef.current.month !== currentMonth || prevDateRef.current.year !== currentYear) {
+            console.log("Date changed, fetching new data.");
+            getCtxPaymentsByMonth(currentMonth + 1, currentYear);
+        }
+
+        prevDateRef.current = { month: currentMonth, year: currentYear };
+        sessionStorage.setItem("activeDate", JSON.stringify(ctxActiveDate));
+    }, [ctxActiveProperty, ctxActiveDate, ctxAccessToken]);
 
     const populateCtxPayments = async () => {
         try {
