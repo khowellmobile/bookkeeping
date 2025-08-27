@@ -28,7 +28,8 @@ export function RentPaymentsCtxProvider(props) {
     const { ctxAccessToken } = useContext(AuthCtx);
     const { ctxActiveProperty } = useContext(PropertiesCtx);
 
-    const prevDateRef = useRef({ month: null, year: null });
+    // propertyId is to trigger fetch if property changes
+    const prevDateRef = useRef({ month: null, year: null, propertyId: null });
 
     const [ctxPaymentList, setCtxPaymentList] = useState([]);
     const [ctxMonthPaymentList, setCtxMonthPaymentList] = useState([]);
@@ -48,8 +49,11 @@ export function RentPaymentsCtxProvider(props) {
         const currentMonth = ctxActiveDate.getMonth();
         const currentYear = ctxActiveDate.getFullYear();
 
-        if (prevDateRef.current.month !== currentMonth || prevDateRef.current.year !== currentYear) {
-            console.log("Date changed, fetching new data.");
+        if (
+            prevDateRef.current.month !== currentMonth ||
+            prevDateRef.current.year !== currentYear ||
+            prevDateRef.current.propertyId !== ctxActiveProperty.id
+        ) {
             getCtxPaymentsByMonth(currentMonth + 1, currentYear);
         }
 
