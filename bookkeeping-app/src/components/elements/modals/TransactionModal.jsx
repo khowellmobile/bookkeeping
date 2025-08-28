@@ -6,6 +6,7 @@ import TransactionsCtx from "../../contexts/TransactionsCtx.jsx";
 import AccountDropdown from "../dropdowns/AccountDropdown.jsx";
 import EntityDropdown from "../dropdowns/EntityDropdown.jsx";
 import ConfirmationModal from "./ConfirmationModal.jsx";
+import Input from "../misc/Input.jsx";
 
 const TransactionModal = ({ vals, handleCloseModal }) => {
     const { ctxUpdateTransaction } = useContext(TransactionsCtx);
@@ -39,7 +40,7 @@ const TransactionModal = ({ vals, handleCloseModal }) => {
                 ...prev,
                 [name]: newValue,
             }));
-            setEditedTransaction((prev) => ({ ...prev, [name]: newValue }));
+            setEditedTransaction((prev) => ({ ...prev, [name]: name == "memo" ? checkText(newValue) : newValue }));
         }
     };
 
@@ -66,6 +67,7 @@ const TransactionModal = ({ vals, handleCloseModal }) => {
     };
 
     const handleUpdateClick = () => {
+        console.log(editedTransaction);
         ctxUpdateTransaction({ id: vals.id, ...editedTransaction });
         handleCloseModal();
     };
@@ -76,6 +78,22 @@ const TransactionModal = ({ vals, handleCloseModal }) => {
         } else {
             return "";
         }
+    };
+
+    const checkText = (val) => {
+        if (typeof val !== "string") {
+            return "";
+        }
+
+        const sanitizedVal = val
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#x27;")
+            .replace(/\//g, "&#x2F;");
+
+        return sanitizedVal;
     };
 
     const handleConfirmAction = (action) => {
@@ -156,27 +174,29 @@ const TransactionModal = ({ vals, handleCloseModal }) => {
                             <p>Amount</p>
                             <div>
                                 <div>Debit</div>
-                                <input
+                                <Input
                                     type="text"
                                     name="debit"
                                     className={classes.debit}
                                     value={inputFields.type == "debit" ? inputFields.amount : ""}
                                     onChange={handleValueChange}
+                                    customStyle={{ borderLeft: "none", borderRight: "none" }}
                                 />
                                 <div>Credit</div>
-                                <input
+                                <Input
                                     type="text"
                                     name="credit"
                                     className={classes.credit}
                                     value={inputFields.type == "credit" ? inputFields.amount : ""}
                                     onChange={handleValueChange}
+                                    customStyle={{ borderLeft: "none" }}
                                 />
                             </div>
                         </div>
                     </div>
                     <div className={`${classes.cluster} ${classes.memoCluster}`}>
                         <p>Memo</p>
-                        <input type="text" name="memo" value={inputFields.memo} onChange={handleValueChange} />
+                        <Input type="text" name="memo" value={inputFields.memo} onChange={handleValueChange} />
                     </div>
                     <p>{vals.is_reconciled ? "☑️" : "❌"}</p>
                     <div className={classes.buttons}>

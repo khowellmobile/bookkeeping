@@ -1,8 +1,10 @@
-import AccountEntryDropdown from "../dropdowns/AccountEntryDropdown";
-import EntityEntryDropdown from "../dropdowns/EntityEntryDropdown";
+import { useState } from "react";
+
 import classes from "./InputEntryItems.module.css";
 
-import { useState } from "react";
+import AccountEntryDropdown from "../dropdowns/AccountEntryDropdown";
+import EntityEntryDropdown from "../dropdowns/EntityEntryDropdown";
+import Input from "../misc/Input";
 
 const JournalEntryItem = ({ vals, index, onFocus, onItemChange, scrollRef }) => {
     const handleAccountChange = (account) => {
@@ -24,19 +26,19 @@ const JournalEntryItem = ({ vals, index, onFocus, onItemChange, scrollRef }) => 
         // tabIndex for making the component able to be tabbed through
         <div className={`${classes.mainContainer} ${classes.journalGridTemplate}`} onFocus={onFocus} tabIndex={0}>
             <AccountEntryDropdown vals={vals} scrollRef={scrollRef} onChange={handleAccountChange} />
-            <input
+            <Input
                 type="text"
                 name="debit"
                 value={vals.type == "debit" ? vals.amount : ""}
                 onChange={handleAmountChange}
             />
-            <input
+            <Input
                 type="text"
                 name="credit"
                 value={vals.type == "credit" ? vals.amount : ""}
                 onChange={handleAmountChange}
             />
-            <input type="text" value={vals.memo} onChange={handleMemoChange} />
+            <Input type="text" value={vals.memo} onChange={handleMemoChange} />
         </div>
     );
 };
@@ -107,14 +109,14 @@ const TransactionEntryItem = ({ vals, index, onFocus, onItemChange, scrollRef })
             <input type="text" name="date" value={inputFields.date} onChange={valueChange} />
             <EntityEntryDropdown scrollRef={scrollRef} onChange={handleEntityChange} />
             <AccountEntryDropdown scrollRef={scrollRef} onChange={handleAccountChange} />
-            <input type="text" name="memo" value={inputFields.memo} onChange={valueChange} />
-            <input
+            <Input type="text" name="memo" value={inputFields.memo} onChange={valueChange} />
+            <Input
                 type="text"
                 name="debit"
                 value={inputFields.type == "debit" ? inputFields.amount : ""}
                 onChange={valueChange}
             />
-            <input
+            <Input
                 type="text"
                 name="credit"
                 value={inputFields.type == "credit" ? inputFields.amount : ""}

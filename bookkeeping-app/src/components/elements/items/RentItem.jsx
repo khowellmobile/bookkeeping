@@ -5,6 +5,7 @@ import classes from "./RentItem.module.css";
 import RentPaymentsCtx from "../../contexts/RentPaymentsCtx";
 import EntityDropdown from "../dropdowns/EntityDropdown";
 import ConfirmationModal from "../modals/ConfirmationModal";
+import Input from "../misc/Input";
 
 const RentItem = ({ item, dayIndex, updateFields, removePayment, handleSaveRentPayment, pushLeft, pushUp }) => {
     const { ctxUpdatePayment } = useContext(RentPaymentsCtx);
@@ -197,7 +198,7 @@ const RentItem = ({ item, dayIndex, updateFields, removePayment, handleSaveRentP
                             </div>
                             <div className={classes.inputCluster}>
                                 <p className={classes.label}>Amount</p>
-                                <input
+                                <Input
                                     type="text"
                                     name="amount"
                                     value={inputFields.amount}
