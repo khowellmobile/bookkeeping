@@ -69,13 +69,8 @@
 }
 
 .memoCluster > input[type="text"] {
+    width: 100%;
     padding: 0.25rem 0.5rem;
-
-    background-color: var(--secondary-background-color);
-    font-family: "poppins";
-    border-radius: 0.25rem;
-    border: none;
-    outline: 1px solid var(--border-color);
 }
 
 .amountCluster {
@@ -99,33 +94,8 @@
 }
 
 .amountCluster input[type="text"] {
-    width: calc(100%/2 - 4rem);
+    width: calc(100% / 2 - 4rem);
     padding: 0.25rem 0.5rem;
-
-    background-color: var(--secondary-background-color);
-    font-family: "poppins";
-}
-
-.amountCluster .debit {
-    border: 1px solid var(--border-color);
-    border-left: none;
-    border-right: none;
-    outline: none;
-}
-
-.amountCluster .credit {
-    border: 1px solid var(--border-color);
-    border-left: none;
-    outline: none;
-}
-
-.amountCluster input[type="text"] {
-    height: 2rem;
-    font-size: var(--base-font-size);
-}
-
-.memoCluster > input[type="text"] {
-    width: 100%;
 }
 
 .buttons {

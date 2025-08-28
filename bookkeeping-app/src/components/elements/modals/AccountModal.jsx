@@ -7,6 +7,7 @@ import ConfirmationModal from "./ConfirmationModal";
 
 import upChevIcon from "../../../assets/chevron-up-icon.svg";
 import downChevIcon from "../../../assets/chevron-down-icon.svg";
+import Input from "../misc/Input";
 
 const AccountModal = ({ account, handleCloseModal }) => {
     const { ctxUpdateAccount } = useContext(AccountsCtx);
@@ -110,12 +111,12 @@ const AccountModal = ({ account, handleCloseModal }) => {
                     </div>
                     <div className={`${classes.inputCluster}`}>
                         <p>Initial Balance</p>
-                        <input type="text" value={accountInitBalance} onChange={handleInitBalanceChange} />
+                        <Input type="text" value={accountInitBalance} onChange={handleInitBalanceChange} />
                     </div>
 
                     <div className={`${classes.inputCluster}`}>
                         <p>Description</p>
-                        <input type="text" value={accountDescription} onChange={handleDescChange} />
+                        <Input type="text" value={accountDescription} onChange={handleDescChange} />
                     </div>
                     <div className={classes.buttons}>
                         <button onClick={updateAccount}>Save & Close</button>
