@@ -199,7 +199,7 @@ const RentItem = ({ item, dayIndex, updateFields, removePayment, handleSaveRentP
                             <div className={classes.inputCluster}>
                                 <p className={classes.label}>Amount</p>
                                 <Input
-                                    type="text"
+                                    type="number"
                                     name="amount"
                                     value={inputFields.amount}
                                     onChange={handleInputChange}
