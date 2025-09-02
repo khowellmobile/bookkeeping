@@ -84,7 +84,7 @@ const AccountModal = ({ account, handleCloseModal }) => {
                     <div className={classes.seperatorH} />
                     <div className={`${classes.inputCluster}`}>
                         <p>Name</p>
-                        <input type="text" value={accountName} onChange={handleNameChange} />
+                        <Input type="text" value={accountName} onChange={handleNameChange} isOptional={false} />
                     </div>
                     <div className={classes.inputCluster}>
                         <p className={classes.label}>Account Type</p>
@@ -111,7 +111,12 @@ const AccountModal = ({ account, handleCloseModal }) => {
                     </div>
                     <div className={`${classes.inputCluster}`}>
                         <p>Initial Balance</p>
-                        <Input type="text" value={accountInitBalance} onChange={handleInitBalanceChange} />
+                        <Input
+                            type="number"
+                            value={accountInitBalance}
+                            onChange={handleInitBalanceChange}
+                            isOptional={false}
+                        />
                     </div>
 
                     <div className={`${classes.inputCluster}`}>
