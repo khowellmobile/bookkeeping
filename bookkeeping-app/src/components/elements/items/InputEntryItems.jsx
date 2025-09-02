@@ -40,7 +40,7 @@ const JournalEntryItem = ({ vals, index, onFocus, onItemChange, scrollRef }) => 
                 onChange={handleAmountChange}
                 isOptional={true}
             />
-            <Input type="text" value={vals.memo} onChange={handleMemoChange} isOptional={true}/>
+            <Input type="text" value={vals.memo} onChange={handleMemoChange} isOptional={true} />
         </div>
     );
 };
@@ -109,8 +109,8 @@ const TransactionEntryItem = ({ vals, index, onFocus, onItemChange, scrollRef })
             tabIndex={0}
         >
             <input type="text" name="date" value={inputFields.date} onChange={valueChange} />
-            <EntityEntryDropdown scrollRef={scrollRef} onChange={handleEntityChange} />
-            <AccountEntryDropdown scrollRef={scrollRef} onChange={handleAccountChange} />
+            <EntityEntryDropdown scrollRef={scrollRef} onChange={handleEntityChange} hasLeftBorder={true} />
+            <AccountEntryDropdown scrollRef={scrollRef} onChange={handleAccountChange} hasLeftBorder={true} />
             <Input type="text" name="memo" value={inputFields.memo} onChange={valueChange} isOptional={true} />
             <Input
                 type="number"

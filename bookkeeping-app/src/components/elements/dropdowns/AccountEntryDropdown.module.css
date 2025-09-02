@@ -21,6 +21,7 @@
     border: none;
     outline: none;
     border-bottom: 1px solid var(--border-color);
+    
 
     display: flex;
     align-items: center;

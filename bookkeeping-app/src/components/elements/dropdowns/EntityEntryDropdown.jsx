@@ -5,7 +5,7 @@ import EntitiesCtx from "../../contexts/EntitiesCtx";
 import { useState, useContext, useEffect, useRef } from "react";
 import AddEntityModal from "../modals/AddEntityModal";
 
-const EntityEntryDropdown = ({ scrollRef, onChange }) => {
+const EntityEntryDropdown = ({ scrollRef, onChange, hasLeftBorder = false }) => {
     const { ctxEntityList } = useContext(EntitiesCtx);
 
     const [searchTerm, setSearchTerm] = useState("");
@@ -101,6 +101,7 @@ const EntityEntryDropdown = ({ scrollRef, onChange }) => {
                     onFocus={() => setIsExpanded(true)}
                     onBlur={handleBlur}
                     ref={inputRef}
+                    style={hasLeftBorder ? {borderLeft: "1px dashed var(--border-color)"} : {}}
                 />
                 <div className={`${classes.anchor} ${isExpanded ? "" : classes.noDisplay}`}>
                     <div className={classes.dropDownContent} style={style}>
