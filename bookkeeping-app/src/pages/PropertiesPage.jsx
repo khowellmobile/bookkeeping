@@ -8,6 +8,7 @@ import penIcon from "../assets/pen-icon.svg";
 import AddPropertyModal from "../components/elements/modals/AddPropertyModal";
 import SearchBox from "../components/elements/misc/SearchBox";
 import RentInformation from "../components/elements/misc/RentInformation";
+import Input from "../components/elements/misc/Input";
 
 const PropertiesPage = () => {
     const { ctxPropertyList, ctxUpdateProperty, setCtxActiveProperty, ctxActiveProperty } = useContext(PropertiesCtx);
@@ -156,7 +157,7 @@ const PropertiesPage = () => {
                 <div className={classes.contentBox}>
                     <div className={classes.propertyInfo}>
                         <div className={`${classes.header} ${isEditing ? classes.editing : ""}`}>
-                            <input
+                            <Input
                                 type="text"
                                 name="name"
                                 value={inputFields.name}
@@ -194,7 +195,7 @@ const PropertiesPage = () => {
                                 <div>
                                     <div className={`${classes.cluster} ${isEditing ? classes.editing : ""}`}>
                                         <p>Address:</p>
-                                        <input
+                                        <Input
                                             type="text"
                                             name="address"
                                             value={inputFields.address}
@@ -204,7 +205,7 @@ const PropertiesPage = () => {
                                     </div>
                                     <div className={`${classes.cluster} ${isEditing ? classes.editing : ""}`}>
                                         <p>Property Type:</p>
-                                        <input
+                                        <Input
                                             type="text"
                                             name="property_type"
                                             value={inputFields.property_type}
@@ -229,8 +230,8 @@ const PropertiesPage = () => {
                                 <div>
                                     <div className={`${classes.cluster} ${isEditing ? classes.editing : ""}`}>
                                         <p>Rent:</p>
-                                        <input
-                                            type="text"
+                                        <Input
+                                            type="number"
                                             name="rent"
                                             value={inputFields.rent}
                                             onChange={handleInputChange}
@@ -239,8 +240,8 @@ const PropertiesPage = () => {
                                     </div>
                                     <div className={`${classes.cluster} ${isEditing ? classes.editing : ""}`}>
                                         <p>Units:</p>
-                                        <input
-                                            type="text"
+                                        <Input
+                                            type="number"
                                             name="number_of_units"
                                             value={inputFields.number_of_units}
                                             onChange={handleInputChange}

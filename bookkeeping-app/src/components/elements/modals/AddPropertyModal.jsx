@@ -66,18 +66,22 @@ const AddPropertyModal = ({ handleCloseModal }) => {
             title="New Property Creation"
         >
             <AddInputCluster
+                type="text"
                 label="Property Name"
                 placeholder="Enter property name (e.g., West House, Green Marsh 024, Beach Rental)"
                 name="name"
                 value={inputFields.name}
                 onChange={handleInputChange}
+                isOptional={false}
             />
             <AddInputCluster
+                type="text"
                 label="Property Address"
                 placeholder="Enter property Address (e.g., 123 Example St, City State 12345)"
                 name="address"
                 value={inputFields.address}
                 onChange={handleInputChange}
+                isOptional={false}
             />
             <div className={classes.inputCluster}>
                 <p className={classes.label}>Property Type</p>
@@ -103,6 +107,7 @@ const AddPropertyModal = ({ handleCloseModal }) => {
                 </div>
             </div>
             <AddInputCluster
+                type="number"
                 label="Property Rent"
                 placeholder="Enter Rent Amount (optional)"
                 name="rent"
@@ -110,11 +115,13 @@ const AddPropertyModal = ({ handleCloseModal }) => {
                 onChange={handleInputChange}
             />
             <AddInputCluster
+                type="number"
                 label="Property Amount of Units"
                 placeholder="Enter Unit Amount"
                 name="number_of_units"
                 value={inputFields.number_of_units}
                 onChange={handleInputChange}
+                isOptional={false}
             />
         </BaseAddModal>
     );

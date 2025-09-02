@@ -2,17 +2,22 @@ import { useState, useEffect } from "react";
 
 import classes from "./Input.module.css";
 
-const Input = ({ type, name, value, onChange, customStyle, placeholder, isOptional = false }) => {
+const Input = ({ type, name, value, onChange, customStyle, placeholder, isOptional = true, disabled = false }) => {
     const [warnUser, setWarnUser] = useState(false);
+    const [style, setStyle] = useState(customStyle);
 
     const unescapeHTML = (str) => {
-        return str
-            .replace(/&amp;/g, "&")
-            .replace(/&lt;/g, "<")
-            .replace(/&gt;/g, ">")
-            .replace(/&quot;/g, '"')
-            .replace(/&#x27;/g, "'")
-            .replace(/&#x2F;/g, "/");
+        if (typeof str === 'string') {
+            return str
+                .replace(/&amp;/g, "&")
+                .replace(/&lt;/g, "<")
+                .replace(/&gt;/g, ">")
+                .replace(/&quot;/g, '"')
+                .replace(/&#x27;/g, "'")
+                .replace(/&#x2F;/g, "/");
+        } else {
+            return str;
+        }
     };
 
     useEffect(() => {
@@ -48,6 +53,14 @@ const Input = ({ type, name, value, onChange, customStyle, placeholder, isOption
             }
         }
         setWarnUser(!isValid);
+        if (isValid) {
+            setStyle(customStyle);
+        } else {
+            setStyle(() => ({
+                ...customStyle,
+                backgroundColor: "rgba(250, 180, 180, 0.356)",
+            }));
+        }
     }, [value, type]);
 
     useEffect(() => {
@@ -62,7 +75,8 @@ const Input = ({ type, name, value, onChange, customStyle, placeholder, isOption
             value={unescapeHTML(value)}
             placeholder={placeholder}
             onChange={onChange}
-            style={customStyle}
+            style={style}
+            disabled={disabled}
         />
     );
 };

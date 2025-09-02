@@ -84,13 +84,16 @@ const AddAccountModal = ({ handleCloseModal }) => {
             title="New Account"
         >
             <AddInputCluster
+                type="text"
                 label="Account Name"
                 placeholder="Enter account name (e.g., Checking, Savings, Credit Card)"
                 name="name"
                 value={inputFields.name}
                 onChange={handleInputChange}
+                isOptional={false}
             />
             <AddInputCluster
+                type="text"
                 label="Account Number"
                 placeholder="Enter account number (optional)"
                 name="account_number"
@@ -121,11 +124,13 @@ const AddAccountModal = ({ handleCloseModal }) => {
                 </div>
             </div>
             <AddInputCluster
+                type="number"
                 label="Initial Balance"
                 placeholder="Enter starting balance (e.g., 0.00)"
                 name="initial_balance"
                 value={inputFields.initial_balance}
                 onChange={handleInputChange}
+                isOptional={false}
             />
             <textarea
                 value={inputFields.description}

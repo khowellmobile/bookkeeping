@@ -10,6 +10,7 @@ import AddEntityModal from "../components/elements/modals/AddEntityModal";
 import ConfirmationModal from "../components/elements/modals/ConfirmationModal";
 import SearchBox from "../components/elements/misc/SearchBox";
 import NoResultsDisplay from "../components/elements/misc/NoResultsDisplay";
+import Input from "../components/elements/misc/Input";
 
 const EntitiesPage = () => {
     const { ctxEntityList, ctxUpdateEntity, ctxActiveEntity, setCtxActiveEntity } = useContext(EntitiesCtx);
@@ -172,7 +173,7 @@ const EntitiesPage = () => {
                 <div className={classes.contentBox}>
                     <div className={classes.entityInfo}>
                         <div className={`${classes.header} ${isEditing ? classes.editing : ""}`}>
-                            <input
+                            <Input
                                 type="text"
                                 name="name"
                                 value={inputFields.name}
@@ -210,7 +211,7 @@ const EntitiesPage = () => {
                                 <div>
                                     <div className={`${classes.cluster} ${isEditing ? classes.editing : ""}`}>
                                         <p>Company:</p>
-                                        <input
+                                        <Input
                                             type="text"
                                             name="company"
                                             value={inputFields.company}
@@ -220,7 +221,7 @@ const EntitiesPage = () => {
                                     </div>
                                     <div className={`${classes.cluster} ${isEditing ? classes.editing : ""}`}>
                                         <p>Address:</p>
-                                        <input
+                                        <Input
                                             type="text"
                                             name="address"
                                             value={inputFields.address}
@@ -230,7 +231,7 @@ const EntitiesPage = () => {
                                     </div>
                                     <div className={classes.cluster}>
                                         <p>Added:</p>
-                                        <input type="text" value={inputFields.created_at} disabled={true} />
+                                        <Input type="text" value={inputFields.created_at} disabled={true} />
                                     </div>
                                 </div>
                             </div>
@@ -239,8 +240,8 @@ const EntitiesPage = () => {
                                 <div>
                                     <div className={`${classes.cluster} ${isEditing ? classes.editing : ""}`}>
                                         <p>Phone Number:</p>
-                                        <input
-                                            type="text"
+                                        <Input
+                                            type="phoneNumber"
                                             name="phone_number"
                                             value={inputFields.phone_number}
                                             onChange={handleInputChange}
@@ -249,8 +250,8 @@ const EntitiesPage = () => {
                                     </div>
                                     <div className={`${classes.cluster} ${isEditing ? classes.editing : ""}`}>
                                         <p>Email:</p>
-                                        <input
-                                            type="text"
+                                        <Input
+                                            type="email"
                                             name="email"
                                             value={inputFields.email}
                                             onChange={handleInputChange}

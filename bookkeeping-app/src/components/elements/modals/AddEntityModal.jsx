@@ -45,13 +45,16 @@ const AddEntityModal = ({ handleCloseModal }) => {
             title="New Entity Creation"
         >
             <AddInputCluster
+                type="text"
                 label="Entity Name"
                 placeholder="Enter Entity Name"
                 name="name"
                 value={inputFields.name}
                 onChange={handleInputChange}
+                isOptional={false}
             />
             <AddInputCluster
+                type="text"
                 label="Entity Company"
                 placeholder="Enter Entity Company (optional)"
                 name="company"
@@ -59,6 +62,7 @@ const AddEntityModal = ({ handleCloseModal }) => {
                 onChange={handleInputChange}
             />
             <AddInputCluster
+                type="text"
                 label="Entity Address"
                 placeholder="Enter Entity Address (optional)"
                 name="address"
@@ -66,6 +70,7 @@ const AddEntityModal = ({ handleCloseModal }) => {
                 onChange={handleInputChange}
             />
             <AddInputCluster
+                type="phoneNumber"
                 label="Entity Phone Number"
                 placeholder="Enter Entity Phone Number (optional)"
                 name="phone_number"
@@ -73,6 +78,7 @@ const AddEntityModal = ({ handleCloseModal }) => {
                 onChange={handleInputChange}
             />
             <AddInputCluster
+                type="email"
                 label="Entity Email"
                 placeholder="Enter Entity Email (optional)"
                 name="email"
