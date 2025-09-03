@@ -20,6 +20,7 @@ const AddAccountModal = ({ handleCloseModal }) => {
         description: "",
         account_number: "",
     });
+    const [errorText, setErrortext] = useState("");
     const [isExpanded, setIsExpanded] = useState(false);
 
     useEffect(() => {
@@ -64,8 +65,10 @@ const AddAccountModal = ({ handleCloseModal }) => {
     };
 
     const handleSaveClick = () => {
-        addAccount();
-        handleCloseModal();
+        if (validateInputs()) {
+            addAccount();
+            handleCloseModal();
+        }
     };
 
     const clickTypeHandler = (type) => {
@@ -76,6 +79,30 @@ const AddAccountModal = ({ handleCloseModal }) => {
         setIsExpanded(false);
     };
 
+    const validateInputs = () => {
+        let errTxt = "";
+
+        if (inputFields.name.trim() === "") {
+            errTxt += "Account Name cannot be empty.\n";
+        }
+
+        if (inputFields.account_number !== "" && isNaN(Number(inputFields.account_number))) {
+            errTxt += "Account Number must be a number.\n";
+        }
+
+        const validAccountTypes = new Set(accountTypes);
+        if (!validAccountTypes.has(inputFields.type)) {
+            errTxt += "Account type set to unsupported type.\n";
+        }
+
+        if (inputFields.initial_balance.trim() === "" || isNaN(Number(inputFields.initial_balance))) {
+            errTxt += "Initial Balance must be a number and cannot be empty.\n";
+        }
+
+        setErrortext(errTxt);
+        return errTxt === "";
+    };
+
     return (
         <BaseAddModal
             handleCloseModal={handleCloseModal}
@@ -83,6 +110,11 @@ const AddAccountModal = ({ handleCloseModal }) => {
             handleSaveClick={handleSaveClick}
             title="New Account"
         >
+            <span className={classes.errors}>
+                {errorText.split("\n").map((str, index) => {
+                    return <p key={index}>{str}</p>;
+                })}
+            </span>
             <AddInputCluster
                 type="text"
                 label="Account Name"
@@ -93,7 +125,7 @@ const AddAccountModal = ({ handleCloseModal }) => {
                 isOptional={false}
             />
             <AddInputCluster
-                type="text"
+                type="number"
                 label="Account Number"
                 placeholder="Enter account number (optional)"
                 name="account_number"
