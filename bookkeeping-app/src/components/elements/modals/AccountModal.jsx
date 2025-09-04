@@ -12,36 +12,38 @@ import Input from "../misc/Input";
 const AccountModal = ({ account, handleCloseModal }) => {
     const { ctxUpdateAccount } = useContext(AccountsCtx);
 
-    const [accountName, setAccountName] = useState(account.name);
-    const [accountType, setAccountType] = useState(account.type.charAt(0).toUpperCase() + account.type.slice(1));
-    const [accountInitBalance, setAccountInitBalance] = useState(account.initial_balance);
-    const [accountDescription, setAccountDescription] = useState(account.description);
     const [editedAccount, setEditedAccount] = useState({});
     const [errorText, setErrorText] = useState("");
     const [isExpanded, setIsExpanded] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
+    const [inputFields, setInputFields] = useState({
+        name: account.name,
+        type: account.type.charAt(0).toUpperCase() + account.type.slice(1),
+        initial_balance: account.initial_balance,
+        description: account.description,
+    });
+
     const accountTypes = ["Asset", "Bank", "Equity", "Liability"];
 
-    const handleNameChange = (event) => {
-        setAccountName(event.target.value);
-        setEditedAccount((prev) => ({ ...prev, name: event.target.value }));
+    const handleValueChange = (event) => {
+        const name = event.target.name;
+        const newValue = event.target.value;
+
+        setInputFields((prev) => ({
+            ...prev,
+            [name]: newValue,
+        }));
+        setEditedAccount((prev) => ({ ...prev, [name]: newValue }));
     };
 
     const clickTypeHandler = (type) => {
-        setAccountType(type);
+        setInputFields((prev) => ({
+            ...prev,
+            type: type,
+        }));
         setEditedAccount((prev) => ({ ...prev, type: type.toLowerCase() }));
         setIsExpanded(false);
-    };
-
-    const handleInitBalanceChange = (event) => {
-        setAccountInitBalance(event.target.value);
-        setEditedAccount((prev) => ({ ...prev, initial_balance: event.target.value }));
-    };
-
-    const handleDescChange = (event) => {
-        setAccountDescription(event.target.value);
-        setEditedAccount((prev) => ({ ...prev, description: event.target.value }));
     };
 
     const updateAccount = async () => {
@@ -71,20 +73,20 @@ const AccountModal = ({ account, handleCloseModal }) => {
     const validateInputs = () => {
         let errTxt = "";
 
-        if (accountName.trim() === "") {
+        if (inputFields.name.trim() === "") {
             errTxt += "Account Name cannot be empty.\n";
         }
 
         const validAccountTypes = new Set(accountTypes);
-        if (!validAccountTypes.has(accountType)) {
+        if (!validAccountTypes.has(inputFields.type)) {
             errTxt += "Account type set to unsupported type.\n";
         }
 
-        if (accountInitBalance.trim() === "" || isNaN(Number(accountInitBalance))) {
+        if (inputFields.initial_balance.trim() === "" || isNaN(Number(inputFields.initial_balance.trim()))) {
             errTxt += "Initial Balance must be a number and cannot be empty.\n";
         }
 
-        setErrorText(errTxt);
+        setErrorText("Error: Invalid fields. Edits were not saved.");
         return errTxt === "";
     };
 
@@ -107,13 +109,19 @@ const AccountModal = ({ account, handleCloseModal }) => {
                     <div className={classes.seperatorH} />
                     <div className={`${classes.inputCluster}`}>
                         <p>Name</p>
-                        <Input type="text" value={accountName} onChange={handleNameChange} isOptional={false} />
+                        <Input
+                            type="text"
+                            name="name"
+                            value={inputFields.name}
+                            onChange={handleValueChange}
+                            isOptional={false}
+                        />
                     </div>
                     <div className={classes.inputCluster}>
                         <p className={classes.label}>Account Type</p>
                         <div className={classes.accountTypeDiv} onClick={() => setIsExpanded((prev) => !prev)}>
-                            {accountType ? (
-                                <p>{accountType}</p>
+                            {inputFields.type ? (
+                                <p>{inputFields.type}</p>
                             ) : (
                                 <p className={classes.placeholder}>Select account type</p>
                             )}
@@ -136,15 +144,21 @@ const AccountModal = ({ account, handleCloseModal }) => {
                         <p>Initial Balance</p>
                         <Input
                             type="number"
-                            value={accountInitBalance}
-                            onChange={handleInitBalanceChange}
+                            name="initial_balance"
+                            value={inputFields.initial_balance}
+                            onChange={handleValueChange}
                             isOptional={false}
                         />
                     </div>
 
                     <div className={`${classes.inputCluster}`}>
                         <p>Description</p>
-                        <Input type="text" value={accountDescription} onChange={handleDescChange} />
+                        <Input
+                            type="text"
+                            name="description"
+                            value={inputFields.description}
+                            onChange={handleValueChange}
+                        />
                     </div>
                     <div className={classes.actionItems}>
                         <p>{errorText}</p>
