@@ -13,6 +13,7 @@ const AddTransactionsModal = ({ ctxActiveAccount, handleCloseModal }) => {
 
     const scrollRef = useRef();
 
+    const [errorText, setErrorText] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [activeAccount, setActiveAccount] = useState(ctxActiveAccount);
     const [transactionItems, setTransactionItems] = useState(
@@ -65,6 +66,22 @@ const AddTransactionsModal = ({ ctxActiveAccount, handleCloseModal }) => {
         }
     };
 
+    const checkInput = (inputs) => {
+        const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+
+        if (!dateRegex.test(inputs.date)) {
+            return false;
+        } else if (inputs.amount < 0) {
+            return false;
+        } else if (!inputs.account) {
+            return false;
+        } else if (!inputs.entity) {
+            return false;
+        }
+
+        return true;
+    };
+
     const handleSaveClose = () => {
         const nonEmptyItems = transactionItems.filter((item) => {
             const values = Object.values(item);
@@ -73,8 +90,15 @@ const AddTransactionsModal = ({ ctxActiveAccount, handleCloseModal }) => {
             return values.some((value) => typeof value === "string" && value.trim() !== "");
         });
 
-        ctxAddTransactions(nonEmptyItems);
-        handleCloseModal();
+        const hasError = nonEmptyItems.some((item) => !checkInput(item));
+
+        if (!hasError) {
+            ctxAddTransactions(nonEmptyItems);
+            handleCloseModal();
+            setErrorText("");
+        } else {
+            setErrorText("Invalid Transactions found. Please correct boxes marked in red before saving");
+        }
     };
 
     const handleCancelClose = () => {
@@ -122,7 +146,7 @@ const AddTransactionsModal = ({ ctxActiveAccount, handleCloseModal }) => {
                 <div className={classes.mainContainer}>
                     <section className={classes.tools}>
                         <AccountDropdown initalVal={activeAccount} onChange={setActiveAccount} />
-                        <p>What else?</p>
+                        <p>{errorText}</p>
                         <section className={classes.buttons}>
                             <button onClick={handleSaveClose}>Save & Close</button>
                             <button onClick={handleCancelClose}>Cancel</button>

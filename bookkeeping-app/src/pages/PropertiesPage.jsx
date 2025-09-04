@@ -8,6 +8,7 @@ import penIcon from "../assets/pen-icon.svg";
 import AddPropertyModal from "../components/elements/modals/AddPropertyModal";
 import SearchBox from "../components/elements/misc/SearchBox";
 import RentInformation from "../components/elements/misc/RentInformation";
+import Input from "../components/elements/misc/Input";
 
 const PropertiesPage = () => {
     const { ctxPropertyList, ctxUpdateProperty, setCtxActiveProperty, ctxActiveProperty } = useContext(PropertiesCtx);
@@ -21,6 +22,7 @@ const PropertiesPage = () => {
         rent: "",
         is_active: "",
     });
+    const [errorText, setErrorText] = useState("");
     const [isEditing, setIsEditing] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -118,8 +120,10 @@ const PropertiesPage = () => {
     };
 
     const handleSaveClick = () => {
-        ctxUpdateProperty({ id: activeProperty.id, ...inputFields });
-        setIsEditing(false);
+        if (validateInputs()) {
+            ctxUpdateProperty({ id: activeProperty.id, ...inputFields });
+            setIsEditing(false);
+        }
     };
 
     const handleDeleteClick = () => {
@@ -133,6 +137,29 @@ const PropertiesPage = () => {
     useEffect(() => {
         focusProperty(ctxActiveProperty);
     }, []);
+
+    const validateInputs = () => {
+        let errTxt = "";
+
+        if (inputFields.name.trim() === "") {
+            errTxt += "Property Name cannot be empty.\n";
+        }
+
+        if (inputFields.address.trim() === "") {
+            errTxt += "Property Address cannot be empty.\n";
+        }
+
+        if (inputFields.rent.trim() !== "" && isNaN(Number(inputFields.rent))) {
+            errTxt += "Rent must be a number.\n";
+        }
+
+        if (inputFields.number_of_units.trim() === "" || isNaN(Number(inputFields.number_of_units))) {
+            errTxt += "Unit amount must be a number and cannot be empty.\n";
+        }
+
+        setErrorText("Error: Invalid edits. Check formats and try again.");
+        return errTxt === "";
+    };
 
     return (
         <>
@@ -156,13 +183,14 @@ const PropertiesPage = () => {
                 <div className={classes.contentBox}>
                     <div className={classes.propertyInfo}>
                         <div className={`${classes.header} ${isEditing ? classes.editing : ""}`}>
-                            <input
+                            <Input
                                 type="text"
                                 name="name"
                                 value={inputFields.name}
                                 onChange={handleInputChange}
                                 disabled={!isEditing}
                             />
+                            <p className={classes.errorText}>{errorText}</p>
                             {isEditing ? (
                                 <div>
                                     <button className={classes.button} onClick={handleSaveClick}>
@@ -194,7 +222,7 @@ const PropertiesPage = () => {
                                 <div>
                                     <div className={`${classes.cluster} ${isEditing ? classes.editing : ""}`}>
                                         <p>Address:</p>
-                                        <input
+                                        <Input
                                             type="text"
                                             name="address"
                                             value={inputFields.address}
@@ -204,7 +232,7 @@ const PropertiesPage = () => {
                                     </div>
                                     <div className={`${classes.cluster} ${isEditing ? classes.editing : ""}`}>
                                         <p>Property Type:</p>
-                                        <input
+                                        <Input
                                             type="text"
                                             name="property_type"
                                             value={inputFields.property_type}
@@ -229,8 +257,8 @@ const PropertiesPage = () => {
                                 <div>
                                     <div className={`${classes.cluster} ${isEditing ? classes.editing : ""}`}>
                                         <p>Rent:</p>
-                                        <input
-                                            type="text"
+                                        <Input
+                                            type="number"
                                             name="rent"
                                             value={inputFields.rent}
                                             onChange={handleInputChange}
@@ -239,8 +267,8 @@ const PropertiesPage = () => {
                                     </div>
                                     <div className={`${classes.cluster} ${isEditing ? classes.editing : ""}`}>
                                         <p>Units:</p>
-                                        <input
-                                            type="text"
+                                        <Input
+                                            type="number"
                                             name="number_of_units"
                                             value={inputFields.number_of_units}
                                             onChange={handleInputChange}

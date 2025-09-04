@@ -4,7 +4,7 @@ import AccountsCtx from "../../contexts/AccountsCtx";
 
 import { useState, useContext, useEffect, useRef } from "react";
 
-const AccountEntryDropdown = ({ vals, scrollRef, onChange }) => {
+const AccountEntryDropdown = ({ vals, scrollRef, onChange, hasLeftBorder = false }) => {
     const { ctxAccountList } = useContext(AccountsCtx);
 
     const [searchTerm, setSearchTerm] = useState("");
@@ -91,6 +91,7 @@ const AccountEntryDropdown = ({ vals, scrollRef, onChange }) => {
                 onFocus={() => setIsExpanded(true)}
                 onBlur={handleBlur}
                 ref={inputRef}
+                style={hasLeftBorder ? {borderLeft: "1px dashed var(--border-color)"} : {}}
             />
             <div className={`${classes.anchor} ${isExpanded ? "" : classes.noDisplay}`}>
                 <div className={classes.dropDownContent} style={style}>

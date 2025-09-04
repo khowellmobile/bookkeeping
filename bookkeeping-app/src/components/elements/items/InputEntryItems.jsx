@@ -27,18 +27,20 @@ const JournalEntryItem = ({ vals, index, onFocus, onItemChange, scrollRef }) => 
         <div className={`${classes.mainContainer} ${classes.journalGridTemplate}`} onFocus={onFocus} tabIndex={0}>
             <AccountEntryDropdown vals={vals} scrollRef={scrollRef} onChange={handleAccountChange} />
             <Input
-                type="text"
+                type="number"
                 name="debit"
                 value={vals.type == "debit" ? vals.amount : ""}
                 onChange={handleAmountChange}
+                isOptional={true}
             />
             <Input
-                type="text"
+                type="number"
                 name="credit"
                 value={vals.type == "credit" ? vals.amount : ""}
                 onChange={handleAmountChange}
+                isOptional={true}
             />
-            <Input type="text" value={vals.memo} onChange={handleMemoChange} />
+            <Input type="text" value={vals.memo} onChange={handleMemoChange} isOptional={true} />
         </div>
     );
 };
@@ -106,21 +108,23 @@ const TransactionEntryItem = ({ vals, index, onFocus, onItemChange, scrollRef })
             onBlur={handleBlur}
             tabIndex={0}
         >
-            <input type="text" name="date" value={inputFields.date} onChange={valueChange} />
-            <EntityEntryDropdown scrollRef={scrollRef} onChange={handleEntityChange} />
-            <AccountEntryDropdown scrollRef={scrollRef} onChange={handleAccountChange} />
-            <Input type="text" name="memo" value={inputFields.memo} onChange={valueChange} />
+            <Input type="date" name="date" value={inputFields.date} onChange={valueChange} />
+            <EntityEntryDropdown scrollRef={scrollRef} onChange={handleEntityChange} hasLeftBorder={true} />
+            <AccountEntryDropdown scrollRef={scrollRef} onChange={handleAccountChange} hasLeftBorder={true} />
+            <Input type="text" name="memo" value={inputFields.memo} onChange={valueChange} isOptional={true} />
             <Input
-                type="text"
+                type="number"
                 name="debit"
                 value={inputFields.type == "debit" ? inputFields.amount : ""}
                 onChange={valueChange}
+                isOptional={true}
             />
             <Input
-                type="text"
+                type="number"
                 name="credit"
                 value={inputFields.type == "credit" ? inputFields.amount : ""}
                 onChange={valueChange}
+                isOptional={true}
             />
         </div>
     );

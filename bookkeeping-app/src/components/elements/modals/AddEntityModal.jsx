@@ -1,5 +1,7 @@
 import { useContext, useState } from "react";
 
+import classes from "./AddModalStyle.module.css";
+
 import EntitiesCtx from "../../contexts/EntitiesCtx";
 import BaseAddModal from "./BaseAddModal";
 import AddInputCluster from "../misc/AddInputCluster";
@@ -15,6 +17,7 @@ const AddEntityModal = ({ handleCloseModal }) => {
         email: "",
         description: "",
     });
+    const [errorText, setErrorText] = useState("");
 
     const hasUnsavedChanges =
         inputFields.name !== "" ||
@@ -33,8 +36,33 @@ const AddEntityModal = ({ handleCloseModal }) => {
     };
 
     const handleSaveClick = async () => {
-        ctxAddEntity(inputFields);
-        handleCloseModal();
+        if (validateInputs()) {
+            ctxAddEntity(inputFields);
+            setErrorText("");
+            handleCloseModal();
+        }
+    };
+
+    const validateInputs = () => {
+        let errTxt = "";
+
+        const phoneRegex = /^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/;
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+        if (inputFields.name.trim() === "") {
+            errTxt += "Entity Name cannot be empty.\n";
+        }
+
+        if (inputFields.phone_number !== "" && !phoneRegex.test(inputFields.phone_number)) {
+            errTxt += "Phone Number must be 10 digits.\n";
+        }
+
+        if (inputFields.email !== "" && !emailRegex.test(inputFields.email)) {
+            errTxt += "Email must follow standard format. \n";
+        }
+
+        setErrorText(errTxt);
+        return errTxt === "";
     };
 
     return (
@@ -44,14 +72,22 @@ const AddEntityModal = ({ handleCloseModal }) => {
             handleSaveClick={handleSaveClick}
             title="New Entity Creation"
         >
+            <span className={classes.errors}>
+                {errorText.split("\n").map((str, index) => {
+                    return <p key={index}>{str}</p>;
+                })}
+            </span>
             <AddInputCluster
+                type="text"
                 label="Entity Name"
                 placeholder="Enter Entity Name"
                 name="name"
                 value={inputFields.name}
                 onChange={handleInputChange}
+                isOptional={false}
             />
             <AddInputCluster
+                type="text"
                 label="Entity Company"
                 placeholder="Enter Entity Company (optional)"
                 name="company"
@@ -59,6 +95,7 @@ const AddEntityModal = ({ handleCloseModal }) => {
                 onChange={handleInputChange}
             />
             <AddInputCluster
+                type="text"
                 label="Entity Address"
                 placeholder="Enter Entity Address (optional)"
                 name="address"
@@ -66,15 +103,17 @@ const AddEntityModal = ({ handleCloseModal }) => {
                 onChange={handleInputChange}
             />
             <AddInputCluster
+                type="phoneNumber"
                 label="Entity Phone Number"
-                placeholder="Enter Entity Phone Number (optional)"
+                placeholder="eg. (123) 123-4567 (optional)"
                 name="phone_number"
                 value={inputFields.phone_number}
                 onChange={handleInputChange}
             />
             <AddInputCluster
+                type="email"
                 label="Entity Email"
-                placeholder="Enter Entity Email (optional)"
+                placeholder="eg. Example@gmail.com (optional)"
                 name="email"
                 value={inputFields.email}
                 onChange={handleInputChange}

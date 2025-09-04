@@ -46,7 +46,6 @@
     font-size: var(--small-font-size);
 }
 
-.inputCluster > input,
 .accountTypeDiv {
     width: 50%;
     padding-left: 0.25rem;
@@ -120,12 +119,17 @@
     background-color: var(--hover-color);
 }
 
-.buttons {
+.actionItems {
     display: flex;
-    justify-content: end;
+    justify-content: space-between;
 }
 
-.buttons > button {
+.actionItems > p {
+    color: red;
+    font-size: var(--small-font-size);
+}
+
+.actionItems button {
     width: 10rem;
     padding: 0.25rem 0.5rem;
     margin-left: 0.5rem;
