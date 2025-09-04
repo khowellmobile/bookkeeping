@@ -7,7 +7,7 @@ const Input = ({ type, name, value, onChange, customStyle, placeholder, isOption
     const [style, setStyle] = useState(customStyle);
 
     const unescapeHTML = (str) => {
-        if (typeof str === 'string') {
+        if (typeof str === "string") {
             return str
                 .replace(/&amp;/g, "&")
                 .replace(/&lt;/g, "<")
@@ -23,6 +23,7 @@ const Input = ({ type, name, value, onChange, customStyle, placeholder, isOption
     useEffect(() => {
         const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
         const phoneRegex = /^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/;
+        const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
 
         let isValid = true;
         if (value.trim().length === 0) {
@@ -46,6 +47,7 @@ const Input = ({ type, name, value, onChange, customStyle, placeholder, isOption
                     isValid = phoneRegex.test(value);
                     break;
                 case "date":
+                    isValid = dateRegex.test(value);
                     break;
                 default:
                     isValid = true;

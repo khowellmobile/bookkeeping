@@ -108,7 +108,7 @@ const TransactionEntryItem = ({ vals, index, onFocus, onItemChange, scrollRef })
             onBlur={handleBlur}
             tabIndex={0}
         >
-            <input type="text" name="date" value={inputFields.date} onChange={valueChange} />
+            <Input type="date" name="date" value={inputFields.date} onChange={valueChange} />
             <EntityEntryDropdown scrollRef={scrollRef} onChange={handleEntityChange} hasLeftBorder={true} />
             <AccountEntryDropdown scrollRef={scrollRef} onChange={handleAccountChange} hasLeftBorder={true} />
             <Input type="text" name="memo" value={inputFields.memo} onChange={valueChange} isOptional={true} />

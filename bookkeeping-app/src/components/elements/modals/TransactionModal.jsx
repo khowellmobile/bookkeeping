@@ -20,7 +20,7 @@ const TransactionModal = ({ vals, handleCloseModal }) => {
         memo: vals.memo,
     });
     const [editedTransaction, setEditedTransaction] = useState({});
-
+    const [errorText, setErrorText] = useState("");
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
@@ -67,9 +67,10 @@ const TransactionModal = ({ vals, handleCloseModal }) => {
     };
 
     const handleUpdateClick = () => {
-        console.log(editedTransaction);
-        ctxUpdateTransaction({ id: vals.id, ...editedTransaction });
-        handleCloseModal();
+        if (validateInputs()) {
+            ctxUpdateTransaction({ id: vals.id, ...editedTransaction });
+            handleCloseModal();
+        }
     };
 
     const checkAmount = (val) => {
@@ -80,6 +81,7 @@ const TransactionModal = ({ vals, handleCloseModal }) => {
         }
     };
 
+    // Check if needed. Input component should already do this.
     const checkText = (val) => {
         if (typeof val !== "string") {
             return "";
@@ -94,6 +96,31 @@ const TransactionModal = ({ vals, handleCloseModal }) => {
             .replace(/\//g, "&#x2F;");
 
         return sanitizedVal;
+    };
+
+    const validateInputs = () => {
+        let errTxt = "";
+
+        // Currently uses date picker no reason to check here
+        /* const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+        if (!dateRegex.test(inputFields.date)) {
+            errTxt += "Date is not in a valid format (YYYY-MM-DD).\n";
+        } */
+
+        if (!inputFields.entity) {
+            errTxt += "Payee cannot be empty.\n";
+        }
+
+        if (!inputFields.account) {
+            errTxt += "Account cannot be empty.\n";
+        }
+
+        if (inputFields.amount === "" || isNaN(Number(inputFields.amount))) {
+            errTxt += "Amount must be a number and cannot be empty.\n";
+        }
+
+        setErrorText("Error: Invalid fields.");
+        return errTxt === "";
     };
 
     const handleConfirmAction = (action) => {
@@ -198,11 +225,13 @@ const TransactionModal = ({ vals, handleCloseModal }) => {
                         <p>Memo</p>
                         <Input type="text" name="memo" value={inputFields.memo} onChange={handleValueChange} />
                     </div>
-                    <p>{vals.is_reconciled ? "☑️" : "❌"}</p>
-                    <div className={classes.buttons}>
-                        <button onClick={handleUpdateClick}>Save & Close</button>
-                        <button onClick={() => handleConfirmAction("closeEdit")}>Close</button>
-                        <button onClick={() => handleConfirmAction("delete")}>Delete</button>
+                    <div className={classes.actionItems}>
+                        <p>{errorText}</p>
+                        <span>
+                            <button onClick={handleUpdateClick}>Save & Close</button>
+                            <button onClick={() => handleConfirmAction("closeEdit")}>Close</button>
+                            <button onClick={() => handleConfirmAction("delete")}>Delete</button>
+                        </span>
                     </div>
                 </div>
             </div>

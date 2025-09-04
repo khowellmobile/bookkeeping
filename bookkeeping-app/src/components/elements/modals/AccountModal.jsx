@@ -17,6 +17,7 @@ const AccountModal = ({ account, handleCloseModal }) => {
     const [accountInitBalance, setAccountInitBalance] = useState(account.initial_balance);
     const [accountDescription, setAccountDescription] = useState(account.description);
     const [editedAccount, setEditedAccount] = useState({});
+    const [errorText, setErrorText] = useState("");
     const [isExpanded, setIsExpanded] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -44,8 +45,10 @@ const AccountModal = ({ account, handleCloseModal }) => {
     };
 
     const updateAccount = async () => {
-        ctxUpdateAccount({ ...editedAccount, id: account.id });
-        handleCloseModal();
+        if (validateInputs()) {
+            ctxUpdateAccount({ ...editedAccount, id: account.id });
+            handleCloseModal();
+        }
     };
 
     const handleCancelClose = () => {
@@ -63,6 +66,26 @@ const AccountModal = ({ account, handleCloseModal }) => {
 
     const onCancel = () => {
         setIsModalOpen(false);
+    };
+
+    const validateInputs = () => {
+        let errTxt = "";
+
+        if (accountName.trim() === "") {
+            errTxt += "Account Name cannot be empty.\n";
+        }
+
+        const validAccountTypes = new Set(accountTypes);
+        if (!validAccountTypes.has(accountType)) {
+            errTxt += "Account type set to unsupported type.\n";
+        }
+
+        if (accountInitBalance.trim() === "" || isNaN(Number(accountInitBalance))) {
+            errTxt += "Initial Balance must be a number and cannot be empty.\n";
+        }
+
+        setErrorText(errTxt);
+        return errTxt === "";
     };
 
     return (
@@ -123,9 +146,12 @@ const AccountModal = ({ account, handleCloseModal }) => {
                         <p>Description</p>
                         <Input type="text" value={accountDescription} onChange={handleDescChange} />
                     </div>
-                    <div className={classes.buttons}>
-                        <button onClick={updateAccount}>Save & Close</button>
-                        <button onClick={handleCancelClose}>Close</button>
+                    <div className={classes.actionItems}>
+                        <p>{errorText}</p>
+                        <span>
+                            <button onClick={updateAccount}>Save & Close</button>
+                            <button onClick={handleCancelClose}>Close</button>
+                        </span>
                     </div>
                 </div>
             </div>

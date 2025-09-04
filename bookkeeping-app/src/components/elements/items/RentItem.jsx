@@ -23,6 +23,8 @@ const RentItem = ({ item, dayIndex, updateFields, removePayment, handleSaveRentP
         entity: item.entity,
     });
 
+    const statusTypes = ["Asset", "Bank", "Equity", "Liability", "Revenue"];
+
     const pushStyle = {
         top: pushUp && isClicked ? "-8.1rem" : "0",
         left: pushLeft && isClicked ? "-11.6rem" : "0",
@@ -71,17 +73,16 @@ const RentItem = ({ item, dayIndex, updateFields, removePayment, handleSaveRentP
     };
 
     const handleSave = () => {
-        if (inputFields.amount != "" && inputFields.entity != "" && inputFields.status != "") {
-            const savePayment = {
-                ...inputFields,
-                date: item.date,
-            };
-            handleSaveRentPayment(dayIndex, savePayment);
-            handleClose();
-            setErrorText("");
-        } else {
+        if (inputFields.amount == "" || inputFields.entity == "" || inputFields.status == "") {
             setErrorText("Please fill all fields or cancel");
+            return;
+        } else if (!validateInputs()) {
+            return;
         }
+
+        handleSaveRentPayment(dayIndex, savePayment);
+        handleClose();
+        setErrorText("");
     };
 
     const handleDelete = () => {
@@ -134,6 +135,26 @@ const RentItem = ({ item, dayIndex, updateFields, removePayment, handleSaveRentP
         setIsConfirmModalOpen(false);
     };
 
+    const validateInputs = () => {
+        let errTxt = "";
+
+        if (inputFields.amount.trim() === "" || isNaN(Number(inputFields.amount))) {
+            errTxt += "Amount must be a number and cannot be empty.\n";
+        }
+
+        const validStatusTypes = new Set(statusTypes);
+        if (!validStatusTypes.has(inputFields.status)) {
+            errTxt += "Status type set to unsupported type.\n";
+        }
+
+        if (!inputFields.entity) {
+            errTxt += "Entity must be selected\n";
+        }
+
+        setErrorText("Error: Invalid fields.");
+        return errTxt === "";
+    };
+
     return (
         <>
             {isConfirmModalOpen && (
@@ -164,7 +185,8 @@ const RentItem = ({ item, dayIndex, updateFields, removePayment, handleSaveRentP
                         <div className={`${classes.header} ${isClicked && classes[inputFields.status]}`}>
                             <div className={`${classes.statIndicator} ${classes[inputFields.status]}`}></div>
                             <p>
-                                ${inputFields.amount ? inputFields.amount : 0.0},  {inputFields.entity?.name ? inputFields.entity.name : "Unknown"}
+                                ${inputFields.amount ? inputFields.amount : 0.0},{" "}
+                                {inputFields.entity?.name ? inputFields.entity.name : "Unknown"}
                             </p>
                         </div>
                         <div className={`${classes.rentInfo} ${!isClicked && classes.noDisplay}`}>
@@ -203,6 +225,7 @@ const RentItem = ({ item, dayIndex, updateFields, removePayment, handleSaveRentP
                                     name="amount"
                                     value={inputFields.amount}
                                     onChange={handleInputChange}
+                                    isOptional={false}
                                 />
                             </div>
                             <div className={classes.inputCluster}>

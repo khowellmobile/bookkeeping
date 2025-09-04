@@ -1,5 +1,6 @@
 .input {
     height: 2rem;
+    padding-left: 0.25rem;
 
     background-color: var(--secondary-background-color);
     font-family: "poppins";

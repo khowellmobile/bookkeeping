@@ -51,7 +51,6 @@
 
     background-color: var(--secondary-background-color);
     font-family: "poppins";
-    border-radius: 0.25rem;
     border: none;
     outline: 1px solid var(--border-color);
     cursor: pointer;
@@ -98,12 +97,12 @@
     padding: 0.25rem 0.5rem;
 }
 
-.buttons {
+.actionItems {
     display: flex;
-    justify-content: end;
+    justify-content: space-between;
 }
 
-.buttons > button {
+.actionItems button {
     width: 10rem;
     padding: 0.25rem 0.5rem;
     margin-left: 0.5rem;

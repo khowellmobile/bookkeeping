@@ -20,7 +20,7 @@ const AddAccountModal = ({ handleCloseModal }) => {
         description: "",
         account_number: "",
     });
-    const [errorText, setErrortext] = useState("");
+    const [errorText, setErrorText] = useState("");
     const [isExpanded, setIsExpanded] = useState(false);
 
     useEffect(() => {
@@ -99,7 +99,7 @@ const AddAccountModal = ({ handleCloseModal }) => {
             errTxt += "Initial Balance must be a number and cannot be empty.\n";
         }
 
-        setErrortext(errTxt);
+        setErrorText(errTxt);
         return errTxt === "";
     };
 

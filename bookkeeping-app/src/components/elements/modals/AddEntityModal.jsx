@@ -8,7 +8,7 @@ import AddInputCluster from "../misc/AddInputCluster";
 
 const AddEntityModal = ({ handleCloseModal }) => {
     const { ctxAddEntity } = useContext(EntitiesCtx);
-    const [errorText, setErrortext] = useState("");
+    const [errorText, setErrorText] = useState("");
 
     const [inputFields, setInputFields] = useState({
         name: "",
@@ -38,6 +38,7 @@ const AddEntityModal = ({ handleCloseModal }) => {
     const handleSaveClick = async () => {
         if (validateInputs()) {
             ctxAddEntity(inputFields);
+            setErrorText("");
             handleCloseModal();
         }
     };
@@ -60,7 +61,7 @@ const AddEntityModal = ({ handleCloseModal }) => {
             errTxt += "Email must follow standard format. \n";
         }
 
-        setErrortext(errTxt);
+        setErrorText(errTxt);
         return errTxt === "";
     };
 

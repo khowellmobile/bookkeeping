@@ -1,11 +1,12 @@
-import { useState, useCallback, useMemo, useRef, useContext, useEffect } from "react";
+import { useState, useCallback, useMemo, useRef, useContext } from "react";
 
 import classes from "./JournalsPage.module.css";
 
 import JournalsCtx from "../components/contexts/JournalsCtx";
-import { JournalEntryItem } from "../components/elements/items/InputEntryItems";
 import ConfirmationModal from "../components/elements/modals/ConfirmationModal";
 import NoResultsDisplay from "../components/elements/misc/NoResultsDisplay";
+import Input from "../components/elements/misc/Input";
+import { JournalEntryItem } from "../components/elements/items/InputEntryItems";
 
 const JournalsPage = () => {
     const { ctxJournalList, ctxUpdateJournal, ctxDeleteJournal } = useContext(JournalsCtx);
@@ -59,6 +60,13 @@ const JournalsPage = () => {
             date: date,
             journal_items: journal_items,
         };
+
+        const hasError = sendData.some((item) => !checkInput(item));
+        const dateError = !checkDate(date);
+
+        if (hasError || dateError) {
+            alert("Invalid Journal Fields. Please check formats and try again.");
+        }
 
         const returnedJournal = await ctxUpdateJournal(id, url, method, sendData);
         setActiveJournal(returnedJournal);
@@ -256,6 +264,22 @@ const JournalsPage = () => {
         }
     };
 
+    const checkDate = (date) => {
+        const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+
+        return dateRegex.test(date);
+    };
+
+    const checkInput = (inputs) => {
+        if (inputs.amount < 0) {
+            return false;
+        } else if (!inputs.account) {
+            return false;
+        }
+
+        return true;
+    };
+
     return (
         <>
             {isModalOpen && confirmAction.type && (
@@ -311,12 +335,14 @@ const JournalsPage = () => {
                             </div>
                         </section>
                         <section className={classes.titleDate}>
-                            <input
+                            <Input
+                                type="text"
                                 value={journalName}
                                 onChange={(event) => setJournalName(event.target.value)}
                                 placeholder="Enter Journal Name"
                             />
-                            <input
+                            <Input
+                                type="date"
                                 value={journalDate}
                                 onChange={(event) => setJournalDate(event.target.value)}
                                 placeholder="Choose Date"
