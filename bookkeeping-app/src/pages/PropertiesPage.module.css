@@ -138,6 +138,11 @@
     justify-content: space-between;
 }
 
+.errorText {
+    color: red;
+    font-size: var(--small-font-size);
+}
+
 .header > input {
     width: 20rem;
     padding: 0rem 0.25rem;

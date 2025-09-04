@@ -25,7 +25,7 @@ const EntitiesPage = () => {
         email: "",
         is_deleted: "",
     });
-
+    const [errorText, setErrorText] = useState("");
     const [isEditing, setIsEditing] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
@@ -38,6 +38,20 @@ const EntitiesPage = () => {
     useEffect(() => {
         setCtxFilterBy("entity");
     }, []);
+
+    // Setting fields to selected entity
+    useEffect(() => {
+        if (ctxActiveEntity) {
+            setInputFields({
+                name: ctxActiveEntity.name || "",
+                company: ctxActiveEntity.company || "",
+                address: ctxActiveEntity.address || "",
+                created_at: ctxActiveEntity.created_at || "",
+                phone_number: ctxActiveEntity.phone_number || "",
+                email: ctxActiveEntity.email || "",
+            });
+        }
+    }, [ctxActiveEntity]);
 
     const handleCloseModal = () => {
         setIsModalOpen(false);
@@ -94,8 +108,10 @@ const EntitiesPage = () => {
     };
 
     const handleSaveClick = () => {
-        ctxUpdateEntity({ id: ctxActiveEntity.id, ...inputFields });
-        setIsEditing(false);
+        if (validateInputs()) {
+            ctxUpdateEntity({ id: ctxActiveEntity.id, ...inputFields });
+            setIsEditing(false);
+        }
     };
 
     const onConfirmModalAction = () => {
@@ -137,19 +153,27 @@ const EntitiesPage = () => {
         }
     };
 
-    // Setting fields to selected entity
-    useEffect(() => {
-        if (ctxActiveEntity) {
-            setInputFields({
-                name: ctxActiveEntity.name || "",
-                company: ctxActiveEntity.company || "",
-                address: ctxActiveEntity.address || "",
-                created_at: ctxActiveEntity.created_at || "",
-                phone_number: ctxActiveEntity.phone_number || "",
-                email: ctxActiveEntity.email || "",
-            });
+    const validateInputs = () => {
+        let errTxt = "";
+
+        const phoneRegex = /^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/;
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+        if (inputFields.name.trim() === "") {
+            errTxt += "Entity Name cannot be empty.\n";
         }
-    }, [ctxActiveEntity]);
+
+        if (inputFields.phone_number !== "" && !phoneRegex.test(inputFields.phone_number)) {
+            errTxt += "Phone Number must be 10 digits.\n";
+        }
+
+        if (inputFields.email !== "" && !emailRegex.test(inputFields.email)) {
+            errTxt += "Email must follow standard format. \n";
+        }
+
+        setErrorText("Error: Invalid edits. Check formats and try again.");
+        return errTxt === "";
+    };
 
     return (
         <>
@@ -180,6 +204,7 @@ const EntitiesPage = () => {
                                 onChange={handleInputChange}
                                 disabled={!isEditing}
                             />
+                            <p className={classes.errorText}>{errorText}</p>
                             {isEditing ? (
                                 <div>
                                     <button className={classes.button} onClick={handleSaveClick}>

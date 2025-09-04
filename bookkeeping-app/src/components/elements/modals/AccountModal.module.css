@@ -124,6 +124,11 @@
     justify-content: space-between;
 }
 
+.actionItems > p {
+    color: red;
+    font-size: var(--small-font-size);
+}
+
 .actionItems button {
     width: 10rem;
     padding: 0.25rem 0.5rem;

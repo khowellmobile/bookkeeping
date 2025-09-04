@@ -19,6 +19,7 @@ const AddPropertyModal = ({ handleCloseModal }) => {
         number_of_units: "",
     });
     const [isExpanded, setIsExpanded] = useState(false);
+    const [errorText, setErrorText] = useState("");
 
     const hasUnsavedChanges =
         inputFields.name !== "" ||
@@ -46,8 +47,10 @@ const AddPropertyModal = ({ handleCloseModal }) => {
     };
 
     const handleSaveClick = () => {
-        addProperty();
-        handleCloseModal();
+        if (validateInputs()) {
+            addProperty();
+            handleCloseModal();
+        }
     };
 
     const clickTypeHandler = (type) => {
@@ -58,6 +61,29 @@ const AddPropertyModal = ({ handleCloseModal }) => {
         setIsExpanded(false);
     };
 
+    const validateInputs = () => {
+        let errTxt = "";
+
+        if (inputFields.name.trim() === "") {
+            errTxt += "Property Name cannot be empty.\n";
+        }
+
+        if (inputFields.address.trim() === "") {
+            errTxt += "Property Address cannot be empty.\n";
+        }
+
+        if (inputFields.rent.trim() !== "" && isNaN(Number(inputFields.rent))) {
+            errTxt += "Rent must be a number.\n";
+        }
+
+        if (inputFields.number_of_units.trim() === "" || isNaN(Number(inputFields.number_of_units))) {
+            errTxt += "Unit amount must be a number and cannot be empty.\n";
+        }
+
+        setErrorText(errTxt);
+        return errTxt === "";
+    };
+
     return (
         <BaseAddModal
             handleCloseModal={handleCloseModal}
@@ -65,6 +91,11 @@ const AddPropertyModal = ({ handleCloseModal }) => {
             handleSaveClick={handleSaveClick}
             title="New Property Creation"
         >
+            <span className={classes.errors}>
+                {errorText.split("\n").map((str, index) => {
+                    return <p key={index}>{str}</p>;
+                })}
+            </span>
             <AddInputCluster
                 type="text"
                 label="Property Name"

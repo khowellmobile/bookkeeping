@@ -22,6 +22,7 @@ const PropertiesPage = () => {
         rent: "",
         is_active: "",
     });
+    const [errorText, setErrorText] = useState("");
     const [isEditing, setIsEditing] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -119,8 +120,10 @@ const PropertiesPage = () => {
     };
 
     const handleSaveClick = () => {
-        ctxUpdateProperty({ id: activeProperty.id, ...inputFields });
-        setIsEditing(false);
+        if (validateInputs()) {
+            ctxUpdateProperty({ id: activeProperty.id, ...inputFields });
+            setIsEditing(false);
+        }
     };
 
     const handleDeleteClick = () => {
@@ -134,6 +137,29 @@ const PropertiesPage = () => {
     useEffect(() => {
         focusProperty(ctxActiveProperty);
     }, []);
+
+    const validateInputs = () => {
+        let errTxt = "";
+
+        if (inputFields.name.trim() === "") {
+            errTxt += "Property Name cannot be empty.\n";
+        }
+
+        if (inputFields.address.trim() === "") {
+            errTxt += "Property Address cannot be empty.\n";
+        }
+
+        if (inputFields.rent.trim() !== "" && isNaN(Number(inputFields.rent))) {
+            errTxt += "Rent must be a number.\n";
+        }
+
+        if (inputFields.number_of_units.trim() === "" || isNaN(Number(inputFields.number_of_units))) {
+            errTxt += "Unit amount must be a number and cannot be empty.\n";
+        }
+
+        setErrorText("Error: Invalid edits. Check formats and try again.");
+        return errTxt === "";
+    };
 
     return (
         <>
@@ -164,6 +190,7 @@ const PropertiesPage = () => {
                                 onChange={handleInputChange}
                                 disabled={!isEditing}
                             />
+                            <p className={classes.errorText}>{errorText}</p>
                             {isEditing ? (
                                 <div>
                                     <button className={classes.button} onClick={handleSaveClick}>

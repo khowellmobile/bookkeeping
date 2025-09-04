@@ -89,6 +89,11 @@
     color: var(--primary-text-color);
 }
 
+.errorText {
+    color: red;
+    font-size: var(--small-font-size);
+}
+
 .entityInfo > .header > h2 {
     font-weight: 400;
 }

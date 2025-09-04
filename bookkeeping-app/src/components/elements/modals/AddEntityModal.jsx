@@ -8,7 +8,6 @@ import AddInputCluster from "../misc/AddInputCluster";
 
 const AddEntityModal = ({ handleCloseModal }) => {
     const { ctxAddEntity } = useContext(EntitiesCtx);
-    const [errorText, setErrorText] = useState("");
 
     const [inputFields, setInputFields] = useState({
         name: "",
@@ -18,6 +17,7 @@ const AddEntityModal = ({ handleCloseModal }) => {
         email: "",
         description: "",
     });
+    const [errorText, setErrorText] = useState("");
 
     const hasUnsavedChanges =
         inputFields.name !== "" ||
