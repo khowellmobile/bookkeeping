@@ -119,7 +119,7 @@ const TransactionModal = ({ vals, handleCloseModal }) => {
             errTxt += "Amount must be a number and cannot be empty.\n";
         }
 
-        setErrorText("Error: Invalid fields.");
+        setErrorText("Error: Invalid fields. Edits were not saved.");
         return errTxt === "";
     };
 

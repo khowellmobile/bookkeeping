@@ -86,7 +86,7 @@ const AccountModal = ({ account, handleCloseModal }) => {
             errTxt += "Initial Balance must be a number and cannot be empty.\n";
         }
 
-        setErrorText(errTxt);
+        setErrorText("Error: Invalid fields. Edits were not saved.");
         return errTxt === "";
     };
 
