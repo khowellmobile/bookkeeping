@@ -1,7 +1,8 @@
-import { useEffect, useState, useRef, useContext } from "react";
+import { useEffect, useState, useRef, useContext, useCallback } from "react";
 
 import classes from "./RentItem.module.css";
 
+import { useToast } from "../../contexts/ToastCtx";
 import RentPaymentsCtx from "../../contexts/RentPaymentsCtx";
 import EntityDropdown from "../dropdowns/EntityDropdown";
 import ConfirmationModal from "../modals/ConfirmationModal";
@@ -9,13 +10,13 @@ import Input from "../misc/Input";
 
 const RentItem = ({ item, dayIndex, updateFields, removePayment, handleSaveRentPayment, pushLeft, pushUp }) => {
     const { ctxUpdatePayment } = useContext(RentPaymentsCtx);
+    const { showToast } = useToast();
 
     const itemBoxRef = useRef(null);
 
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
     const [isClicked, setIsClicked] = useState(String(item.id).startsWith("temp"));
     const [isAbsolute, setIsAbsolute] = useState(String(item.id).startsWith("temp"));
-    const [isChanged, setIsChanged] = useState(false);
     const [errorText, setErrorText] = useState("");
     const [inputFields, setInputFields] = useState({
         status: item.status,
@@ -23,7 +24,7 @@ const RentItem = ({ item, dayIndex, updateFields, removePayment, handleSaveRentP
         entity: item.entity,
     });
 
-    const statusTypes = ["Asset", "Bank", "Equity", "Liability", "Revenue"];
+    const statusTypes = ["scheduled", "paid", "due", "overdue"];
 
     const pushStyle = {
         top: pushUp && isClicked ? "-8.1rem" : "0",
@@ -44,8 +45,6 @@ const RentItem = ({ item, dayIndex, updateFields, removePayment, handleSaveRentP
                 [name]: value,
             }));
         }
-
-        setIsChanged(true);
     };
 
     const handleOpen = () => {
@@ -55,7 +54,7 @@ const RentItem = ({ item, dayIndex, updateFields, removePayment, handleSaveRentP
         }
     };
 
-    const handleClose = () => {
+    const handleClose = useCallback(() => {
         if (isClicked) {
             setIsClicked(false);
             setTimeout(() => {
@@ -63,14 +62,26 @@ const RentItem = ({ item, dayIndex, updateFields, removePayment, handleSaveRentP
             }, 400);
         }
 
+        const isChanged =
+            inputFields.amount !== item.amount ||
+            inputFields.entity !== item.entity ||
+            inputFields.status !== item.status;
+
         if (String(item.id).startsWith("temp")) {
             removePayment(dayIndex, item.id);
-        } else if (isChanged) {
+        } else if (isChanged && validateInputs()) {
             updateFields(dayIndex, item.id, inputFields);
-            setIsChanged(false);
             ctxUpdatePayment({ ...item, ...inputFields });
+        } else if (isChanged && !validateInputs()) {
+            showToast(errorText, "error", 5000);
+            setInputFields({
+                status: item.status,
+                amount: item.amount,
+                entity: item.entity,
+            });
+            setErrorText("");
         }
-    };
+    }, [inputFields]);
 
     const handleSave = () => {
         if (inputFields.amount == "" || inputFields.entity == "" || inputFields.status == "") {
@@ -91,12 +102,10 @@ const RentItem = ({ item, dayIndex, updateFields, removePayment, handleSaveRentP
 
     const handleTagClick = (statName) => {
         setInputFields((prev) => ({ ...prev, status: statName }));
-        setIsChanged(true);
     };
 
     const handleEntityChange = (entity) => {
         setInputFields((prev) => ({ ...prev, entity: entity }));
-        setIsChanged(true);
     };
 
     // Ensures click spams do not cause isAbsolute to be false when isClicked is true
@@ -123,7 +132,7 @@ const RentItem = ({ item, dayIndex, updateFields, removePayment, handleSaveRentP
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
-    }, [isClicked]);
+    }, [isClicked, handleClose]);
 
     const onConfirmModalAction = () => {
         removePayment(dayIndex, item.id);
@@ -135,11 +144,11 @@ const RentItem = ({ item, dayIndex, updateFields, removePayment, handleSaveRentP
         setIsConfirmModalOpen(false);
     };
 
-    const validateInputs = () => {
+    const validateInputs = useCallback(() => {
         let errTxt = "";
-
-        if (inputFields.amount.trim() === "" || isNaN(Number(inputFields.amount))) {
-            errTxt += "Amount must be a number and cannot be empty.\n";
+        console.log(inputFields.amount);
+        if (inputFields.amount.trim() === "" || isNaN(Number(inputFields.amount)) || Number(inputFields.amount) <= 0) {
+            errTxt += "Amount must be a number and cannot be empty or 0.\n";
         }
 
         const validStatusTypes = new Set(statusTypes);
@@ -151,9 +160,11 @@ const RentItem = ({ item, dayIndex, updateFields, removePayment, handleSaveRentP
             errTxt += "Entity must be selected\n";
         }
 
-        setErrorText("Error: Invalid fields.");
+        if (!errTxt === "") {
+            setErrorText("Error: Invalid fields.");
+        }
         return errTxt === "";
-    };
+    }, [inputFields]);
 
     return (
         <>

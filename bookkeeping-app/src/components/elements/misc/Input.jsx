@@ -65,9 +65,9 @@ const Input = ({ type, name, value, onChange, customStyle, placeholder, isOption
         }
     }, [value, type]);
 
-    useEffect(() => {
+    /* useEffect(() => {
         console.log(warnUser);
-    }, [warnUser]);
+    }, [warnUser]); */
 
     return (
         <input
