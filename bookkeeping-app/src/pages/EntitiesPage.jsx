@@ -185,7 +185,10 @@ const EntitiesPage = () => {
             errTxt += "Email must follow standard format. \n";
         }
 
-        setErrorText("Error: Invalid edits. Check formats and try again.");
+        if (errTxt !== "") {
+            setErrorText("Error: Invalid edits. Check formats and try again.");
+        }
+
         return errTxt === "";
     };
 
