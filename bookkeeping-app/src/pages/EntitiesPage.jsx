@@ -91,7 +91,7 @@ const EntitiesPage = () => {
         if (isEntityChanged()) {
             setIsConfirmModalOpen(true);
             setConfirmAction({
-                type: "switch_active",
+                type: "cancel_edit",
                 payload: ctxActiveEntity,
             });
         } else {
@@ -125,6 +125,19 @@ const EntitiesPage = () => {
                 ctxUpdateEntity({ id: ctxActiveEntity.id, is_deleted: true });
                 setIsEditing(false);
                 return;
+            case "cancel_edit":
+                if (ctxActiveEntity) {
+                    setInputFields({
+                        name: ctxActiveEntity.name || "",
+                        company: ctxActiveEntity.company || "",
+                        address: ctxActiveEntity.address || "",
+                        created_at: ctxActiveEntity.created_at || "",
+                        phone_number: ctxActiveEntity.phone_number || "",
+                        email: ctxActiveEntity.email || "",
+                    });
+                }
+                setIsEditing(false);
+                return;
             default:
         }
     };
@@ -137,6 +150,7 @@ const EntitiesPage = () => {
     const getModalText = () => {
         switch (confirmAction.type) {
             case "switch_active":
+            case "cancel_edit":
                 return {
                     msg: "You have unsaved changes. Are you sure you want to discard them?",
                     confirm_txt: "Discard Changes",
@@ -171,7 +185,10 @@ const EntitiesPage = () => {
             errTxt += "Email must follow standard format. \n";
         }
 
-        setErrorText("Error: Invalid edits. Check formats and try again.");
+        if (errTxt !== "") {
+            setErrorText("Error: Invalid edits. Check formats and try again.");
+        }
+
         return errTxt === "";
     };
 
