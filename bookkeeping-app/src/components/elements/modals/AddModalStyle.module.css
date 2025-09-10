@@ -60,15 +60,18 @@
 }
 
 .dropdown > p {
-    width: 100%;
-    padding-left: 0.25rem;
+    padding: 0.25rem 0.5rem;
 
     font-size: var(--small-font-size);
+    font-weight: 400;
     cursor: pointer;
+
+    transition: all 0.25s ease;
 }
 
 .dropdown > p:hover {
     background-color: var(--hover-color);
+    text-decoration: underline;
 }
 
 .textArea {
