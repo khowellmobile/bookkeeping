@@ -8,7 +8,7 @@ import downChevIcon from "../../../assets/chevron-down-icon.svg";
 const PropertyTypeDropdown = ({ val, clickTypeHandler, isEditing }) => {
     const [isExpanded, setIsExpanded] = useState(false);
 
-    const propertyTypes = ["Commercial", "Residential", "Multi-Unit"];
+    const propertyTypes = ["commercial", "residential", "multi-unit"];
 
     const editingStyle = {
         border: "1px solid var(--border-color)",
@@ -28,7 +28,7 @@ const PropertyTypeDropdown = ({ val, clickTypeHandler, isEditing }) => {
                     isEditing ? setIsExpanded((prev) => !prev) : "";
                 }}
             >
-                {val && <p>{val}</p>}
+                {val && <p>{val.charAt(0).toUpperCase() + val.slice(1)}</p>}
                 {isEditing && (
                     <img src={isExpanded ? upChevIcon : downChevIcon} className={classes.icon} alt="chevron icon" />
                 )}
@@ -43,7 +43,7 @@ const PropertyTypeDropdown = ({ val, clickTypeHandler, isEditing }) => {
                                     isEditing ? handleClick(type) : "";
                                 }}
                             >
-                                {type}
+                                {type.charAt(0).toUpperCase() + type.slice(1)}
                             </p>
                         );
                     })}

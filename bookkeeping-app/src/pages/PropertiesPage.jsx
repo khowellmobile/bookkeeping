@@ -61,7 +61,6 @@ const PropertiesPage = () => {
             ...prev,
             property_type: type,
         }));
-        setIsExpanded(false);
     };
 
     const isPropertyChanged = () => {
@@ -166,7 +165,10 @@ const PropertiesPage = () => {
             errTxt += "Unit amount must be a number and cannot be empty.\n";
         }
 
-        setErrorText("Error: Invalid edits. Check formats and try again.");
+        if (errTxt !== "") {
+            setErrorText("Error: Invalid edits. Check formats and try again.");
+        }
+
         return errTxt === "";
     };
 
