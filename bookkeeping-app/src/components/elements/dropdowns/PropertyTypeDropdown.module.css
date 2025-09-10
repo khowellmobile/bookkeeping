@@ -1,0 +1,71 @@
+.typeDiv {
+    width: 20rem;
+    height: 2rem;
+    padding-left: 0.25rem;
+
+    border: none;
+    outline: none;
+    font-family: "poppins";
+}
+
+.typeDiv {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.typeDiv > p {
+    font-size: var(--small-font-size);
+}
+
+.placeholder {
+    color: grey;
+    font-size: var(--small-font-size);
+    user-select: none;
+}
+
+.icon {
+    width: 1.25rem;
+    height: 1.25rem;
+
+    user-select: none;
+    cursor: pointer;
+}
+
+.noDisplay {
+    display: none;
+}
+
+.anchor {
+    position: relative;
+}
+
+.dropdown {
+    width: 20rem;
+
+    background-color: var(--background-color);
+    color: black;
+    user-select: none;
+    border: 1px solid var(--border-color);
+    border-top: none;
+
+    display: flex;
+    flex-direction: column;
+
+    position: absolute;
+}
+
+.dropdown > p {
+    padding: 0.25rem 0.5rem;
+
+    font-size: var(--small-font-size);
+    font-weight: 400;
+    cursor: pointer;
+
+    transition: all 0.25s ease;
+}
+
+.dropdown > p:hover {
+    background-color: var(--hover-color);
+    text-decoration: underline;
+}

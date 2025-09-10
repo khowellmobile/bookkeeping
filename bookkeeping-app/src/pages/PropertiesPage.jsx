@@ -9,6 +9,7 @@ import AddPropertyModal from "../components/elements/modals/AddPropertyModal";
 import SearchBox from "../components/elements/misc/SearchBox";
 import RentInformation from "../components/elements/misc/RentInformation";
 import Input from "../components/elements/misc/Input";
+import PropertyTypeDropdown from "../components/elements/dropdowns/PropertyTypeDropdown";
 
 const PropertiesPage = () => {
     const { ctxPropertyList, ctxUpdateProperty, setCtxActiveProperty, ctxActiveProperty } = useContext(PropertiesCtx);
@@ -53,6 +54,14 @@ const PropertiesPage = () => {
             ...prev,
             [name]: value,
         }));
+    };
+
+    const clickTypeHandler = (type) => {
+        setInputFields((prev) => ({
+            ...prev,
+            property_type: type,
+        }));
+        setIsExpanded(false);
     };
 
     const isPropertyChanged = () => {
@@ -232,12 +241,10 @@ const PropertiesPage = () => {
                                     </div>
                                     <div className={`${classes.cluster} ${isEditing ? classes.editing : ""}`}>
                                         <p>Property Type:</p>
-                                        <Input
-                                            type="text"
-                                            name="property_type"
-                                            value={inputFields.property_type}
-                                            onChange={handleInputChange}
-                                            disabled={!isEditing}
+                                        <PropertyTypeDropdown
+                                            val={inputFields.property_type}
+                                            clickTypeHandler={clickTypeHandler}
+                                            isEditing={isEditing}
                                         />
                                     </div>
                                     <div className={`${classes.cluster} ${isEditing ? classes.editing : ""}`}>
