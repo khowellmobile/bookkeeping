@@ -91,7 +91,7 @@ const RentItem = ({ item, dayIndex, updateFields, removePayment, handleSaveRentP
             return;
         }
 
-        handleSaveRentPayment(dayIndex, savePayment);
+        handleSaveRentPayment(dayIndex, inputFields);
         handleClose();
         setErrorText("");
     };
