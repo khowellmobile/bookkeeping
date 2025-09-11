@@ -5,6 +5,8 @@ import ToastNotification from "../elements/misc/ToastNotification";
 const ToastCtx = createContext(null);
 
 export const ToastCtxProvider = ({ children }) => {
+    const [toastQueue, setToastQueue] = useState([]);
+
     const [toast, setToast] = useState({
         text: "",
         type: "success",
@@ -12,14 +14,33 @@ export const ToastCtxProvider = ({ children }) => {
         duration: 0,
     });
 
+    useEffect(() => {
+        if (!toast.isVisible && toastQueue.length > 0) {
+            const nextToast = toastQueue[0];
+            setToast({
+                text: nextToast.text,
+                type: nextToast.type,
+                isVisible: true,
+                duration: nextToast.duration,
+            });
+
+            const timer = setTimeout(() => {
+                setToastQueue((prev) => prev.slice(1));
+            }, nextToast.duration);
+
+            return () => clearTimeout(timer);
+        }
+    }, [toast.isVisible, toastQueue, setToast, setToastQueue]);
+
     const showToast = useCallback((text, type = "success", duration = 3000) => {
-        setToast({ text, type, isVisible: true, duration: duration });
-
-        const timer = setTimeout(() => {
-            setToast((prev) => ({ ...prev, isVisible: false }));
-        }, duration + 750);
-
-        return () => clearTimeout(timer);
+        setToastQueue((prev) => [
+            ...prev,
+            {
+                text: text,
+                type: type,
+                duration: duration,
+            },
+        ]);
     }, []);
 
     const hideToast = useCallback(() => {
@@ -27,7 +48,7 @@ export const ToastCtxProvider = ({ children }) => {
     }, []);
 
     const contextValue = { showToast, hideToast };
-    
+
     return (
         <ToastCtx.Provider value={contextValue}>
             {children}

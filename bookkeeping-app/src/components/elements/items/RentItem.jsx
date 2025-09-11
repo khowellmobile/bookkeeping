@@ -146,7 +146,6 @@ const RentItem = ({ item, dayIndex, updateFields, removePayment, handleSaveRentP
 
     const validateInputs = useCallback(() => {
         let errTxt = "";
-        console.log(inputFields.amount);
         if (inputFields.amount.trim() === "" || isNaN(Number(inputFields.amount)) || Number(inputFields.amount) <= 0) {
             errTxt += "Amount must be a number and cannot be empty or 0.\n";
         }
