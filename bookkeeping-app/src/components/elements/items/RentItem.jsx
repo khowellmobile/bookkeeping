@@ -54,14 +54,15 @@ const RentItem = ({ item, dayIndex, updateFields, removePayment, handleSaveRentP
         }
     };
 
-    const handleClose = useCallback(() => {
-        if (isClicked) {
-            setIsClicked(false);
-            setTimeout(() => {
-                setIsAbsolute(false);
-            }, 400);
-        }
+    /*    useEffect(() => {
+        console.log(isClicked);
+    }, [isClicked]);
 
+    useEffect(() => {
+        console.log(isAbsolute);
+    }, [isAbsolute]);
+ */
+    const handleClose = useCallback(() => {
         const isChanged =
             inputFields.amount !== item.amount ||
             inputFields.entity !== item.entity ||
@@ -81,6 +82,11 @@ const RentItem = ({ item, dayIndex, updateFields, removePayment, handleSaveRentP
             });
             setErrorText("");
         }
+
+        setIsClicked(false);
+        setTimeout(() => {
+            setIsAbsolute(false);
+        }, 400);
     }, [inputFields]);
 
     const handleSave = () => {
@@ -91,7 +97,12 @@ const RentItem = ({ item, dayIndex, updateFields, removePayment, handleSaveRentP
             return;
         }
 
-        handleSaveRentPayment(dayIndex, inputFields);
+        const savePayment = {
+            ...inputFields,
+            date: item.date,
+        };
+
+        handleSaveRentPayment(dayIndex, savePayment);
         handleClose();
         setErrorText("");
     };
@@ -109,6 +120,8 @@ const RentItem = ({ item, dayIndex, updateFields, removePayment, handleSaveRentP
     };
 
     // Ensures click spams do not cause isAbsolute to be false when isClicked is true
+    // This is based on when isAbsolute changes to avoid on close when they need to be
+    // different for 400ms
     useEffect(() => {
         if (isAbsolute !== isClicked) {
             setIsAbsolute(isClicked);
