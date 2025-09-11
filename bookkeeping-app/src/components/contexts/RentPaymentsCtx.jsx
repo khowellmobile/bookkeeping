@@ -35,12 +35,6 @@ export function RentPaymentsCtxProvider(props) {
     const [ctxMonthPaymentList, setCtxMonthPaymentList] = useState([]);
     const [ctxActiveDate, setCtxActiveDate] = useState(getInitialDate());
 
-    /* useEffect(() => {
-        if (ctxAccessToken) {
-            populateCtxPayments();
-        }
-    }, [ctxActiveProperty, ctxAccessToken]);
- */
     useEffect(() => {
         if (!ctxActiveProperty || !ctxAccessToken) {
             return;

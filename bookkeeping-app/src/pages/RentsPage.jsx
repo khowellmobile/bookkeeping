@@ -11,7 +11,6 @@ import RentItem from "../components/elements/items/RentItem";
 
 const RentsPage = () => {
     const {
-        getCtxPaymentsByMonth,
         ctxMonthPaymentList,
         setCtxMonthPaymentList,
         ctxAddPayment,

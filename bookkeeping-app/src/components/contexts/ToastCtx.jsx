@@ -14,10 +14,6 @@ export const ToastCtxProvider = ({ children }) => {
         duration: 0,
     });
 
-    useEffect(() => {
-        console.log(toastQueue);
-    }, [toastQueue]);
-
     // Controls showing toast
     useEffect(() => {
         if (!toast.isVisible && toastQueue.length > 0) {
