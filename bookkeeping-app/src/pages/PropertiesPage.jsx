@@ -128,9 +128,16 @@ const PropertiesPage = () => {
     };
 
     const handleSaveClick = () => {
+        if (!isEntityChanged()) {
+            setIsEditing(false);
+            if (errorText !== "") setErrorText("");
+            return;
+        }
+
         if (validateInputs()) {
             ctxUpdateProperty({ id: activeProperty.id, ...inputFields });
             setIsEditing(false);
+            if (errorText !== "") setErrorText("");
         }
     };
 

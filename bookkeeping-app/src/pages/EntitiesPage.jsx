@@ -108,9 +108,16 @@ const EntitiesPage = () => {
     };
 
     const handleSaveClick = () => {
+        if (!isEntityChanged()) {
+            setIsEditing(false);
+            if (errorText !== "") setErrorText("");
+            return;
+        }
+
         if (validateInputs()) {
             ctxUpdateEntity({ id: ctxActiveEntity.id, ...inputFields });
             setIsEditing(false);
+            if (errorText !== "") setErrorText("");
         }
     };
 
