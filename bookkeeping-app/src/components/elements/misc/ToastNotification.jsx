@@ -10,12 +10,19 @@ const ToastNotification = ({ text, type, duration = 3000 }) => {
     const [isOnScreen, setIsOnSCreen] = useState(false);
 
     useEffect(() => {
-        handleOpen();
-        const timer = setTimeout(() => {
+        const transitionTimer = setTimeout(() => {
+            handleOpen();
+        }, 10);
+
+        // Keep the main timer as is
+        const hideTimer = setTimeout(() => {
             handleClose();
         }, duration);
 
-        return () => clearTimeout(timer);
+        return () => {
+            clearTimeout(transitionTimer);
+            clearTimeout(hideTimer);
+        };
     }, []);
 
     const colors = {

@@ -9,11 +9,16 @@ export const ToastCtxProvider = ({ children }) => {
 
     const [toast, setToast] = useState({
         text: "",
-        type: "success",
+        type: "",
         isVisible: false,
         duration: 0,
     });
 
+    useEffect(() => {
+        console.log(toastQueue);
+    }, [toastQueue]);
+
+    // Controls showing toast
     useEffect(() => {
         if (!toast.isVisible && toastQueue.length > 0) {
             const nextToast = toastQueue[0];
@@ -23,14 +28,20 @@ export const ToastCtxProvider = ({ children }) => {
                 isVisible: true,
                 duration: nextToast.duration,
             });
+        }
+    }, [toast.isVisible, toastQueue, setToast]);
 
+    // controls hiding and removing toast
+    useEffect(() => {
+        if (toast.isVisible) {
             const timer = setTimeout(() => {
+                setToast((prev) => ({ ...prev, isVisible: false }));
                 setToastQueue((prev) => prev.slice(1));
-            }, nextToast.duration);
+            }, toast.duration + 750);
 
             return () => clearTimeout(timer);
         }
-    }, [toast.isVisible, toastQueue, setToast, setToastQueue]);
+    }, [toast.isVisible, toast.duration, setToast, setToastQueue]);
 
     const showToast = useCallback((text, type = "success", duration = 3000) => {
         setToastQueue((prev) => [
