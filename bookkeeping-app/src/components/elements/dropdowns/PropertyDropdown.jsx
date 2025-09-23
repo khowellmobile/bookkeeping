@@ -2,7 +2,6 @@ import { useState, useContext } from "react";
 
 import classes from "./PropertyDropdown.module.css";
 
-import AuthCtx from "../../contexts/AuthCtx";
 import PropertiesCtx from "../../contexts/PropertiesCtx";
 
 import upChevIcon from "../../../assets/chevron-up-icon.svg";
@@ -17,6 +16,8 @@ const Dropdown = () => {
         setCtxActiveProperty(property);
         setIsExpanded(false);
     };
+
+    /* console.log(ctxPropertyList) */
 
     return (
         <div className={classes.mainContainer}>

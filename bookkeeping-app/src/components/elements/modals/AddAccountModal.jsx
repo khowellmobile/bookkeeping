@@ -180,7 +180,7 @@ const AddAccountModal = ({ handleCloseModal }) => {
                         </div>
                     ))
                 ) : (
-                    <NoResultsDisplay mainText={"No Accounts to load."} guideText={"Have you chosen a Property?"} />
+                    <NoResultsDisplay mainText={"No Accounts to load."} guideText={""} />
                 )}
             </div>
         </BaseAddModal>
