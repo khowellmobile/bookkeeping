@@ -32,7 +32,7 @@ const PropertiesPage = () => {
         payload: null,
     });
 
-    // Setting fields to selected entity
+    // Setting fields to selected property
     const focusProperty = (property) => {
         if (property) {
             setActiveProperty(property);
@@ -128,7 +128,7 @@ const PropertiesPage = () => {
     };
 
     const handleSaveClick = () => {
-        if (!isEntityChanged()) {
+        if (!isPropertyChanged()) {
             setIsEditing(false);
             if (errorText !== "") setErrorText("");
             return;

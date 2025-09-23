@@ -21,17 +21,11 @@ export function PropertiesCtxProvider(props) {
     const [ctxPropertyList, setCtxPropertyList] = useState(null);
     const [ctxActiveProperty, setCtxActiveProperty] = useState();
 
-    console.log("1")
-
     useEffect(() => {
         if (ctxAccessToken) {
             populateCtxProperties();
         }
     }, [ctxAccessToken]);
-
-    /* useEffect(() => {
-        console.log(ctxPropertyList);
-    }, [ctxPropertyList]); */
 
     useEffect(() => {
         if (!ctxActiveProperty && !sessionStorage.getItem("activePropertyId") && ctxAccessToken) {
@@ -78,7 +72,6 @@ export function PropertiesCtxProvider(props) {
     };
 
     const ctxAddProperty = async (propertyToAdd) => {
-        console.log(propertyToAdd);
         try {
             const response = await fetch("http://127.0.0.1:8000/api/properties/", {
                 method: "POST",
