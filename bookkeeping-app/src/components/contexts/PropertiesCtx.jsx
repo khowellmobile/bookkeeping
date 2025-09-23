@@ -21,11 +21,17 @@ export function PropertiesCtxProvider(props) {
     const [ctxPropertyList, setCtxPropertyList] = useState(null);
     const [ctxActiveProperty, setCtxActiveProperty] = useState();
 
+    console.log("1")
+
     useEffect(() => {
         if (ctxAccessToken) {
             populateCtxProperties();
         }
     }, [ctxAccessToken]);
+
+    /* useEffect(() => {
+        console.log(ctxPropertyList);
+    }, [ctxPropertyList]); */
 
     useEffect(() => {
         if (!ctxActiveProperty && !sessionStorage.getItem("activePropertyId") && ctxAccessToken) {

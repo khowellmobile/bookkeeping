@@ -29,7 +29,7 @@ const RentInformation = () => {
                 ) : (
                     <NoResultsDisplay
                         mainText={"No Transactions to load."}
-                        guideText={"Have you chosen a Property and Entity?"}
+                        guideText={""}
                     />
                 )}
             </section>
