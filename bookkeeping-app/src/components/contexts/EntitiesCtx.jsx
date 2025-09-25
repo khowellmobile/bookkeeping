@@ -66,7 +66,7 @@ export function EntitiesCtxProvider(props) {
                 showToast("Error adding entity", "error", 5000);
             } else {
                 const newEntity = await response.json();
-                mutate((prev) => [...prev, newEntity], false);
+                mutate((prev) => (prev ? [...prev, newEntity] : [newEntity]), false);
                 showToast("Entity added", "success", 3000);
             }
         } catch (error) {
