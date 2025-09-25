@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState, useContext } from "react";
+import { createContext, useState, useContext } from "react";
 import useSWRImmutable from "swr/immutable";
 
 import { useToast } from "./ToastCtx";

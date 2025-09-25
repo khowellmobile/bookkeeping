@@ -8,6 +8,7 @@ import downChevIcon from "../../../assets/chevron-down-icon.svg";
 
 const AccountDropdown = ({ initalVal, onChange }) => {
     const { ctxAccountList } = useContext(AccountsCtx);
+
     const [activeAccount, setActiveAccount] = useState(initalVal || { name: "" });
     const [isExpanded, setIsExpanded] = useState(false);
     const dropdownRef = useRef(null);

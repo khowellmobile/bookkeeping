@@ -61,7 +61,7 @@ const JournalsPage = () => {
             journal_items: journal_items,
         };
 
-        const hasError = sendData.some((item) => !checkInput(item));
+        const hasError = sendData.journal_items.some((item) => !checkInput(item));
         const dateError = !checkDate(date);
 
         if (hasError || dateError) {

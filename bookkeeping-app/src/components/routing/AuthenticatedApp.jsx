@@ -51,7 +51,11 @@ function AuthenticatedApp() {
     };
 
     const JournalsWithContext = () => {
-        return <JournalsCtxProvider>{wrapPage(JournalsPage)}</JournalsCtxProvider>;
+        return (
+            <AccountsCtxProvider>
+                <JournalsCtxProvider>{wrapPage(JournalsPage)}</JournalsCtxProvider>
+            </AccountsCtxProvider>
+        );
     };
 
     const EntitiesWithContext = () => {
