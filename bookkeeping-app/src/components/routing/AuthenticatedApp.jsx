@@ -43,7 +43,11 @@ function AuthenticatedApp() {
     };
 
     const RentsWithContext = () => {
-        return <RentPaymentsCtxProvider>{wrapPage(RentsPage)}</RentPaymentsCtxProvider>;
+        return (
+            <EntitiesCtxProvider>
+                <RentPaymentsCtxProvider>{wrapPage(RentsPage)}</RentPaymentsCtxProvider>
+            </EntitiesCtxProvider>
+        );
     };
 
     const AccountsWithContext = () => {

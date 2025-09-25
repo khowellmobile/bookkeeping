@@ -92,7 +92,7 @@ export function AccountsCtxProvider(props) {
             });
 
             const newAccount = await response.json();
-            mutate((prev) => [...prev, newAccount], false);
+            mutate((prev) => (prev ? [...prev, newAccount] : [newAccount]), false);
             showToast("Account added", "success", 3000);
         } catch (error) {
             console.error("Error sending Account Info:", error);
