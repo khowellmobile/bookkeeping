@@ -1,5 +1,4 @@
 import { createContext, useState, useEffect, useContext } from "react";
-import useSWR from "swr";
 import useSWRImmutable from "swr/immutable";
 
 import { useToast } from "./ToastCtx";
@@ -25,7 +24,6 @@ export function AccountsCtxProvider(props) {
     const [ctxActiveAccount, setCtxActiveAccount] = useState({ name: "None Selected" });
 
     const fetcher = async (url) => {
-        console.log("1");
         const response = await fetch(url, {
             method: "GET",
             headers: {
@@ -83,8 +81,6 @@ export function AccountsCtxProvider(props) {
                 url.searchParams.append("property_id", ctxActiveProperty.id);
                 if (addExisting) url.searchParams.append("add_existing", true);
             }
-
-            console.log(account);
 
             const response = await fetch(url.toString(), {
                 method: "POST",
