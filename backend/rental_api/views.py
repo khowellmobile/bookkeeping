@@ -141,6 +141,7 @@ class TransactionListAPIView(APIView):
                     hasattr(transaction_instance, "account")
                     and transaction_instance.account
                 ):
+                    print(transaction_instance, "--------------")
                     transaction_instance.account.update_balance(transaction_instance)
                     saved_transactions.append(serializer.instance)
             else:

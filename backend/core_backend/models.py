@@ -24,17 +24,6 @@ class Account(models.Model):
         null=True,
         blank=True,
     )
-    normal_balance = models.CharField(
-        max_length=10,
-        choices=[
-            ("debit", "Debit"),
-            ("credit", "Credit"),
-            ("na", "Na"),
-        ],
-        default="na",
-        null=True,
-        blank=True,
-    )
     balance = models.DecimalField(max_digits=15, decimal_places=2, default=0.00)
     initial_balance = models.DecimalField(max_digits=15, decimal_places=2, default=0.00)
     description = models.TextField(blank=True, null=True)
@@ -44,12 +33,33 @@ class Account(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    # Calculates normal balance based on account type
+    @property
+    def normal_balance(self):
+        debit_balances = ["asset", "expense", "bank"]
+        credit_balances = ["liability", "equity", "revenue", "credit-card"]
+
+        account_type = self.type.lower()
+
+        if account_type in debit_balances:
+            return "debit"
+        elif account_type in credit_balances:
+            return "credit"
+        return "na"
+
     def update_balance(self, item, is_reversal=False):
         amount = item.amount
 
+        # Early return for account normals of "na"
+        if self.normal_balance == "na":
+            print(
+                f"Skipping balance update for account '{self.name}' with 'na' normal balance."
+            )
+            return
+
         if isinstance(item, RentPayment):
             is_increase = True if self.normal_balance == "credit" else False
-            
+
             if is_reversal:
                 is_increase = not is_increase
 
@@ -58,7 +68,7 @@ class Account(models.Model):
             else:
                 self.balance -= amount
 
-        elif hasattr(item, 'type'):
+        elif hasattr(item, "type"):
             is_increase = (self.normal_balance == "debit" and item.type == "debit") or (
                 self.normal_balance == "credit" and item.type == "credit"
             )
