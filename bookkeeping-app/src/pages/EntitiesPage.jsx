@@ -16,15 +16,16 @@ const EntitiesPage = () => {
     const { ctxEntityList, ctxUpdateEntity, ctxActiveEntity, setCtxActiveEntity } = useContext(EntitiesCtx);
     const { ctxTranList, setCtxTranList, setCtxFilterBy } = useContext(TransactionsCtx);
 
-    const [inputFields, setInputFields] = useState({
+    const initalInputState = {
         name: "",
         company: "",
         address: "",
         created_at: "",
         phone_number: "",
         email: "",
-        is_deleted: "",
-    });
+    };
+
+    const [inputFields, setInputFields] = useState(initalInputState);
     const [errorText, setErrorText] = useState("");
     const [isEditing, setIsEditing] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -50,6 +51,8 @@ const EntitiesPage = () => {
                 phone_number: ctxActiveEntity.phone_number || "",
                 email: ctxActiveEntity.email || "",
             });
+        } else {
+            setInputFields(initalInputState);
         }
     }, [ctxActiveEntity]);
 

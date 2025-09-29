@@ -1,4 +1,4 @@
-import { createContext, useState, useContext } from "react";
+import { createContext, useState, useContext, useEffect } from "react";
 import useSWRImmutable from "swr/immutable";
 import { useToast } from "./ToastCtx";
 
@@ -22,6 +22,11 @@ export function EntitiesCtxProvider(props) {
     const { ctxActiveProperty } = useContext(PropertiesCtx);
 
     const [ctxActiveEntity, setCtxActiveEntity] = useState();
+
+    // Clears active entity on property change
+    useEffect(() => {
+        if (ctxActiveEntity) setCtxActiveEntity(null);
+    }, [ctxActiveProperty]);
 
     const fetcher = async (url) => {
         const response = await fetch(url, {
