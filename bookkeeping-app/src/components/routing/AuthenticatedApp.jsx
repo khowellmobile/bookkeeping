@@ -43,7 +43,11 @@ function AuthenticatedApp() {
     };
 
     const RentsWithContext = () => {
-        return <RentPaymentsCtxProvider>{wrapPage(RentsPage)}</RentPaymentsCtxProvider>;
+        return (
+            <EntitiesCtxProvider>
+                <RentPaymentsCtxProvider>{wrapPage(RentsPage)}</RentPaymentsCtxProvider>
+            </EntitiesCtxProvider>
+        );
     };
 
     const AccountsWithContext = () => {
@@ -51,7 +55,11 @@ function AuthenticatedApp() {
     };
 
     const JournalsWithContext = () => {
-        return <JournalsCtxProvider>{wrapPage(JournalsPage)}</JournalsCtxProvider>;
+        return (
+            <AccountsCtxProvider>
+                <JournalsCtxProvider>{wrapPage(JournalsPage)}</JournalsCtxProvider>
+            </AccountsCtxProvider>
+        );
     };
 
     const EntitiesWithContext = () => {

@@ -1,4 +1,5 @@
 import { createContext, useState, useEffect, useContext } from "react";
+import useSWRImmutable from "swr/immutable";
 import { useToast } from "./ToastCtx";
 
 import AuthCtx from "./AuthCtx";
@@ -7,10 +8,8 @@ import PropertiesCtx from "./PropertiesCtx";
 const AccountsCtx = createContext({
     ctxActiveAccount: null,
     ctxAccountList: null,
-    populateCtxAccounts: () => {},
     ctxGetNonPropertyAccounts: () => {},
     setCtxActiveAccount: () => {},
-    setCtxAccountList: () => {},
     ctxAddAccount: () => {},
     ctxUpdateAccount: () => {},
     ctxDeleteAccount: () => {},
@@ -23,40 +22,31 @@ export function AccountsCtxProvider(props) {
     const { ctxActiveProperty } = useContext(PropertiesCtx);
 
     const [ctxActiveAccount, setCtxActiveAccount] = useState({ name: "None Selected" });
-    const [ctxAccountList, setCtxAccountList] = useState(null);
+
+    const fetcher = async (url) => {
+        const response = await fetch(url, {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${ctxAccessToken}`,
+            },
+        });
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    };
+
+    const apiURL = "http://localhost:8000/api/accounts/";
+    const propertyId = ctxActiveProperty?.id;
+    const {
+        data: ctxAccountList,
+        error,
+        mutate,
+    } = useSWRImmutable(propertyId && ctxAccessToken ? [`${apiURL}?property_id=${propertyId}`] : null, fetcher);
 
     useEffect(() => {
-        if (ctxAccessToken) {
-            populateCtxAccounts();
-        }
-
         setCtxActiveAccount({ name: "None Selected" });
     }, [ctxActiveProperty, ctxAccessToken]);
-
-    const populateCtxAccounts = async () => {
-        try {
-            const url = new URL("http://localhost:8000/api/accounts/");
-            if (ctxActiveProperty && ctxActiveProperty.id) {
-                url.searchParams.append("property_id", ctxActiveProperty.id);
-            } else {
-                return;
-            }
-
-            const response = await fetch(url.toString(), {
-                method: "GET",
-                headers: {
-                    Authorization: `Bearer ${ctxAccessToken}`,
-                },
-            });
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const data = await response.json();
-            setCtxAccountList(data);
-        } catch (e) {
-            console.log("Error: " + e);
-        }
-    };
 
     const ctxGetNonPropertyAccounts = async () => {
         try {
@@ -92,8 +82,6 @@ export function AccountsCtxProvider(props) {
                 if (addExisting) url.searchParams.append("add_existing", true);
             }
 
-            console.log(account);
-
             const response = await fetch(url.toString(), {
                 method: "POST",
                 headers: {
@@ -104,7 +92,7 @@ export function AccountsCtxProvider(props) {
             });
 
             const newAccount = await response.json();
-            setCtxAccountList((prev) => [...prev, newAccount]);
+            mutate((prev) => (prev ? [...prev, newAccount] : [newAccount]), false);
             showToast("Account added", "success", 3000);
         } catch (error) {
             console.error("Error sending Account Info:", error);
@@ -129,16 +117,7 @@ export function AccountsCtxProvider(props) {
             }
 
             const updatedData = await response.json();
-
-            setCtxAccountList((prevAccounts) =>
-                prevAccounts.map((acc) => {
-                    if (acc.id === editedAccount.id) {
-                        return updatedData;
-                    } else {
-                        return acc;
-                    }
-                })
-            );
+            mutate((prevAccounts) => prevAccounts.map((acc) => (acc.id === updatedData.id ? updatedData : acc)), false);
             showToast("Account added", "success", 3000);
         } catch (error) {
             console.error("Error editing account:", error);
@@ -161,6 +140,8 @@ export function AccountsCtxProvider(props) {
                 console.log("Error:", response.error);
                 return;
             }
+
+            mutate((prev) => prev.filter((acc) => acc.id !== accountId), true);
         } catch (error) {
             console.error("Error marking account inactive:", error);
         }
@@ -169,10 +150,8 @@ export function AccountsCtxProvider(props) {
     const context = {
         ctxActiveAccount,
         ctxAccountList,
-        populateCtxAccounts,
         ctxGetNonPropertyAccounts,
         setCtxActiveAccount,
-        setCtxAccountList,
         ctxAddAccount,
         ctxUpdateAccount,
         ctxDeleteAccount,

@@ -1,4 +1,5 @@
 import { createContext, useEffect, useState, useContext } from "react";
+import useSWRImmutable from "swr/immutable";
 import { useToast } from "./ToastCtx";
 
 import AuthCtx from "./AuthCtx";
@@ -8,10 +9,8 @@ import PropertiesCtx from "./PropertiesCtx";
 
 const TransactionsCtx = createContext({
     ctxTranList: null,
-    setCtxTranList: () => {},
     ctxFilterBy: null,
     setCtxFilterBy: () => {},
-    populateCtxTransactions: () => {},
     ctxAddTransactions: () => {},
     ctxUpdateTransaction: () => {},
 });
@@ -25,47 +24,42 @@ export function TransactionsCtxProvider(props) {
     const { ctxActiveProperty } = useContext(PropertiesCtx);
 
     const [ctxFilterBy, setCtxFilterBy] = useState(null);
-    const [ctxTranList, setCtxTranList] = useState(null);
 
-    useEffect(() => {
-        if (ctxAccessToken) {
-            populateCtxTransactions(ctxFilterBy);
+    const fetcher = async (url) => {
+        const response = await fetch(url, {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${ctxAccessToken}`,
+            },
+        });
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
-    }, [ctxActiveProperty, ctxActiveAccount, ctxActiveEntity, ctxFilterBy, ctxAccessToken]);
-
-    const populateCtxTransactions = async () => {
-        try {
-            const url = new URL("http://localhost:8000/api/transactions/");
-            if (ctxActiveProperty && ctxActiveProperty.id) {
-                url.searchParams.append("property_id", ctxActiveProperty.id);
-            } else {
-                return;
-            }
-
-            if (ctxFilterBy == "account" && ctxActiveAccount && ctxActiveAccount.id) {
-                url.searchParams.append("account_id", ctxActiveAccount.id);
-            } else if (ctxFilterBy == "entity" && ctxActiveEntity && ctxActiveEntity.id) {
-                url.searchParams.append("entity_id", ctxActiveEntity.id);
-            } else {
-                return;
-            }
-
-            const response = await fetch(url.toString(), {
-                method: "GET",
-                headers: {
-                    Authorization: `Bearer ${ctxAccessToken}`,
-                },
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const data = await response.json();
-            setCtxTranList(data);
-        } catch (e) {
-            console.log("Error: " + e);
-        }
+        return response.json();
     };
+
+    const apiURL = "http://localhost:8000/api/transactions/";
+
+    const getSWRKey = () => {
+        if (!ctxAccessToken || !ctxActiveProperty || !ctxActiveProperty.id) {
+            return null;
+        }
+
+        const url = new URL(apiURL);
+        url.searchParams.append("property_id", ctxActiveProperty.id);
+        if (ctxFilterBy == "account" && ctxActiveAccount && ctxActiveAccount.id) {
+            url.searchParams.append("account_id", ctxActiveAccount.id);
+        } else if (ctxFilterBy == "entity" && ctxActiveEntity && ctxActiveEntity.id) {
+            url.searchParams.append("entity_id", ctxActiveEntity.id);
+        } else {
+            return;
+        }
+
+        return url.toString();
+    };
+
+    const swrKey = getSWRKey();
+    const { data: ctxTranList, error, mutate } = useSWRImmutable(swrKey, fetcher);
 
     const ctxAddTransactions = async (transactionsToAdd) => {
         const transformedTransactionsArray = transactionsToAdd.map((transaction) => ({
@@ -103,7 +97,7 @@ export function TransactionsCtxProvider(props) {
             }
 
             const newData = await response.json();
-            setCtxTranList((prev) => [...(prev || []), ...newData]);
+            mutate((prev) => [...(prev || []), ...newData]);
             showToast("Transactions added", "success", 3000);
         } catch (error) {
             console.error("Error sending transactions:", error);
@@ -141,16 +135,13 @@ export function TransactionsCtxProvider(props) {
             }
 
             const updatedData = await response.json();
-
-            setCtxTranList((prevTransactions) =>
-                prevTransactions.map((transaction) => {
-                    if (transaction.id === updatedData.id) {
-                        return updatedData;
-                    } else {
-                        return transaction;
-                    }
-                })
-            );
+            console.log(updatedData);
+            mutate((prevTransactions) => {
+                if (!prevTransactions) return [];
+                return prevTransactions.map((transaction) =>
+                    transaction.id === updatedData.id ? updatedData : transaction
+                );
+            }, false);
             showToast("Transaction updated", "success", 3000);
         } catch (error) {
             console.error("Error editing transaction:", error);
@@ -160,10 +151,8 @@ export function TransactionsCtxProvider(props) {
 
     const context = {
         ctxTranList,
-        setCtxTranList,
         ctxFilterBy,
         setCtxFilterBy,
-        populateCtxTransactions,
         ctxAddTransactions,
         ctxUpdateTransaction,
     };

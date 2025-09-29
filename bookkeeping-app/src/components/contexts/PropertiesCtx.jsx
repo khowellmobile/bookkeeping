@@ -1,4 +1,5 @@
 import { createContext, useState, useEffect, useContext } from "react";
+import useSWRImmutable from "swr/immutable";
 import { useToast } from "./ToastCtx";
 
 import AuthCtx from "./AuthCtx";
@@ -18,14 +19,7 @@ export function PropertiesCtxProvider(props) {
 
     const { ctxAccessToken } = useContext(AuthCtx);
 
-    const [ctxPropertyList, setCtxPropertyList] = useState(null);
     const [ctxActiveProperty, setCtxActiveProperty] = useState();
-
-    useEffect(() => {
-        if (ctxAccessToken) {
-            populateCtxProperties();
-        }
-    }, [ctxAccessToken]);
 
     useEffect(() => {
         if (!ctxActiveProperty && !sessionStorage.getItem("activePropertyId") && ctxAccessToken) {
@@ -37,27 +31,33 @@ export function PropertiesCtxProvider(props) {
         }
     }, [ctxActiveProperty]);
 
-    const populateCtxProperties = async () => {
-        try {
-            const response = await fetch("http://localhost:8000/api/properties/", {
-                method: "GET",
-                headers: {
-                    Authorization: `Bearer ${ctxAccessToken}`,
-                },
-            });
+    const fetcher = async (url) => {
+        const response = await fetch(url, {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${ctxAccessToken}`,
+            },
+        });
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    };
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
+    const apiURL = "http://localhost:8000/api/properties/";
+    const {
+        data: ctxPropertyList,
+        error,
+        mutate,
+    } = useSWRImmutable( ctxAccessToken ? [`${apiURL}`] : null, fetcher);
 
-            const data = await response.json();
-            setCtxPropertyList(data);
-
+    useEffect(() => {
+        if (ctxPropertyList) {
             const storedPropertyId = sessionStorage.getItem("activePropertyId");
             if (storedPropertyId) {
                 const id = parseInt(storedPropertyId, 10);
 
-                const foundProperty = data.find((property) => property.id === id);
+                const foundProperty = ctxPropertyList.find((property) => property.id === id);
 
                 if (foundProperty) {
                     setCtxActiveProperty(foundProperty);
@@ -66,10 +66,8 @@ export function PropertiesCtxProvider(props) {
                     sessionStorage.removeItem("activePropertyId");
                 }
             }
-        } catch (e) {
-            console.log("Error: " + e);
         }
-    };
+    }, [ctxPropertyList, setCtxActiveProperty]);
 
     const ctxAddProperty = async (propertyToAdd) => {
         try {
@@ -88,9 +86,7 @@ export function PropertiesCtxProvider(props) {
                 showToast("Error adding Property", "error", 5000);
             } else {
                 const newProperty = await response.json();
-                setCtxPropertyList((prev) => {
-                    return [...prev, newProperty];
-                });
+                mutate((prev) => (prev ? [...prev, newProperty] : [newProperty]), false);
                 showToast("Property added", "success", 3000);
             }
         } catch (e) {
@@ -115,11 +111,13 @@ export function PropertiesCtxProvider(props) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             } else {
                 const returnedProperty = await response.json();
-                setCtxPropertyList((prevPropList) => {
-                    return prevPropList.map((property) =>
-                        property.id === returnedProperty.id ? returnedProperty : property
-                    );
-                });
+                mutate(
+                    (prevPropList) =>
+                        prevPropList.map((property) =>
+                            property.id === returnedProperty.id ? returnedProperty : property
+                        ),
+                    false
+                );
                 showToast("Property updated", "success", 3000);
             }
         } catch (e) {
@@ -132,8 +130,6 @@ export function PropertiesCtxProvider(props) {
         ctxActiveProperty,
         setCtxActiveProperty,
         ctxPropertyList,
-        setCtxPropertyList,
-        populateCtxProperties,
         ctxAddProperty,
         ctxUpdateProperty,
     };

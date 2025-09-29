@@ -1,6 +1,7 @@
 import { createContext, useState, useEffect, useContext } from "react";
-import { useToast } from "./ToastCtx";
+import useSWRImmutable from "swr/immutable";
 
+import { useToast } from "./ToastCtx";
 import AuthCtx from "./AuthCtx";
 import PropertiesCtx from "./PropertiesCtx";
 
@@ -18,44 +19,29 @@ export function JournalsCtxProvider(props) {
     const { ctxAccessToken } = useContext(AuthCtx);
     const { ctxActiveProperty } = useContext(PropertiesCtx);
 
-    const [ctxJournalList, setCtxJournalList] = useState(null);
-
-    useEffect(() => {
-        if (ctxAccessToken) {
-            populateCtxJournals();
+    const fetcher = async (url) => {
+        const response = await fetch(url, {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${ctxAccessToken}`,
+            },
+        });
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
-    }, [ctxActiveProperty, ctxAccessToken]);
-
-    const populateCtxJournals = async () => {
-        try {
-            const url = new URL("http://localhost:8000/api/journals/");
-            if (ctxActiveProperty && ctxActiveProperty.id) {
-                url.searchParams.append("property_id", ctxActiveProperty.id);
-            } else {
-                return;
-            }
-
-            const response = await fetch(url.toString(), {
-                method: "GET",
-                headers: {
-                    Authorization: `Bearer ${ctxAccessToken}`,
-                },
-            });
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const data = await response.json();
-            setCtxJournalList(data);
-            /* console.log(data); */
-        } catch (e) {
-            console.log("Error: " + e);
-        }
+        return response.json();
     };
+
+    const apiURL = "http://localhost:8000/api/journals/";
+    const propertyId = ctxActiveProperty?.id;
+    const {
+        data: ctxJournalList,
+        error,
+        mutate,
+    } = useSWRImmutable(propertyId && ctxAccessToken ? [`${apiURL}?property_id=${propertyId}`] : null, fetcher);
 
     const ctxUpdateJournal = async (selectedJournalId, url, method, sendData) => {
         const ctxAccessToken = localStorage.getItem("accessToken");
-
-        console.log(sendData);
 
         const tranformedJournalItems = sendData.journal_items.map((item) => ({
             ...item,
@@ -69,7 +55,7 @@ export function JournalsCtxProvider(props) {
         sendData = {
             ...sendData,
             journal_items: tranformedJournalItems,
-        }
+        };
 
         try {
             const finalUrl = method == "POST" ? new URL("http://localhost:8000/api/journals/") : url;
@@ -93,20 +79,17 @@ export function JournalsCtxProvider(props) {
 
             const returnedJournal = await response.json();
             if (method == "POST") {
-                setCtxJournalList((prev) => {
-                    return [...prev, returnedJournal];
-                });
-                showToast("Journal saved", "success", 3000);
-                return returnedJournal;
+                mutate((prevJournalList) => [...(prevJournalList || []), returnedJournal], false);
             } else if (method == "PUT") {
-                setCtxJournalList((prevJournalList) => {
+                mutate((prevJournalList) => {
                     return prevJournalList.map((journal) =>
                         journal.id === selectedJournalId ? returnedJournal : journal
                     );
-                });
-                showToast("Journal saved", "success", 3000);
-                return returnedJournal;
+                }, false);
             }
+
+            showToast("Journal saved", "success", 3000);
+            return returnedJournal;
         } catch (e) {
             console.log("Error: " + e);
             showToast("Error saving journal", "error", 5000);
@@ -135,8 +118,6 @@ export function JournalsCtxProvider(props) {
 
     const context = {
         ctxJournalList,
-        setCtxJournalList,
-        populateCtxJournals,
         ctxUpdateJournal,
         ctxDeleteJournal,
     };

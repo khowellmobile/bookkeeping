@@ -1,4 +1,5 @@
-import { createContext, useEffect, useState, useContext } from "react";
+import { createContext, useState, useContext } from "react";
+import useSWRImmutable from "swr/immutable";
 import { useToast } from "./ToastCtx";
 
 import AuthCtx from "./AuthCtx";
@@ -20,39 +21,28 @@ export function EntitiesCtxProvider(props) {
     const { ctxAccessToken } = useContext(AuthCtx);
     const { ctxActiveProperty } = useContext(PropertiesCtx);
 
-    const [ctxEntityList, setCtxEntityList] = useState([]);
     const [ctxActiveEntity, setCtxActiveEntity] = useState();
 
-    useEffect(() => {
-        if (ctxAccessToken) {
-            populateCtxEntities();
+    const fetcher = async (url) => {
+        const response = await fetch(url, {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${ctxAccessToken}`,
+            },
+        });
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
-    }, [ctxActiveProperty, ctxAccessToken]);
-
-    const populateCtxEntities = async () => {
-        try {
-            const url = new URL("http://localhost:8000/api/entities/");
-            if (ctxActiveProperty && ctxActiveProperty.id) {
-                url.searchParams.append("property_id", ctxActiveProperty.id);
-            } else {
-                return;
-            }
-
-            const response = await fetch(url.toString(), {
-                method: "GET",
-                headers: {
-                    Authorization: `Bearer ${ctxAccessToken}`,
-                },
-            });
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const data = await response.json();
-            setCtxEntityList(data);
-        } catch (e) {
-            console.log("Error: " + e);
-        }
+        return response.json();
     };
+
+    const apiURL = "http://localhost:8000/api/entities/";
+    const propertyId = ctxActiveProperty?.id;
+    const {
+        data: ctxEntityList,
+        error,
+        mutate,
+    } = useSWRImmutable(propertyId && ctxAccessToken ? [`${apiURL}?property_id=${propertyId}`] : null, fetcher);
 
     const ctxAddEntity = async (entityToAdd) => {
         try {
@@ -76,9 +66,7 @@ export function EntitiesCtxProvider(props) {
                 showToast("Error adding entity", "error", 5000);
             } else {
                 const newEntity = await response.json();
-                setCtxEntityList((prev) => {
-                    return [...prev, newEntity];
-                });
+                mutate((prev) => (prev ? [...prev, newEntity] : [newEntity]), false);
                 showToast("Entity added", "success", 3000);
             }
         } catch (error) {
@@ -103,9 +91,10 @@ export function EntitiesCtxProvider(props) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             } else {
                 const returnedEntity = await response.json();
-                setCtxEntityList((prevEntityList) => {
+                mutate((prevEntityList) => {
+                    if (!prevEntityList) return [];
                     return prevEntityList.map((entity) => (entity.id === returnedEntity.id ? returnedEntity : entity));
-                });
+                }, false);
                 showToast("Entity updated", "success", 3000);
             }
         } catch (e) {
@@ -116,10 +105,8 @@ export function EntitiesCtxProvider(props) {
 
     const context = {
         ctxEntityList,
-        setCtxEntityList,
         ctxActiveEntity,
         setCtxActiveEntity,
-        populateCtxEntities,
         ctxAddEntity,
         ctxUpdateEntity,
     };
