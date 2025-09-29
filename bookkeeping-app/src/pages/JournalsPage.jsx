@@ -1,8 +1,9 @@
-import { useState, useCallback, useMemo, useRef, useContext } from "react";
+import { useState, useCallback, useMemo, useRef, useContext, useEffect } from "react";
 
 import classes from "./JournalsPage.module.css";
 
 import JournalsCtx from "../components/contexts/JournalsCtx";
+import PropertiesCtx from "../components/contexts/PropertiesCtx";
 import ConfirmationModal from "../components/elements/modals/ConfirmationModal";
 import NoResultsDisplay from "../components/elements/misc/NoResultsDisplay";
 import Input from "../components/elements/misc/Input";
@@ -10,6 +11,7 @@ import { JournalEntryItem } from "../components/elements/items/InputEntryItems";
 
 const JournalsPage = () => {
     const { ctxJournalList, ctxUpdateJournal, ctxDeleteJournal } = useContext(JournalsCtx);
+    const { ctxActiveProperty } = useContext(PropertiesCtx);
 
     const scrollRef = useRef();
 
@@ -29,52 +31,15 @@ const JournalsPage = () => {
                 type: "",
             }))
     );
-
     const [confirmAction, setConfirmAction] = useState({
         type: null,
         payload: null,
     });
 
-    const saveInfo = async () => {
-        // Getting non-empty items
-        const journal_items = journalItems.filter((item) => {
-            return (
-                (item.account !== "" && item.account !== null && item.account !== undefined) ||
-                (item.amount !== "" && item.amount !== null && item.amount !== undefined && item.amount !== 0) ||
-                (item.memo && item.memo.trim() !== "")
-            );
-        });
-
-        const name = journalName;
-        const date = journalDate;
-        let url = "http://localhost:8000/api/journals/";
-        const method = isEditing ? "PUT" : "POST";
-        const id = activeJournal ? activeJournal.id : null;
-
-        if (isEditing) {
-            url = url + `${activeJournal.id}/`;
-        }
-
-        const sendData = {
-            name: name,
-            date: date,
-            journal_items: journal_items,
-        };
-
-        const hasError = sendData.journal_items.some((item) => !checkInput(item));
-        const dateError = !checkDate(date);
-
-        if (hasError || dateError) {
-            alert("Invalid Journal Fields. Please check formats and try again.");
-        }
-
-        const returnedJournal = await ctxUpdateJournal(id, url, method, sendData);
-        setActiveJournal(returnedJournal);
-        setJournalName(returnedJournal.name);
-        setJournalDate(returnedJournal.date);
-        setJournalItems(returnedJournal.journal_items);
-        setIsEditing(true);
-    };
+    // Clear active journal on property change
+    useEffect(() => {
+        clearInputs();
+    }, [ctxActiveProperty]);
 
     const debitTotal = useMemo(() => {
         if (journalItems) {
@@ -140,6 +105,47 @@ const JournalsPage = () => {
         },
         [journalItems, setJournalItems]
     );
+
+    const saveInfo = async () => {
+        // Getting non-empty items
+        const journal_items = journalItems.filter((item) => {
+            return (
+                (item.account !== "" && item.account !== null && item.account !== undefined) ||
+                (item.amount !== "" && item.amount !== null && item.amount !== undefined && item.amount !== 0) ||
+                (item.memo && item.memo.trim() !== "")
+            );
+        });
+
+        const name = journalName;
+        const date = journalDate;
+        let url = "http://localhost:8000/api/journals/";
+        const method = isEditing ? "PUT" : "POST";
+        const id = activeJournal ? activeJournal.id : null;
+
+        if (isEditing) {
+            url = url + `${activeJournal.id}/`;
+        }
+
+        const sendData = {
+            name: name,
+            date: date,
+            journal_items: journal_items,
+        };
+
+        const hasError = sendData.journal_items.some((item) => !checkInput(item));
+        const dateError = !checkDate(date);
+
+        if (hasError || dateError) {
+            alert("Invalid Journal Fields. Please check formats and try again.");
+        }
+
+        const returnedJournal = await ctxUpdateJournal(id, url, method, sendData);
+        setActiveJournal(returnedJournal);
+        setJournalName(returnedJournal.name);
+        setJournalDate(returnedJournal.date);
+        setJournalItems(returnedJournal.journal_items);
+        setIsEditing(true);
+    };
 
     const isJournalChanged = () => {
         if (!activeJournal) {
