@@ -86,6 +86,13 @@ class Account(models.Model):
     def audit_balance(self):
         balance = self.initial_balance
 
+        # Early return for account normals of "na"
+        if self.normal_balance == "na":
+            print(
+                f"Skipping balance update for account '{self.name}' with 'na' normal balance."
+            )
+            return
+
         for item in self.transactions.all():
             is_increase = (self.normal_balance == "debit" and item.type == "debit") or (
                 self.normal_balance == "credit" and item.type == "credit"
