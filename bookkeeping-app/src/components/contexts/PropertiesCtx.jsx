@@ -45,12 +45,11 @@ export function PropertiesCtxProvider(props) {
     };
 
     const apiURL = "http://localhost:8000/api/properties/";
-    const propertyId = ctxActiveProperty?.id;
     const {
         data: ctxPropertyList,
         error,
         mutate,
-    } = useSWRImmutable( ctxAccessToken ? [`${apiURL}?property_id=${propertyId}`] : null, fetcher);
+    } = useSWRImmutable( ctxAccessToken ? [`${apiURL}`] : null, fetcher);
 
     useEffect(() => {
         if (ctxPropertyList) {
