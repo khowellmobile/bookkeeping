@@ -1,0 +1,29 @@
+.mainContainer {
+    width: 100%;
+    height: 100%;
+    padding: 0.5rem;
+}
+
+.mainContainer > h2 {
+    font-weight: 400;
+    text-align: center;
+}
+
+.mainContainer > h3 {
+    font-weight: 500;
+}
+
+.sheetLine {
+    width: 30%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.sepH {
+    width: 100%;
+    height: 1px;
+
+    background-color: var(--border-color);
+}

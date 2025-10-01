@@ -35,6 +35,88 @@
     outline: none;
 }
 
+.dateSelect {
+    display: flex;
+}
+
+.dateRange {
+    width: 9rem;
+    height: 2rem;
+    padding-left: 0.5rem;
+    margin-right: 0.5rem;
+
+    background-color: var(--secondary-background-color);
+    font-size: var(--small-font-size);
+    outline: none;
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.icon {
+    width: 1.25rem;
+    height: 1.25rem;
+
+    user-select: none;
+    cursor: pointer;
+}
+
+.noDisplay {
+    display: none;
+}
+
+.anchor {
+    position: relative;
+}
+
+.dropdown {
+    width: 9rem;
+
+    background-color: var(--background-color);
+    color: black;
+    user-select: none;
+    border: 1px solid var(--border-color);
+    border-top: none;
+
+    display: flex;
+    flex-direction: column;
+    z-index: 1000;
+
+    position: absolute;
+}
+
+.dropdown > p {
+    padding: 0.25rem 0.5rem;
+
+    font-size: var(--small-font-size);
+    font-weight: 400;
+    cursor: pointer;
+
+    transition: all 0.25s ease;
+}
+
+.dropdown > p:hover {
+    background-color: var(--hover-color);
+    text-decoration: underline;
+}
+
+.dateCluster > input[type="date"] {
+    width: 9rem;
+    height: 2rem;
+    padding: 0.5rem 0.5rem;
+    margin-right: 0.5rem;
+
+    background-color: var(--secondary-background-color);
+    font-size: var(--small-font-size);
+    font-family: "poppins";
+    border: none;
+    outline: 1px solid var(--border-color);
+    cursor: pointer;
+}
+
 .tools > div > button {
     padding: 0.5rem;
 
@@ -200,13 +282,6 @@
 .subTools > div:last-child {
     display: flex;
     align-items: center;
-}
-
-.icon {
-    height: 1.5rem;
-    width: 1.5rem;
-
-    cursor: pointer;
 }
 
 .report {

@@ -70,6 +70,10 @@ function AuthenticatedApp() {
         );
     };
 
+    const ReportsWithContext = () => {
+        return <AccountsCtxProvider>{wrapPage(ReportsPage)}</AccountsCtxProvider>;
+    };
+
     const PropertiesWithContext = () => {
         return <>{wrapPage(PropertiesPage)}</>;
     };
@@ -82,7 +86,7 @@ function AuthenticatedApp() {
             <Route path="/accounts" element={<AccountsWithContext />} />
             <Route path="/journals" element={<JournalsWithContext />} />
             <Route path="/entities" element={<EntitiesWithContext />} />
-            <Route path="/reports" element={wrapPage(ReportsPage)} />
+            <Route path="/reports" element={<ReportsWithContext />} />
             <Route path="/properties" element={<PropertiesWithContext />} />
             <Route path="/support" element={wrapPage(SupportPage)} />
             <Route path="/settings" element={wrapPage(SettingsPage)} />
