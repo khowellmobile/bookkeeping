@@ -19,6 +19,41 @@
 
     display: flex;
     align-items: center;
+}
+
+.tools button {
+    padding: 0.5rem;
+
+    background-color: var(--primary-color);
+    color: white;
+    cursor: pointer;
+    font-family: "poppins";
+    font-weight: 600;
+    border-radius: 0.25rem;
+    border: none;
+    outline: none;
+
+    transition: all ease 0.25s;
+}
+
+.tools button:hover {
+    transform: translateY(-1px);
+}
+
+.tools button:active {
+    transform: translateY(1px);
+}
+
+.leftTools {
+    width: 25%;
+    margin-right: calc(0.75rem);
+}
+
+.rightTools {
+    width: 75%;
+
+    display: flex;
+    align-items: center;
     justify-content: space-between;
 }
 
@@ -35,27 +70,86 @@
     outline: none;
 }
 
-.tools > div > button {
-    padding: 0.5rem;
+.toolInputs {
+    display: flex;
+}
 
-    background-color: var(--primary-color);
-    color: white;
-    cursor: pointer;
-    font-family: "poppins";
-    font-weight: 600;
-    border-radius: 0.25rem;
-    border: none;
+.dropdownDisplay {
+    width: 9rem;
+    height: 2rem;
+    padding-left: 0.5rem;
+    margin-right: 0.5rem;
+
+    background-color: var(--secondary-background-color);
+    font-size: var(--small-font-size);
     outline: none;
+    border: 1px solid var(--border-color);
+    cursor: pointer;
 
-    transition: all ease 0.25s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.tools > div > button:hover {
-    transform: translateY(-1px);
+.icon {
+    width: 1.25rem;
+    height: 1.25rem;
+
+    user-select: none;
+    cursor: pointer;
 }
 
-.tools > div > button:active {
-    transform: translateY(1px);
+.noDisplay {
+    display: none;
+}
+
+.anchor {
+    position: relative;
+}
+
+.dropdown {
+    width: 9rem;
+
+    background-color: var(--background-color);
+    color: black;
+    user-select: none;
+    border: 1px solid var(--border-color);
+    border-top: none;
+
+    display: flex;
+    flex-direction: column;
+    z-index: 1000;
+
+    position: absolute;
+}
+
+.dropdown > p {
+    padding: 0.25rem 0.5rem;
+
+    font-size: var(--small-font-size);
+    font-weight: 400;
+    cursor: pointer;
+
+    transition: all 0.25s ease;
+}
+
+.dropdown > p:hover {
+    background-color: var(--hover-color);
+    text-decoration: underline;
+}
+
+.dateCluster > input[type="date"] {
+    width: 9rem;
+    height: 2rem;
+    padding: 0.5rem 0.5rem;
+    margin-right: 0.5rem;
+
+    background-color: var(--secondary-background-color);
+    font-size: var(--small-font-size);
+    font-family: "poppins";
+    border: none;
+    outline: 1px solid var(--border-color);
+    cursor: pointer;
 }
 
 .reportContainer {
@@ -200,13 +294,6 @@
 .subTools > div:last-child {
     display: flex;
     align-items: center;
-}
-
-.icon {
-    height: 1.5rem;
-    width: 1.5rem;
-
-    cursor: pointer;
 }
 
 .report {
