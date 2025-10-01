@@ -1,3 +1,5 @@
+import { useContext, useState } from "react";
+
 import classes from "./ReportsPage.module.css";
 
 import AccountsCtx from "../components/contexts/AccountsCtx";
@@ -6,44 +8,37 @@ import ArrowLeftIcon from "../assets/arrow-left-icon.svg";
 import ArrowRightIcon from "../assets/arrow-right-icon.svg";
 import upChevIcon from "../assets/chevron-up-icon.svg";
 import downChevIcon from "../assets/chevron-down-icon.svg";
-
-import { useContext, useEffect, useState } from "react";
 import BalanceSheet from "../components/elements/reports/BalanceSheet";
 import ProfitLoss from "../components/elements/reports/ProfitLoss";
 
 const ReportsPage = () => {
     const { ctxAccountList } = useContext(AccountsCtx);
 
-    const [reportType, setReportType] = useState("profitloss");
+    const [reportType, setReportType] = useState("Profit & Loss");
     const [reportRangeType, setReportRangeType] = useState("Custom");
     const [dateRange, setDateRange] = useState({
         startDate: "",
         endDate: "",
     });
-    const [isExpanded, setIsExpanded] = useState(false);
+    const [isTypeExpanded, setIsTypeExpanded] = useState(false);
+    const [isRangeExpanded, setIsRangeExpanded] = useState(false);
     const [historyOpen, setHistoryOpen] = useState(true);
-    const [reportHistory, setJournalHistory] = useState([
-        ["2024-01-24", "Revenue Adjustment"],
-        ["2023-11-10", "Payroll Entry"],
-        ["2024-02-15", "Equity Balancing"],
-        ["2023-09-05", "JRE #4"],
-        ["2024-01-05", "Clear Income Stmt"],
-        ["2024-01-05", "Adjustment #2"],
+    const [quickSelectList, setQuickSelectList] = useState([
+        ["All Time", "Balance Sheet"],
+        ["All Time", "Profit & Loss"],
+        ["Last Year", "Balance Sheet"],
+        ["Last Year", "Profit & Loss"],
     ]);
 
     const rangeTypes = ["Last Year", "Year to Date", "All Time", "Custom"];
+    const reportTypes = ["Balance Sheet", "Profit & Loss"];
 
     const getReportComponent = () => {
-        if (reportType == "balance") {
+        if (reportType == "Balance Sheet") {
             return <BalanceSheet accounts={ctxAccountList} />;
-        } else if (reportType == "profitloss") {
+        } else if (reportType == "Profit & Loss") {
             return <ProfitLoss accounts={ctxAccountList} />;
         }
-    };
-
-    const setRangeType = (type) => {
-        setReportRangeType(type);
-        setIsExpanded(false);
     };
 
     const handleDateChange = (e) => {
@@ -64,17 +59,18 @@ const ReportsPage = () => {
         return `${year}-${month}-${day}`;
     };
 
-    const handleRangeChange = (rangeType) => {
-        // Get the current date to base calculations on.
-        const today = new Date();
+    const handleTypeClick = (type) => {
+        setReportType(type);
+        setIsTypeExpanded(false);
+    };
 
-        // Helper function to format a Date object as "yyyy-mm-dd"
-        const formatDate = (date) => {
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, "0");
-            const day = String(date.getDate()).padStart(2, "0");
-            return `${year}-${month}-${day}`;
-        };
+    const handleQuickClick = (entry) => {
+        handleRangeChange(entry[0]);
+        handleTypeClick(entry[1]);
+    };
+
+    const handleRangeChange = (rangeType) => {
+        const today = new Date();
 
         switch (rangeType) {
             case "Last Year": {
@@ -113,7 +109,7 @@ const ReportsPage = () => {
         }
 
         setReportRangeType(rangeType);
-        setIsExpanded(false);
+        setIsRangeExpanded(false);
     };
 
     return (
@@ -129,17 +125,44 @@ const ReportsPage = () => {
                             spellCheck="false"
                         ></input>
                     </div>
-                    <div className={classes.dateSelect}>
+                    <div className={classes.toolInputs}>
                         <div className={classes.rangeDropdown}>
-                            <div className={classes.dateRange} onClick={() => setIsExpanded((prev) => !prev)}>
+                            <div className={classes.dropdownDisplay} onClick={() => setIsTypeExpanded((prev) => !prev)}>
+                                {reportType ? <p>{reportType}</p> : <p>None Selected</p>}
+                                <img src={isTypeExpanded ? upChevIcon : downChevIcon} className={classes.icon} />
+                            </div>
+                            <div className={`${classes.anchor} ${isTypeExpanded ? "" : classes.noDisplay}`}>
+                                <div className={classes.dropdown}>
+                                    {reportTypes.map((type, index) => {
+                                        if (type !== reportType) {
+                                            return (
+                                                <p
+                                                    key={index}
+                                                    onClick={() => {
+                                                        handleTypeClick(type);
+                                                    }}
+                                                >
+                                                    {type}
+                                                </p>
+                                            );
+                                        }
+                                    })}
+                                </div>
+                            </div>
+                        </div>
+                        <div className={classes.rangeDropdown}>
+                            <div
+                                className={classes.dropdownDisplay}
+                                onClick={() => setIsRangeExpanded((prev) => !prev)}
+                            >
                                 {reportRangeType && reportRangeType !== "custom" ? (
                                     <p>{reportRangeType}</p>
                                 ) : (
                                     <p>custom</p>
                                 )}
-                                <img src={isExpanded ? upChevIcon : downChevIcon} className={classes.icon} />
+                                <img src={isRangeExpanded ? upChevIcon : downChevIcon} className={classes.icon} />
                             </div>
-                            <div className={`${classes.anchor} ${isExpanded ? "" : classes.noDisplay}`}>
+                            <div className={`${classes.anchor} ${isRangeExpanded ? "" : classes.noDisplay}`}>
                                 <div className={classes.dropdown}>
                                     {rangeTypes.map((type, index) => {
                                         if (type !== reportRangeType) {
@@ -179,19 +202,23 @@ const ReportsPage = () => {
                 {
                     <div className={`${classes.reportHistory} ${historyOpen ? classes.lg : classes.sm}`}>
                         <section className={classes.historyHeader}>
-                            <h3>Report History</h3>
+                            <h3>Quick Select</h3>
                         </section>
                         <section className={`${classes.columnNames} ${classes.historyGridTemplate}`}>
                             <div>
-                                <p>Date</p>
+                                <p>Range</p>
                             </div>
                             <div>
-                                <p>Name</p>
+                                <p>Type</p>
                             </div>
                         </section>
                         <section className={classes.items}>
-                            {reportHistory.map((entry, index) => (
-                                <div className={classes.historyEntry} key={index}>
+                            {quickSelectList.map((entry, index) => (
+                                <div
+                                    className={classes.historyEntry}
+                                    key={index}
+                                    onClick={() => handleQuickClick(entry)}
+                                >
                                     <p>{entry[0]}</p>
                                     <p>{entry[1]}</p>
                                 </div>

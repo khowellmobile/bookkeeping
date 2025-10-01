@@ -35,11 +35,11 @@
     outline: none;
 }
 
-.dateSelect {
+.toolInputs {
     display: flex;
 }
 
-.dateRange {
+.dropdownDisplay {
     width: 9rem;
     height: 2rem;
     padding-left: 0.5rem;
