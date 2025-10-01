@@ -117,7 +117,7 @@ const ReportsPage = () => {
             <div className={classes.reportsHeader}>
                 <h2>Reports</h2>
                 <div className={classes.tools}>
-                    <div>
+                    <div className={classes.leftTools}>
                         <input
                             type="text"
                             className={classes.reportSearch}
@@ -125,76 +125,86 @@ const ReportsPage = () => {
                             spellCheck="false"
                         ></input>
                     </div>
-                    <div className={classes.toolInputs}>
-                        <div className={classes.rangeDropdown}>
-                            <div className={classes.dropdownDisplay} onClick={() => setIsTypeExpanded((prev) => !prev)}>
-                                {reportType ? <p>{reportType}</p> : <p>None Selected</p>}
-                                <img src={isTypeExpanded ? upChevIcon : downChevIcon} className={classes.icon} />
-                            </div>
-                            <div className={`${classes.anchor} ${isTypeExpanded ? "" : classes.noDisplay}`}>
-                                <div className={classes.dropdown}>
-                                    {reportTypes.map((type, index) => {
-                                        if (type !== reportType) {
-                                            return (
-                                                <p
-                                                    key={index}
-                                                    onClick={() => {
-                                                        handleTypeClick(type);
-                                                    }}
-                                                >
-                                                    {type}
-                                                </p>
-                                            );
-                                        }
-                                    })}
+                    <div className={classes.rightTools}>
+                        <div className={classes.toolInputs}>
+                            <div className={classes.rangeDropdown}>
+                                <div
+                                    className={classes.dropdownDisplay}
+                                    onClick={() => setIsTypeExpanded((prev) => !prev)}
+                                >
+                                    {reportType ? <p>{reportType}</p> : <p>None Selected</p>}
+                                    <img src={isTypeExpanded ? upChevIcon : downChevIcon} className={classes.icon} />
+                                </div>
+                                <div className={`${classes.anchor} ${isTypeExpanded ? "" : classes.noDisplay}`}>
+                                    <div className={classes.dropdown}>
+                                        {reportTypes.map((type, index) => {
+                                            if (type !== reportType) {
+                                                return (
+                                                    <p
+                                                        key={index}
+                                                        onClick={() => {
+                                                            handleTypeClick(type);
+                                                        }}
+                                                    >
+                                                        {type}
+                                                    </p>
+                                                );
+                                            }
+                                        })}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div className={classes.rangeDropdown}>
-                            <div
-                                className={classes.dropdownDisplay}
-                                onClick={() => setIsRangeExpanded((prev) => !prev)}
-                            >
-                                {reportRangeType && reportRangeType !== "custom" ? (
-                                    <p>{reportRangeType}</p>
-                                ) : (
-                                    <p>custom</p>
-                                )}
-                                <img src={isRangeExpanded ? upChevIcon : downChevIcon} className={classes.icon} />
-                            </div>
-                            <div className={`${classes.anchor} ${isRangeExpanded ? "" : classes.noDisplay}`}>
-                                <div className={classes.dropdown}>
-                                    {rangeTypes.map((type, index) => {
-                                        if (type !== reportRangeType) {
-                                            return (
-                                                <p
-                                                    key={index}
-                                                    onClick={() => {
-                                                        handleRangeChange(type);
-                                                    }}
-                                                >
-                                                    {type}
-                                                </p>
-                                            );
-                                        }
-                                    })}
+                            <div className={classes.rangeDropdown}>
+                                <div
+                                    className={classes.dropdownDisplay}
+                                    onClick={() => setIsRangeExpanded((prev) => !prev)}
+                                >
+                                    {reportRangeType && reportRangeType !== "custom" ? (
+                                        <p>{reportRangeType}</p>
+                                    ) : (
+                                        <p>custom</p>
+                                    )}
+                                    <img src={isRangeExpanded ? upChevIcon : downChevIcon} className={classes.icon} />
+                                </div>
+                                <div className={`${classes.anchor} ${isRangeExpanded ? "" : classes.noDisplay}`}>
+                                    <div className={classes.dropdown}>
+                                        {rangeTypes.map((type, index) => {
+                                            if (type !== reportRangeType) {
+                                                return (
+                                                    <p
+                                                        key={index}
+                                                        onClick={() => {
+                                                            handleRangeChange(type);
+                                                        }}
+                                                    >
+                                                        {type}
+                                                    </p>
+                                                );
+                                            }
+                                        })}
+                                    </div>
                                 </div>
                             </div>
+                            <div className={`${classes.cluster} ${classes.dateCluster}`}>
+                                <input
+                                    type="date"
+                                    name="startDate"
+                                    value={dateRange.startDate}
+                                    onChange={handleDateChange}
+                                />
+                            </div>
+                            <div className={`${classes.cluster} ${classes.dateCluster}`}>
+                                <input
+                                    type="date"
+                                    name="endDate"
+                                    value={dateRange.endDate}
+                                    onChange={handleDateChange}
+                                />
+                            </div>
                         </div>
-                        <div className={`${classes.cluster} ${classes.dateCluster}`}>
-                            <input
-                                type="date"
-                                name="startDate"
-                                value={dateRange.startDate}
-                                onChange={handleDateChange}
-                            />
+                        <div>
+                            <button>Run Report</button>
                         </div>
-                        <div className={`${classes.cluster} ${classes.dateCluster}`}>
-                            <input type="date" name="endDate" value={dateRange.endDate} onChange={handleDateChange} />
-                        </div>
-                    </div>
-                    <div>
-                        <button>Run Report</button>
                     </div>
                 </div>
             </div>
