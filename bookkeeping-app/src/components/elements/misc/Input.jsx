@@ -26,7 +26,7 @@ const Input = ({ type, name, value, onChange, customStyle, placeholder, isOption
         const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
 
         let isValid = true;
-        if (value.trim().length === 0) {
+        if (!value || value.trim().length === 0) {
             if (isOptional) {
                 isValid = true;
             } else {
