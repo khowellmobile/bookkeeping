@@ -26,7 +26,6 @@ const AddAccountModal = ({ handleCloseModal }) => {
     useEffect(() => {
         const fetchAccounts = async () => {
             const accountsData = await ctxGetNonPropertyAccounts();
-            console.log(accountsData);
             setNonPropertyAccounts(accountsData);
         };
 
@@ -81,13 +80,14 @@ const AddAccountModal = ({ handleCloseModal }) => {
 
     const validateInputs = () => {
         let errTxt = "";
+        const accNumRegex = /^[0-9.-]*$/;
 
         if (inputFields.name.trim() === "") {
             errTxt += "Account Name cannot be empty.\n";
         }
 
-        if (inputFields.account_number !== "" && isNaN(Number(inputFields.account_number))) {
-            errTxt += "Account Number must be a number.\n";
+        if (inputFields.account_number.trim() !== "" && !accNumRegex.test(inputFields.account_number)) {
+            errTxt += "Account Number can only include numbers, dashes, and periods.\n";
         }
 
         const validAccountTypes = new Set(accountTypes);
@@ -125,7 +125,7 @@ const AddAccountModal = ({ handleCloseModal }) => {
                 isOptional={false}
             />
             <AddInputCluster
-                type="number"
+                type="text"
                 label="Account Number"
                 placeholder="Enter account number (optional)"
                 name="account_number"
