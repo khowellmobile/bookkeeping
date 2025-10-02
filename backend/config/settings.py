@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 from datetime import timedelta
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -107,10 +106,10 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
     {
-        'NAME': 'core_backend.validators.NumberValidator', 
+        "NAME": "core_backend.validators.NumberValidator",
     },
     {
-        'NAME': 'core_backend.validators.SpecialCharacterValidator', 
+        "NAME": "core_backend.validators.SpecialCharacterValidator",
     },
 ]
 
@@ -143,22 +142,19 @@ WSGI_APPLICATION = "config.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-import os 
+import os
 import environ
 import dj_database_url
 
-env = environ.Env() 
-environ.Env.read_env(os.path.join(BASE_DIR, '.env')) 
+env = environ.Env()
+environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
 DATABASES = {
-    'default': dj_database_url.parse(
-        env('DATABASE_URL'), # The key where you store your Supabase string
-        conn_max_age=600
-    ),
-#    "default": {
-#        "ENGINE": "django.db.backends.sqlite3",
-#        "NAME": BASE_DIR / "db.sqlite3",
-#    }
+    "default": dj_database_url.parse(env("DATABASE_URL"), conn_max_age=600),
+    #    "default": {
+    #        "ENGINE": "django.db.backends.sqlite3",
+    #        "NAME": BASE_DIR / "db.sqlite3",
+    #    }
 }
 
 
