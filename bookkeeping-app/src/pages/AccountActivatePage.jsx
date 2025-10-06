@@ -10,7 +10,7 @@ const AccountActivatePage = () => {
     console.log(uid);
     console.log(token);
 
-    const ACTIVATION_ENDPOINT = "http://127.0.0.1:8000/auth/users/activation/";
+    const ACTIVATION_ENDPOINT = "http://127.0.0.1:8000/api/auth/users/activation/";
 
     useEffect(() => {
         if (!uid || !token) {
