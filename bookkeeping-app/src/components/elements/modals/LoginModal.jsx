@@ -40,7 +40,7 @@ const LoginModal = ({ handleCloseModal, switchModal }) => {
                 const { access } = data;
                 localStorage.setItem("accessToken", access);
                 setCtxAccessToken(access);
-                navigate("/home");
+                navigate("/app/home");
                 handleCloseModal();
             })
             .catch((error) => {
