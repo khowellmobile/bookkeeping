@@ -43,6 +43,10 @@ const AccountActivatePage = () => {
         }
     };
 
+    const navToLogin = () => {
+        navigate("/");
+    };
+
     return (
         <div className={classes.mainContainer}>
             <div className={classes.modal}>
@@ -53,7 +57,9 @@ const AccountActivatePage = () => {
                     </p>
                     {message && <p>{message}</p>}
                 </div>
-                <button onClick={activateAccount}>{isSuccess ? "Return to Login" : "Confirm Email"}</button>
+                <button onClick={isSuccess ? navToLogin : activateAccount}>
+                    {isSuccess ? "Return to Login" : "Confirm Email"}
+                </button>
             </div>
         </div>
     );

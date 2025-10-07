@@ -71,25 +71,12 @@ SIMPLE_JWT = {
 }
 
 DJOSER = {
-    "PASSWORD_RESET_CONFIRM_URL": "#/password/reset/confirm/{uid}/{token}",
-    "USERNAME_RESET_CONFIRM_URL": "#/username/reset/confirm/{uid}/{token}",
+    "PASSWORD_RESET_CONFIRM_URL": "password/reset/confirm/{uid}/{token}",
     "ACTIVATION_URL": "activate/{uid}/{token}",
-    "SEND_ACTIVATION_EMAIL": True,  # Controls Email verifiction
+    "SEND_ACTIVATION_EMAIL": True,  # Controls Email verification
     "SEND_CONFIRMATION_EMAIL": False,  # Controls Email confirmation
     "DOMAIN": "localhost",  # Set to production domain when moved to prod. Front end host and port.
     "SITE_NAME": "localhost:5173",
-    "SERIALIZERS": {
-        "user_create": "djoser.serializers.UserCreateSerializer",
-        "user": "djoser.serializers.UserSerializer",
-        "current_user": "djoser.serializers.UserSerializer",
-        "user_delete": "djoser.serializers.UserDeleteSerializer",
-        "token_create": "djoser.serializers.TokenCreateSerializer",
-        "token": "djoser.serializers.TokenSerializer",
-        "token_create": "djoser.serializers.TokenCreateSerializer",
-        "password_reset": "djoser.serializers.PasswordResetSerializer",
-        "password_reset_confirm": "djoser.serializers.PasswordResetConfirmSerializer",
-        "password_change": "djoser.serializers.SetPasswordSerializer",
-    },
     "TOKEN_MODEL": None,
     "JWT_AUTH": True,
 }
