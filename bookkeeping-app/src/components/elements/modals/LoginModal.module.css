@@ -1,7 +1,6 @@
 .mainContainer {
     width: 27rem;
     height: 27rem;
-    padding: 2rem 0.75rem;
     padding: 1.5rem;
 
     background-color: var(--background-color);
@@ -152,6 +151,7 @@
     background: linear-gradient(-45deg, rgb(105, 105, 236), rgb(17, 17, 53), rgb(105, 105, 236), rgb(35, 35, 75));
     background-size: 400% 400%;
     animation: gradient 45s linear infinite;
+    font-family: var(--primary-font);
     border: none;
     border-radius: 2rem;
     cursor: pointer;

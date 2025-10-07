@@ -43,7 +43,10 @@ INSTALLED_APPS = [
     "rental_api",
     "core_backend",
     "djoser",
+    "django.contrib.sites",
 ]
+
+SITE_ID = 1
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
@@ -70,9 +73,11 @@ SIMPLE_JWT = {
 DJOSER = {
     "PASSWORD_RESET_CONFIRM_URL": "#/password/reset/confirm/{uid}/{token}",
     "USERNAME_RESET_CONFIRM_URL": "#/username/reset/confirm/{uid}/{token}",
-    "ACTIVATION_URL": "#/activate/{uid}/{token}",
-    "SEND_ACTIVATION_EMAIL": False,  # Controls Email verifiction
+    "ACTIVATION_URL": "activate/{uid}/{token}",
+    "SEND_ACTIVATION_EMAIL": True,  # Controls Email verifiction
     "SEND_CONFIRMATION_EMAIL": False,  # Controls Email confirmation
+    "DOMAIN": "localhost",  # Set to production domain when moved to prod. Front end host and port.
+    "SITE_NAME": "localhost:5173",
     "SERIALIZERS": {
         "user_create": "djoser.serializers.UserCreateSerializer",
         "user": "djoser.serializers.UserSerializer",
@@ -88,6 +93,8 @@ DJOSER = {
     "TOKEN_MODEL": None,
     "JWT_AUTH": True,
 }
+
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 AUTH_PASSWORD_VALIDATORS = [
     {
