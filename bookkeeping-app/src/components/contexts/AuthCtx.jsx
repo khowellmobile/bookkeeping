@@ -7,6 +7,7 @@ const AuthCtx = createContext({
     ctxUserData: null,
     ctxUpdateUser: () => {},
     logoutUser: () => {},
+    requestPswdReset: () => {},
 });
 
 export function AuthCtxProvider(props) {
@@ -72,12 +73,35 @@ export function AuthCtxProvider(props) {
         }
     };
 
+    const requestPswdReset = async (email) => {
+        try {
+            const response = await fetch("http://127.0.0.1:8000/api/auth/users/reset_password/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ email: email }),
+            });
+
+            if (response.status === 204 || response.ok) {
+                return "Success! If the email is registered, you will receive a reset link shortly.";
+            } else {
+                console.error("Reset Password Request Error Status:", response.status);
+                return "An error occurred. Please try again.";
+            }
+        } catch (e) {
+            console.error("Network Error:", e);
+            return "A network error occurred. Please check your connection.";
+        }
+    };
+
     const context = {
         ctxAccessToken,
         setCtxAccessToken,
         ctxUserData,
         ctxUpdateUser,
         logoutUser,
+        requestPswdReset,
     };
 
     return <AuthCtx.Provider value={context}>{props.children}</AuthCtx.Provider>;

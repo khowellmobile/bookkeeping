@@ -77,18 +77,6 @@ DJOSER = {
     "SEND_CONFIRMATION_EMAIL": False,  # Controls Email confirmation
     "DOMAIN": "localhost",  # Set to production domain when moved to prod. Front end host and port.
     "SITE_NAME": "localhost:5173",
-    "SERIALIZERS": {
-        "user_create": "djoser.serializers.UserCreateSerializer",
-        "user": "djoser.serializers.UserSerializer",
-        "current_user": "djoser.serializers.UserSerializer",
-        "user_delete": "djoser.serializers.UserDeleteSerializer",
-        "token_create": "djoser.serializers.TokenCreateSerializer",
-        "token": "djoser.serializers.TokenSerializer",
-        "token_create": "djoser.serializers.TokenCreateSerializer",
-        "password_reset": "djoser.serializers.PasswordResetSerializer",
-        "password_reset_confirm": "djoser.serializers.PasswordResetConfirmSerializer",
-        "password_change": "djoser.serializers.SetPasswordSerializer",
-    },
     "TOKEN_MODEL": None,
     "JWT_AUTH": True,
 }

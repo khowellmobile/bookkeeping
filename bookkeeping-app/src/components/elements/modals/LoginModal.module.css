@@ -67,10 +67,14 @@
     font-size: var(--small-font-size);
 }
 
+.messages > p {
+    text-align: center;
+    font-size: var(--small-font-size);
+}
+
 .inputs {
     width: 100%;
     height: 6rem;
-    margin-bottom: 2.5rem;
 
     display: flex;
     flex-direction: column;
@@ -176,11 +180,13 @@
     transform: translateY(1px);
 }
 
-.form > p {
+.form > p,
+.inputs > p {
     font-size: var(--small-font-size);
 }
 
-.form > p > a {
+.form > p > a,
+.inputs > p > a {
     margin-left: 0.15rem;
 
     color: rgb(87, 87, 194);

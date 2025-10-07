@@ -14,7 +14,14 @@ function App() {
     return (
         <ToastCtxProvider>
             <Routes>
-                <Route path="/" element={<SplashPage />} />
+                <Route
+                    path="/"
+                    element={
+                        <AuthCtxProvider>
+                            <SplashPage />
+                        </AuthCtxProvider>
+                    }
+                />
                 <Route path="/activate/:uid/:token" element={<AccountActivatePage />} />
                 <Route path="/password/reset/confirm/:uid/:token" element={<PasswordResetPage />} />
                 <Route
