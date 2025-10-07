@@ -8,7 +8,7 @@ const PasswordResetPage = () => {
 
     const navigate = useNavigate();
 
-    const [message, setMessage] = useState();
+    const [message, setMessage] = useState("");
     const [isSuccess, setIsSuccess] = useState(false);
     const [isExpanded, setIsExpanded] = useState(false);
     const [password, setPassword] = useState("");
@@ -23,7 +23,7 @@ const PasswordResetPage = () => {
 
     useEffect(() => {
         if (!uid || !token) {
-            setMessage("Missing token. Please return to create account and try again.");
+            setMessage("Missing token. Please return to login and try again.");
             console.log("Error: Missing uid or token in URL.");
             return;
         }
@@ -71,11 +71,16 @@ const PasswordResetPage = () => {
         }
     };
 
+    const navToLogin = () => {
+        navigate("/");
+    };
+
     return (
         <div className={classes.mainContainer}>
             <div className={classes.modal}>
                 <h2>Password Reset</h2>
                 <div className={classes.inputs}>
+                    {message && <p>{message}</p>}
                     <div className={classes.formCluster}>
                         <input
                             type="password"
@@ -127,7 +132,9 @@ const PasswordResetPage = () => {
                         <p className={classes.formLabel}>Confirm Password</p>
                     </div>
                 </div>
-                <button>{isSuccess ? "Return to Login" : "Confirm Password"}</button>
+                <button onClick={isSuccess ? navToLogin : confirmPassword}>
+                    {isSuccess ? "Return to Login" : "Confirm Password"}
+                </button>
             </div>
         </div>
     );
