@@ -8,6 +8,7 @@ import AuthenticatedApp from "./components/routing/AuthenticatedApp";
 import { AuthCtxProvider } from "./components/contexts/AuthCtx";
 import { PropertiesCtxProvider } from "./components/contexts/PropertiesCtx";
 import AccountActivatePage from "./pages/AccountActivatePage";
+import PasswordResetPage from "./pages/PasswordResetPage";
 
 function App() {
     return (
@@ -15,6 +16,7 @@ function App() {
             <Routes>
                 <Route path="/" element={<SplashPage />} />
                 <Route path="/activate/:uid/:token" element={<AccountActivatePage />} />
+                <Route path="/password/reset/confirm/:uid/:token" element={<PasswordResetPage />} />
                 <Route
                     path="/app/*"
                     element={
