@@ -7,7 +7,7 @@ import penIcon from "../../../assets/pen-icon-grey.svg";
 import saveIcon from "../../../assets/save-icon-grey.svg";
 
 const ProfileInformation = () => {
-    const { ctxUpdateUser, ctxUserData } = useContext(AuthCtx);
+    const { ctxUpdateUser, ctxUserData, ctxUpdatePwd } = useContext(AuthCtx);
 
     const [profileData, setProfileData] = useState(ctxUserData);
     const [initalData, setInitialData] = useState(ctxUserData);
