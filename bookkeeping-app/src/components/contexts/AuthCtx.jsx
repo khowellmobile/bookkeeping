@@ -6,8 +6,9 @@ const AuthCtx = createContext({
     setCtxAccessToken: () => {},
     ctxUserData: null,
     ctxUpdateUser: () => {},
-    logoutUser: () => {},
+    ctxUpdatePwd: () => {},
     requestPswdReset: () => {},
+    logoutUser: () => {},
 });
 
 export function AuthCtxProvider(props) {
@@ -15,11 +16,6 @@ export function AuthCtxProvider(props) {
 
     const [ctxAccessToken, setCtxAccessToken] = useState(localStorage.getItem("accessToken") || null);
     const [ctxUserData, setCtxUserData] = useState({});
-
-    const logoutUser = () => {
-        localStorage.removeItem("accessToken");
-        setCtxAccessToken(null);
-    };
 
     useEffect(() => {
         if (ctxAccessToken) {
@@ -73,6 +69,48 @@ export function AuthCtxProvider(props) {
         }
     };
 
+    const ctxUpdatePwd = async (pwdCurr, pwdNew, pwdCnfm) => {
+        try {
+            const response = await fetch("http://127.0.0.1:8000/api/auth/users/set_password/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${ctxAccessToken}`,
+                },
+                body: JSON.stringify({
+                    current_password: pwdCurr,
+                    new_password: pwdNew,
+                    re_new_password: pwdCnfm,
+                }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                let errorMessage = "Unknown error";
+
+                if (errorData.current_password) {
+                    errorMessage = errorData.current_password[0];
+                } else if (errorData.new_password) {
+                    errorMessage = errorData.new_password[0];
+                } else if (errorData.re_new_password) {
+                    errorMessage = errorData.re_new_password[0];
+                } else if (errorData.detail) {
+                    errorMessage = errorData.detail;
+                }
+
+                showToast("Error updating profile", "error", 5000);
+                console.log(`Password update failed. Status: ${response.status}. Error: ${errorMessage}`);
+                return errorMessage;
+            } else {
+                showToast("Password updated", "success", 3000);
+                return "";
+            }
+        } catch (e) {
+            console.log("Error: " + e);
+            showToast("Network error updating Password", "error", 5000);
+        }
+    };
+
     const requestPswdReset = async (email) => {
         try {
             const response = await fetch("http://127.0.0.1:8000/api/auth/users/reset_password/", {
@@ -95,13 +133,19 @@ export function AuthCtxProvider(props) {
         }
     };
 
+    const logoutUser = () => {
+        localStorage.removeItem("accessToken");
+        setCtxAccessToken(null);
+    };
+
     const context = {
         ctxAccessToken,
         setCtxAccessToken,
         ctxUserData,
         ctxUpdateUser,
-        logoutUser,
+        ctxUpdatePwd,
         requestPswdReset,
+        logoutUser,
     };
 
     return <AuthCtx.Provider value={context}>{props.children}</AuthCtx.Provider>;
