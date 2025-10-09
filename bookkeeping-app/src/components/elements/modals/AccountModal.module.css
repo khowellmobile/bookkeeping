@@ -136,12 +136,9 @@
 
     background-color: var(--primary-color);
     color: white;
-
     border-radius: 0.25rem;
     border: none;
     outline: none;
-
     font-family: "poppins";
-
     cursor: pointer;
 }

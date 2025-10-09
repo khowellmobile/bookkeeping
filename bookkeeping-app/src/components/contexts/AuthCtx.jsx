@@ -85,11 +85,25 @@ export function AuthCtxProvider(props) {
             });
 
             if (!response.ok) {
-                showToast("Error updating password", "error", 5000);
-                console.log(response);
-                throw new Error(`HTTP error! status: ${response.status}`);
+                const errorData = await response.json();
+                let errorMessage = "Unknown error";
+
+                if (errorData.current_password) {
+                    errorMessage = errorData.current_password[0];
+                } else if (errorData.new_password) {
+                    errorMessage = errorData.new_password[0];
+                } else if (errorData.re_new_password) {
+                    errorMessage = errorData.re_new_password[0];
+                } else if (errorData.detail) {
+                    errorMessage = errorData.detail;
+                }
+
+                showToast("Error updating profile", "error", 5000);
+                console.log(`Password update failed. Status: ${response.status}. Error: ${errorMessage}`);
+                return errorMessage;
             } else {
                 showToast("Password updated", "success", 3000);
+                return "";
             }
         } catch (e) {
             console.log("Error: " + e);
