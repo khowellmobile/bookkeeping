@@ -9,21 +9,50 @@ import saveIcon from "../../../assets/save-icon-grey.svg";
 const ProfileInformation = () => {
     const { ctxUpdateUser, ctxUserData, ctxUpdatePwd } = useContext(AuthCtx);
 
+    const [pwdMsg, setPwdMsg] = useState("");
     const [profileData, setProfileData] = useState(ctxUserData);
+    const [passwordData, setPasswordData] = useState({
+        password_current: "",
+        password_new: "",
+        password_confirm: "",
+    });
     const [initalData, setInitialData] = useState(ctxUserData);
     const [inputState, setInputState] = useState({
         first_name: false,
         last_name: false,
         email: false,
+        password: false,
+    });
+    const [isExpanded, setIsExpanded] = useState(false);
+    const [reqObj, setReqObj] = useState({
+        chars: false,
+        num: false,
+        specChar: false,
     });
 
     const disabledStyle = {
         backgroundColor: "var(--border-color)",
     };
 
+    useEffect(() => {
+        setReqObj({
+            chars: passwordData.password_new.length >= 8,
+            num: /\d/.test(passwordData.password_new),
+            specChar: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]/.test(passwordData.password_new),
+        });
+    }, [passwordData.password_new]);
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setProfileData((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
+    };
+
+    const handlePwdInput = (e) => {
+        const { name, value } = e.target;
+        setPasswordData((prev) => ({
             ...prev,
             [name]: value,
         }));
@@ -52,6 +81,33 @@ const ProfileInformation = () => {
 
         ctxUpdateUser(dataToSend);
         setInitialData((prev) => ({ ...prev, ...dataToSend }));
+    };
+
+    const changePasswordState = () => {
+        setInputState((prev) => {
+            const newState = { ...prev, password: !prev["password"] };
+            if (prev["password"] == true && newState["password"] === false) {
+                updatePwd();
+                console.log("CHCEK");
+            }
+            return newState;
+        });
+    };
+
+    const updatePwd = () => {
+        if (passwordData.password_new !== passwordData.password_confirm) {
+            setPwdMsg("New password must match password confirmation.");
+            return;
+        }
+
+        const pwd = passwordData.password_new;
+        const passesReqs = pwd.length >= 8 && /\d/.test(pwd) && /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]/.test(pwd);
+        if (!passesReqs) {
+            setPwdMsg("New password must pass length, digit, and symbol requirements.");
+            return;
+        }
+
+        ctxUpdatePwd(passwordData.password_current, passwordData.password_new, passwordData.password_confirm);
     };
 
     const capitilizeFirst = (str) => {
@@ -150,35 +206,85 @@ const ProfileInformation = () => {
                     <p>Password</p>
                     <p>Change your password</p>
                 </div>
-                <div className={classes.fields}>
-                    <div className={classes.cluster}>
-                        <p>Password</p>
-                        <span>
-                            <input
-                                type="password"
-                                name="password"
-                                value={profileData.password}
-                                onChange={handleInputChange}
-                            />
-                            <div>
-                                <img src={penIcon} className={classes.icon} alt="pen icon" />
-                            </div>
-                        </span>
+                <div className={classes.pwdFields}>
+                    <div className={classes.newPwdClusters}>
+                        <div className={classes.cluster}>
+                            <p>Current password</p>
+                            <span>
+                                <input
+                                    type="password"
+                                    name="password_current"
+                                    value={profileData.password}
+                                    style={!inputState.password ? disabledStyle : null}
+                                    onChange={handlePwdInput}
+                                    disabled={!inputState.password}
+                                />
+                                <div onClick={() => changePasswordState("password")}>
+                                    <img
+                                        src={!inputState.password ? penIcon : saveIcon}
+                                        className={classes.icon}
+                                        alt="pen icon"
+                                    />
+                                </div>
+                            </span>
+                        </div>
                     </div>
-                    <div className={classes.cluster}>
-                        <p>Password confirm</p>
-                        <span>
-                            <input
-                                type="password"
-                                name="passwordConfirm"
-                                value={profileData.passwordConfirm}
-                                onChange={handleInputChange}
-                            />
-                            <div>
-                                <img src={penIcon} className={classes.icon} alt="pen icon" />
+                    {inputState.password && (
+                        <div className={classes.newPwdClusters}>
+                            <div className={classes.cluster}>
+                                <p>New password</p>
+                                <span>
+                                    <input
+                                        type="password"
+                                        name="password_new"
+                                        style={{ borderRadius: "0.25rem" }}
+                                        value={profileData.password}
+                                        onChange={handlePwdInput}
+                                        onFocus={() => setIsExpanded(true)}
+                                        onBlur={() => setIsExpanded(false)}
+                                    />
+                                    {isExpanded && (
+                                        <div className={classes.anchor}>
+                                            <div className={classes.passwordReqs}>
+                                                <span>
+                                                    <div className={`${reqObj.chars ? classes.true : classes.false}`}>
+                                                        {reqObj.chars ? "✔" : "x"}
+                                                    </div>
+                                                    <p>8 or More Characters</p>
+                                                </span>
+                                                <span>
+                                                    <div className={`${reqObj.num ? classes.true : classes.false}`}>
+                                                        {reqObj.num ? "✔" : "x"}
+                                                    </div>
+                                                    <p>Number</p>
+                                                </span>
+                                                <span>
+                                                    <div
+                                                        className={`${reqObj.specChar ? classes.true : classes.false}`}
+                                                    >
+                                                        {reqObj.specChar ? "✔" : "x"}
+                                                    </div>
+                                                    <p>Special Character</p>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    )}
+                                </span>
                             </div>
-                        </span>
-                    </div>
+                            <div className={classes.cluster}>
+                                <p>Confirm new password</p>
+                                <span>
+                                    <input
+                                        type="password"
+                                        name="password_confirm"
+                                        style={{ borderRadius: "0.25rem" }}
+                                        value={profileData.passwordConfirm}
+                                        onChange={handlePwdInput}
+                                    />
+                                </span>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </section>
             <section className={classes.tools}>

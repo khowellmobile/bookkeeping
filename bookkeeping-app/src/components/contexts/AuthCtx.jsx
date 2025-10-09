@@ -86,6 +86,7 @@ export function AuthCtxProvider(props) {
 
             if (!response.ok) {
                 showToast("Error updating password", "error", 5000);
+                console.log(response);
                 throw new Error(`HTTP error! status: ${response.status}`);
             } else {
                 showToast("Password updated", "success", 3000);
