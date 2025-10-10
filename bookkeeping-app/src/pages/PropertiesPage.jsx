@@ -10,6 +10,7 @@ import SearchBox from "../components/elements/misc/SearchBox";
 import RentInformation from "../components/elements/misc/RentInformation";
 import Input from "../components/elements/misc/Input";
 import PropertyTypeDropdown from "../components/elements/dropdowns/PropertyTypeDropdown";
+import Button from "../components/elements/utilities/Button";
 
 const PropertiesPage = () => {
     const { ctxPropertyList, ctxUpdateProperty, setCtxActiveProperty, ctxActiveProperty } = useContext(PropertiesCtx);
@@ -211,15 +212,21 @@ const PropertiesPage = () => {
                             <p className={classes.errorText}>{errorText}</p>
                             {isEditing ? (
                                 <div>
-                                    <button className={classes.button} onClick={handleSaveClick}>
-                                        Save
-                                    </button>
-                                    <button className={classes.button} onClick={handleDeleteClick}>
-                                        Delete
-                                    </button>
-                                    <button className={classes.button} onClick={() => setIsEditing(false)}>
-                                        Cancel
-                                    </button>
+                                    <Button
+                                        onClick={handleSaveClick}
+                                        text={"Save"}
+                                        customStyle={{ padding: "0.25rem 0.5rem" }}
+                                    />
+                                    <Button
+                                        onClick={handleDeleteClick}
+                                        text={"Delete"}
+                                        customStyle={{ padding: "0.25rem 0.5rem" }}
+                                    />
+                                    <Button
+                                        onClick={() => setIsEditing(false)}
+                                        text={"Cancel"}
+                                        customStyle={{ padding: "0.25rem 0.5rem" }}
+                                    />
                                 </div>
                             ) : (
                                 <>

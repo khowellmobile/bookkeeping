@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 
 import classes from "./SearchBox.module.css";
+import Button from "../utilities/Button";
 
 const SearchBox = ({ itemName, items, onItemClick, onAddButtonClick }) => {
     const [searchTerm, setSearchTerm] = useState("");
@@ -18,9 +19,7 @@ const SearchBox = ({ itemName, items, onItemClick, onAddButtonClick }) => {
     return (
         <div className={classes.searchBox}>
             <div className={classes.searchBoxTools}>
-                <button className={classes.button} onClick={onAddButtonClick}>
-                    Add {itemName}
-                </button>
+                <Button onClick={onAddButtonClick} text={`Add ${itemName}`} />
             </div>
             <input
                 type="text"

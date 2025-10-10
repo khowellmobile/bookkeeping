@@ -11,6 +11,7 @@ import ConfirmationModal from "../components/elements/modals/ConfirmationModal";
 import SearchBox from "../components/elements/misc/SearchBox";
 import NoResultsDisplay from "../components/elements/misc/NoResultsDisplay";
 import Input from "../components/elements/misc/Input";
+import Button from "../components/elements/utilities/Button";
 
 const EntitiesPage = () => {
     const { ctxEntityList, ctxUpdateEntity, ctxActiveEntity, setCtxActiveEntity } = useContext(EntitiesCtx);
@@ -234,15 +235,21 @@ const EntitiesPage = () => {
                             <p className={classes.errorText}>{errorText}</p>
                             {isEditing ? (
                                 <div>
-                                    <button className={classes.button} onClick={handleSaveClick}>
-                                        Save
-                                    </button>
-                                    <button className={classes.button} onClick={handleDeleteClick}>
-                                        Delete
-                                    </button>
-                                    <button className={classes.button} onClick={handleCancelClick}>
-                                        Cancel
-                                    </button>
+                                    <Button
+                                        onClick={handleSaveClick}
+                                        text={"Save"}
+                                        customStyle={{ padding: "0.25rem 0.5rem" }}
+                                    />
+                                    <Button
+                                        onClick={handleDeleteClick}
+                                        text={"Delete"}
+                                        customStyle={{ padding: "0.25rem 0.5rem" }}
+                                    />
+                                    <Button
+                                        onClick={handleCancelClick}
+                                        text={"Cancel"}
+                                        customStyle={{ padding: "0.25rem 0.5rem" }}
+                                    />
                                 </div>
                             ) : (
                                 <>
