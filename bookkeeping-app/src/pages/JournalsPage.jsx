@@ -334,23 +334,9 @@ const JournalsPage = () => {
                         <section className={classes.header}>
                             {isEditing ? <h2>Edit an Entry</h2> : <h2>Make an Entry</h2>}
                             <div className={classes.headerTools}>
-                                <Button
-                                    onClick={saveInfo}
-                                    text={isEditing ? "Save Edits" : "Save Entry"}
-                                    customStyle={{ padding: "0.25rem 0.5rem" }}
-                                />
-                                <Button
-                                    onClick={handleNewEntryClick}
-                                    text={isEditing ? "New Entry" : "Clear Inputs"}
-                                    customStyle={{ padding: "0.25rem 0.5rem" }}
-                                />
-                                {isEditing && (
-                                    <Button
-                                        onClick={handleDeleteClick}
-                                        text={"Delete Entry"}
-                                        customStyle={{ padding: "0.25rem 0.5rem" }}
-                                    />
-                                )}
+                                <Button onClick={saveInfo} text={isEditing ? "Save Edits" : "Save Entry"} />
+                                <Button onClick={handleNewEntryClick} text={isEditing ? "New Entry" : "Clear Inputs"} />
+                                {isEditing && <Button onClick={handleDeleteClick} text={"Delete Entry"} />}
                             </div>
                         </section>
                         <section className={classes.titleDate}>
