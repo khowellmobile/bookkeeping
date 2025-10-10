@@ -5,13 +5,13 @@ import { useNavigate } from "react-router-dom";
 import AuthCtx from "../../contexts/AuthCtx";
 
 const LoginModal = ({ handleCloseModal, switchModal }) => {
-    const { setCtxAccessToken } = useContext(AuthCtx);
+    const { setCtxAccessToken, requestPswdReset } = useContext(AuthCtx);
 
     const navigate = useNavigate();
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [errorMsg, setErrorMsg] = useState("");
+    const [message, setMessage] = useState("");
 
     const handleLogin = (event) => {
         event.preventDefault();
@@ -30,8 +30,8 @@ const LoginModal = ({ handleCloseModal, switchModal }) => {
                 if (!response.ok) {
                     return response.json().then((errorData) => {
                         console.error("Login failed:", errorData);
-                        setErrorMsg("Login failed please try again");
-                        throw new Error("Login failed");
+                        setMessage("Login failed please try again.");
+                        throw new Error("Login failed.");
                     });
                 }
                 return response.json();
@@ -40,13 +40,23 @@ const LoginModal = ({ handleCloseModal, switchModal }) => {
                 const { access } = data;
                 localStorage.setItem("accessToken", access);
                 setCtxAccessToken(access);
-                navigate("/home");
+                navigate("/app/home");
                 handleCloseModal();
             })
             .catch((error) => {
                 console.error("Login failed:", error);
-                setErrorMsg("Login failed please try again");
+                setMessage("Login failed please try again.");
             });
+    };
+
+    const pswdResetClick = async () => {
+        if (!email || email.trim().length == 0) {
+            setMessage("Ensure a proper email is entered before resetting password.");
+            return;
+        }
+
+        const responseMsg = await requestPswdReset(email);
+        setMessage(responseMsg);
     };
 
     return (
@@ -59,9 +69,9 @@ const LoginModal = ({ handleCloseModal, switchModal }) => {
                     <b>Welcome Back</b>
                     <p>Please enter your details</p>
                 </section>
-                {errorMsg && (
-                    <section className={classes.errors}>
-                        <p>{errorMsg}</p>
+                {message && (
+                    <section className={classes.messages}>
+                        <p>{message}</p>
                     </section>
                 )}
                 <section className={classes.inputs}>
@@ -92,6 +102,9 @@ const LoginModal = ({ handleCloseModal, switchModal }) => {
                         <p className={classes.formLabel}>Password</p>
                     </div>
                 </section>
+                <p>
+                    Forgot your password?<a onClick={pswdResetClick}>Password Reset</a>
+                </p>
                 <button type="submit">Login</button>
                 <p>
                     Dont have an Account?

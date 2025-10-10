@@ -43,7 +43,10 @@ INSTALLED_APPS = [
     "rental_api",
     "core_backend",
     "djoser",
+    "django.contrib.sites",
 ]
+
+SITE_ID = 1
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
@@ -68,26 +71,18 @@ SIMPLE_JWT = {
 }
 
 DJOSER = {
-    "PASSWORD_RESET_CONFIRM_URL": "#/password/reset/confirm/{uid}/{token}",
-    "USERNAME_RESET_CONFIRM_URL": "#/username/reset/confirm/{uid}/{token}",
-    "ACTIVATION_URL": "#/activate/{uid}/{token}",
-    "SEND_ACTIVATION_EMAIL": False,  # Controls Email verifiction
+    "PASSWORD_RESET_CONFIRM_URL": "password/reset/confirm/{uid}/{token}",
+    "SET_PASSWORD_RETYPE": True,
+    "ACTIVATION_URL": "activate/{uid}/{token}",
+    "SEND_ACTIVATION_EMAIL": True,  # Controls Email verification
     "SEND_CONFIRMATION_EMAIL": False,  # Controls Email confirmation
-    "SERIALIZERS": {
-        "user_create": "djoser.serializers.UserCreateSerializer",
-        "user": "djoser.serializers.UserSerializer",
-        "current_user": "djoser.serializers.UserSerializer",
-        "user_delete": "djoser.serializers.UserDeleteSerializer",
-        "token_create": "djoser.serializers.TokenCreateSerializer",
-        "token": "djoser.serializers.TokenSerializer",
-        "token_create": "djoser.serializers.TokenCreateSerializer",
-        "password_reset": "djoser.serializers.PasswordResetSerializer",
-        "password_reset_confirm": "djoser.serializers.PasswordResetConfirmSerializer",
-        "password_change": "djoser.serializers.SetPasswordSerializer",
-    },
+    "DOMAIN": "localhost",  # Set to production domain when moved to prod. Front end host and port.
+    "SITE_NAME": "localhost:5173",
     "TOKEN_MODEL": None,
     "JWT_AUTH": True,
 }
+
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 AUTH_PASSWORD_VALIDATORS = [
     {

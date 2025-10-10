@@ -10,6 +10,7 @@ import upChevIcon from "../assets/chevron-up-icon.svg";
 import downChevIcon from "../assets/chevron-down-icon.svg";
 import BalanceSheet from "../components/elements/reports/BalanceSheet";
 import ProfitLoss from "../components/elements/reports/ProfitLoss";
+import Button from "../components/elements/utilities/Button";
 
 const ReportsPage = () => {
     const { ctxAccountList } = useContext(AccountsCtx);
@@ -203,7 +204,7 @@ const ReportsPage = () => {
                             </div>
                         </div>
                         <div>
-                            <button>Run Report</button>
+                            <Button text={"Run Report"} />
                         </div>
                     </div>
                 </div>

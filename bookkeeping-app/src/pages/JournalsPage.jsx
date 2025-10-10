@@ -8,6 +8,7 @@ import ConfirmationModal from "../components/elements/modals/ConfirmationModal";
 import NoResultsDisplay from "../components/elements/misc/NoResultsDisplay";
 import Input from "../components/elements/misc/Input";
 import { JournalEntryItem } from "../components/elements/items/InputEntryItems";
+import Button from "../components/elements/utilities/Button";
 
 const JournalsPage = () => {
     const { ctxJournalList, ctxUpdateJournal, ctxDeleteJournal } = useContext(JournalsCtx);
@@ -333,11 +334,23 @@ const JournalsPage = () => {
                         <section className={classes.header}>
                             {isEditing ? <h2>Edit an Entry</h2> : <h2>Make an Entry</h2>}
                             <div className={classes.headerTools}>
-                                <button onClick={saveInfo}>{isEditing ? "Save Edits" : "Save Entry"}</button>
-                                <button onClick={handleNewEntryClick}>
-                                    {isEditing ? "New Entry" : "Clear Inputs"}
-                                </button>
-                                {isEditing && <button onClick={handleDeleteClick}>Delete Entry</button>}
+                                <Button
+                                    onClick={saveInfo}
+                                    text={isEditing ? "Save Edits" : "Save Entry"}
+                                    customStyle={{ padding: "0.25rem 0.5rem" }}
+                                />
+                                <Button
+                                    onClick={handleNewEntryClick}
+                                    text={isEditing ? "New Entry" : "Clear Inputs"}
+                                    customStyle={{ padding: "0.25rem 0.5rem" }}
+                                />
+                                {isEditing && (
+                                    <Button
+                                        onClick={handleDeleteClick}
+                                        text={"Delete Entry"}
+                                        customStyle={{ padding: "0.25rem 0.5rem" }}
+                                    />
+                                )}
                             </div>
                         </section>
                         <section className={classes.titleDate}>

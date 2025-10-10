@@ -7,6 +7,7 @@ import TransactionsCtx from "../../contexts/TransactionsCtx";
 import { TransactionEntryItem } from "../items/InputEntryItems";
 import AccountDropdown from "../dropdowns/AccountDropdown";
 import ConfirmationModal from "./ConfirmationModal";
+import Button from "../utilities/Button";
 
 const AddTransactionsModal = ({ ctxActiveAccount, handleCloseModal }) => {
     const { ctxAddTransactions } = useContext(TransactionsCtx);
@@ -148,8 +149,8 @@ const AddTransactionsModal = ({ ctxActiveAccount, handleCloseModal }) => {
                         <AccountDropdown initalVal={activeAccount} onChange={setActiveAccount} />
                         <p>{errorText}</p>
                         <section className={classes.buttons}>
-                            <button onClick={handleSaveClose}>Save & Close</button>
-                            <button onClick={handleCancelClose}>Cancel</button>
+                            <Button onClick={handleSaveClose} text={"Save & Close"} customStyle={{ width: "100%" }} />
+                            <Button onClick={handleCancelClose} text={"Cancel"} customStyle={{ width: "100%" }} />
                         </section>
                     </section>
                     <div className={classes.entryContainer}>

@@ -1,0 +1,21 @@
+.button {
+    padding: 0.5rem 1rem;
+
+    background-color: var(--primary-color);
+    color: white;
+    cursor: pointer;
+    font-family: "poppins";
+    border-radius: 0.25rem;
+    border: none;
+    outline: none;
+
+    transition: all ease 0.25s;
+}
+
+.button:hover {
+    transform: translateY(-1px);
+}
+
+.button:active {
+    transform: translateY(1px);
+}

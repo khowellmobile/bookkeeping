@@ -57,27 +57,3 @@
     justify-content: space-between;
     align-items: center;
 }
-
-.buttonContainer > button {
-    width: calc(100% / 2 - 0.25rem);
-    padding: 0.5rem 1rem;
-
-    background-color: var(--primary-color);
-    color: white;
-    cursor: pointer;
-    font-family: "poppins";
-    font-weight: 400;
-    border-radius: 0.25rem;
-    border: none;
-    outline: none;
-
-    transition: all ease 0.25s;
-}
-
-.buttonContainer > button:hover {
-    transform: translateY(-1px);
-}
-
-.buttonContainer > button:active {
-    transform: translateY(1px);
-}

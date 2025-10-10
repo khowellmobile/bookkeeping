@@ -21,7 +21,7 @@ const AccountItem = ({ account }) => {
 
     const accountClickHandler = (account) => {
         setCtxActiveAccount(account);
-        navigate("/transactions");
+        navigate("/app/transactions");
     };
 
     const handleCloseModal = () => {

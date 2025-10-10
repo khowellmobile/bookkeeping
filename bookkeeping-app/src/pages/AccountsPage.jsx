@@ -6,6 +6,7 @@ import AccountsCtx from "../components/contexts/AccountsCtx";
 import AddAccountModal from "../components/elements/modals/AddAccountModal";
 import AccountItem from "../components/elements/items/AccountItem";
 import NoResultsDisplay from "../components/elements/misc/NoResultsDisplay";
+import Button from "../components/elements/utilities/Button";
 
 const AccountsPage = () => {
     const { ctxAccountList } = useContext(AccountsCtx);
@@ -53,7 +54,7 @@ const AccountsPage = () => {
                             ></input>
                         </div>
                         <div>
-                            <button onClick={() => setIsModalOpen(true)}>Add Account</button>
+                            <Button onClick={() => setIsModalOpen(true)} text="Add Account" />
                         </div>
                     </div>
                 </div>
