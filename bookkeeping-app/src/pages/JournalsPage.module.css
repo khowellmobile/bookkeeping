@@ -44,11 +44,9 @@
     font-weight: 400;
 }
 
-.headerTools {
-    padding-right: 0.5rem;
-
-    display: flex;
-    justify-content: space-between;
+.header button {
+    padding: 0.25rem 0.5rem;
+    margin-right: 0.5rem;
 }
 
 .titleDate {

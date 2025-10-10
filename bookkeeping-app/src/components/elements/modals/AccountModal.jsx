@@ -167,12 +167,10 @@ const AccountModal = ({ account, handleCloseModal }) => {
                             <Button
                                 onClick={updateAccount}
                                 text={"Save & Close"}
-                                customStyle={{ padding: "0.25rem 0.5rem" }}
                             />
                             <Button
                                 onClick={handleCancelClose}
                                 text={"Close"}
-                                customStyle={{ padding: "0.25rem 0.5rem" }}
                             />
                         </span>
                     </div>

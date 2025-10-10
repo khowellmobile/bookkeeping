@@ -128,3 +128,8 @@
     color: red;
     font-size: var(--small-font-size);
 }
+
+.actionItems button {
+    padding: 0.25rem 0.5rem;
+    margin-left: 0.5rem;
+}

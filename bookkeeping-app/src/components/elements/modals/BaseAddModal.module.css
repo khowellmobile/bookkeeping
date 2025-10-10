@@ -45,3 +45,7 @@
     align-items: center;
     justify-content: end;
 }
+
+.buttons button {
+    margin-left: 0.5rem;
+}

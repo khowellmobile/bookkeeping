@@ -212,21 +212,9 @@ const PropertiesPage = () => {
                             <p className={classes.errorText}>{errorText}</p>
                             {isEditing ? (
                                 <div>
-                                    <Button
-                                        onClick={handleSaveClick}
-                                        text={"Save"}
-                                        customStyle={{ padding: "0.25rem 0.5rem" }}
-                                    />
-                                    <Button
-                                        onClick={handleDeleteClick}
-                                        text={"Delete"}
-                                        customStyle={{ padding: "0.25rem 0.5rem" }}
-                                    />
-                                    <Button
-                                        onClick={() => setIsEditing(false)}
-                                        text={"Cancel"}
-                                        customStyle={{ padding: "0.25rem 0.5rem" }}
-                                    />
+                                    <Button onClick={handleSaveClick} text={"Save"} />
+                                    <Button onClick={handleDeleteClick} text={"Delete"} />
+                                    <Button onClick={() => setIsEditing(false)} text={"Cancel"} />
                                 </div>
                             ) : (
                                 <>

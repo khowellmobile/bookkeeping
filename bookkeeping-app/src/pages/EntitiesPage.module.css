@@ -45,6 +45,11 @@
     justify-content: space-between;
 }
 
+.header button {
+    padding: 0.25rem 0.5rem;
+    margin-right: 0.5rem;
+}
+
 .header > input {
     width: 20rem;
     padding: 0rem 0.25rem;
