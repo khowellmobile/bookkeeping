@@ -1,3 +1,4 @@
+import Button from "../utilities/Button";
 import classes from "./ConfirmationModal.module.css";
 
 const ConfirmationModal = ({ text, onConfirm, onCancel }) => {
@@ -11,8 +12,12 @@ const ConfirmationModal = ({ text, onConfirm, onCancel }) => {
                     <p>{text.msg}</p>
                 </div>
                 <div className={classes.buttonContainer}>
-                    <button onClick={onConfirm}>{text.confirm_txt}</button>
-                    <button onClick={onCancel}>{text.cancel_txt}</button>
+                    <Button
+                        onClick={onConfirm}
+                        text={text.confirm_txt}
+                        customStyle={{ width: "calc(50% - 0.25rem)" }}
+                    />
+                    <Button onClick={onCancel} text={text.cancel_txt} customStyle={{ width: "calc(50% - 0.25rem)" }} />
                 </div>
             </div>
         </div>

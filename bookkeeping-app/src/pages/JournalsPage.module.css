@@ -44,36 +44,9 @@
     font-weight: 400;
 }
 
-.headerTools {
-    padding-right: 0.5rem;
-
-    display: flex;
-    justify-content: space-between;
-}
-
-.headerTools > button {
+.header button {
     padding: 0.25rem 0.5rem;
-    margin-left: 0.5rem;
-
-    background-color: var(--primary-color);
-    color: white;
-    cursor: pointer;
-    font-family: "poppins";
-    font-weight: 500;
-    font-size: var(--small-font-size);
-    border-radius: 0.25rem;
-    border: none;
-    outline: none;
-
-    transition: all ease 0.25s;
-}
-
-.headerTools > button:hover {
-    transform: translateY(-1px);
-}
-
-.headerTools > button:active {
-    transform: translateY(1px);
+    margin-right: 0.5rem;
 }
 
 .titleDate {
@@ -207,4 +180,3 @@
 .entryTotals > p:first-child {
     border-left: none;
 }
-

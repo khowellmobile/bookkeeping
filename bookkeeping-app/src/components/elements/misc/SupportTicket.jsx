@@ -1,3 +1,4 @@
+import Button from "../utilities/Button";
 import classes from "./SupportTicket.module.css";
 
 import { useState } from "react";
@@ -25,7 +26,7 @@ const SupportTicket = () => {
             <p>Please describe the issue</p>
             <textarea value={description} onChange={(e) => setDescription(e.target.value)} />
             <div className={classes.buttonDiv}>
-                <button>Submit</button>
+                <Button text={"Submit"} />
             </div>
         </div>
     );

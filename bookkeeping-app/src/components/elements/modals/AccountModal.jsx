@@ -8,6 +8,7 @@ import ConfirmationModal from "./ConfirmationModal";
 import upChevIcon from "../../../assets/chevron-up-icon.svg";
 import downChevIcon from "../../../assets/chevron-down-icon.svg";
 import Input from "../misc/Input";
+import Button from "../utilities/Button";
 
 const AccountModal = ({ account, handleCloseModal }) => {
     const { ctxUpdateAccount } = useContext(AccountsCtx);
@@ -163,8 +164,14 @@ const AccountModal = ({ account, handleCloseModal }) => {
                     <div className={classes.actionItems}>
                         <p>{errorText}</p>
                         <span>
-                            <button onClick={updateAccount}>Save & Close</button>
-                            <button onClick={handleCancelClose}>Close</button>
+                            <Button
+                                onClick={updateAccount}
+                                text={"Save & Close"}
+                            />
+                            <Button
+                                onClick={handleCancelClose}
+                                text={"Close"}
+                            />
                         </span>
                     </div>
                 </div>

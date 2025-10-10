@@ -6,6 +6,7 @@ import AuthCtx from "../../contexts/AuthCtx";
 import penIcon from "../../../assets/pen-icon-grey.svg";
 import saveIcon from "../../../assets/save-icon-grey.svg";
 import LogoutModal from "../modals/LogoutModal";
+import Button from "../utilities/Button";
 
 const ProfileInformation = () => {
     const { ctxUpdateUser, ctxUserData, ctxUpdatePwd } = useContext(AuthCtx);
@@ -255,7 +256,7 @@ const ProfileInformation = () => {
                                     <p>Messages</p>
                                     <span>
                                         <p>{pwdMsg}</p>
-                                        <button onClick={cancelPwdChange}>Cancel</button>
+                                        <Button onClick={cancelPwdChange} text={"Cancel"} />
                                     </span>
                                 </div>
                             )}

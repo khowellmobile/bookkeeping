@@ -54,14 +54,6 @@ const RentItem = ({ item, dayIndex, updateFields, removePayment, handleSaveRentP
         }
     };
 
-    /*    useEffect(() => {
-        console.log(isClicked);
-    }, [isClicked]);
-
-    useEffect(() => {
-        console.log(isAbsolute);
-    }, [isAbsolute]);
- */
     const handleClose = useCallback(() => {
         const isChanged =
             inputFields.amount !== item.amount ||

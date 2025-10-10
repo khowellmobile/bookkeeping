@@ -130,15 +130,6 @@
 }
 
 .actionItems button {
-    width: 10rem;
     padding: 0.25rem 0.5rem;
     margin-left: 0.5rem;
-
-    background-color: var(--primary-color);
-    color: white;
-    border-radius: 0.25rem;
-    border: none;
-    outline: none;
-    font-family: "poppins";
-    cursor: pointer;
 }

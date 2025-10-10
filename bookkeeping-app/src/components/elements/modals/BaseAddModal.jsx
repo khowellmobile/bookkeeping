@@ -1,6 +1,7 @@
 import { useState } from "react";
 import ConfirmationModal from "./ConfirmationModal";
 import classes from "./BaseAddModal.module.css";
+import Button from "../utilities/Button";
 
 const BaseModal = ({ children, handleCloseModal, hasUnsavedChanges, title, handleSaveClick }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -44,8 +45,8 @@ const BaseModal = ({ children, handleCloseModal, hasUnsavedChanges, title, handl
                         {children}
                     </section>
                     <section className={classes.buttons}>
-                        <button onClick={handleSaveClick}>Save & Close</button>
-                        <button onClick={handleCancelClose}>Close</button>
+                        <Button onClick={handleSaveClick} text={"Save & Close"} />
+                        <Button onClick={handleCancelClose} text={"Close"} />
                     </section>
                 </div>
             </div>

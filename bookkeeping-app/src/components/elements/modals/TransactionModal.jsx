@@ -7,6 +7,7 @@ import AccountDropdown from "../dropdowns/AccountDropdown.jsx";
 import EntityDropdown from "../dropdowns/EntityDropdown.jsx";
 import ConfirmationModal from "./ConfirmationModal.jsx";
 import Input from "../misc/Input.jsx";
+import Button from "../utilities/Button.jsx";
 
 const TransactionModal = ({ vals, handleCloseModal }) => {
     const { ctxUpdateTransaction } = useContext(TransactionsCtx);
@@ -228,9 +229,9 @@ const TransactionModal = ({ vals, handleCloseModal }) => {
                     <div className={classes.actionItems}>
                         <p>{errorText}</p>
                         <span>
-                            <button onClick={handleUpdateClick}>Save & Close</button>
-                            <button onClick={() => handleConfirmAction("closeEdit")}>Close</button>
-                            <button onClick={() => handleConfirmAction("delete")}>Delete</button>
+                            <Button onClick={handleUpdateClick} text={"Save & Close"} />
+                            <Button onClick={() => handleConfirmAction("closeEdit")} text={"Close"} />
+                            <Button onClick={() => handleConfirmAction("delete")} text={"Delete"} />
                         </span>
                     </div>
                 </div>

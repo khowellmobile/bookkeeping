@@ -8,6 +8,7 @@ import TransactionsCtx from "../components/contexts/TransactionsCtx";
 import AccountsCtx from "../components/contexts/AccountsCtx";
 import AddTransactionsModal from "../components/elements/modals/AddTransactionsModal";
 import NoResultsDisplay from "../components/elements/misc/NoResultsDisplay";
+import Button from "../components/elements/utilities/Button";
 
 const TransactionsPage = () => {
     const { setCtxTranList, ctxTranList, setCtxFilterBy } = useContext(TransactionsCtx);
@@ -67,7 +68,7 @@ const TransactionsPage = () => {
                             ></input>
                         </div>
                         <div>
-                            <button onClick={() => setIsModalOpen(true)}>Add Transactions</button>
+                            <Button onClick={() => setIsModalOpen(true)} text={"Add Transcations"} />
                         </div>
                     </div>
                 </div>
