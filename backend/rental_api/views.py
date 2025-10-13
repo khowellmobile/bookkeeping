@@ -206,6 +206,7 @@ class TransactionDetailAPIView(APIView):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
 
+# Mixin to check for and verify property id.
 class AccountListAPIView(PropertyRequiredMixin, APIView):
     """
     API endpoint to list all accounts.
@@ -353,7 +354,8 @@ class EntityDetailAPIView(APIView):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
 
-class JournalListAPIView(APIView):
+# Mixin to check for and verify property id.
+class JournalListAPIView(PropertyRequiredMixin, APIView):
     """
     API endpoint to list journals.
     """
@@ -361,67 +363,21 @@ class JournalListAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        property_id = request.query_params.get("property_id")
-
-        if property_id:
-            try:
-                property_obj = Property.objects.get(id=property_id, user=request.user)
-                journals_queryset = property_obj.journals.all().prefetch_related(
-                    "journal_items__account"
-                )
-            except Property.DoesNotExist:
-                return Response(
-                    {
-                        "error": "Property with this ID does not exist or does not belong to the user."
-                    },
-                    status=status.HTTP_404_NOT_FOUND,
-                )
-            except ValueError:
-                return Response(
-                    {"error": "Invalid property_id provided."},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-        else:
-            return Response(
-                {"error": "property_id is required."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
+        property_obj = self.property_obj
+        journals_queryset = property_obj.journals.all().prefetch_related(
+            "journal_items__account"
+        )
         serializer = JournalSerializer(journals_queryset, many=True)
         return Response(serializer.data)
 
     def post(self, request):
-        property_id = request.query_params.get("property_id")
-
-        if property_id:
-            try:
-                property_obj = Property.objects.get(id=property_id, user=request.user)
-            except Property.DoesNotExist:
-                return Response(
-                    {
-                        "error": "Property with this ID does not exist or does not belong to the user."
-                    },
-                    status=status.HTTP_404_NOT_FOUND,
-                )
-            except ValueError:
-                return Response(
-                    {"error": "Invalid property_id provided."},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-        else:
-            return Response(
-                {"error": "property_id is required."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
+        property_obj = self.property_obj
         serializer = JournalSerializer(data=request.data, context={"request": request})
 
         if serializer.is_valid():
             journal_instance = serializer.save(property=property_obj)
-
             for item in journal_instance.journal_items.all():
                 item.account.update_balance(item)
-
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
