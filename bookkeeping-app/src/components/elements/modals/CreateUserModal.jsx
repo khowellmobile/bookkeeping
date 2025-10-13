@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 
 import classes from "./CreateUserModal.module.css";
 
+import PwdPopup from "../utilities/PwdPopup";
+
 const CreateUserModal = ({ handleCloseModal, switchModal }) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -113,6 +115,12 @@ const CreateUserModal = ({ handleCloseModal, switchModal }) => {
                                 <p className={classes.formLabel}>Email</p>
                             </div>
                             <div className={classes.formCluster}>
+                                <PwdPopup
+                                    topOffset={"1.5rem"}
+                                    leftOffset={"-15.5rem"}
+                                    pwd={password}
+                                    isShown={isExpanded}
+                                />
                                 <input
                                     type="password"
                                     className={classes.formInput}
@@ -126,30 +134,6 @@ const CreateUserModal = ({ handleCloseModal, switchModal }) => {
                                 />
                                 <p className={classes.formLabel}>Password</p>
                             </div>
-                            {isExpanded && (
-                                <div className={classes.anchor}>
-                                    <div className={classes.passwordReqs}>
-                                        <span>
-                                            <div className={`${reqObj.chars ? classes.true : classes.false}`}>
-                                                {reqObj.chars ? "✔" : "x"}
-                                            </div>
-                                            <p>8 or More Characters</p>
-                                        </span>
-                                        <span>
-                                            <div className={`${reqObj.num ? classes.true : classes.false}`}>
-                                                {reqObj.num ? "✔" : "x"}
-                                            </div>
-                                            <p>Number</p>
-                                        </span>
-                                        <span>
-                                            <div className={`${reqObj.specChar ? classes.true : classes.false}`}>
-                                                {reqObj.specChar ? "✔" : "x"}
-                                            </div>
-                                            <p>Special Character</p>
-                                        </span>
-                                    </div>
-                                </div>
-                            )}
                             <div className={classes.formCluster}>
                                 <input
                                     type="password"
