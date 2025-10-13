@@ -7,6 +7,7 @@ import penIcon from "../../../assets/pen-icon-grey.svg";
 import saveIcon from "../../../assets/save-icon-grey.svg";
 import LogoutModal from "../modals/LogoutModal";
 import Button from "../utilities/Button";
+import PwdPopup from "../utilities/PwdPopup";
 
 const ProfileInformation = () => {
     const { ctxUpdateUser, ctxUserData, ctxUpdatePwd } = useContext(AuthCtx);
@@ -165,7 +166,10 @@ const ProfileInformation = () => {
                                     onChange={handleInputChange}
                                     disabled={!inputState.first_name}
                                 />
-                                <div onClick={() => changeInputStateAndSave("first_name")}>
+                                <div
+                                    className={classes.inputIcon}
+                                    onClick={() => changeInputStateAndSave("first_name")}
+                                >
                                     <img
                                         src={!inputState.first_name ? penIcon : saveIcon}
                                         className={classes.icon}
@@ -185,7 +189,7 @@ const ProfileInformation = () => {
                                     onChange={handleInputChange}
                                     disabled={!inputState.last_name}
                                 />
-                                <div onClick={() => changeInputStateAndSave("last_name")}>
+                                <div className={classes.inputIcon} onClick={() => changeInputStateAndSave("last_name")}>
                                     <img
                                         src={!inputState.last_name ? penIcon : saveIcon}
                                         className={classes.icon}
@@ -213,7 +217,7 @@ const ProfileInformation = () => {
                                     onChange={handleInputChange}
                                     disabled={!inputState.email}
                                 />
-                                <div onClick={() => changeInputStateAndSave("email")}>
+                                <div className={classes.inputIcon} onClick={() => changeInputStateAndSave("email")}>
                                     <img
                                         src={!inputState.email ? penIcon : saveIcon}
                                         className={classes.icon}
@@ -242,7 +246,7 @@ const ProfileInformation = () => {
                                         onChange={handlePwdInput}
                                         disabled={!inputState.password}
                                     />
-                                    <div onClick={() => changePasswordState()}>
+                                    <div className={classes.inputIcon} onClick={() => changePasswordState()}>
                                         <img
                                             src={!inputState.password ? penIcon : saveIcon}
                                             className={classes.icon}
@@ -266,6 +270,12 @@ const ProfileInformation = () => {
                                 <div className={classes.cluster}>
                                     <p>New password</p>
                                     <span>
+                                        <PwdPopup
+                                            topOffset={"-0.5rem"}
+                                            leftOffset={"-15rem"}
+                                            pwd={passwordData.password_new}
+                                            isShown={isExpanded}
+                                        />
                                         <input
                                             type="password"
                                             name="password_new"
@@ -275,36 +285,6 @@ const ProfileInformation = () => {
                                             onFocus={() => setIsExpanded(true)}
                                             onBlur={() => setIsExpanded(false)}
                                         />
-                                        {isExpanded && (
-                                            <div className={classes.anchor}>
-                                                <div className={classes.passwordReqs}>
-                                                    <span>
-                                                        <div
-                                                            className={`${reqObj.chars ? classes.true : classes.false}`}
-                                                        >
-                                                            {reqObj.chars ? "✔" : "x"}
-                                                        </div>
-                                                        <p>8 or More Characters</p>
-                                                    </span>
-                                                    <span>
-                                                        <div className={`${reqObj.num ? classes.true : classes.false}`}>
-                                                            {reqObj.num ? "✔" : "x"}
-                                                        </div>
-                                                        <p>Number</p>
-                                                    </span>
-                                                    <span>
-                                                        <div
-                                                            className={`${
-                                                                reqObj.specChar ? classes.true : classes.false
-                                                            }`}
-                                                        >
-                                                            {reqObj.specChar ? "✔" : "x"}
-                                                        </div>
-                                                        <p>Special Character</p>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        )}
                                     </span>
                                 </div>
                                 <div className={classes.cluster}>

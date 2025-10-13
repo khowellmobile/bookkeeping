@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 import classes from "./PasswordResetPage.module.css";
+import PwdPopup from "../components/elements/utilities/PwdPopup";
 
 const PasswordResetPage = () => {
     const { uid, token } = useParams();
@@ -82,6 +83,7 @@ const PasswordResetPage = () => {
                 <div className={classes.inputs}>
                     {message && <p>{message}</p>}
                     <div className={classes.formCluster}>
+                        <PwdPopup topOffset={"1.5rem"} leftOffset={"-15.5rem"} pwd={password} isShown={isExpanded} />
                         <input
                             type="password"
                             className={classes.formInput}
@@ -95,30 +97,6 @@ const PasswordResetPage = () => {
                         />
                         <p className={classes.formLabel}>Password</p>
                     </div>
-                    {isExpanded && (
-                        <div className={classes.anchor}>
-                            <div className={classes.passwordReqs}>
-                                <span>
-                                    <div className={`${reqObj.chars ? classes.true : classes.false}`}>
-                                        {reqObj.chars ? "✔" : "x"}
-                                    </div>
-                                    <p>8 or More Characters</p>
-                                </span>
-                                <span>
-                                    <div className={`${reqObj.num ? classes.true : classes.false}`}>
-                                        {reqObj.num ? "✔" : "x"}
-                                    </div>
-                                    <p>Number</p>
-                                </span>
-                                <span>
-                                    <div className={`${reqObj.specChar ? classes.true : classes.false}`}>
-                                        {reqObj.specChar ? "✔" : "x"}
-                                    </div>
-                                    <p>Special Character</p>
-                                </span>
-                            </div>
-                        </div>
-                    )}
                     <div className={classes.formCluster}>
                         <input
                             type="password"
