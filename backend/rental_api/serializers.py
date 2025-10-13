@@ -131,6 +131,8 @@ class EntitySerializer(serializers.ModelSerializer):
     email = serializers.EmailField(required=False, allow_blank=True)
     property = PropertySerializer(read_only=True)
     property_id = serializers.IntegerField(required=False, write_only=True)
+    company = serializers.CharField(required=False, allow_blank=True)
+    address = serializers.CharField(required=False, allow_blank=True)
 
     class Meta:
         model = Entity
