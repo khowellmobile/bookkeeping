@@ -206,7 +206,7 @@ class TransactionDetailAPIView(APIView):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
 
-class AccountListAPIView(APIView):
+class AccountListAPIView(PropertyRequiredMixin, APIView):
     """
     API endpoint to list all accounts.
     """
@@ -214,98 +214,60 @@ class AccountListAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        property_id = request.query_params.get("property_id")
+        property_obj = self.property_obj
+
         get_non_property_accounts = request.query_params.get(
             "get_non_property_accounts"
         )
 
-        if not property_id:
-            return Response(
-                {"error": "property_id is required."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        if get_non_property_accounts:
+            included_types = ["bank", "credit-card"]
 
-        try:
-            property_obj = Property.objects.get(id=property_id, user=request.user)
+            account_queryset = Account.objects.filter(
+                user=request.user, type__in=included_types
+            ).exclude(properties=property_obj)
 
-            if get_non_property_accounts:
-                included_types = ["bank", "credit-card"]
-                account_queryset = Account.objects.filter(
-                    user=request.user, type__in=included_types
-                ).exclude(properties=property_obj)
-            else:
-                account_queryset = property_obj.accounts.all()
-        except Property.DoesNotExist:
-            return Response(
-                {
-                    "error": "Property with this ID does not exist or does not belong to the user."
-                },
-                status=status.HTTP_404_NOT_FOUND,
-            )
-        except ValueError:
-            return Response(
-                {"error": "Invalid property_id provided."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        else:
+            account_queryset = property_obj.accounts.all()
 
         serializer = AccountSerializer(account_queryset, many=True)
         return Response(serializer.data)
 
     def post(self, request):
-        property_id = request.query_params.get("property_id")
+        property_obj = self.property_obj
         add_existing = request.query_params.get("add_existing")
 
-        if property_id:
+        if add_existing:
             try:
-                property_obj = Property.objects.get(id=property_id, user=request.user)
-
-                if add_existing:
-                    try:
-                        account_obj = Account.objects.get(
-                            pk=request.data["id"], user=self.request.user
-                        )
-                        property_obj.accounts.add(account_obj)
-                        serializer = AccountSerializer(account_obj)
-                        return Response(serializer.data, status=status.HTTP_201_CREATED)
-                    except Account.DoesNotExist:
-                        return Response(
-                            {
-                                "error": "Account with this ID does not exist or does not belong to the user."
-                            },
-                            status=status.HTTP_404_NOT_FOUND,
-                        )
-                else:
-                    serializer = AccountSerializer(
-                        data=request.data, context={"request": request}
-                    )
-
-                    if serializer.is_valid():
-                        new_account = serializer.save()
-                        property_obj.accounts.add(new_account)
-
-                        return Response(serializer.data, status=status.HTTP_201_CREATED)
-                    else:
-                        return Response(
-                            serializer.errors, status=status.HTTP_400_BAD_REQUEST
-                        )
-
-            except Property.DoesNotExist:
+                account_obj = Account.objects.get(
+                    pk=request.data["id"], user=self.request.user
+                )
+                property_obj.accounts.add(account_obj)
+                serializer = AccountSerializer(account_obj)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            except Account.DoesNotExist:
                 return Response(
                     {
-                        "error": "Property with this ID does not exist or does not belong to the user."
+                        "error": "Account with this ID does not exist or does not belong to the user."
                     },
                     status=status.HTTP_404_NOT_FOUND,
                 )
-            except ValueError:
+            except KeyError:
                 return Response(
-                    {"error": "Invalid property_id provided."},
+                    {"error": "Missing 'id' for existing account."},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
         else:
-            return Response(
-                {"error": "property_id is required."},
-                status=status.HTTP_400_BAD_REQUEST,
+            serializer = AccountSerializer(
+                data=request.data, context={"request": request}
             )
+
+            if serializer.is_valid():
+                new_account = serializer.save(user=request.user)
+                property_obj.accounts.add(new_account)
+
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class AccountDetailAPIView(APIView):
@@ -374,9 +336,8 @@ class EntityDetailAPIView(APIView):
             return None
 
     def get(self, request, pk):
-        try:
-            entity = Entity.objects.get(pk=pk)
-        except Entity.DoesNotExist:
+        entity = self.get_object(pk)
+        if not entity:
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = EntitySerializer(entity)
         return Response(serializer.data)
