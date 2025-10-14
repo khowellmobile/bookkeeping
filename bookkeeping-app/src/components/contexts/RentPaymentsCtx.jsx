@@ -86,7 +86,7 @@ export function RentPaymentsCtxProvider(props) {
             if (month && year) {
                 url.searchParams.append("year", year);
                 url.searchParams.append("month", month);
-                url.searchParams.append("foramt_by_day", true);
+                url.searchParams.append("format_by_day", true);
             }
 
             const response = await fetch(url.toString(), {

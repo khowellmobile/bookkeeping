@@ -532,7 +532,8 @@ class PropertyDetailAPIView(APIView):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
 
-class RentPaymentListAPIView(APIView):
+# Mixin to check for and verify property id.
+class RentPaymentListAPIView(PropertyRequiredMixin, APIView):
     """
     API endpoint to list all rent Payments.
     """
@@ -540,35 +541,13 @@ class RentPaymentListAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        property_id = request.query_params.get("property_id")
+        property_obj = self.property_obj
+
         year = request.query_params.get("year")
         month = request.query_params.get("month")
-        format_by_day = request.query_params.get("foramt_by_day", "false").lower()
-        rent_payments = RentPayment.objects.filter(user=request.user)
+        format_by_day = request.query_params.get("format_by_day", "false").lower()
 
-        if not property_id:
-            return Response(
-                {"error": "property_id is required."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        if property_id:
-            try:
-                # Ensures property belongs to user
-                Property.objects.get(id=property_id, user=request.user)
-                rent_payments = rent_payments.filter(property_id=property_id)
-            except Property.DoesNotExist:
-                return Response(
-                    {
-                        "error": "Property with this ID does not exist or does not belong to the user."
-                    },
-                    status=status.HTTP_404_NOT_FOUND,
-                )
-            except ValueError:
-                return Response(
-                    {"error": "Invalid property_id provided."},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
+        rent_payments = RentPayment.objects.filter(property=property_obj)
 
         # data ranged by year and month
         if year and month:
@@ -616,34 +595,7 @@ class RentPaymentListAPIView(APIView):
             return Response(serializer.data)
 
     def post(self, request):
-        property_id = request.query_params.get("property_id")
-
-        if not property_id:
-            return Response(
-                {"error": "property_id is required."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        if property_id:
-            try:
-                property_obj = Property.objects.get(id=property_id, user=request.user)
-            except Property.DoesNotExist:
-                return Response(
-                    {
-                        "error": "Property with this ID does not exist or does not belong to the user."
-                    },
-                    status=status.HTTP_404_NOT_FOUND,
-                )
-            except ValueError:
-                return Response(
-                    {"error": "Invalid property_id provided."},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-        else:
-            return Response(
-                {"error": "property_id is required."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        property_obj = self.property_obj
 
         serializer = RentPaymentSerializer(
             data=request.data, context={"request": request}
