@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from phonenumber_field.modelfields import PhoneNumberField
 
 ACCOUNT_TYPE_CHOICES = [
     ("asset", "Asset"),
@@ -167,7 +168,7 @@ class Entity(models.Model):
     name = models.CharField(max_length=255)
     company = models.CharField(max_length=255, null=True)
     address = models.CharField(max_length=255, null=True)
-    phone_number = models.CharField(max_length=255, null=True)
+    phone_number = PhoneNumberField(null=True, blank=True)
     email = models.EmailField(max_length=255, null=True)
     description = models.TextField(blank=True, null=True)
     is_deleted = models.BooleanField(default=False)

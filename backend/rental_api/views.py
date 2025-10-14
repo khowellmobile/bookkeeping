@@ -1,11 +1,13 @@
 from django.shortcuts import render
 
 # rental_api/views.py
+from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
-from datetime import date, timedelta
+from rest_framework.permissions import IsAuthenticated
+from datetime import date
 import calendar
+from django.db import transaction
 from .serializers import (
     TransactionSerializer,
     AccountSerializer,
@@ -22,12 +24,12 @@ from core_backend.models import (
     Journal,
     Property,
     RentPayment,
-    User,
 )
-from rest_framework.permissions import IsAuthenticated
+from .mixins import PropertyRequiredMixin
 
 
-class TransactionListAPIView(APIView):
+# Mixin to check for and verify property id.
+class TransactionListAPIView(PropertyRequiredMixin, APIView):
     """
     API endpoint to list and create transactions.
     """
@@ -35,36 +37,10 @@ class TransactionListAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        property_id = request.query_params.get("property_id")
+        property_obj = self.property_obj
+
         account_id = request.query_params.get("account_id")
         entity_id = request.query_params.get("entity_id")
-
-        if not account_id and not entity_id:
-            return Response(
-                {"error": "You must provide an entity ID or an account ID."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        if property_id:
-            try:
-                property_obj = Property.objects.get(id=property_id, user=request.user)
-            except Property.DoesNotExist:
-                return Response(
-                    {
-                        "error": "Property with this ID does not exist or does not belong to the user."
-                    },
-                    status=status.HTTP_404_NOT_FOUND,
-                )
-            except ValueError:
-                return Response(
-                    {"error": "Invalid property_id provided."},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-        else:
-            return Response(
-                {"error": "property_id is required."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
 
         transactions = Transaction.objects.filter(
             user=request.user, property=property_obj
@@ -104,31 +80,11 @@ class TransactionListAPIView(APIView):
         serializer = TransactionSerializer(transactions, many=True)
         return Response(serializer.data)
 
+    @transaction.atomic
     def post(self, request):
         data = request.data
 
-        property_id = request.query_params.get("property_id")
-
-        if property_id:
-            try:
-                property_obj = Property.objects.get(id=property_id, user=request.user)
-            except Property.DoesNotExist:
-                return Response(
-                    {
-                        "error": "Property with this ID does not exist or does not belong to the user."
-                    },
-                    status=status.HTTP_404_NOT_FOUND,
-                )
-            except ValueError:
-                return Response(
-                    {"error": "Invalid property_id provided."},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-        else:
-            return Response(
-                {"error": "property_id is required."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        property_obj = self.property_obj
 
         saved_transactions = []
         for item in data:
@@ -141,7 +97,6 @@ class TransactionListAPIView(APIView):
                     hasattr(transaction_instance, "account")
                     and transaction_instance.account
                 ):
-                    print(transaction_instance, "--------------")
                     transaction_instance.account.update_balance(transaction_instance)
                     saved_transactions.append(serializer.instance)
             else:
@@ -205,7 +160,8 @@ class TransactionDetailAPIView(APIView):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
 
-class AccountListAPIView(APIView):
+# Mixin to check for and verify property id.
+class AccountListAPIView(PropertyRequiredMixin, APIView):
     """
     API endpoint to list all accounts.
     """
@@ -213,98 +169,60 @@ class AccountListAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        property_id = request.query_params.get("property_id")
+        property_obj = self.property_obj
+
         get_non_property_accounts = request.query_params.get(
             "get_non_property_accounts"
         )
 
-        if not property_id:
-            return Response(
-                {"error": "property_id is required."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        if get_non_property_accounts:
+            included_types = ["bank", "credit-card"]
 
-        try:
-            property_obj = Property.objects.get(id=property_id, user=request.user)
+            account_queryset = Account.objects.filter(
+                user=request.user, type__in=included_types
+            ).exclude(properties=property_obj)
 
-            if get_non_property_accounts:
-                included_types = ["bank", "credit-card"]
-                account_queryset = Account.objects.filter(
-                    user=request.user, type__in=included_types
-                ).exclude(properties=property_obj)
-            else:
-                account_queryset = property_obj.accounts.all()
-        except Property.DoesNotExist:
-            return Response(
-                {
-                    "error": "Property with this ID does not exist or does not belong to the user."
-                },
-                status=status.HTTP_404_NOT_FOUND,
-            )
-        except ValueError:
-            return Response(
-                {"error": "Invalid property_id provided."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        else:
+            account_queryset = property_obj.accounts.all()
 
         serializer = AccountSerializer(account_queryset, many=True)
         return Response(serializer.data)
 
     def post(self, request):
-        property_id = request.query_params.get("property_id")
+        property_obj = self.property_obj
         add_existing = request.query_params.get("add_existing")
 
-        if property_id:
+        if add_existing:
             try:
-                property_obj = Property.objects.get(id=property_id, user=request.user)
-
-                if add_existing:
-                    try:
-                        account_obj = Account.objects.get(
-                            pk=request.data["id"], user=self.request.user
-                        )
-                        property_obj.accounts.add(account_obj)
-                        serializer = AccountSerializer(account_obj)
-                        return Response(serializer.data, status=status.HTTP_201_CREATED)
-                    except Account.DoesNotExist:
-                        return Response(
-                            {
-                                "error": "Account with this ID does not exist or does not belong to the user."
-                            },
-                            status=status.HTTP_404_NOT_FOUND,
-                        )
-                else:
-                    serializer = AccountSerializer(
-                        data=request.data, context={"request": request}
-                    )
-
-                    if serializer.is_valid():
-                        new_account = serializer.save()
-                        property_obj.accounts.add(new_account)
-
-                        return Response(serializer.data, status=status.HTTP_201_CREATED)
-                    else:
-                        return Response(
-                            serializer.errors, status=status.HTTP_400_BAD_REQUEST
-                        )
-
-            except Property.DoesNotExist:
+                account_obj = Account.objects.get(
+                    pk=request.data["id"], user=self.request.user
+                )
+                property_obj.accounts.add(account_obj)
+                serializer = AccountSerializer(account_obj)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            except Account.DoesNotExist:
                 return Response(
                     {
-                        "error": "Property with this ID does not exist or does not belong to the user."
+                        "error": "Account with this ID does not exist or does not belong to the user."
                     },
                     status=status.HTTP_404_NOT_FOUND,
                 )
-            except ValueError:
+            except KeyError:
                 return Response(
-                    {"error": "Invalid property_id provided."},
+                    {"error": "Missing 'id' for existing account."},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
         else:
-            return Response(
-                {"error": "property_id is required."},
-                status=status.HTTP_400_BAD_REQUEST,
+            serializer = AccountSerializer(
+                data=request.data, context={"request": request}
             )
+
+            if serializer.is_valid():
+                new_account = serializer.save(user=request.user)
+                property_obj.accounts.add(new_account)
+
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class AccountDetailAPIView(APIView):
@@ -337,7 +255,8 @@ class AccountDetailAPIView(APIView):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
 
-class EntityListAPIView(APIView):
+# Mixin to check for and verify property id.
+class EntityListAPIView(PropertyRequiredMixin, APIView):
     """
     API endpoint to list all entities.
     """
@@ -345,57 +264,13 @@ class EntityListAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        property_id = request.query_params.get("property_id")
-
-        if not property_id:
-            return Response(
-                {"error": "property_id is required."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        try:
-            property_obj = Property.objects.get(id=property_id, user=request.user)
-            entities_queryset = property_obj.entities.all()
-        except Property.DoesNotExist:
-            return Response(
-                {
-                    "error": "Property with this ID does not exist or does not belong to the user."
-                },
-                status=status.HTTP_404_NOT_FOUND,
-            )
-        except ValueError:
-            return Response(
-                {"error": "Invalid property_id provided."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
+        property_obj = self.property_obj
+        entities_queryset = property_obj.entities.all()
         serializer = EntitySerializer(entities_queryset, many=True)
         return Response(serializer.data)
 
     def post(self, request):
-        property_id = request.query_params.get("property_id")
-
-        if property_id:
-            try:
-                property_obj = Property.objects.get(id=property_id, user=request.user)
-            except Property.DoesNotExist:
-                return Response(
-                    {
-                        "error": "Property with this ID does not exist or does not belong to the user."
-                    },
-                    status=status.HTTP_404_NOT_FOUND,
-                )
-            except ValueError:
-                return Response(
-                    {"error": "Invalid property_id provided."},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-        else:
-            return Response(
-                {"error": "property_id is required."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
+        property_obj = self.property_obj
         serializer = EntitySerializer(data=request.data, context={"request": request})
 
         if serializer.is_valid():
@@ -416,9 +291,8 @@ class EntityDetailAPIView(APIView):
             return None
 
     def get(self, request, pk):
-        try:
-            entity = Entity.objects.get(pk=pk)
-        except Entity.DoesNotExist:
+        entity = self.get_object(pk)
+        if not entity:
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = EntitySerializer(entity)
         return Response(serializer.data)
@@ -434,7 +308,8 @@ class EntityDetailAPIView(APIView):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
 
-class JournalListAPIView(APIView):
+# Mixin to check for and verify property id.
+class JournalListAPIView(PropertyRequiredMixin, APIView):
     """
     API endpoint to list journals.
     """
@@ -442,67 +317,21 @@ class JournalListAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        property_id = request.query_params.get("property_id")
-
-        if property_id:
-            try:
-                property_obj = Property.objects.get(id=property_id, user=request.user)
-                journals_queryset = property_obj.journals.all().prefetch_related(
-                    "journal_items__account"
-                )
-            except Property.DoesNotExist:
-                return Response(
-                    {
-                        "error": "Property with this ID does not exist or does not belong to the user."
-                    },
-                    status=status.HTTP_404_NOT_FOUND,
-                )
-            except ValueError:
-                return Response(
-                    {"error": "Invalid property_id provided."},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-        else:
-            return Response(
-                {"error": "property_id is required."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
+        property_obj = self.property_obj
+        journals_queryset = property_obj.journals.all().prefetch_related(
+            "journal_items__account"
+        )
         serializer = JournalSerializer(journals_queryset, many=True)
         return Response(serializer.data)
 
     def post(self, request):
-        property_id = request.query_params.get("property_id")
-
-        if property_id:
-            try:
-                property_obj = Property.objects.get(id=property_id, user=request.user)
-            except Property.DoesNotExist:
-                return Response(
-                    {
-                        "error": "Property with this ID does not exist or does not belong to the user."
-                    },
-                    status=status.HTTP_404_NOT_FOUND,
-                )
-            except ValueError:
-                return Response(
-                    {"error": "Invalid property_id provided."},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-        else:
-            return Response(
-                {"error": "property_id is required."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
+        property_obj = self.property_obj
         serializer = JournalSerializer(data=request.data, context={"request": request})
 
         if serializer.is_valid():
             journal_instance = serializer.save(property=property_obj)
-
             for item in journal_instance.journal_items.all():
                 item.account.update_balance(item)
-
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -657,7 +486,8 @@ class PropertyDetailAPIView(APIView):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
 
-class RentPaymentListAPIView(APIView):
+# Mixin to check for and verify property id.
+class RentPaymentListAPIView(PropertyRequiredMixin, APIView):
     """
     API endpoint to list all rent Payments.
     """
@@ -665,35 +495,13 @@ class RentPaymentListAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        property_id = request.query_params.get("property_id")
+        property_obj = self.property_obj
+
         year = request.query_params.get("year")
         month = request.query_params.get("month")
-        format_by_day = request.query_params.get("foramt_by_day", "false").lower()
-        rent_payments = RentPayment.objects.filter(user=request.user)
+        format_by_day = request.query_params.get("format_by_day", "false").lower()
 
-        if not property_id:
-            return Response(
-                {"error": "property_id is required."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        if property_id:
-            try:
-                # Ensures property belongs to user
-                Property.objects.get(id=property_id, user=request.user)
-                rent_payments = rent_payments.filter(property_id=property_id)
-            except Property.DoesNotExist:
-                return Response(
-                    {
-                        "error": "Property with this ID does not exist or does not belong to the user."
-                    },
-                    status=status.HTTP_404_NOT_FOUND,
-                )
-            except ValueError:
-                return Response(
-                    {"error": "Invalid property_id provided."},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
+        rent_payments = RentPayment.objects.filter(property=property_obj)
 
         # data ranged by year and month
         if year and month:
@@ -741,34 +549,7 @@ class RentPaymentListAPIView(APIView):
             return Response(serializer.data)
 
     def post(self, request):
-        property_id = request.query_params.get("property_id")
-
-        if not property_id:
-            return Response(
-                {"error": "property_id is required."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        if property_id:
-            try:
-                property_obj = Property.objects.get(id=property_id, user=request.user)
-            except Property.DoesNotExist:
-                return Response(
-                    {
-                        "error": "Property with this ID does not exist or does not belong to the user."
-                    },
-                    status=status.HTTP_404_NOT_FOUND,
-                )
-            except ValueError:
-                return Response(
-                    {"error": "Invalid property_id provided."},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-        else:
-            return Response(
-                {"error": "property_id is required."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        property_obj = self.property_obj
 
         serializer = RentPaymentSerializer(
             data=request.data, context={"request": request}

@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "core_backend",
     "djoser",
     "django.contrib.sites",
+    "phonenumber_field", # for model phonenumber formatting
 ]
 
 SITE_ID = 1
