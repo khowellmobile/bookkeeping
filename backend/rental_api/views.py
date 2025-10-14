@@ -28,7 +28,8 @@ from core_backend.models import (
 from .mixins import PropertyRequiredMixin
 
 
-class TransactionListAPIView(APIView):
+# Mixin to check for and verify property id.
+class TransactionListAPIView(PropertyRequiredMixin, APIView):
     """
     API endpoint to list and create transactions.
     """
@@ -36,36 +37,10 @@ class TransactionListAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        property_id = request.query_params.get("property_id")
+        property_obj = self.property_obj
+
         account_id = request.query_params.get("account_id")
         entity_id = request.query_params.get("entity_id")
-
-        if not account_id and not entity_id:
-            return Response(
-                {"error": "You must provide an entity ID or an account ID."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        if property_id:
-            try:
-                property_obj = Property.objects.get(id=property_id, user=request.user)
-            except Property.DoesNotExist:
-                return Response(
-                    {
-                        "error": "Property with this ID does not exist or does not belong to the user."
-                    },
-                    status=status.HTTP_404_NOT_FOUND,
-                )
-            except ValueError:
-                return Response(
-                    {"error": "Invalid property_id provided."},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-        else:
-            return Response(
-                {"error": "property_id is required."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
 
         transactions = Transaction.objects.filter(
             user=request.user, property=property_obj
@@ -109,28 +84,7 @@ class TransactionListAPIView(APIView):
     def post(self, request):
         data = request.data
 
-        property_id = request.query_params.get("property_id")
-
-        if property_id:
-            try:
-                property_obj = Property.objects.get(id=property_id, user=request.user)
-            except Property.DoesNotExist:
-                return Response(
-                    {
-                        "error": "Property with this ID does not exist or does not belong to the user."
-                    },
-                    status=status.HTTP_404_NOT_FOUND,
-                )
-            except ValueError:
-                return Response(
-                    {"error": "Invalid property_id provided."},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-        else:
-            return Response(
-                {"error": "property_id is required."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        property_obj = self.property_obj
 
         saved_transactions = []
         for item in data:
