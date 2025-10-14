@@ -20,7 +20,7 @@
 .arrow {
     width: 12%;
 
-    background-color: rgba(204, 204, 204, 0.329);
+    background-color: var(--background-color);
     border: 1px solid var(--border-color);
     border-left: none;
     cursor: pointer;

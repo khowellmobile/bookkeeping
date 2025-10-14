@@ -25,7 +25,7 @@ const ProfitLoss = ({ accounts }) => {
             <div className={classes.sepH} />
             <div className={classes.sheetLine}>
                 <p>Total:</p>
-                {revenueTotal.toFixed(2)}
+                <p>{revenueTotal.toFixed(2)}</p>
             </div>
             <h3>Expenses</h3>
             {expensesAccounts?.map((item, index) => (
@@ -37,12 +37,12 @@ const ProfitLoss = ({ accounts }) => {
             <div className={classes.sepH} />
             <div className={classes.sheetLine}>
                 <p>Total:</p>
-                {expensesTotal.toFixed(2)}
+                <p>{expensesTotal.toFixed(2)}</p>
             </div>
             <div className={classes.sepH2} />
             <div className={classes.sheetLine}>
                 <h3>Net</h3>
-                {(revenueTotal - expensesTotal).toFixed(2)}
+                <p>{(revenueTotal - expensesTotal).toFixed(2)}</p>
             </div>
         </div>
     );

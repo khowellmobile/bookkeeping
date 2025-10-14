@@ -3,10 +3,16 @@
     height: 27rem;
     padding: 1.5rem;
 
-    background-color: var(--background-color);
+    background-color: rgb(255, 255, 255);
     border-radius: 0.5rem;
 
     position: relative;
+}
+
+.mainContainer b,
+.mainContainer p,
+.mainContainer input {
+    color: #1d1d1d;
 }
 
 .form {
@@ -86,7 +92,7 @@
     width: 90%;
     height: 2.8rem;
 
-    border-bottom: 2px solid var(--border-color);
+    border-bottom: 2px solid rgba(128, 128, 128, 0.301);
 
     display: inline-block;
 }

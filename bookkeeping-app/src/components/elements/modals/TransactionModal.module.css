@@ -57,13 +57,13 @@
 }
 
 .dropdownCluster > p {
-    color: rgb(53, 53, 53);
+    color: var(--secondary-text-color);
     font-size: var(--small-font-size);
 }
 
 .memoCluster > p,
 .amountCluster > p {
-    color: rgb(53, 53, 53);
+    color: var(--secondary-text-color);
     font-size: var(--small-font-size);
 }
 
@@ -85,8 +85,9 @@
     padding-left: 0.5rem;
 
     border: 1px solid var(--border-color);
-    background-color: rgb(223, 223, 223);
+    background-color: var(--secondary-background-color);
     font-size: var(--small-font-size);
+    color: var(--secondary-text-color);
 
     display: flex;
     align-items: center;
@@ -95,6 +96,8 @@
 .amountCluster input[type="text"] {
     width: calc(100% / 2 - 4rem);
     padding: 0.25rem 0.5rem;
+
+    background-color: var(--background-color);
 }
 
 .actionItems {

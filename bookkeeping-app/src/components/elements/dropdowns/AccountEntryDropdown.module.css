@@ -10,13 +10,12 @@
 }
 
 .mainContainer > input {
-    height: 3rem;
     width: 100%;
-
+    height: 3rem;
     padding-left: 0.5rem;
 
     color: var(--primary-text-color);
-    background-color: var(--secondary-background-color);
+    background-color: var(--background-color);
     font-size: var(--small-font-size);
     border: none;
     outline: none;
