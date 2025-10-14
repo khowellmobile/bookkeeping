@@ -2,6 +2,7 @@
     height: 2rem;
     padding-left: 0.25rem;
 
+    color: var(--primary-text-color);
     background-color: var(--secondary-background-color);
     font-family: "poppins";
     font-size: var(--small-font-size);

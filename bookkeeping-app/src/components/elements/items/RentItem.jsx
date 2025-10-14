@@ -266,7 +266,7 @@ const RentItem = ({ item, dayIndex, updateFields, removePayment, handleSaveRentP
                                         </button>
                                     )}
                                     <button
-                                        className={`${isClicked && classes[inputFields.status]}`}
+                                        className={`${(isClicked && classes[inputFields.status]) || classes.stat0}`}
                                         onClick={handleClose}
                                     >
                                         {String(item.id).startsWith("temp") ? "Cancel" : "Close"}
@@ -274,7 +274,7 @@ const RentItem = ({ item, dayIndex, updateFields, removePayment, handleSaveRentP
 
                                     {String(item.id).startsWith("temp") && (
                                         <button
-                                            className={`${isClicked && classes[inputFields.status]}`}
+                                            className={`${(isClicked && classes[inputFields.status]) || classes.stat0}`}
                                             onClick={handleSave}
                                         >
                                             Save

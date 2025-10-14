@@ -30,7 +30,7 @@ const BalanceSheet = ({ accounts }) => {
             <div className={classes.sepH} />
             <div className={classes.sheetLine}>
                 <p>Total:</p>
-                {assetTotal.toFixed(2)}
+                <p>{assetTotal.toFixed(2)}</p>
             </div>
             <h3>Liabilities</h3>
             {liabilityAccounts?.map((item, index) => (
@@ -42,7 +42,7 @@ const BalanceSheet = ({ accounts }) => {
             <div className={classes.sepH} />
             <div className={classes.sheetLine}>
                 <p>Total:</p>
-                {liabailityTotal.toFixed(2)}
+                <p>{liabailityTotal.toFixed(2)}</p>
             </div>
             <h3>Equities</h3>
             {equityAcccounts?.map((item, index) => (
@@ -54,7 +54,7 @@ const BalanceSheet = ({ accounts }) => {
             <div className={classes.sepH} />
             <div className={classes.sheetLine}>
                 <p>Total:</p>
-                {equityTotal.toFixed(2)}
+                <p>{equityTotal.toFixed(2)}</p>
             </div>
         </div>
     );

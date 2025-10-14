@@ -77,7 +77,7 @@
 }
 
 .expandedContent .header > p {
-    color: white;
+    color: var(--primary-text-color);
     font-size: var(--base-font-size);
     margin: 0.3rem;
 
@@ -170,8 +170,9 @@
     padding: 0.25rem;
 
     color: white;
-    background-color: rgb(49, 40, 40);
+    background-color: var(--secondary-background-color);
     font-size: var(--small-font-size);
+    border: 1px solid var(--border-color);
     border-right: none;
 
     display: flex;
@@ -182,8 +183,8 @@
     height: 1.5rem;
     padding: 0.25rem 0.5rem;
 
+    background-color: var(--background-color);
     border: 1px solid var(--border-color);
-    outline: none;
 }
 
 .inputCluster > textarea {

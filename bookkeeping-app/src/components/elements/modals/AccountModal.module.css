@@ -42,7 +42,7 @@
 }
 
 .inputCluster > p {
-    color: rgb(53, 53, 53);
+    color: var(--secondary-text-color);
     font-size: var(--small-font-size);
 }
 

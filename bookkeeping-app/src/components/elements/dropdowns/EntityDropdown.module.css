@@ -20,7 +20,7 @@
 .arrow {
     width: 2rem;
 
-    background-color: var(--primary-background-color);
+    background-color: var(--background-color);
     border: 1px solid var(--border-color);
     border-left: none;
     cursor: pointer;
@@ -76,7 +76,7 @@
     margin-bottom: 0.5rem;
     margin-left: 0.5rem;
 
-    background-color: var(--secondary-background-color);
+    background-color: var(--background-color);
     font-family: "poppins";
     font-size: var(--small-font-size);
     line-height: 1.5rem;
@@ -124,7 +124,7 @@
 .altStyle .display {
     width: 90%;
 
-    background-color: var(--secondary-background-color);
+    background-color: var(--background-color);
 }
 
 .altStyle .display > p {
@@ -133,10 +133,10 @@
 
 .altStyle .arrow {
     width: 1.5rem;
-    background-color: rgb(49, 40, 40);
+    background-color: var(--background-color);
 }
 
 .altStyle .dropDownContent {
-    width: calc(20rem - 2px);
+    width: calc(20rem - 0.5rem - 2px);
     top: 1.5rem;
 }

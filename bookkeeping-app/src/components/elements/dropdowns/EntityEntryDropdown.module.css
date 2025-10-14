@@ -14,7 +14,7 @@
 
     padding-left: 0.5rem;
 
-    background-color: var(--secondary-background-color);
+    background-color: var(--background-color);
     color: var(--primary-text-color);
     font-size: var(--small-font-size);
     border: none;

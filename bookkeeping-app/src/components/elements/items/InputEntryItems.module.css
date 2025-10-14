@@ -11,12 +11,9 @@
 .mainContainer > input {
     height: 100%;
     width: 100%;
-
     padding-left: 0.5rem;
 
-    color: var(--primary-text-color);
-    background-color: var(--secondary-background-color);
-    font-size: var(--small-font-size);
+    background-color: var(--background-color);
     border: none;
     outline: none;
     border-bottom: 1px solid var(--border-color);
