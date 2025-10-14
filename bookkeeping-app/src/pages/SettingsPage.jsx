@@ -1,3 +1,4 @@
+import DisplaySettings from "../components/elements/misc/DisplaySettings";
 import ProfileInformation from "../components/elements/misc/ProfileInformation";
 import classes from "./SettingsPage.module.css";
 
@@ -21,7 +22,10 @@ const SettingsPage = () => {
                 <section className={classes.contentHeader}>
                     <h2>{activeGroup}</h2>
                 </section>
-                <section className={classes.content}>{activeGroup == "Profile" && <ProfileInformation />}</section>
+                <section className={classes.content}>
+                    {activeGroup == "Profile" && <ProfileInformation />}
+                    {activeGroup == "Display" && <DisplaySettings />}
+                </section>
             </div>
         </div>
     );

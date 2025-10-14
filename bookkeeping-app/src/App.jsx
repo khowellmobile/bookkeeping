@@ -11,6 +11,10 @@ import AccountActivatePage from "./pages/AccountActivatePage";
 import PasswordResetPage from "./pages/PasswordResetPage";
 
 function App() {
+    if (localStorage.getItem("theme") === "dark") {
+        document.body.classList.add("dark-mode");
+    }
+
     return (
         <ToastCtxProvider>
             <Routes>
