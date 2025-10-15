@@ -1,4 +1,4 @@
-import classes from "./entityEntryDropdown.module.css";
+import classes from "./EntityEntryDropdown.module.css";
 
 import EntitiesCtx from "../../contexts/EntitiesCtx";
 
