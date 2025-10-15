@@ -1,8 +1,10 @@
+import { useState, useContext, useEffect, useRef } from "react";
+
 import classes from "./AccountEntryDropdown.module.css";
 
 import AccountsCtx from "../../contexts/AccountsCtx";
-
-import { useState, useContext, useEffect, useRef } from "react";
+import AddAccountModal from "../modals/AddAccountModal";
+import Button from "../utilities/Button";
 
 const AccountEntryDropdown = ({ vals, scrollRef, onChange, hasLeftBorder = false }) => {
     const { ctxAccountList } = useContext(AccountsCtx);
@@ -10,6 +12,7 @@ const AccountEntryDropdown = ({ vals, scrollRef, onChange, hasLeftBorder = false
     const [searchTerm, setSearchTerm] = useState("");
     const [filteredAccounts, setFilteredAccounts] = useState(ctxAccountList);
     const [isExpanded, setIsExpanded] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const [isOffScreenBottom, setIsOffScreenBottom] = useState();
     const [pxScroll, setPxScroll] = useState(0);
@@ -64,6 +67,10 @@ const AccountEntryDropdown = ({ vals, scrollRef, onChange, hasLeftBorder = false
         }
     }, [searchTerm, ctxAccountList]);
 
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+    };
+
     const clickAccountHandler = (account) => {
         setIsExpanded(false);
         setSearchTerm(account.name);
@@ -80,37 +87,44 @@ const AccountEntryDropdown = ({ vals, scrollRef, onChange, hasLeftBorder = false
     };
 
     return (
-        <div className={classes.mainContainer} onFocus={() => checkOffScreen()}>
-            <input
-                type="text"
-                value={searchTerm}
-                onChange={(e) => {
-                    setSearchTerm(e.target.value);
-                    setIsExpanded(true);
-                }}
-                onFocus={() => setIsExpanded(true)}
-                onBlur={handleBlur}
-                ref={inputRef}
-                style={hasLeftBorder ? {borderLeft: "1px dashed var(--border-color)"} : {}}
-            />
-            <div className={`${classes.anchor} ${isExpanded ? "" : classes.noDisplay}`}>
-                <div className={classes.dropDownContent} style={style}>
-                    <p>All Accounts</p>
-                    <div className={classes.separatorH}></div>
-                    <div className={classes.accountListing}>
-                        {filteredAccounts && filteredAccounts.length > 0 ? (
-                            filteredAccounts.map((account, index) => (
-                                <p key={index} onClick={() => clickAccountHandler(account)}>
-                                    {account.name}
-                                </p>
-                            ))
-                        ) : (
-                            <p>No matching accounts found.</p>
-                        )}
+        <>
+            {isModalOpen && <AddAccountModal handleCloseModal={handleCloseModal} />}
+
+            <div className={classes.mainContainer} onFocus={() => checkOffScreen()}>
+                <input
+                    type="text"
+                    value={searchTerm}
+                    onChange={(e) => {
+                        setSearchTerm(e.target.value);
+                        setIsExpanded(true);
+                    }}
+                    onFocus={() => setIsExpanded(true)}
+                    onBlur={handleBlur}
+                    ref={inputRef}
+                    style={hasLeftBorder ? { borderLeft: "1px dashed var(--border-color)" } : {}}
+                />
+                <div className={`${classes.anchor} ${isExpanded ? "" : classes.noDisplay}`}>
+                    <div className={classes.dropDownContent} style={style}>
+                        <div className={classes.dropdownHeader}>
+                            <p>All Accounts</p>
+                            <Button onClick={() => setIsModalOpen(true)} text={"Add Account"} />
+                        </div>
+                        <div className={classes.separatorH}></div>
+                        <div className={classes.accountListing}>
+                            {filteredAccounts && filteredAccounts.length > 0 ? (
+                                filteredAccounts.map((account, index) => (
+                                    <p key={index} onClick={() => clickAccountHandler(account)}>
+                                        {account.name}
+                                    </p>
+                                ))
+                            ) : (
+                                <p>No matching accounts found.</p>
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 };
 

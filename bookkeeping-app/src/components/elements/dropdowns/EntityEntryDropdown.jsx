@@ -4,6 +4,7 @@ import EntitiesCtx from "../../contexts/EntitiesCtx";
 
 import { useState, useContext, useEffect, useRef } from "react";
 import AddEntityModal from "../modals/AddEntityModal";
+import Button from "../utilities/Button";
 
 const EntityEntryDropdown = ({ scrollRef, onChange, hasLeftBorder = false }) => {
     const { ctxEntityList } = useContext(EntitiesCtx);
@@ -101,24 +102,24 @@ const EntityEntryDropdown = ({ scrollRef, onChange, hasLeftBorder = false }) => 
                     onFocus={() => setIsExpanded(true)}
                     onBlur={handleBlur}
                     ref={inputRef}
-                    style={hasLeftBorder ? {borderLeft: "1px dashed var(--border-color)"} : {}}
+                    style={hasLeftBorder ? { borderLeft: "1px dashed var(--border-color)" } : {}}
                 />
                 <div className={`${classes.anchor} ${isExpanded ? "" : classes.noDisplay}`}>
                     <div className={classes.dropDownContent} style={style}>
                         <div className={classes.dropdownHeader}>
                             <p>All entitys</p>
-                            <button onClick={() => setIsModalOpen(true)}>Add Entity</button>
+                            <Button onClick={() => setIsModalOpen(true)} text={"Add Entity"} />
                         </div>
                         <div className={classes.separatorH}></div>
                         <div className={classes.entityListing}>
-                            {filteredEntitys && filteredEntitys.length > 0 ? ( // Use filteredentitys
+                            {filteredEntitys && filteredEntitys.length > 0 ? (
                                 filteredEntitys.map((entity, index) => (
                                     <p key={index} onClick={() => clickEntityHandler(entity)}>
                                         {entity.name}
                                     </p>
                                 ))
                             ) : (
-                                <p>No matching entitys found.</p> // Show message if no matches
+                                <p>No matching entitys found.</p>
                             )}
                         </div>
                     </div>
