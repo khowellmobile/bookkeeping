@@ -17,6 +17,8 @@ export function AuthCtxProvider(props) {
     const [ctxAccessToken, setCtxAccessToken] = useState(localStorage.getItem("accessToken") || null);
     const [ctxUserData, setCtxUserData] = useState({});
 
+    const baseUrl = import.meta.env.VITE_BASE_URL;
+
     useEffect(() => {
         if (ctxAccessToken) {
             ctxGetUser();
@@ -25,7 +27,7 @@ export function AuthCtxProvider(props) {
 
     const ctxGetUser = async () => {
         try {
-            const response = await fetch(`http://localhost:8000/api/profile/`, {
+            const response = await fetch(`${baseUrl}/api/profile/`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -46,7 +48,7 @@ export function AuthCtxProvider(props) {
 
     const ctxUpdateUser = async (updatedUser) => {
         try {
-            const response = await fetch(`http://localhost:8000/api/profile/`, {
+            const response = await fetch(`${baseUrl}/api/profile/`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -71,7 +73,7 @@ export function AuthCtxProvider(props) {
 
     const ctxUpdatePwd = async (pwdCurr, pwdNew, pwdCnfm) => {
         try {
-            const response = await fetch("http://127.0.0.1:8000/api/auth/users/set_password/", {
+            const response = await fetch(`${baseUrl}/api/auth/users/set_password/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -113,7 +115,7 @@ export function AuthCtxProvider(props) {
 
     const requestPswdReset = async (email) => {
         try {
-            const response = await fetch("http://127.0.0.1:8000/api/auth/users/reset_password/", {
+            const response = await fetch(`${baseUrl}/api/auth/users/reset_password/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

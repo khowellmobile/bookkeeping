@@ -41,7 +41,8 @@ export function EntitiesCtxProvider(props) {
         return response.json();
     };
 
-    const apiURL = "http://localhost:8000/api/entities/";
+    const baseUrl = import.meta.env.VITE_BASE_URL;
+    const apiURL = `${baseUrl}/api/entities/`;
     const propertyId = ctxActiveProperty?.id;
     const {
         data: ctxEntityList,
@@ -51,7 +52,7 @@ export function EntitiesCtxProvider(props) {
 
     const ctxAddEntity = async (entityToAdd) => {
         try {
-            const url = new URL("http://localhost:8000/api/entities/");
+            const url = new URL(`${baseUrl}/api/entities/`);
             if (ctxActiveProperty && ctxActiveProperty.id) {
                 url.searchParams.append("property_id", ctxActiveProperty.id);
             }
@@ -82,7 +83,7 @@ export function EntitiesCtxProvider(props) {
 
     const ctxUpdateEntity = async (updatedEntity) => {
         try {
-            const response = await fetch(`http://localhost:8000/api/entities/${updatedEntity.id}/`, {
+            const response = await fetch(`${baseUrl}/api/entities/${updatedEntity.id}/`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",

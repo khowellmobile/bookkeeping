@@ -36,7 +36,8 @@ export function AccountsCtxProvider(props) {
         return response.json();
     };
 
-    const apiURL = "http://localhost:8000/api/accounts/";
+    const baseUrl = import.meta.env.VITE_BASE_URL;
+    const apiURL = `${baseUrl}/api/accounts/`;
     const propertyId = ctxActiveProperty?.id;
     const {
         data: ctxAccountList,
@@ -50,7 +51,7 @@ export function AccountsCtxProvider(props) {
 
     const ctxGetNonPropertyAccounts = async () => {
         try {
-            const url = new URL("http://localhost:8000/api/accounts/");
+            const url = new URL(`${baseUrl}/api/accounts/`);
             if (ctxActiveProperty && ctxActiveProperty.id) {
                 url.searchParams.append("property_id", ctxActiveProperty.id);
                 url.searchParams.append("get_non_property_accounts", true);
@@ -76,7 +77,7 @@ export function AccountsCtxProvider(props) {
 
     const ctxAddAccount = async (account, addExisting = false) => {
         try {
-            const url = new URL("http://localhost:8000/api/accounts/");
+            const url = new URL(`${baseUrl}/api/accounts/`);
             if (ctxActiveProperty && ctxActiveProperty.id) {
                 url.searchParams.append("property_id", ctxActiveProperty.id);
                 if (addExisting) url.searchParams.append("add_existing", true);
@@ -102,7 +103,7 @@ export function AccountsCtxProvider(props) {
 
     const ctxUpdateAccount = async (editedAccount) => {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/api/accounts/${editedAccount.id}/`, {
+            const response = await fetch(`${baseUrl}/api/accounts/${editedAccount.id}/`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -127,7 +128,7 @@ export function AccountsCtxProvider(props) {
 
     const ctxDeleteAccount = async (accountId) => {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/api/accounts/${accountId}/`, {
+            const response = await fetch(`${baseUrl}/api/accounts/${accountId}/`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",

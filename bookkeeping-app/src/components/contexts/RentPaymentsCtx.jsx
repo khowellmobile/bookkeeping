@@ -66,7 +66,8 @@ export function RentPaymentsCtxProvider(props) {
         return response.json();
     };
 
-    const apiURL = "http://localhost:8000/api/entities/";
+    const baseUrl = import.meta.env.VITE_BASE_URL;
+    const apiURL = `${baseUrl}/api/entities/`;
     const propertyId = ctxActiveProperty?.id;
     const {
         data: ctxPaymentList,
@@ -76,7 +77,7 @@ export function RentPaymentsCtxProvider(props) {
 
     const getCtxPaymentsByMonth = async (month, year) => {
         try {
-            const url = new URL("http://localhost:8000/api/rentPayments/");
+            const url = new URL(`${baseUrl}/api/rentPayments/`);
             if (ctxActiveProperty && ctxActiveProperty.id) {
                 url.searchParams.append("property_id", ctxActiveProperty.id);
             } else {
@@ -107,7 +108,7 @@ export function RentPaymentsCtxProvider(props) {
 
     const ctxAddPayment = async (paymentToAdd) => {
         try {
-            const url = new URL("http://localhost:8000/api/rentPayments/");
+            const url = new URL(`${baseUrl}/api/rentPayments/`);
             if (ctxActiveProperty && ctxActiveProperty.id) {
                 url.searchParams.append("property_id", ctxActiveProperty.id);
             }
@@ -146,7 +147,7 @@ export function RentPaymentsCtxProvider(props) {
 
     const ctxUpdatePayment = async (updatedPayment) => {
         try {
-            const response = await fetch(`http://localhost:8000/api/rentPayments/${updatedPayment.id}/`, {
+            const response = await fetch(`${baseUrl}/api/rentPayments/${updatedPayment.id}/`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",

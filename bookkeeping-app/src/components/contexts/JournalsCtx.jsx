@@ -32,7 +32,8 @@ export function JournalsCtxProvider(props) {
         return response.json();
     };
 
-    const apiURL = "http://localhost:8000/api/journals/";
+    const baseUrl = import.meta.env.VITE_BASE_URL;
+    const apiURL = `${baseUrl}/api/journals/`;
     const propertyId = ctxActiveProperty?.id;
     const {
         data: ctxJournalList,
@@ -58,7 +59,7 @@ export function JournalsCtxProvider(props) {
         };
 
         try {
-            const finalUrl = method == "POST" ? new URL("http://localhost:8000/api/journals/") : url;
+            const finalUrl = method == "POST" ? new URL(`${baseUrl}/api/journals/`) : url;
             if (method == "POST" && ctxActiveProperty && ctxActiveProperty.id) {
                 finalUrl.searchParams.append("property_id", ctxActiveProperty.id);
             }
@@ -98,7 +99,7 @@ export function JournalsCtxProvider(props) {
 
     const ctxDeleteJournal = async (journalId) => {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/api/journals/${journalId}/`, {
+            const response = await fetch(`${baseUrl}/api/journals/${journalId}/`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
