@@ -7,7 +7,7 @@
     --hover-color: rgba(231, 231, 231, 0.308);
     --background-color: rgb(255, 255, 255);
     --secondary-background-color: rgb(255, 255, 255);
-    --ternary-background-color: rgb(189, 189, 189);
+    --tertiary-background-color: rgb(189, 189, 189);
     --primary-text-color: #1d1d1d;
     --secondary-text-color: rgb(78, 78, 78);
 
@@ -23,7 +23,7 @@
     --hover-color: rgba(24, 24, 24, 0.308);
     --background-color: rgb(27, 27, 27);
     --secondary-background-color: rgb(34, 34, 34);
-    --ternary-background-color: rgb(15, 15, 15);
+    --tertiary-background-color: rgb(34, 34, 34);
     --primary-text-color: #e6e6e6;
     --secondary-text-color: rgb(190, 190, 190);
 }

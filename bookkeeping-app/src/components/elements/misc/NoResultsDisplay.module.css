@@ -2,7 +2,7 @@
     width: 100%;
     height: 100%;
 
-    background-color: var(--hover-color);
+    background-color: var(--tertiary-background-color);
 
     display: flex;
     align-items: center;
