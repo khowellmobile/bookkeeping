@@ -173,7 +173,7 @@
 }
 
 .emptyBox {
-    background-color: var(--secondary-background-color);
+    background-color: var(--ternary-background-color);
 }
 
 .dayBox .header {
