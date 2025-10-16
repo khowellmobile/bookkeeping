@@ -18,6 +18,8 @@ const CreateUserModal = ({ handleCloseModal, switchModal }) => {
 
     const [isExpanded, setIsExpanded] = useState(false);
 
+    const baseUrl = import.meta.env.VITE_BASE_URL;
+
     useEffect(() => {
         setReqObj({
             chars: password.length >= 8,
@@ -41,7 +43,7 @@ const CreateUserModal = ({ handleCloseModal, switchModal }) => {
         }
 
         try {
-            const response = await fetch("http://localhost:8000/api/auth/users/", {
+            const response = await fetch(`${baseUrl}/api/auth/users/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

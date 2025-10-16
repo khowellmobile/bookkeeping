@@ -38,7 +38,8 @@ export function TransactionsCtxProvider(props) {
         return response.json();
     };
 
-    const apiURL = "http://localhost:8000/api/transactions/";
+    const baseUrl = import.meta.env.VITE_BASE_URL;
+    const apiURL = `${baseUrl}/api/transactions/`;
 
     const getSWRKey = () => {
         if (!ctxAccessToken || !ctxActiveProperty || !ctxActiveProperty.id) {
@@ -74,7 +75,7 @@ export function TransactionsCtxProvider(props) {
         });
 
         try {
-            const url = new URL("http://localhost:8000/api/transactions/");
+            const url = new URL(`${baseUrl}/api/transactions/`);
             if (ctxActiveProperty && ctxActiveProperty.id) {
                 url.searchParams.append("property_id", ctxActiveProperty.id);
             } else {
@@ -119,7 +120,7 @@ export function TransactionsCtxProvider(props) {
         }
 
         try {
-            const response = await fetch(`http://127.0.0.1:8000/api/transactions/${transaction.id}/`, {
+            const response = await fetch(`${baseUrl}/api/transactions/${transaction.id}/`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",

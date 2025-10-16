@@ -44,7 +44,8 @@ export function PropertiesCtxProvider(props) {
         return response.json();
     };
 
-    const apiURL = "http://localhost:8000/api/properties/";
+    const baseUrl = import.meta.env.VITE_BASE_URL;
+    const apiURL = `${baseUrl}/api/properties/`;
     const {
         data: ctxPropertyList,
         error,
@@ -71,7 +72,7 @@ export function PropertiesCtxProvider(props) {
 
     const ctxAddProperty = async (propertyToAdd) => {
         try {
-            const response = await fetch("http://127.0.0.1:8000/api/properties/", {
+            const response = await fetch(`${baseUrl}/api/properties/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -98,7 +99,7 @@ export function PropertiesCtxProvider(props) {
     const ctxUpdateProperty = async (updatedProperty) => {
         console.log(updatedProperty);
         try {
-            const response = await fetch(`http://localhost:8000/api/properties/${updatedProperty.id}/`, {
+            const response = await fetch(`${baseUrl}/api/properties/${updatedProperty.id}/`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
