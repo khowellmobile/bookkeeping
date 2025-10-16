@@ -25,8 +25,11 @@ SECRET_KEY = "django-insecure-j2+)l33szljldru9sjt=%(xg!(2v%z!a$_+ced5jf_+zgl_tit
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = [
+    "ec2-3-15-47-62.us-east-2.compute.amazonaws.com",
+    "3.15.47.62",
+    "localhost",
+]
 
 # Application definition
 
@@ -44,7 +47,7 @@ INSTALLED_APPS = [
     "core_backend",
     "djoser",
     "django.contrib.sites",
-    "phonenumber_field", # for model phonenumber formatting
+    "phonenumber_field",  # for model phonenumber formatting
 ]
 
 SITE_ID = 1
@@ -113,6 +116,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
     "http://localhost:5173",
+    "http://3.15.47.62:8000",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -141,6 +145,9 @@ WSGI_APPLICATION = "config.wsgi.application"
 import os
 import environ
 import dj_database_url
+
+STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'production_static')
 
 env = environ.Env()
 environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
@@ -175,3 +182,5 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
