@@ -23,8 +23,9 @@
     --hover-color: rgba(24, 24, 24, 0.308);
     --background-color: rgb(27, 27, 27);
     --secondary-background-color: rgb(34, 34, 34);
+    --ternary-background-color: rgb(15, 15, 15);
     --primary-text-color: #e6e6e6;
-    --secondary-text-color: rgb(133, 133, 133);
+    --secondary-text-color: rgb(190, 190, 190);
 }
 
 html {

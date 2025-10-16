@@ -133,7 +133,7 @@
 
 .altStyle .arrow {
     width: 1.5rem;
-    background-color: var(--background-color);
+    background-color: rgb(39, 39, 39);
 }
 
 .altStyle .dropDownContent {
