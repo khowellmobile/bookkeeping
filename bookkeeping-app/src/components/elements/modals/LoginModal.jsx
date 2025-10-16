@@ -13,10 +13,12 @@ const LoginModal = ({ handleCloseModal, switchModal }) => {
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState("");
 
+    const baseUrl = import.meta.env.VITE_BASE_URL;
+
     const handleLogin = (event) => {
         event.preventDefault();
 
-        fetch("http://localhost:8000/api/auth/jwt/create/", {
+        fetch(`${baseUrl}/api/auth/jwt/create/`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

@@ -20,7 +20,8 @@ const PasswordResetPage = () => {
         specChar: false,
     });
 
-    const RESET_ENDPOINT = "http://127.0.0.1:8000/api/auth/users/reset_password_confirm/";
+    const baseUrl = import.meta.env.VITE_BASE_URL;
+    const RESET_ENDPOINT = `${baseUrl}/api/auth/users/reset_password_confirm/`;
 
     useEffect(() => {
         if (!uid || !token) {

@@ -11,7 +11,8 @@ const AccountActivatePage = () => {
     const [message, setMessage] = useState();
     const [isSuccess, setIsSuccess] = useState(false);
 
-    const ACTIVATION_ENDPOINT = "http://127.0.0.1:8000/api/auth/users/activation/";
+    const baseUrl = import.meta.env.VITE_BASE_URL;
+    const ACTIVATION_ENDPOINT = `${baseUrl}/api/auth/users/activation/`;
 
     useEffect(() => {
         if (!uid || !token) {
