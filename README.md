@@ -30,7 +30,7 @@ This project is divided into two main components: a frontend client built with R
 | :--- | :--- |
 | **`react`**, **`react-dom`** | Core JavaScript library for building the user interface. |
 | **`react-router-dom`** | Declarative routing for navigation. |
-| **`swr`** | A hook for data fetching, caching, and revalidation. |
+| **`swr`** | A hook for data fetching and caching. |
 | **`vite`** | Fast development server and build tool. |
 
 ### Backend (Django REST Framework)
@@ -39,7 +39,7 @@ This project is divided into two main components: a frontend client built with R
 | :--- | :--- |
 | **`Django`**, **`djangorestframework`** | Core web framework and REST API implementation. |
 | **`djangorestframework_simplejwt`** | Secure authentication using JSON Web Tokens. |
-| **`djoser`** | User registration and authentication |
+| **`djoser`** | User registration and authentication. |
 | **`psycopg2-binary`** | PostgreSQL database adapter. |
 | **`django-phonenumber-field`** | Handling and validating international phone numbers. |
 | **`django-cors-headers`** | Managing Cross-Origin Resource Sharing for the React client. |
