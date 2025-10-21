@@ -1,6 +1,7 @@
-import { createContext, useState, useEffect, useContext } from "react";
+import { createContext, useContext } from "react";
 import useSWRImmutable from "swr/immutable";
 
+import { BASE_URL } from "../../constants";
 import { useToast } from "./ToastCtx";
 import AuthCtx from "./AuthCtx";
 import PropertiesCtx from "./PropertiesCtx";
@@ -32,7 +33,7 @@ export function JournalsCtxProvider(props) {
         return response.json();
     };
 
-    const baseUrl = import.meta.env.VITE_BASE_URL;
+    const baseUrl = BASE_URL;
     const apiURL = `${baseUrl}/api/journals/`;
     const propertyId = ctxActiveProperty?.id;
     const {

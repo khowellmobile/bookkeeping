@@ -1,4 +1,6 @@
 import { createContext, useState, useEffect } from "react";
+
+import { BASE_URL } from "../../constants";
 import { useToast } from "./ToastCtx";
 
 const AuthCtx = createContext({
@@ -17,7 +19,7 @@ export function AuthCtxProvider(props) {
     const [ctxAccessToken, setCtxAccessToken] = useState(localStorage.getItem("accessToken") || null);
     const [ctxUserData, setCtxUserData] = useState({});
 
-    const baseUrl = import.meta.env.VITE_BASE_URL;
+    const baseUrl = BASE_URL;
 
     useEffect(() => {
         if (ctxAccessToken) {

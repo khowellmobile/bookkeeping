@@ -1,7 +1,8 @@
 import { createContext, useEffect, useState, useContext, useRef } from "react";
 import useSWRImmutable from "swr/immutable";
-import { useToast } from "./ToastCtx";
 
+import { BASE_URL } from "../../constants";
+import { useToast } from "./ToastCtx";
 import AuthCtx from "./AuthCtx";
 import PropertiesCtx from "./PropertiesCtx";
 
@@ -66,7 +67,7 @@ export function RentPaymentsCtxProvider(props) {
         return response.json();
     };
 
-    const baseUrl = import.meta.env.VITE_BASE_URL;
+    const baseUrl = BASE_URL;
     const apiURL = `${baseUrl}/api/entities/`;
     const propertyId = ctxActiveProperty?.id;
     const {
