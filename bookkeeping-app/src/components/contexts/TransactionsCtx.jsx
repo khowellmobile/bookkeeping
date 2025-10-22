@@ -1,7 +1,8 @@
-import { createContext, useEffect, useState, useContext } from "react";
+import { createContext, useState, useContext } from "react";
 import useSWRImmutable from "swr/immutable";
-import { useToast } from "./ToastCtx";
 
+import { BASE_URL } from "../../constants";
+import { useToast } from "./ToastCtx";
 import AuthCtx from "./AuthCtx";
 import AccountsCtx from "./AccountsCtx";
 import EntitiesCtx from "./EntitiesCtx";
@@ -16,6 +17,7 @@ const TransactionsCtx = createContext({
 });
 
 export function TransactionsCtxProvider(props) {
+    console.log("HERHERHERHERHERHERHREHRHEREHERERHREHR");
     const { showToast } = useToast();
 
     const { ctxAccessToken } = useContext(AuthCtx);
@@ -38,7 +40,7 @@ export function TransactionsCtxProvider(props) {
         return response.json();
     };
 
-    const baseUrl = import.meta.env.VITE_BASE_URL;
+    const baseUrl = BASE_URL;
     const apiURL = `${baseUrl}/api/transactions/`;
 
     const getSWRKey = () => {
@@ -128,7 +130,7 @@ export function TransactionsCtxProvider(props) {
                 },
                 body: JSON.stringify(transformedTransaction),
             });
-
+            
             if (!response.ok) {
                 console.log("Error:", response.error);
                 showToast("Error updating transactions", "error", 5000);
