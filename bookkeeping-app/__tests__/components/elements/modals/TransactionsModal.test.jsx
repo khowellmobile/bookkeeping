@@ -3,7 +3,7 @@
  *
  */
 
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import TransactionModal from "@/src/components/elements/modals/TransactionModal";
 import TransactionsCtx from "@/src/components/contexts/TransactionsCtx";
 
@@ -22,17 +22,25 @@ const MockTransactionsCtxProvider = ({ children }) => (
 );
 
 // Mocking child components used within TransactionModal
-jest.mock("@/src/components/elements/dropdowns/AccountDropdown.jsx", () => () => (
-    <div data-testid="account-dropdown" />
+jest.mock("@/src/components/elements/dropdowns/AccountDropdown.jsx", () => (props) => (
+    <div data-testid="account-dropdown" onClick={() => props.onChange("New Account")} />
 ));
-jest.mock("@/src/components/elements/dropdowns/EntityDropdown.jsx", () => () => <div data-testid="entity-dropdown" />);
-jest.mock("@/src/components/elements/modals/ConfirmationModal.jsx", () => () => (
-    <div data-testid="confirmation-modal" />
+jest.mock("@/src/components/elements/dropdowns/EntityDropdown.jsx", () => (props) => (
+    <div data-testid="entity-dropdown" onClick={() => props.onChange("New Entity")} />
+));
+jest.mock("@/src/components/elements/modals/ConfirmationModal.jsx", () => ({ text, onConfirm }) => (
+    <div data-testid="confirmation-modal">
+        <button data-testid="confirm-delete-action" onClick={onConfirm}>
+            {text.confirm_txt}
+        </button>
+    </div>
 ));
 jest.mock("@/src/components/elements/misc/Input.jsx", () => ({ name, value, onChange }) => (
     <input data-testid={`input-${name}`} name={name} value={value} onChange={onChange} />
 ));
-jest.mock("@/src/components/elements/utilities/Button.jsx", () => ({ text, onClick }) => <button onClick={onClick}>{text}</button>);
+jest.mock("@/src/components/elements/utilities/Button.jsx", () => ({ text, onClick }) => (
+    <button onClick={onClick}>{text}</button>
+));
 
 // Defining mocked props
 const mockProps = {
@@ -162,13 +170,172 @@ describe("TransactionModal editedTransaction changes", () => {
         const saveButton = screen.getByRole("button", { name: "Save & Close" });
         fireEvent.click(saveButton);
 
-        await waitFor(() => {
-            expect(mockUpdateTransaction).toHaveBeenCalledTimes(1);
-        });
-
+        expect(mockUpdateTransaction).toHaveBeenCalledTimes(1);
         expect(mockUpdateTransaction).toHaveBeenCalledWith({
             id: mockProps.vals.id,
             memo: newMemo,
         });
+    });
+
+    it("should update editedTransaction amount and type on user input of good debit value and pass it to ctxUpdateTransaction on save", async () => {
+        const newValue = 200.0;
+
+        const amountInput = screen.getByTestId("input-debit");
+        fireEvent.change(amountInput, { target: { value: newValue, name: "debit" } });
+
+        const saveButton = screen.getByRole("button", { name: "Save & Close" });
+        fireEvent.click(saveButton);
+
+        expect(mockUpdateTransaction).toHaveBeenCalledTimes(1);
+        expect(mockUpdateTransaction).toHaveBeenCalledWith({
+            id: mockProps.vals.id,
+            amount: newValue.toString(),
+            type: "debit",
+        });
+    });
+
+    it("should update editedTransaction amount and type on user input of good credit value and pass it to ctxUpdateTransaction on save", async () => {
+        const newValue = 200.0;
+
+        const amountInput = screen.getByTestId("input-credit");
+        fireEvent.change(amountInput, { target: { value: newValue, name: "credit" } });
+
+        const saveButton = screen.getByRole("button", { name: "Save & Close" });
+        fireEvent.click(saveButton);
+
+        expect(mockUpdateTransaction).toHaveBeenCalledTimes(1);
+        expect(mockUpdateTransaction).toHaveBeenCalledWith({
+            id: mockProps.vals.id,
+            amount: newValue.toString(),
+            type: "credit",
+        });
+    });
+
+    it("should update editedTransaction date on user input of good value and pass it to ctxUpdateTransaction on save", async () => {
+        const newDate = "2025-05-05";
+
+        const dateInput = screen.getByTestId("input-date");
+        fireEvent.change(dateInput, { target: { value: newDate, name: "date" } });
+
+        const saveButton = screen.getByRole("button", { name: "Save & Close" });
+        fireEvent.click(saveButton);
+
+        expect(mockUpdateTransaction).toHaveBeenCalledTimes(1);
+        expect(mockUpdateTransaction).toHaveBeenCalledWith({
+            id: mockProps.vals.id,
+            date: newDate,
+        });
+    });
+
+    it("should update editedTransaction account on good value return from AccountDropdown", () => {
+        const dropdown = screen.getByTestId("account-dropdown");
+
+        fireEvent.click(dropdown);
+        const saveButton = screen.getByRole("button", { name: "Save & Close" });
+        fireEvent.click(saveButton);
+
+        expect(mockUpdateTransaction).toHaveBeenCalledWith(
+            expect.objectContaining({
+                account: "New Account",
+            })
+        );
+    });
+
+    it("should update editedTransaction entity on good value return from EntityDropdown", () => {
+        const dropdown = screen.getByTestId("entity-dropdown");
+
+        fireEvent.click(dropdown);
+        const saveButton = screen.getByRole("button", { name: "Save & Close" });
+        fireEvent.click(saveButton);
+
+        expect(mockUpdateTransaction).toHaveBeenCalledWith(
+            expect.objectContaining({
+                entity: "New Entity",
+            })
+        );
+    });
+});
+
+describe("TransactionModal Delete Functionality", () => {
+    beforeEach(() => {
+        mockUpdateTransaction.mockClear();
+        renderTransactionModal();
+    });
+
+    it("should updated edited transaction when delete is confirmed", () => {
+        const saveButton = screen.getByRole("button", { name: "Delete" });
+        fireEvent.click(saveButton);
+
+        const confirmDeleteButton = screen.getByTestId("confirm-delete-action");
+        fireEvent.click(confirmDeleteButton);
+
+        expect(mockUpdateTransaction).toHaveBeenCalledTimes(1);
+        expect(mockUpdateTransaction).toHaveBeenCalledWith({
+            id: mockProps.vals.id,
+            is_deleted: true,
+        });
+    });
+});
+
+describe("TransactionModal Validation (validateInputs", () => {
+    const renderModal = (props) => {
+        mockUpdateTransaction.mockClear();
+        renderTransactionModal(props);
+    };
+
+    it("should prevent save and display error when Payee (entity) is empty", () => {
+        const invalidProps = {
+            vals: { id: 1, entity: "" },
+            handleCloseModal: jest.fn(),
+        };
+        renderModal(invalidProps);
+
+        const saveButton = screen.getByRole("button", { name: "Save & Close" });
+        fireEvent.click(saveButton);
+
+        expect(mockUpdateTransaction).not.toHaveBeenCalled();
+        expect(screen.getByText("Error: Invalid fields. Edits were not saved.")).toBeInTheDocument();
+    });
+
+    it("should prevent save and display error when Account is empty", () => {
+        const invalidProps = {
+            vals: { id: 1, account: "" },
+            handleCloseModal: jest.fn(),
+        };
+        renderModal(invalidProps);
+
+        const saveButton = screen.getByRole("button", { name: "Save & Close" });
+        fireEvent.click(saveButton);
+
+        expect(mockUpdateTransaction).not.toHaveBeenCalled();
+        expect(screen.getByText("Error: Invalid fields. Edits were not saved.")).toBeInTheDocument();
+    });
+
+    it("should prevent save and display error when Amount is empty", () => {
+        const invalidProps = {
+            vals: { id: 1, amount: "" },
+            handleCloseModal: jest.fn(),
+        };
+        renderModal(invalidProps);
+
+        const saveButton = screen.getByRole("button", { name: "Save & Close" });
+        fireEvent.click(saveButton);
+
+        expect(mockUpdateTransaction).not.toHaveBeenCalled();
+        expect(screen.getByText("Error: Invalid fields. Edits were not saved.")).toBeInTheDocument();
+    });
+
+    it("should prevent save and display error when Amount is NaN", () => {
+        const invalidProps = {
+            vals: { id: 1, amount: "abd" },
+            handleCloseModal: jest.fn(),
+        };
+        renderModal(invalidProps);
+
+        const saveButton = screen.getByRole("button", { name: "Save & Close" });
+        fireEvent.click(saveButton);
+
+        expect(mockUpdateTransaction).not.toHaveBeenCalled();
+        expect(screen.getByText("Error: Invalid fields. Edits were not saved.")).toBeInTheDocument();
     });
 });
