@@ -17,6 +17,7 @@ const TransactionsCtx = createContext({
 });
 
 export function TransactionsCtxProvider(props) {
+    console.log("HERHERHERHERHERHERHREHRHEREHERERHREHR");
     const { showToast } = useToast();
 
     const { ctxAccessToken } = useContext(AuthCtx);
@@ -129,7 +130,7 @@ export function TransactionsCtxProvider(props) {
                 },
                 body: JSON.stringify(transformedTransaction),
             });
-
+            
             if (!response.ok) {
                 console.log("Error:", response.error);
                 showToast("Error updating transactions", "error", 5000);
