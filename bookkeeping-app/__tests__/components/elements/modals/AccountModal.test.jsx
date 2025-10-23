@@ -174,7 +174,7 @@ describe("AccountModal editedAccount changes", () => {
     });
 });
 
-describe("AccountModal Validation (validateInputs", () => {
+describe("AccountModal Validation (validateInputs)", () => {
     const renderModal = (props) => {
         mockUpdateAccount.mockClear();
         renderAccountModal(props);
