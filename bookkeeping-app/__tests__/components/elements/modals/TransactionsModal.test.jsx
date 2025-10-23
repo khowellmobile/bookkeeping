@@ -262,7 +262,7 @@ describe("TransactionModal Delete Functionality", () => {
         renderTransactionModal();
     });
 
-    it("should updated edited transaction when delete is confirmed", () => {
+    it("should update edited transaction when delete is confirmed", () => {
         const saveButton = screen.getByRole("button", { name: "Delete" });
         fireEvent.click(saveButton);
 
