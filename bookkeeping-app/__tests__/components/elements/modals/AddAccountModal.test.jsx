@@ -33,18 +33,15 @@ const MockAccountsCtxProvider = ({ children }) => (
 );
 
 // Mocking child components used within AccountModal
-jest.mock("@/src/components/elements/modals/ConfirmationModal.jsx", () => ({ text, onConfirm }) => (
-    <div data-testid="confirmation-modal">
-        <button data-testid="confirm-delete-action" onClick={onConfirm}>
-            {text.confirm_txt}
-        </button>
-    </div>
-));
 jest.mock("@/src/components/elements/misc/AddInputCluster.jsx", () => ({ name, value, onChange }) => (
     <input data-testid={`input-${name}`} name={name} value={value} onChange={onChange} />
 ));
-jest.mock("@/src/components/elements/utilities/Button.jsx", () => ({ text, onClick }) => (
-    <button onClick={onClick}>{text}</button>
+jest.mock("@/src/components/elements/modals/BaseAddModal", () => ({ handleSaveClick, title, children }) => (
+    <div>
+        <h1>{title}</h1>
+        <button onClick={handleSaveClick}>Save & Close</button>
+        {children}
+    </div>
 ));
 
 // Functon to create a AddAccountModal with context

@@ -71,7 +71,7 @@ const AddPropertyModal = ({ handleCloseModal }) => {
         if (inputFields.address.trim() === "") {
             errTxt += "Property Address cannot be empty.\n";
         }
-
+        
         if (inputFields.rent.trim() !== "" && isNaN(Number(inputFields.rent))) {
             errTxt += "Rent must be a number.\n";
         }
