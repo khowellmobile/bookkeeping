@@ -45,7 +45,7 @@ const JournalEntryItem = ({ vals, index, onFocus, onItemChange, scrollRef }) => 
                 onChange={handleAmountChange}
                 isOptional={true}
             />
-            <Input type="text" value={vals.memo} onChange={handleMemoChange} isOptional={true} />
+            <Input type="text" name="memo" value={vals.memo} onChange={handleMemoChange} isOptional={true} />
         </div>
     );
 };
