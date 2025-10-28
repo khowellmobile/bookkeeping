@@ -187,7 +187,13 @@ const TransactionModal = ({ vals, handleCloseModal }) => {
                     <h2>Edit Transaction</h2>
                     <div className={classes.seperatorH} />
                     <div className={`${classes.cluster} ${classes.dateCluster}`}>
-                        <input type="date" name="date" value={inputFields.date} onChange={handleValueChange} />
+                        <input
+                            type="date"
+                            name="date"
+                            value={inputFields.date}
+                            data-testid="input-date"
+                            onChange={handleValueChange}
+                        />
                     </div>
                     <div className={`${classes.cluster} ${classes.dropdownCluster}`}>
                         <p>Account</p>

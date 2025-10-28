@@ -168,6 +168,7 @@ const AddAccountModal = ({ handleCloseModal }) => {
                 value={inputFields.description}
                 className={classes.textArea}
                 name="description"
+                data-testid={`input-description`}
                 onChange={handleInputChange}
             ></textarea>
             <h3 className={classes.subHeader}>Add Existing Account</h3>

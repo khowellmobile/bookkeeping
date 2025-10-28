@@ -1,7 +1,8 @@
 import { createContext, useState, useEffect, useContext } from "react";
 import useSWRImmutable from "swr/immutable";
-import { useToast } from "./ToastCtx";
 
+import { BASE_URL } from "../../constants";
+import { useToast } from "./ToastCtx";
 import AuthCtx from "./AuthCtx";
 
 const PropertiesCtx = createContext({
@@ -44,7 +45,7 @@ export function PropertiesCtxProvider(props) {
         return response.json();
     };
 
-    const baseUrl = import.meta.env.VITE_BASE_URL;
+    const baseUrl = BASE_URL;
     const apiURL = `${baseUrl}/api/properties/`;
     const {
         data: ctxPropertyList,
