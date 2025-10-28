@@ -66,7 +66,7 @@ const RentItem = ({ item, dayIndex, updateFields, removePayment, handleSaveRentP
             updateFields(dayIndex, item.id, inputFields);
             ctxUpdatePayment({ ...item, ...inputFields });
         } else if (isChanged && !validateInputs()) {
-            showToast(errorText, "error", 5000);
+            showToast(errorText, "error", 5000); // ERROR TEXT NOT SETTING PROPERLY HERE
             setInputFields({
                 status: item.status,
                 amount: item.amount,
@@ -164,7 +164,7 @@ const RentItem = ({ item, dayIndex, updateFields, removePayment, handleSaveRentP
             errTxt += "Entity must be selected\n";
         }
 
-        if (!errTxt === "") {
+        if (errTxt !== "") {
             setErrorText("Error: Invalid fields.");
         }
         return errTxt === "";
