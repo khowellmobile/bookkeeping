@@ -33,7 +33,7 @@ const mockAccount = {
 };
 const mockOnChange = jest.fn();
 
-const renderAccountItem = (account = mockAccount) => {
+const renderAccountDropdown = (account = mockAccount) => {
     return render(
         <MockAccountsCtxProvider>
             <AccountDropdown initalVal={account} onChange={mockOnChange} />
@@ -44,7 +44,7 @@ const renderAccountItem = (account = mockAccount) => {
 describe("AccountDropdown Rendering and opening", () => {
     beforeEach(() => {
         jest.clearAllMocks();
-        renderAccountItem();
+        renderAccountDropdown();
     });
 
     it("should display the initial account name and not display other accounts", () => {
@@ -67,7 +67,7 @@ describe("AccountDropdown Rendering and opening", () => {
 describe("AccountDropdown Closing", () => {
     beforeEach(() => {
         jest.clearAllMocks();
-        renderAccountItem();
+        renderAccountDropdown();
     });
 
     const expandDropdown = () => {
@@ -99,7 +99,7 @@ describe("AccountDropdown Closing", () => {
 describe("AccountDropdown onChange call", () => {
     beforeEach(() => {
         jest.clearAllMocks();
-        renderAccountItem();
+        renderAccountDropdown();
     });
 
     it("should call onChange with correct information when account is clicked", () => {
