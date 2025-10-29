@@ -6,15 +6,8 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import PropertyTypeDropdown from "@/src/components/elements/dropdowns/PropertyTypeDropdown";
 
-// Mocking enviroment variables
-/* jest.mock("@/src/constants", () => ({
-    ENVIRONMENT: "test",
-    BASE_URL: "http://test-url.com",
-})); */
-
 const mockVal = "Commercial";
 const mockClickHandler = jest.fn();
-
 const renderPropertyTypeDropdown = (isEditing = true) => {
     return render(
         <PropertyTypeDropdown initalVal={mockVal} clickTypeHandler={mockClickHandler} isEditing={isEditing} />
