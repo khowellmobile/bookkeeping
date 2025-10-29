@@ -1,5 +1,5 @@
 /*
- * Tests for AccountDropdown component.
+ * Tests for PropertyDropdown component.
  *
  */
 
