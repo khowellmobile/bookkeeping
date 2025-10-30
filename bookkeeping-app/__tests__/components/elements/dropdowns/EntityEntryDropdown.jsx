@@ -1,11 +1,11 @@
 /*
- * Tests for AccountEntryDropdown component.
+ * Tests for EntityEntryDropdown component.
  *
  */
 
 import { render, screen, fireEvent, waitFor, act } from "@testing-library/react";
-import AccountEntryDropdown from "@/src/components/elements/dropdowns/AccountEntryDropdown";
-import AccountsCtx from "@/src/components/contexts/AccountsCtx";
+import EntityEntryDropdown from "@/src/components/elements/dropdowns/EntityEntryDropdown";
+import EntitiesCtx from "@/src/components/contexts/EntitiesCtx";
 
 // Mocking enviroment variables
 jest.mock("@/src/constants", () => ({
@@ -17,9 +17,9 @@ jest.mock("@/src/constants", () => ({
 jest.mock("@/src/components/elements/utilities/Button.jsx", () => ({ text, onClick }) => (
     <button onClick={onClick}>{text}</button>
 ));
-jest.mock("@/src/components/elements/modals/AddAccountModal", () => ({ handleCloseModal }) => (
-    <div data-testid="add-account-modal" onClick={handleCloseModal}>
-        Add Account Modal
+jest.mock("@/src/components/elements/modals/AddEntityModal", () => ({ handleCloseModal }) => (
+    <div data-testid="add-entity-modal" onClick={handleCloseModal}>
+        Add Entity Modal
     </div>
 ));
 
@@ -30,47 +30,40 @@ const mockScrollRef = {
 // Use real timers for the handleBlur setTimeout
 jest.useFakeTimers();
 
-const mockAccountList = [
-    { id: 1, name: "Checking" },
-    { id: 2, name: "Savings" },
-    { id: 3, name: "Credit Card" },
-    { id: 4, name: "Money Market" },
+const mockEntityList = [
+    { id: 1, name: "Entity1" },
+    { id: 2, name: "Entity2" },
+    { id: 3, name: "Entity3" },
+    { id: 4, name: "Entity4" },
 ];
 
 // Mocking context provider
-const MockAccountsCtxProvider = ({ children, accountList = mockAccountList }) => (
-    <AccountsCtx.Provider value={{ ctxAccountList: accountList }}>{children}</AccountsCtx.Provider>
+const MockEntitiesCtxProvider = ({ children, entityList = mockEntityList }) => (
+    <EntitiesCtx.Provider value={{ ctxEntityList: entityList }}>{children}</EntitiesCtx.Provider>
 );
 
-const mockAccount = {
-    account: {
-        id: 1,
-        name: "Checking",
-    },
-};
 const mockOnChange = jest.fn();
-
-const renderAccountDropdown = (vals = mockAccount, props = {}) => {
+const renderEntityDropdown = () => {
     return render(
-        <MockAccountsCtxProvider>
-            <AccountEntryDropdown vals={vals} scrollRef={mockScrollRef} onChange={mockOnChange} {...props} />
-        </MockAccountsCtxProvider>
+        <MockEntitiesCtxProvider>
+            <EntityEntryDropdown scrollRef={mockScrollRef} onChange={mockOnChange} />
+        </MockEntitiesCtxProvider>
     );
 };
 
-describe("AccountEntryDropdown Rendering and initial state", () => {
+describe("EntityEntryDropdown Rendering and initial state", () => {
     beforeEach(() => {
         jest.clearAllMocks();
-        renderAccountDropdown();
+        renderEntityDropdown();
     });
 
-    it("should display the initial account name in the input field", () => {
-        expect(screen.getByRole("textbox")).toHaveValue("Checking");
+    it("should display an empty initial value in the input field", () => {
+        expect(screen.getByRole("textbox")).toHaveValue("");
     });
 
     it("should not display the dropdown content initially", () => {
-        expect(screen.queryByText("All Accounts")).not.toBeInTheDocument();
-        expect(screen.queryByText("Savings")).not.toBeInTheDocument();
+        expect(screen.queryByText("All Entities")).not.toBeInTheDocument();
+        expect(screen.queryByText("Entity2")).not.toBeInTheDocument();
     });
 
     // Uncomment when issue #217 in github is resolved
@@ -80,10 +73,10 @@ describe("AccountEntryDropdown Rendering and initial state", () => {
     }); */
 });
 
-describe("AccountEntryDropdown Opening and Filtering", () => {
+describe("EntityEntryDropdown Opening and Filtering", () => {
     beforeEach(() => {
         jest.clearAllMocks();
-        renderAccountDropdown();
+        renderEntityDropdown();
     });
 
     it("should expand and remove noDisplay when input is focused", () => {
@@ -93,24 +86,23 @@ describe("AccountEntryDropdown Opening and Filtering", () => {
         // Clear search term to show all accounts
         fireEvent.change(input, { target: { value: "" } });
 
-        expect(screen.getByText("All Accounts")).toBeInTheDocument();
-        expect(screen.getByText("Add Account")).toBeInTheDocument();
-        expect(screen.getByText("Savings")).toBeInTheDocument();
-        expect(screen.getByText("Credit Card")).toBeInTheDocument();
-        expect(screen.getByRole("dropdown-anchor")).not.toHaveClass("noDisplay");
+        expect(screen.getByText("All Entities")).toBeInTheDocument();
+        expect(screen.getByText("Add Entity")).toBeInTheDocument();
+        expect(screen.getByText("Entity1")).toBeInTheDocument();
+        expect(screen.getByText("Entity2")).toBeInTheDocument();
     });
 
-    it("should filter accounts based on user input", () => {
+    it("should filter entities based on user input", () => {
         const input = screen.getByRole("textbox");
 
         // Type 'cred'
-        fireEvent.change(input, { target: { value: "cred" } });
+        fireEvent.change(input, { target: { value: "2" } });
 
         // Dropdown should be expanded and show only "Credit Card"
-        expect(screen.getByText("All Accounts")).toBeInTheDocument();
-        expect(screen.getByText("Credit Card")).toBeInTheDocument();
-        expect(screen.queryByText("Checking")).not.toBeInTheDocument();
-        expect(screen.queryByText("Savings")).not.toBeInTheDocument();
+        expect(screen.getByText("All Entities")).toBeInTheDocument();
+        expect(screen.getByText("Entity2")).toBeInTheDocument();
+        expect(screen.queryByText("Entity3")).not.toBeInTheDocument();
+        expect(screen.queryByText("Entity4")).not.toBeInTheDocument();
     });
 
     it("should display 'No matching accounts found.' when filter yields no results", () => {
@@ -119,15 +111,15 @@ describe("AccountEntryDropdown Opening and Filtering", () => {
         // Type 'xyz'
         fireEvent.change(input, { target: { value: "xyz" } });
 
-        expect(screen.getByText("No matching accounts found.")).toBeInTheDocument();
-        expect(screen.queryByText("Checking")).not.toBeInTheDocument();
+        expect(screen.getByText("No matching entities found.")).toBeInTheDocument();
+        expect(screen.queryByText("Entity1")).not.toBeInTheDocument();
     });
 });
 
-describe("AccountEntryDropdown Selection and Closing", () => {
+describe("EntityEntryDropdown Selection and Closing", () => {
     beforeEach(() => {
         jest.clearAllMocks();
-        renderAccountDropdown();
+        renderEntityDropdown();
 
         const input = screen.getByRole("textbox");
         fireEvent.focus(input);
@@ -156,7 +148,7 @@ describe("AccountEntryDropdown Selection and Closing", () => {
         fireEvent.blur(input);
 
         // Dropdown should still be visible immediately after blur (due to setTimeout)
-        expect(screen.getByText("All Accounts")).toBeInTheDocument();
+        expect(screen.getByText("All Entities")).toBeInTheDocument();
 
         // Fast-forward time
         await act(async () => {
@@ -165,7 +157,7 @@ describe("AccountEntryDropdown Selection and Closing", () => {
 
         // Dropdown should be closed after 150ms
         await waitFor(() => {
-            expect(screen.queryByText("All Accounts")).not.toBeInTheDocument();
+            expect(screen.queryByText("All Entities")).not.toBeInTheDocument();
         });
     });
 });
@@ -173,26 +165,26 @@ describe("AccountEntryDropdown Selection and Closing", () => {
 describe("AccountEntryDropdown Add Account Modal", () => {
     beforeEach(() => {
         jest.clearAllMocks();
-        renderAccountDropdown();
+        renderEntityDropdown();
     });
 
-    it("should open the Add Account Modal when the button is clicked", () => {
+    it("should open the Add Entity Modal when the button is clicked", () => {
         fireEvent.focus(screen.getByRole("textbox"));
-        expect(screen.queryByTestId("add-account-modal")).not.toBeInTheDocument();
+        expect(screen.queryByTestId("add-entity-modal")).not.toBeInTheDocument();
 
-        const addButton = screen.getByText("Add Account");
+        const addButton = screen.getByText("Add Entity");
         fireEvent.click(addButton);
 
-        expect(screen.getByTestId("add-account-modal")).toBeInTheDocument();
+        expect(screen.getByTestId("add-entity-modal")).toBeInTheDocument();
     });
 
-    it("should close the Add Account Modal when handleCloseModal is called", () => {
+    it("should close the Add Entity Modal when handleCloseModal is called", () => {
         fireEvent.focus(screen.getByRole("textbox"));
-        fireEvent.click(screen.getByText("Add Account"));
+        fireEvent.click(screen.getByText("Add Entity"));
 
-        const modal = screen.getByTestId("add-account-modal");
+        const modal = screen.getByTestId("add-entity-modal");
         fireEvent.click(modal);
 
-        expect(screen.queryByTestId("add-account-modal")).not.toBeInTheDocument();
+        expect(screen.queryByTestId("add-entity-modal")).not.toBeInTheDocument();
     });
 });

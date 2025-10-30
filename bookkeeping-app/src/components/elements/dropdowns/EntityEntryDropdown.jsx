@@ -104,26 +104,28 @@ const EntityEntryDropdown = ({ scrollRef, onChange, hasLeftBorder = false }) => 
                     ref={inputRef}
                     style={hasLeftBorder ? { borderLeft: "1px dashed var(--border-color)" } : {}}
                 />
-                <div className={`${classes.anchor} ${isExpanded ? "" : classes.noDisplay}`}>
-                    <div className={classes.dropDownContent} style={style}>
-                        <div className={classes.dropdownHeader}>
-                            <p>All entitys</p>
-                            <Button onClick={() => setIsModalOpen(true)} text={"Add Entity"} />
-                        </div>
-                        <div className={classes.separatorH}></div>
-                        <div className={classes.entityListing}>
-                            {filteredEntitys && filteredEntitys.length > 0 ? (
-                                filteredEntitys.map((entity, index) => (
-                                    <p key={index} onClick={() => clickEntityHandler(entity)}>
-                                        {entity.name}
-                                    </p>
-                                ))
-                            ) : (
-                                <p>No matching entitys found.</p>
-                            )}
+                {isExpanded && (
+                    <div className={`${classes.anchor} ${isExpanded ? "" : classes.noDisplay}`}>
+                        <div className={classes.dropDownContent} style={style}>
+                            <div className={classes.dropdownHeader}>
+                                <p>All Entities</p>
+                                <Button onClick={() => setIsModalOpen(true)} text={"Add Entity"} />
+                            </div>
+                            <div className={classes.separatorH}></div>
+                            <div className={classes.entityListing}>
+                                {filteredEntitys && filteredEntitys.length > 0 ? (
+                                    filteredEntitys.map((entity, index) => (
+                                        <p key={index} onClick={() => clickEntityHandler(entity)}>
+                                            {entity.name}
+                                        </p>
+                                    ))
+                                ) : (
+                                    <p>No matching entities found.</p>
+                                )}
+                            </div>
                         </div>
                     </div>
-                </div>
+                )}
             </div>
         </>
     );
