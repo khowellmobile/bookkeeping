@@ -34,7 +34,7 @@ const renderAccountActivatePage = (params = { uid: MOCK_UID, token: MOCK_TOKEN }
     return render(<AccountActivatePage />);
 };
 
-describe("AccountActivatePage inital render", () => {
+describe("AccountActivatePage initial render", () => {
     beforeEach(() => {
         jest.clearAllMocks();
         renderAccountActivatePage();

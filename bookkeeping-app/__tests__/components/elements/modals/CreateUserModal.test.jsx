@@ -27,7 +27,7 @@ const renderCreateUserModal = () => {
     return render(<CreateUserModal handleCloseModal={mockHandleCloseModal} switchModal={mockSwitchModal} />);
 };
 
-describe("CreateUserModal inital render", () => {
+describe("CreateUserModal initial render", () => {
     beforeEach(() => {
         jest.clearAllMocks();
         renderCreateUserModal();
@@ -152,17 +152,6 @@ describe("CreateUserModal createAccount api interaction", () => {
     const testEmail = "new.user@example.com";
     const apiUrl = "http://test-url.com/api/auth/users/";
 
-    beforeEach(() => {
-        jest.clearAllMocks();
-        renderCreateUserModal();
-
-        consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
-    });
-
-    afterEach(() => {
-        consoleErrorSpy.mockRestore();
-    });
-
     const populateInputs = (email, password, passwordConfirm) => {
         fireEvent.change(screen.getByTestId("input-email"), { target: { value: email } });
         fireEvent.change(screen.getByTestId("input-password"), { target: { value: password } });
@@ -176,8 +165,19 @@ describe("CreateUserModal createAccount api interaction", () => {
         });
     };
 
-    it("should successfully create account and enter 'waiting on email' state", async () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+        renderCreateUserModal();
         populateInputs(testEmail, goodPassword, goodPassword);
+
+        consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+    });
+
+    afterEach(() => {
+        consoleErrorSpy.mockRestore();
+    });
+
+    it("should successfully create account and enter 'waiting on email' state", async () => {
         mockFetch.mockResolvedValueOnce({
             ok: true,
             json: async () => ({ id: 1, email: testEmail }),
@@ -208,7 +208,6 @@ describe("CreateUserModal createAccount api interaction", () => {
     });
 
     it("should handle API validation failure (non-ok response with 'email' error)", async () => {
-        populateInputs(testEmail, goodPassword, goodPassword);
         mockFetch.mockResolvedValueOnce({
             ok: false,
             json: async () => ({ email: ["user with this email already exists."] }),
@@ -224,7 +223,6 @@ describe("CreateUserModal createAccount api interaction", () => {
     });
 
     it("should handle API failure (non-ok response with 'non_field_errors')", async () => {
-        populateInputs(testEmail, goodPassword, goodPassword);
         mockFetch.mockResolvedValueOnce({
             ok: false,
             json: async () => ({ non_field_errors: ["some general error"] }),
@@ -238,7 +236,6 @@ describe("CreateUserModal createAccount api interaction", () => {
     });
 
     it("should handle network failure (.catch block)", async () => {
-        populateInputs(testEmail, goodPassword, goodPassword);
         mockFetch.mockRejectedValueOnce(new Error("Network Error"));
 
         clickCreateAccountButton();
@@ -249,7 +246,6 @@ describe("CreateUserModal createAccount api interaction", () => {
     });
 
     it("should switch to Login modal when 'Back to Login' is clicked after success", async () => {
-        populateInputs(testEmail, goodPassword, goodPassword);
         mockFetch.mockResolvedValueOnce({
             ok: true,
             json: async () => ({ id: 1, email: testEmail }),

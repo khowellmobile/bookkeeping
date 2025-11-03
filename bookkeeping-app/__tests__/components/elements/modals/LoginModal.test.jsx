@@ -53,7 +53,7 @@ const renderLoginModal = () => {
     );
 };
 
-describe("LoginModal inital render", () => {
+describe("LoginModal initial render", () => {
     beforeEach(() => {
         jest.clearAllMocks();
         renderLoginModal();
