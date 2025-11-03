@@ -14,7 +14,6 @@ jest.mock("@/src/constants", () => ({
     BASE_URL: "http://test-url.com",
 }));
 
-// Mocking enviroment variables
 const mockNavigate = jest.fn();
 jest.mock("react-router-dom", () => ({
     useNavigate: () => mockNavigate,
