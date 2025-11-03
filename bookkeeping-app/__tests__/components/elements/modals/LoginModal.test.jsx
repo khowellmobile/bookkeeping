@@ -75,7 +75,7 @@ describe("LoginModal inital render", () => {
     });
 });
 
-describe("LoginModal input interactions", () => {
+describe("LoginModal basic interactions", () => {
     beforeEach(() => {
         jest.clearAllMocks();
         renderLoginModal();
@@ -90,18 +90,11 @@ describe("LoginModal input interactions", () => {
     });
 
     it("should update password on user input of good value", () => {
-        const newPassword = "goodPass123!";
+        const password = "goodPass123!";
         const passwordInput = screen.getByTestId("input-password");
-        fireEvent.change(passwordInput, { target: { value: newPassword, name: "password" } });
+        fireEvent.change(passwordInput, { target: { value: password, name: "password" } });
 
-        expect(passwordInput.value).toBe(newPassword);
-    });
-});
-
-describe("LoginModal button interactions", () => {
-    beforeEach(() => {
-        jest.clearAllMocks();
-        renderLoginModal();
+        expect(passwordInput.value).toBe(password);
     });
 
     it("should call switch modal when signup link is clicked", () => {
