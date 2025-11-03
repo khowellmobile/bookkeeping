@@ -5,7 +5,6 @@
 
 import { render, screen, fireEvent, waitFor, act } from "@testing-library/react";
 import CreateUserModal from "@/src/components/elements/modals/CreateUserModal";
-import AuthCtx from "@/src/components/contexts/AuthCtx";
 
 // Mocking enviroment variables
 jest.mock("@/src/constants", () => ({
