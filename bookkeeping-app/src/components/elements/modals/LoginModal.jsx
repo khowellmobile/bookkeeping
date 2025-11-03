@@ -1,6 +1,7 @@
 import classes from "./LoginModal.module.css";
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "../../../constants";
 
 import AuthCtx from "../../contexts/AuthCtx";
 
@@ -13,12 +14,10 @@ const LoginModal = ({ handleCloseModal, switchModal }) => {
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState("");
 
-    const baseUrl = import.meta.env.VITE_BASE_URL;
-
     const handleLogin = (event) => {
         event.preventDefault();
 
-        fetch(`${baseUrl}/api/auth/jwt/create/`, {
+        fetch(`${BASE_URL}/api/auth/jwt/create/`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -87,6 +86,7 @@ const LoginModal = ({ handleCloseModal, switchModal }) => {
                             placeholder=""
                             required
                             onChange={(e) => setEmail(e.target.value)}
+                            data-testid="input-email"
                         />
                         <p className={classes.formLabel}>Email</p>
                     </div>
@@ -100,6 +100,7 @@ const LoginModal = ({ handleCloseModal, switchModal }) => {
                             placeholder=""
                             required
                             onChange={(e) => setPassword(e.target.value)}
+                            data-testid="input-password"
                         />
                         <p className={classes.formLabel}>Password</p>
                     </div>

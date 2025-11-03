@@ -1,39 +1,25 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 import classes from "./CreateUserModal.module.css";
 
 import PwdPopup from "../utilities/PwdPopup";
+import { BASE_URL } from "../../../constants";
 
 const CreateUserModal = ({ handleCloseModal, switchModal }) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [passwordConfirm, setPasswordConfirm] = useState("");
     const [errorMsg, setErrorMsg] = useState("");
-    const [reqObj, setReqObj] = useState({
-        chars: false,
-        num: false,
-        specChar: false,
-    });
     const [waitingOnEmail, setWaitingOnEmail] = useState(false);
 
     const [isExpanded, setIsExpanded] = useState(false);
-
-    const baseUrl = import.meta.env.VITE_BASE_URL;
-
-    useEffect(() => {
-        setReqObj({
-            chars: password.length >= 8,
-            num: /\d/.test(password),
-            specChar: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]/.test(password),
-        });
-    }, [password]);
 
     const createAccount = async (event) => {
         event.preventDefault();
         if (
             !(password.length >= 8 && /\d/.test(password) && /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]/.test(password))
         ) {
-            setErrorMsg("Password does not meant requirments");
+            setErrorMsg("Password does not meet requirments");
             return;
         } else if (password !== passwordConfirm) {
             setErrorMsg("Passwords do not match");
@@ -43,7 +29,7 @@ const CreateUserModal = ({ handleCloseModal, switchModal }) => {
         }
 
         try {
-            const response = await fetch(`${baseUrl}/api/auth/users/`, {
+            const response = await fetch(`${BASE_URL}/api/auth/users/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -113,6 +99,7 @@ const CreateUserModal = ({ handleCloseModal, switchModal }) => {
                                     placeholder=""
                                     required
                                     onChange={(e) => setEmail(e.target.value)}
+                                    data-testid="input-email"
                                 />
                                 <p className={classes.formLabel}>Email</p>
                             </div>
@@ -133,6 +120,7 @@ const CreateUserModal = ({ handleCloseModal, switchModal }) => {
                                     onChange={(e) => setPassword(e.target.value)}
                                     onFocus={() => setIsExpanded(true)}
                                     onBlur={() => setIsExpanded(false)}
+                                    data-testid="input-password"
                                 />
                                 <p className={classes.formLabel}>Password</p>
                             </div>
@@ -145,6 +133,7 @@ const CreateUserModal = ({ handleCloseModal, switchModal }) => {
                                     placeholder=""
                                     required
                                     onChange={(e) => setPasswordConfirm(e.target.value)}
+                                    data-testid="input-password-confirm"
                                 />
                                 <p className={classes.formLabel}>Confirm Password</p>
                             </div>
