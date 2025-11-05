@@ -7,7 +7,7 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { TransactionEntryItem } from "@/src/components/elements/items/InputEntryItems";
 
 // Mocking components
-jest.mock("@/src/components/elements/misc/Input", () => ({ name, value, onChange }) => (
+jest.mock("@/src/components/elements/utilities/Input", () => ({ name, value, onChange }) => (
     <input data-testid={`${name}-input`} type="text" name={name} value={value} onChange={onChange} />
 ));
 jest.mock("@/src/components/elements/dropdowns/EntityEntryDropdown", () => ({ onChange }) => (

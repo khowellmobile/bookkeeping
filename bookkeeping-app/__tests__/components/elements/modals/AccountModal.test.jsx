@@ -27,7 +27,7 @@ jest.mock("@/src/components/elements/modals/ConfirmationModal.jsx", () => ({ tex
         </button>
     </div>
 ));
-jest.mock("@/src/components/elements/misc/Input.jsx", () => ({ name, value, onChange }) => (
+jest.mock("@/src/components/elements/utilities/Input.jsx", () => ({ name, value, onChange }) => (
     <input data-testid={`input-${name}`} name={name} value={value} onChange={onChange} />
 ));
 jest.mock("@/src/components/elements/utilities/Button.jsx", () => ({ text, onClick }) => (

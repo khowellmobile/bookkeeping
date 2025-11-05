@@ -20,7 +20,7 @@ jest.mock("@/src/components/contexts/ToastCtx", () => ({
 }));
 
 // Mocking components
-jest.mock("@/src/components/elements/misc/Input", () => ({ type, name, value, onChange }) => (
+jest.mock("@/src/components/elements/utilities/Input", () => ({ type, name, value, onChange }) => (
     <input data-testid={`${name}-input`} type="text" name={name} value={value} onChange={onChange} />
 ));
 jest.mock("@/src/components/elements/dropdowns/EntityDropdown", () => ({ initalVal, onChange }) => (
