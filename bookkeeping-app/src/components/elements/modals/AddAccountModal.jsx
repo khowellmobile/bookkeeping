@@ -4,7 +4,7 @@ import classes from "./AddModalStyle.module.css";
 
 import AccountsCtx from "../../contexts/AccountsCtx";
 import BaseAddModal from "./BaseAddModal";
-import AddInputCluster from "../misc/AddInputCluster";
+import AddInputCluster from "../utilities/AddInputCluster";
 import upChevIcon from "../../../assets/chevron-up-icon.svg";
 import downChevIcon from "../../../assets/chevron-down-icon.svg";
 import NoResultsDisplay from "../misc/NoResultsDisplay";

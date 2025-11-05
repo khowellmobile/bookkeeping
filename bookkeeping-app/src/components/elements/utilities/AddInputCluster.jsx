@@ -1,5 +1,5 @@
 import classes from "./AddInputCluster.module.css";
-import Input from "../utilities/Input";
+import Input from "./Input";
 
 const AddInputCluster = ({ label, placeholder, name, value, onChange, type = "text", isOptional }) => {
     return (
