@@ -5,8 +5,8 @@ import classes from "./JournalsPage.module.css";
 import JournalsCtx from "../components/contexts/JournalsCtx";
 import PropertiesCtx from "../components/contexts/PropertiesCtx";
 import ConfirmationModal from "../components/elements/modals/ConfirmationModal";
-import NoResultsDisplay from "../components/elements/misc/NoResultsDisplay";
-import Input from "../components/elements/misc/Input";
+import NoResultsDisplay from "../components/elements/utilities/NoResultsDisplay";
+import Input from "../components/elements/utilities/Input";
 import { JournalEntryItem } from "../components/elements/items/InputEntryItems";
 import Button from "../components/elements/utilities/Button";
 

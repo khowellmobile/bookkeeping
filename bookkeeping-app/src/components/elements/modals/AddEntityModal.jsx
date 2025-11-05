@@ -4,7 +4,7 @@ import classes from "./AddModalStyle.module.css";
 
 import EntitiesCtx from "../../contexts/EntitiesCtx";
 import BaseAddModal from "./BaseAddModal";
-import AddInputCluster from "../misc/AddInputCluster";
+import AddInputCluster from "../utilities/AddInputCluster";
 
 const AddEntityModal = ({ handleCloseModal }) => {
     const { ctxAddEntity } = useContext(EntitiesCtx);

@@ -6,7 +6,7 @@ import { useToast } from "../../contexts/ToastCtx";
 import RentPaymentsCtx from "../../contexts/RentPaymentsCtx";
 import EntityDropdown from "../dropdowns/EntityDropdown";
 import ConfirmationModal from "../modals/ConfirmationModal";
-import Input from "../misc/Input";
+import Input from "../utilities/Input";
 
 const RentItem = ({ item, dayIndex, updateFields, removePayment, handleSaveRentPayment, pushLeft, pushUp }) => {
     const { ctxUpdatePayment } = useContext(RentPaymentsCtx);

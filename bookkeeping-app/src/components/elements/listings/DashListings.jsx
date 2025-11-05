@@ -5,7 +5,7 @@ import classes from "./DashListings.module.css";
 import AccountsCtx from "../../contexts/AccountsCtx.jsx";
 import PropertiesCtx from "../../contexts/PropertiesCtx.jsx";
 import { AccountListItem, PropertyListItem, ReportListItem } from "../items/DashListItems.jsx";
-import NoResultsDisplay from "../misc/NoResultsDisplay.jsx";
+import NoResultsDisplay from "../utilities/NoResultsDisplay.jsx";
 
 const AccountListing = () => {
     const { ctxAccountList } = useContext(AccountsCtx);
