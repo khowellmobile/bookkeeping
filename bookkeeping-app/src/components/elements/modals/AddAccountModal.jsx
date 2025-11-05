@@ -7,7 +7,7 @@ import BaseAddModal from "./BaseAddModal";
 import AddInputCluster from "../utilities/AddInputCluster";
 import upChevIcon from "../../../assets/chevron-up-icon.svg";
 import downChevIcon from "../../../assets/chevron-down-icon.svg";
-import NoResultsDisplay from "../misc/NoResultsDisplay";
+import NoResultsDisplay from "../utilities/NoResultsDisplay";
 
 const AddAccountModal = ({ handleCloseModal }) => {
     const { ctxAddAccount, ctxGetNonPropertyAccounts } = useContext(AccountsCtx);

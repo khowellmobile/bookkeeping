@@ -5,7 +5,7 @@ import classes from "./AccountsPage.module.css";
 import AccountsCtx from "../components/contexts/AccountsCtx";
 import AddAccountModal from "../components/elements/modals/AddAccountModal";
 import AccountItem from "../components/elements/items/AccountItem";
-import NoResultsDisplay from "../components/elements/misc/NoResultsDisplay";
+import NoResultsDisplay from "../components/elements/utilities/NoResultsDisplay";
 import Button from "../components/elements/utilities/Button";
 
 const AccountsPage = () => {

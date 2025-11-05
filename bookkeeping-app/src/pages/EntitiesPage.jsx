@@ -9,7 +9,7 @@ import TransactionItem from "../components/elements/items/TransactionItem";
 import AddEntityModal from "../components/elements/modals/AddEntityModal";
 import ConfirmationModal from "../components/elements/modals/ConfirmationModal";
 import SearchBox from "../components/elements/misc/SearchBox";
-import NoResultsDisplay from "../components/elements/misc/NoResultsDisplay";
+import NoResultsDisplay from "../components/elements/utilities/NoResultsDisplay";
 import Input from "../components/elements/utilities/Input";
 import Button from "../components/elements/utilities/Button";
 
