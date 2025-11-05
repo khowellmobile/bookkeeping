@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 import classes from "./SearchBox.module.css";
-import Button from "../utilities/Button";
+import Button from "./Button";
 
 const SearchBox = ({ itemName, items, onItemClick, onAddButtonClick }) => {
     const [searchTerm, setSearchTerm] = useState("");
