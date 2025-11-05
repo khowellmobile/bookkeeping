@@ -8,7 +8,7 @@ import penIcon from "../assets/pen-icon.svg";
 import AddPropertyModal from "../components/elements/modals/AddPropertyModal";
 import SearchBox from "../components/elements/misc/SearchBox";
 import RentInformation from "../components/elements/misc/RentInformation";
-import Input from "../components/elements/misc/Input";
+import Input from "../components/elements/utilities/Input";
 import PropertyTypeDropdown from "../components/elements/dropdowns/PropertyTypeDropdown";
 import Button from "../components/elements/utilities/Button";
 

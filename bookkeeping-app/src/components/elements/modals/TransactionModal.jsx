@@ -6,7 +6,7 @@ import TransactionsCtx from "../../contexts/TransactionsCtx.jsx";
 import AccountDropdown from "../dropdowns/AccountDropdown.jsx";
 import EntityDropdown from "../dropdowns/EntityDropdown.jsx";
 import ConfirmationModal from "./ConfirmationModal.jsx";
-import Input from "../misc/Input.jsx";
+import Input from "../utilities/Input.jsx";
 import Button from "../utilities/Button.jsx";
 
 const TransactionModal = ({ vals, handleCloseModal }) => {
