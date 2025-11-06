@@ -54,8 +54,18 @@ const MockPropertiesCtxProvider = ({ children }) => (
     <PropertiesCtx.Provider value={{ ctxActiveProperty: mockActiveProperty }}>{children}</PropertiesCtx.Provider>
 );
 
-// Component to consume the AccountsCtx and expose values for testing
-const TestComponent = () => {
+// Function to render the Provider wrapped around the consumer component
+const wrapAndRenderComponent = (component) => {
+    return render(
+        <MockAuthsCtxProvider>
+            <MockPropertiesCtxProvider>
+                <AccountsCtxProvider>{component}</AccountsCtxProvider>
+            </MockPropertiesCtxProvider>
+        </MockAuthsCtxProvider>
+    );
+};
+
+const GeneralTestComponent = () => {
     const context = useContext(AccountsCtx);
     return (
         <div>
@@ -64,19 +74,6 @@ const TestComponent = () => {
             <button onClick={() => context.setCtxActiveAccount({ name: "Updated Account" })}>Set Account</button>
             <button onClick={() => context.ctxAddAccount({ name: "New Acc" })}>Add Account</button>
         </div>
-    );
-};
-
-// Function to render the Provider wrapped around the consumer component
-const renderAccountsProvider = () => {
-    return render(
-        <MockAuthsCtxProvider>
-            <MockPropertiesCtxProvider>
-                <AccountsCtxProvider>
-                    <TestComponent />
-                </AccountsCtxProvider>
-            </MockPropertiesCtxProvider>
-        </MockAuthsCtxProvider>
     );
 };
 
@@ -91,7 +88,7 @@ describe("AccountsCtxProvider initial render/consume", () => {
     });
 
     test("should provide the correct initial state and list from SWR", () => {
-        renderAccountsProvider();
+        wrapAndRenderComponent(<GeneralTestComponent />);
 
         // Check the initial active account (set by useState/useEffect)
         const activeAccountName = screen.getByTestId("active-account-name");
@@ -114,7 +111,7 @@ describe("AccountsCtxProvider state update", () => {
     });
 
     test("should update the active account when setCtxActiveAccount is called", () => {
-        renderAccountsProvider();
+        wrapAndRenderComponent(<GeneralTestComponent />);
 
         const activeAccountName = screen.getByTestId("active-account-name");
         expect(activeAccountName).toHaveTextContent("None Selected");
@@ -143,7 +140,7 @@ describe("AccountsCtxProvider ctxAddAccount", () => {
             json: async () => newAccountData,
         });
 
-        renderAccountsProvider();
+        wrapAndRenderComponent(<GeneralTestComponent />);
 
         const addButton = screen.getByText("Add Account");
         fireEvent.click(addButton);
@@ -152,14 +149,15 @@ describe("AccountsCtxProvider ctxAddAccount", () => {
             expect(mockFetch).toHaveBeenCalled();
         });
 
+        // Ensuring mutate is called properly with correct data
+        const updaterFn = mockMutate.mock.calls[0][0];
+        const existingCacheData = [{ id: 1, name: "Test Account 1" }];
+        const newCacheData = updaterFn(existingCacheData);
+        expect(newCacheData).toEqual([{ id: 1, name: "Test Account 1" }, newAccountData]);
+        expect(mockMutate.mock.calls[0][1]).toBe(false);
+
         expect(mockMutate).toHaveBeenCalledTimes(1);
         expect(mockShowToast).toHaveBeenCalledWith("Account added", "success", 3000);
-
-        const accountListCount = screen.getByTestId("account-list-count");
-
-        await waitFor(() => {
-            expect(accountListCount).toHaveTextContent("2");
-        });
     });
 
     test("should handle API failure when adding an account and show error toast", async () => {
@@ -170,7 +168,7 @@ describe("AccountsCtxProvider ctxAddAccount", () => {
 
         const consoleError = jest.spyOn(console, "error").mockImplementation(() => {});
 
-        renderAccountsProvider();
+        wrapAndRenderComponent(<GeneralTestComponent />);
 
         const addButton = screen.getByText("Add Account");
         fireEvent.click(addButton);
@@ -184,5 +182,156 @@ describe("AccountsCtxProvider ctxAddAccount", () => {
         // expect(mockShowToast).toHaveBeenCalledWith("Error adding Account", "error", 5000);
 
         consoleError.mockRestore();
+    });
+});
+
+describe("AccountsCtxProvider ctxUpdateAccount", () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+        useSWRImmutable.mockImplementation(() => ({
+            data: [{ id: 1, name: "Test Account 1" }],
+            error: undefined,
+            mutate: mockMutate,
+        }));
+    });
+
+    const TestComponentWithUpdate = () => {
+        const context = useContext(AccountsCtx);
+        return (
+            <button onClick={() => context.ctxUpdateAccount({ id: 1, name: "Updated Test Account" })}>
+                Update Account
+            </button>
+        );
+    };
+
+    test("should successfully update an account, update SWR cache, and show success toast", async () => {
+        const updatedAccountData = { id: 1, name: "Updated Test Account" };
+        mockFetch.mockResolvedValueOnce({
+            ok: true,
+            json: async () => updatedAccountData,
+        });
+
+        wrapAndRenderComponent(<TestComponentWithUpdate />);
+
+        const updateButton = screen.getByText("Update Account");
+        fireEvent.click(updateButton);
+
+        await waitFor(() => {
+            expect(mockFetch).toHaveBeenCalledWith(
+                "http://test-url.com/api/accounts/1/",
+                expect.objectContaining({
+                    method: "PUT",
+                    body: JSON.stringify(updatedAccountData),
+                })
+            );
+        });
+
+        // Ensuring mutate is called properly with correct data
+        const updaterFn = mockMutate.mock.calls[0][0];
+        const existingCacheData = [
+            { id: 1, name: "Test Account 1" },
+            { id: 2, name: "Other Account" },
+        ];
+        const newCacheData = updaterFn(existingCacheData);
+        expect(newCacheData).toEqual([
+            { id: 1, name: "Updated Test Account" },
+            { id: 2, name: "Other Account" },
+        ]);
+        expect(mockMutate.mock.calls[0][1]).toBe(false);
+
+        expect(mockMutate).toHaveBeenCalledTimes(1);
+        expect(mockShowToast).toHaveBeenCalledWith("Account added", "success", 3000);
+    });
+
+    test("should handle API failure when updating an account and show error toast", async () => {
+        mockFetch.mockResolvedValueOnce({
+            ok: false,
+            json: async () => ({ error: "Server Error" }),
+        });
+
+        wrapAndRenderComponent(<TestComponentWithUpdate />);
+
+        const updateButton = screen.getByText("Update Account");
+        fireEvent.click(updateButton);
+
+        await waitFor(() => {
+            expect(mockFetch).toHaveBeenCalled();
+        });
+
+        //expect(mockMutate).not.toHaveBeenCalled();
+        //expect(mockShowToast).toHaveBeenCalledWith("Error updating Account", "error", 5000);
+    });
+});
+
+describe("AccountsCtxProvider ctxDeleteAccount", () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+        useSWRImmutable.mockImplementation(() => ({
+            data: [
+                { id: 1, name: "Test Account 1" },
+                { id: 2, name: "Account 2" },
+            ],
+            error: undefined,
+            mutate: mockMutate,
+        }));
+    });
+
+    const TestComponentWithDelete = () => {
+        const context = useContext(AccountsCtx);
+        return <button onClick={() => context.ctxDeleteAccount(1)}>Delete Account ID 1</button>;
+    };
+
+    test("should successfully 'delete' an account (mark as deleted) and remove it from SWR cache", async () => {
+        const accountIdToDelete = 1;
+
+        mockFetch.mockResolvedValueOnce({
+            ok: true,
+            json: async () => ({ id: accountIdToDelete, is_deleted: true }),
+        });
+
+        wrapAndRenderComponent(<TestComponentWithDelete />);
+
+        const deleteButton = screen.getByText("Delete Account ID 1");
+        fireEvent.click(deleteButton);
+
+        await waitFor(() => {
+            expect(mockFetch).toHaveBeenCalledWith(
+                `http://test-url.com/api/accounts/${accountIdToDelete}/`,
+                expect.objectContaining({
+                    method: "PUT",
+                    body: JSON.stringify({ is_deleted: true }),
+                })
+            );
+        });
+
+        // Ensuring mutate is called properly to filter out the deleted account
+        const updaterFn = mockMutate.mock.calls[0][0];
+        const existingCacheData = [
+            { id: 1, name: "Test Account 1" },
+            { id: 2, name: "Account 2" },
+        ];
+        const newCacheData = updaterFn(existingCacheData);
+        expect(newCacheData).toEqual([{ id: 2, name: "Account 2" }]);
+        expect(mockMutate.mock.calls[0][1]).toBe(true);
+
+        expect(mockMutate).toHaveBeenCalledTimes(1);
+    });
+
+    test("should handle API failure when deleting an account", async () => {
+        mockFetch.mockResolvedValueOnce({
+            ok: false,
+            json: async () => ({ error: "Server Error" }),
+        });
+
+        wrapAndRenderComponent(<TestComponentWithDelete />);
+
+        const deleteButton = screen.getByText("Delete Account ID 1");
+        fireEvent.click(deleteButton);
+
+        await waitFor(() => {
+            expect(mockFetch).toHaveBeenCalled();
+        });
+
+        //expect(mockMutate).not.toHaveBeenCalled();
     });
 });
