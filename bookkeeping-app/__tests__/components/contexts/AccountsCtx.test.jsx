@@ -2,7 +2,7 @@
  * Tests for AccountsCtx component.
  *
  */
-import { render, screen, fireEvent, waitFor, act } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { useContext } from "react";
 import { AccountsCtxProvider } from "@/src/components/contexts/AccountsCtx";
 import AccountsCtx from "@/src/components/contexts/AccountsCtx";
@@ -240,7 +240,7 @@ describe("AccountsCtxProvider ctxUpdateAccount", () => {
         expect(mockMutate.mock.calls[0][1]).toBe(false);
 
         expect(mockMutate).toHaveBeenCalledTimes(1);
-        expect(mockShowToast).toHaveBeenCalledWith("Account added", "success", 3000);
+        expect(mockShowToast).toHaveBeenCalledWith("Account Updated", "success", 3000);
     });
 
     test("should handle API failure when updating an account and show error toast", async () => {
