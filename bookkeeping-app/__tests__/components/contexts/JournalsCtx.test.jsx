@@ -287,7 +287,7 @@ describe("JournalsCtxProvider ctxUpdateJournal (PUT - Update)", () => {
     });
 });
 
-describe.only("JournalsCtxProvider ctxDeleteJournal", () => {
+describe("JournalsCtxProvider ctxDeleteJournal", () => {
     beforeEach(() => {
         resetSWRMock();
         consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
