@@ -43,8 +43,6 @@ export function JournalsCtxProvider(props) {
     } = useSWRImmutable(propertyId && ctxAccessToken ? [`${apiURL}?property_id=${propertyId}`] : null, fetcher);
 
     const ctxUpdateJournal = async (selectedJournalId, url, method, sendData) => {
-        const ctxAccessToken = localStorage.getItem("accessToken");
-
         const tranformedJournalItems = sendData.journal_items.map((item) => ({
             ...item,
             account_id: item.account.id,
