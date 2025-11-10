@@ -5,7 +5,6 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { useContext } from "react";
 
-// NOTE: Adjusted import path based on common project structure, please verify if "JouranlsCtx" is correct or should be "JournalsCtx"
 import { JournalsCtxProvider } from "@/src/components/contexts/JournalsCtx";
 import JournalsCtx from "@/src/components/contexts/JournalsCtx";
 import PropertiesCtx from "@/src/components/contexts/PropertiesCtx";
@@ -45,7 +44,6 @@ if (typeof global.fetch === "undefined") {
 }
 const mockFetch = jest.spyOn(global, "fetch");
 let consoleErrorSpy;
-let localStorageGetItemSpy;
 
 // Mock Parent Context Providers
 const mockAccessToken = "mock-token";
