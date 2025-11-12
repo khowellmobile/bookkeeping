@@ -207,7 +207,7 @@ describe("RentPaymentsCtxProvider getCtxPaymentsByMonth", () => {
     });
 });
 
-describe.only("RentPaymentsCtxProvider ctxAddPayment (POST)", () => {
+describe("RentPaymentsCtxProvider ctxAddPayment (POST)", () => {
     beforeEach(() => {
         jest.clearAllMocks();
         mockSessionStorage.clear();

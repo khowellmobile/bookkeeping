@@ -3,7 +3,7 @@
  *
  */
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { memo, useContext } from "react";
+import { useContext } from "react";
 
 import { TransactionsCtxProvider } from "@/src/components/contexts/TransactionsCtx";
 import TransactionsCtx from "@/src/components/contexts/TransactionsCtx";
