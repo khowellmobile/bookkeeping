@@ -134,7 +134,7 @@ describe("EntitiesCtxProvider ctxAddEntity", () => {
     });
 
     test("should successfully add an entity, update SWR cache, and show success toast", async () => {
-        const newEntityData = { id: 2, name: "New Entity Added" };
+        const newEntityData = { id: 2, name: "New Entity" };
         mockFetch.mockResolvedValueOnce({
             ok: true,
             json: async () => newEntityData,
@@ -148,6 +148,25 @@ describe("EntitiesCtxProvider ctxAddEntity", () => {
         await waitFor(() => {
             expect(mockFetch).toHaveBeenCalled();
         });
+
+        // Define the expected request details
+        const expectedUrl = "http://test-url.com/api/entities/?property_id=1";
+        const expectedBodyObject = { name: "New Entity" };
+        const expectedOptions = {
+            method: "POST",
+            body: JSON.stringify(expectedBodyObject),
+            headers: {
+                Authorization: `Bearer mock-token`,
+                "Content-Type": "application/json",
+            },
+        };
+
+        expect(mockFetch).toHaveBeenCalledTimes(1);
+        const [receivedUrl, receivedOptions] = mockFetch.mock.calls[0];
+        expect(receivedUrl.toString()).toBe(expectedUrl);
+        expect(receivedOptions.method).toBe(expectedOptions.method);
+        expect(receivedOptions.body).toBe(expectedOptions.body);
+        expect(receivedOptions.headers).toEqual(expect.objectContaining(expectedOptions.headers));
 
         // Ensuring mutate is called properly with correct data
         const updaterFn = mockMutate.mock.calls[0][0];
