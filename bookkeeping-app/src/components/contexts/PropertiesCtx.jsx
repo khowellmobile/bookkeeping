@@ -98,7 +98,6 @@ export function PropertiesCtxProvider(props) {
     };
 
     const ctxUpdateProperty = async (updatedProperty) => {
-        console.log(updatedProperty);
         try {
             const response = await fetch(`${baseUrl}/api/properties/${updatedProperty.id}/`, {
                 method: "PUT",

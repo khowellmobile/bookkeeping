@@ -3,7 +3,7 @@
  *
  */
 
-import { render, screen, fireEvent, waitFor, act } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import LogoutModal from "@/src/components/elements/modals/LogoutModal";
 import AuthCtx from "@/src/components/contexts/AuthCtx";
 

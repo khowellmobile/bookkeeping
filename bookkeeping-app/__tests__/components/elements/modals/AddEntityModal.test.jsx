@@ -23,7 +23,7 @@ const MockEntitiesCtxProvider = ({ children }) => (
 );
 
 // Mocking child components used within AccountModal
-jest.mock("@/src/components/elements/misc/AddInputCluster.jsx", () => ({ name, value, onChange }) => (
+jest.mock("@/src/components/elements/utilities/AddInputCluster.jsx", () => ({ name, value, onChange }) => (
     <input data-testid={`input-${name}`} name={name} value={value} onChange={onChange} />
 ));
 jest.mock("@/src/components/elements/modals/BaseAddModal", () => ({ handleSaveClick, title, children }) => (

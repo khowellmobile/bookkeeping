@@ -23,7 +23,7 @@ const MockPropertiesCtxProvider = ({ children }) => (
 );
 
 // Mocking child components used within PropertyModal
-jest.mock("@/src/components/elements/misc/AddInputCluster.jsx", () => ({ name, value, onChange, type }) => (
+jest.mock("@/src/components/elements/utilities/AddInputCluster.jsx", () => ({ name, value, onChange, type }) => (
     <input data-testid={`input-${name}`} name={name} value={value} onChange={onChange} type={type || "text"} />
 ));
 jest.mock("@/src/components/elements/modals/BaseAddModal", () => ({ handleSaveClick, title, children }) => (

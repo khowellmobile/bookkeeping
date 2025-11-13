@@ -120,7 +120,7 @@ export function AccountsCtxProvider(props) {
 
             const updatedData = await response.json();
             mutate((prevAccounts) => prevAccounts.map((acc) => (acc.id === updatedData.id ? updatedData : acc)), false);
-            showToast("Account added", "success", 3000);
+            showToast("Account Updated", "success", 3000);
         } catch (error) {
             console.error("Error editing account:", error);
             showToast("Error updating Account", "error", 5000);
