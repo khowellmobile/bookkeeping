@@ -119,6 +119,11 @@ describe("RentPaymentsCtxProvider initial render/consumption", () => {
     beforeEach(() => {
         jest.clearAllMocks();
         mockSessionStorage.clear();
+        consoleLogSpy = jest.spyOn(console, "log").mockImplementation(() => {});
+    });
+
+    afterEach(() => {
+        consoleLogSpy.mockRestore();
     });
 
     test("should initialize ctxActiveDate and store it in session storage", () => {
@@ -155,6 +160,11 @@ describe("RentPaymentsCtxProvider getCtxPaymentsByMonth", () => {
     beforeEach(() => {
         jest.clearAllMocks();
         mockSessionStorage.clear();
+        consoleLogSpy = jest.spyOn(console, "log").mockImplementation(() => {});
+    });
+
+    afterEach(() => {
+        consoleLogSpy.mockRestore();
     });
 
     test("should call getCtxPaymentsByMonth when ctxActiveDate changes", async () => {
@@ -192,7 +202,6 @@ describe("RentPaymentsCtxProvider getCtxPaymentsByMonth", () => {
             status: 404,
             json: async () => ({ detail: "Not Found" }),
         });
-        consoleLogSpy = jest.spyOn(console, "log").mockImplementation(() => {});
 
         wrapAndRenderComponent(<GeneralTestComponent />);
 
@@ -202,8 +211,6 @@ describe("RentPaymentsCtxProvider getCtxPaymentsByMonth", () => {
         expect(consoleLogSpy).toHaveBeenCalledWith("Error: HTTP error! status: 404");
         const monthPaymentCount = screen.getByTestId("month-payment-count");
         expect(monthPaymentCount).toHaveTextContent("0");
-
-        consoleLogSpy.mockRestore();
     });
 });
 
@@ -217,6 +224,11 @@ describe("RentPaymentsCtxProvider ctxAddPayment (POST)", () => {
             ok: true,
             json: async () => ({}),
         });
+        consoleLogSpy = jest.spyOn(console, "log").mockImplementation(() => {});
+    });
+
+    afterEach(() => {
+        consoleLogSpy.mockRestore();
     });
 
     test("should successfully add a payment, update SWR cache, and show success toast", async () => {

@@ -43,7 +43,7 @@ if (typeof global.fetch === "undefined") {
     global.fetch = jest.fn();
 }
 const mockFetch = jest.spyOn(global, "fetch");
-let consoleErrorSpy;
+let consoleSpy;
 
 // Mock Parent Context Providers
 const mockAccessToken = "mock-token";
@@ -182,7 +182,7 @@ describe("JournalsCtxProvider ctxUpdateJournal (POST - Add)", () => {
             ok: false,
             json: async () => ({ error: "Server Error" }),
         });
-        consoleErrorSpy = jest.spyOn(console, "log").mockImplementation(() => {});
+        consoleSpy = jest.spyOn(console, "log").mockImplementation(() => {});
 
         wrapAndRenderComponent(<GeneralTestComponent />);
 
@@ -196,7 +196,7 @@ describe("JournalsCtxProvider ctxUpdateJournal (POST - Add)", () => {
         expect(mockMutate).not.toHaveBeenCalled();
         expect(mockShowToast).toHaveBeenCalledWith("Error saving journal", "error", 5000);
 
-        consoleErrorSpy.mockRestore();
+        consoleSpy.mockRestore();
     });
 });
 
@@ -206,6 +206,10 @@ describe("JournalsCtxProvider ctxUpdateJournal (PUT - Update)", () => {
             { id: 101, journal_date: "2025-01-01", description: "Old Desc" },
             { id: 103, journal_date: "2025-01-03", description: "Other Journal" },
         ]);
+        consoleSpy = jest.spyOn(console, "log").mockImplementation(() => {});
+    });
+    afterEach(() => {
+        consoleSpy.mockRestore();
     });
 
     test("should successfully update a journal, update SWR cache, and show success toast", async () => {
@@ -288,10 +292,10 @@ describe("JournalsCtxProvider ctxUpdateJournal (PUT - Update)", () => {
 describe("JournalsCtxProvider ctxDeleteJournal", () => {
     beforeEach(() => {
         resetSWRMock();
-        consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+        consoleSpy = jest.spyOn(console, "error").mockImplementation(() => {});
     });
     afterEach(() => {
-        consoleErrorSpy.mockRestore();
+        consoleSpy.mockRestore();
     });
 
     test("should call the API with PUT and is_deleted: true", async () => {

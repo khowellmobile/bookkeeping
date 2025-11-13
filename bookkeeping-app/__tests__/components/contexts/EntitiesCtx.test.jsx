@@ -43,6 +43,7 @@ if (typeof global.fetch === "undefined") {
     global.fetch = jest.fn();
 }
 const mockFetch = jest.spyOn(global, "fetch");
+let consoleLogSpy;
 
 // Mock Parent Context Providers
 const mockAccessToken = "mock-token";
@@ -192,6 +193,11 @@ describe("EntitiesCtxProvider ctxUpdateEntity", () => {
             error: undefined,
             mutate: mockMutate,
         }));
+        consoleLogSpy = jest.spyOn(console, "log").mockImplementation(() => {});
+    });
+
+    afterEach(() => {
+        consoleLogSpy.mockRestore();
     });
 
     const TestComponentWithUpdate = () => {

@@ -43,6 +43,7 @@ if (typeof global.fetch === "undefined") {
 }
 const mockFetch = jest.spyOn(global, "fetch");
 let consoleWarnSpy;
+let consoleLogSpy;
 
 // Mock Parent Context Providers
 const mockAccessToken = "mock-token";
@@ -207,10 +208,12 @@ describe("PropertiesCtxProvider ctxUpdateProperty", () => {
         }));
 
         consoleWarnSpy = jest.spyOn(console, "warn").mockImplementation(() => {});
+        consoleLogSpy = jest.spyOn(console, "log").mockImplementation(() => {});
     });
 
     afterEach(() => {
         consoleWarnSpy.mockRestore();
+        consoleLogSpy.mockRestore();
     });
 
     const TestComponentWithUpdate = () => {
