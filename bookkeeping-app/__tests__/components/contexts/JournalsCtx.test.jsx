@@ -161,7 +161,6 @@ describe("JournalsCtxProvider ctxUpdateJournal (POST - Add)", () => {
 
         expect(mockFetch).toHaveBeenCalledTimes(1);
         const [receivedUrl, receivedOptions] = mockFetch.mock.calls[0];
-
         expect(receivedUrl.toString()).toBe(expectedUrl);
         expect(receivedOptions.method).toBe(expectedOptions.method);
         expect(receivedOptions.body).toBe(expectedOptions.body);
