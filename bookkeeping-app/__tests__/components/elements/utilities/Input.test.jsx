@@ -1,5 +1,5 @@
 /*
- * Tests for TransactionEntryItem component.
+ * Tests for Input component.
  *
  */
 
