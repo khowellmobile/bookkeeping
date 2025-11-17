@@ -196,9 +196,8 @@ describe("EntitiesCtxProvider ctxAddEntity", () => {
             expect(mockFetch).toHaveBeenCalled();
         });
 
-        // Uncomment with completion is issue #224
-        // expect(mockMutate).not.toHaveBeenCalled();
-        // expect(mockShowToast).toHaveBeenCalledWith("Error adding Entity", "error", 5000);
+        expect(mockMutate).not.toHaveBeenCalled();
+        expect(mockShowToast).toHaveBeenCalledWith("Error adding entity", "error", 5000);
 
         consoleError.mockRestore();
     });
@@ -282,7 +281,7 @@ describe("EntitiesCtxProvider ctxUpdateEntity", () => {
             expect(mockFetch).toHaveBeenCalled();
         });
 
-        //expect(mockMutate).not.toHaveBeenCalled();
-        //expect(mockShowToast).toHaveBeenCalledWith("Error updating Entity", "error", 5000);
+        expect(mockMutate).not.toHaveBeenCalled();
+        expect(mockShowToast).toHaveBeenCalledWith("Error updating entity", "error", 5000);
     });
 });
