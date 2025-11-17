@@ -39,8 +39,8 @@ const AccountEntryDropdown = ({ vals, scrollRef, onChange, hasLeftBorder = false
     };
 
     useEffect(() => {
-        // Needs fix from issue #217 in github
-        setSearchTerm(vals && vals.account.id ? vals.account.name : "");
+        // Optional chainging to handle case where vals.account is null/undefined
+        setSearchTerm(vals?.account?.id ? vals.account.name : "");
     }, [ctxAccountList, vals]);
 
     useEffect(() => {

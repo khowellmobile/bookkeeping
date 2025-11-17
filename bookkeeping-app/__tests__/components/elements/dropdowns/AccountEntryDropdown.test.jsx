@@ -61,23 +61,23 @@ const renderAccountDropdown = (vals = mockAccount, props = {}) => {
 describe("AccountEntryDropdown Rendering and initial state", () => {
     beforeEach(() => {
         jest.clearAllMocks();
-        renderAccountDropdown();
     });
 
     it("should display the initial account name in the input field", () => {
+        renderAccountDropdown();
         expect(screen.getByRole("textbox")).toHaveValue("Checking");
     });
 
     it("should not display the dropdown content initially", () => {
+        renderAccountDropdown();
         expect(screen.queryByText("All Accounts")).not.toBeInTheDocument();
         expect(screen.queryByText("Savings")).not.toBeInTheDocument();
     });
 
-    // Uncomment when issue #217 in github is resolved
-    /* it("should display an empty input field when no account is initially selected", () => {
+    it("should display an empty input field when no account is initially selected", () => {
         renderAccountDropdown({ account: null });
         expect(screen.getByRole("textbox")).toHaveValue("");
-    }); */
+    });
 });
 
 describe("AccountEntryDropdown Opening and Filtering", () => {
