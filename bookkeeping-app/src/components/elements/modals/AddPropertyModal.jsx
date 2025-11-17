@@ -6,7 +6,7 @@ import PropertiesCtx from "../../contexts/PropertiesCtx";
 import BaseAddModal from "./BaseAddModal";
 import upChevIcon from "../../../assets/chevron-up-icon.svg";
 import downChevIcon from "../../../assets/chevron-down-icon.svg";
-import AddInputCluster from "../misc/AddInputCluster";
+import AddInputCluster from "../utilities/AddInputCluster";
 
 const AddPropertyModal = ({ handleCloseModal }) => {
     const { ctxAddProperty } = useContext(PropertiesCtx);
@@ -71,7 +71,7 @@ const AddPropertyModal = ({ handleCloseModal }) => {
         if (inputFields.address.trim() === "") {
             errTxt += "Property Address cannot be empty.\n";
         }
-
+        
         if (inputFields.rent.trim() !== "" && isNaN(Number(inputFields.rent))) {
             errTxt += "Rent must be a number.\n";
         }

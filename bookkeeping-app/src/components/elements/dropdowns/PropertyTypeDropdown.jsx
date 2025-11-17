@@ -27,13 +27,14 @@ const PropertyTypeDropdown = ({ val, clickTypeHandler, isEditing }) => {
                 onClick={() => {
                     isEditing ? setIsExpanded((prev) => !prev) : "";
                 }}
+                role="expansion-button"
             >
                 {val && <p>{val.charAt(0).toUpperCase() + val.slice(1)}</p>}
                 {isEditing && (
                     <img src={isExpanded ? upChevIcon : downChevIcon} className={classes.icon} alt="chevron icon" />
                 )}
             </div>
-            <div className={`${classes.anchor} ${isExpanded ? "" : classes.noDisplay}`}>
+            <div className={`${classes.anchor} ${isExpanded ? "" : classes.noDisplay}`} role="dropdown-menu">
                 <div className={classes.dropdown}>
                     {propertyTypes.map((type, index) => {
                         return (

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
+import { BASE_URL } from "../constants";
 import classes from "./PasswordResetPage.module.css";
 import PwdPopup from "../components/elements/utilities/PwdPopup";
 
@@ -14,14 +15,8 @@ const PasswordResetPage = () => {
     const [isExpanded, setIsExpanded] = useState(false);
     const [password, setPassword] = useState("");
     const [passwordConfirm, setPasswordConfirm] = useState("");
-    const [reqObj, setReqObj] = useState({
-        chars: false,
-        num: false,
-        specChar: false,
-    });
 
-    const baseUrl = import.meta.env.VITE_BASE_URL;
-    const RESET_ENDPOINT = `${baseUrl}/api/auth/users/reset_password_confirm/`;
+    const RESET_ENDPOINT = `${BASE_URL}/api/auth/users/reset_password_confirm/`;
 
     useEffect(() => {
         if (!uid || !token) {
@@ -31,19 +26,11 @@ const PasswordResetPage = () => {
         }
     }, []);
 
-    useEffect(() => {
-        setReqObj({
-            chars: password.length >= 8,
-            num: /\d/.test(password),
-            specChar: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]/.test(password),
-        });
-    }, [password]);
-
     const confirmPassword = async () => {
         if (
             !(password.length >= 8 && /\d/.test(password) && /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]/.test(password))
         ) {
-            setMessage("Password does not meant requirments");
+            setMessage("Password does not meet requirments");
             return;
         } else if (password !== passwordConfirm) {
             setMessage("Passwords do not match");
@@ -69,7 +56,8 @@ const PasswordResetPage = () => {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
         } catch (e) {
-            console.log("Activation Error: " + e);
+            console.log("Confirmation Error: " + e);
+            setMessage("There has been an error please wait a few moments and try again.");
         }
     };
 
@@ -95,6 +83,7 @@ const PasswordResetPage = () => {
                             onChange={(e) => setPassword(e.target.value)}
                             onFocus={() => setIsExpanded(true)}
                             onBlur={() => setIsExpanded(false)}
+                            data-testid="input-password"
                         />
                         <p className={classes.formLabel}>Password</p>
                     </div>
@@ -103,10 +92,11 @@ const PasswordResetPage = () => {
                             type="password"
                             className={classes.formInput}
                             value={passwordConfirm}
-                            name="password"
+                            name="passwordConfirm"
                             placeholder=""
                             required
                             onChange={(e) => setPasswordConfirm(e.target.value)}
+                            data-testid="input-password-confirm"
                         />
                         <p className={classes.formLabel}>Confirm Password</p>
                     </div>

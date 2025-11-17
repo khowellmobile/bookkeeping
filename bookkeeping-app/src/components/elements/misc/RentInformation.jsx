@@ -3,7 +3,7 @@ import { useState, useContext } from "react";
 import classes from "./RentInformation.module.css";
 
 import RentPaymentsCtx from "../../contexts/RentPaymentsCtx";
-import NoResultsDisplay from "./NoResultsDisplay";
+import NoResultsDisplay from "../utilities/NoResultsDisplay";
 
 const RentInformation = () => {
     const { ctxPaymentList } = useContext(RentPaymentsCtx);

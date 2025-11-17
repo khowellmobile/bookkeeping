@@ -3,6 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 
 import classes from "./AccountActivatePage.module.css";
 
+import { BASE_URL } from "../constants";
+
 const AccountActivatePage = () => {
     const { uid, token } = useParams();
 
@@ -11,8 +13,7 @@ const AccountActivatePage = () => {
     const [message, setMessage] = useState();
     const [isSuccess, setIsSuccess] = useState(false);
 
-    const baseUrl = import.meta.env.VITE_BASE_URL;
-    const ACTIVATION_ENDPOINT = `${baseUrl}/api/auth/users/activation/`;
+    const ACTIVATION_ENDPOINT = `${BASE_URL}/api/auth/users/activation/`;
 
     useEffect(() => {
         if (!uid || !token) {
@@ -41,6 +42,7 @@ const AccountActivatePage = () => {
             }
         } catch (e) {
             console.log("Activation Error: " + e);
+            setMessage("There has been an error please wait a few moments and try again.");
         }
     };
 

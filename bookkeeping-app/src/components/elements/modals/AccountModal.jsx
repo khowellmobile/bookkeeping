@@ -7,7 +7,7 @@ import ConfirmationModal from "./ConfirmationModal";
 
 import upChevIcon from "../../../assets/chevron-up-icon.svg";
 import downChevIcon from "../../../assets/chevron-down-icon.svg";
-import Input from "../misc/Input";
+import Input from "../utilities/Input";
 import Button from "../utilities/Button";
 
 const AccountModal = ({ account, handleCloseModal }) => {

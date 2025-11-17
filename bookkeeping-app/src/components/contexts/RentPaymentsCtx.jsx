@@ -1,7 +1,8 @@
 import { createContext, useEffect, useState, useContext, useRef } from "react";
 import useSWRImmutable from "swr/immutable";
-import { useToast } from "./ToastCtx";
 
+import { BASE_URL } from "../../constants";
+import { useToast } from "./ToastCtx";
 import AuthCtx from "./AuthCtx";
 import PropertiesCtx from "./PropertiesCtx";
 
@@ -53,27 +54,7 @@ export function RentPaymentsCtxProvider(props) {
         sessionStorage.setItem("activeDate", JSON.stringify(ctxActiveDate));
     }, [ctxActiveProperty, ctxActiveDate, ctxAccessToken]);
 
-    const fetcher = async (url) => {
-        const response = await fetch(url, {
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${ctxAccessToken}`,
-            },
-        });
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-    };
-
-    const baseUrl = import.meta.env.VITE_BASE_URL;
-    const apiURL = `${baseUrl}/api/entities/`;
-    const propertyId = ctxActiveProperty?.id;
-    const {
-        data: ctxPaymentList,
-        error,
-        mutate,
-    } = useSWRImmutable(propertyId && ctxAccessToken ? [`${apiURL}?property_id=${propertyId}`] : null, fetcher);
+    const baseUrl = BASE_URL;
 
     const getCtxPaymentsByMonth = async (month, year) => {
         try {
@@ -102,7 +83,7 @@ export function RentPaymentsCtxProvider(props) {
             const data = await response.json();
             setCtxMonthPaymentList(data);
         } catch (e) {
-            console.log("Error: " + e);
+            console.log(e.toString());
         }
     };
 
@@ -135,7 +116,6 @@ export function RentPaymentsCtxProvider(props) {
                 showToast("Error adding payment", "error", 5000);
             } else {
                 const newPayment = await response.json();
-                mutate((prev) => (prev ? [...prev, newPayment] : [newPayment]), false);
                 showToast("Payment added", "success", 3000);
                 return newPayment;
             }
@@ -159,13 +139,6 @@ export function RentPaymentsCtxProvider(props) {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             } else {
-                const returnedPayment = await response.json();
-                mutate((prevPaymentList) => {
-                    if (!prevPaymentList) return [];
-                    return prevPaymentList.map((payment) =>
-                        payment.id === returnedPayment.id ? returnedPayment : payment
-                    );
-                }, false);
                 showToast("Payment updated", "success", 3000);
             }
         } catch (e) {
@@ -175,7 +148,6 @@ export function RentPaymentsCtxProvider(props) {
     };
 
     const context = {
-        ctxPaymentList,
         ctxMonthPaymentList,
         setCtxMonthPaymentList,
         ctxActiveDate,

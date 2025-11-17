@@ -1,7 +1,8 @@
 import { createContext, useState, useEffect, useContext } from "react";
 import useSWRImmutable from "swr/immutable";
-import { useToast } from "./ToastCtx";
 
+import { useToast } from "./ToastCtx";
+import { BASE_URL } from "../../constants";
 import AuthCtx from "./AuthCtx";
 import PropertiesCtx from "./PropertiesCtx";
 
@@ -36,7 +37,7 @@ export function AccountsCtxProvider(props) {
         return response.json();
     };
 
-    const baseUrl = import.meta.env.VITE_BASE_URL;
+    const baseUrl = BASE_URL;
     const apiURL = `${baseUrl}/api/accounts/`;
     const propertyId = ctxActiveProperty?.id;
     const {
@@ -119,7 +120,7 @@ export function AccountsCtxProvider(props) {
 
             const updatedData = await response.json();
             mutate((prevAccounts) => prevAccounts.map((acc) => (acc.id === updatedData.id ? updatedData : acc)), false);
-            showToast("Account added", "success", 3000);
+            showToast("Account Updated", "success", 3000);
         } catch (error) {
             console.error("Error editing account:", error);
             showToast("Error updating Account", "error", 5000);

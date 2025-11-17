@@ -1,7 +1,8 @@
-import { createContext, useEffect, useState, useContext } from "react";
+import { createContext, useState, useContext } from "react";
 import useSWRImmutable from "swr/immutable";
-import { useToast } from "./ToastCtx";
 
+import { BASE_URL } from "../../constants";
+import { useToast } from "./ToastCtx";
 import AuthCtx from "./AuthCtx";
 import AccountsCtx from "./AccountsCtx";
 import EntitiesCtx from "./EntitiesCtx";
@@ -23,7 +24,7 @@ export function TransactionsCtxProvider(props) {
     const { ctxActiveEntity } = useContext(EntitiesCtx);
     const { ctxActiveProperty } = useContext(PropertiesCtx);
 
-    const [ctxFilterBy, setCtxFilterBy] = useState(null);
+    const [ctxFilterBy, setCtxFilterBy] = useState();
 
     const fetcher = async (url) => {
         const response = await fetch(url, {
@@ -38,8 +39,7 @@ export function TransactionsCtxProvider(props) {
         return response.json();
     };
 
-    const baseUrl = import.meta.env.VITE_BASE_URL;
-    const apiURL = `${baseUrl}/api/transactions/`;
+    const apiURL = `${BASE_URL}/api/transactions/`;
 
     const getSWRKey = () => {
         if (!ctxAccessToken || !ctxActiveProperty || !ctxActiveProperty.id) {
@@ -75,7 +75,7 @@ export function TransactionsCtxProvider(props) {
         });
 
         try {
-            const url = new URL(`${baseUrl}/api/transactions/`);
+            const url = new URL(`${BASE_URL}/api/transactions/`);
             if (ctxActiveProperty && ctxActiveProperty.id) {
                 url.searchParams.append("property_id", ctxActiveProperty.id);
             } else {
@@ -92,13 +92,13 @@ export function TransactionsCtxProvider(props) {
             });
 
             if (!response.ok) {
-                console.log(response.error);
+                console.error("Error: ", response.error);
                 showToast("Error adding transactions", "error", 5000);
                 return;
             }
 
             const newData = await response.json();
-            mutate((prev) => [...(prev || []), ...newData]);
+            mutate((prev) => [...(prev || []), ...newData], false);
             showToast("Transactions added", "success", 3000);
         } catch (error) {
             console.error("Error sending transactions:", error);
@@ -120,7 +120,7 @@ export function TransactionsCtxProvider(props) {
         }
 
         try {
-            const response = await fetch(`${baseUrl}/api/transactions/${transaction.id}/`, {
+            const response = await fetch(`${BASE_URL}/api/transactions/${transaction.id}/`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -128,15 +128,14 @@ export function TransactionsCtxProvider(props) {
                 },
                 body: JSON.stringify(transformedTransaction),
             });
-
+            
             if (!response.ok) {
-                console.log("Error:", response.error);
+                console.error("Error: ", response.error);
                 showToast("Error updating transactions", "error", 5000);
                 return;
             }
 
             const updatedData = await response.json();
-            console.log(updatedData);
             mutate((prevTransactions) => {
                 if (!prevTransactions) return [];
                 return prevTransactions.map((transaction) =>

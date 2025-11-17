@@ -4,7 +4,7 @@ import classes from "./InputEntryItems.module.css";
 
 import AccountEntryDropdown from "../dropdowns/AccountEntryDropdown";
 import EntityEntryDropdown from "../dropdowns/EntityEntryDropdown";
-import Input from "../misc/Input";
+import Input from "../utilities/Input";
 
 const JournalEntryItem = ({ vals, index, onFocus, onItemChange, scrollRef }) => {
     const handleAccountChange = (account) => {
@@ -24,7 +24,12 @@ const JournalEntryItem = ({ vals, index, onFocus, onItemChange, scrollRef }) => 
 
     return (
         // tabIndex for making the component able to be tabbed through
-        <div className={`${classes.mainContainer} ${classes.journalGridTemplate}`} onFocus={onFocus} tabIndex={0}>
+        <div
+            className={`${classes.mainContainer} ${classes.journalGridTemplate}`}
+            onFocus={onFocus}
+            tabIndex={0}
+            role="application" // Needed for testing blur events
+        >
             <AccountEntryDropdown vals={vals} scrollRef={scrollRef} onChange={handleAccountChange} />
             <Input
                 type="number"
@@ -40,7 +45,7 @@ const JournalEntryItem = ({ vals, index, onFocus, onItemChange, scrollRef }) => 
                 onChange={handleAmountChange}
                 isOptional={true}
             />
-            <Input type="text" value={vals.memo} onChange={handleMemoChange} isOptional={true} />
+            <Input type="text" name="memo" value={vals.memo} onChange={handleMemoChange} isOptional={true} />
         </div>
     );
 };
@@ -51,7 +56,7 @@ const TransactionEntryItem = ({ vals, index, onFocus, onItemChange, scrollRef })
         entity: vals.entity,
         account: vals.account,
         memo: vals.memo,
-        amount: vals.memo,
+        amount: vals.amount,
         type: vals.type,
         is_reconciled: false,
     });
@@ -107,6 +112,7 @@ const TransactionEntryItem = ({ vals, index, onFocus, onItemChange, scrollRef })
             onFocus={onFocus}
             onBlur={handleBlur}
             tabIndex={0}
+            role="application" // Needed for testing blur events
         >
             <Input type="date" name="date" value={inputFields.date} onChange={valueChange} />
             <EntityEntryDropdown scrollRef={scrollRef} onChange={handleEntityChange} hasLeftBorder={true} />

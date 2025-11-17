@@ -7,7 +7,7 @@ import TransactionItem from "../components/elements/items/TransactionItem";
 import TransactionsCtx from "../components/contexts/TransactionsCtx";
 import AccountsCtx from "../components/contexts/AccountsCtx";
 import AddTransactionsModal from "../components/elements/modals/AddTransactionsModal";
-import NoResultsDisplay from "../components/elements/misc/NoResultsDisplay";
+import NoResultsDisplay from "../components/elements/utilities/NoResultsDisplay";
 import Button from "../components/elements/utilities/Button";
 
 const TransactionsPage = () => {

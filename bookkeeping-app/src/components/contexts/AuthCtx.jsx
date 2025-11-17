@@ -1,4 +1,6 @@
 import { createContext, useState, useEffect } from "react";
+
+import { BASE_URL } from "../../constants";
 import { useToast } from "./ToastCtx";
 
 const AuthCtx = createContext({
@@ -17,7 +19,7 @@ export function AuthCtxProvider(props) {
     const [ctxAccessToken, setCtxAccessToken] = useState(localStorage.getItem("accessToken") || null);
     const [ctxUserData, setCtxUserData] = useState({});
 
-    const baseUrl = import.meta.env.VITE_BASE_URL;
+    const baseUrl = BASE_URL;
 
     useEffect(() => {
         if (ctxAccessToken) {
@@ -47,6 +49,7 @@ export function AuthCtxProvider(props) {
     };
 
     const ctxUpdateUser = async (updatedUser) => {
+        console.log(updatedUser);
         try {
             const response = await fetch(`${baseUrl}/api/profile/`, {
                 method: "PUT",
@@ -58,7 +61,6 @@ export function AuthCtxProvider(props) {
             });
 
             if (!response.ok) {
-                showToast("Error updating profile", "error", 5000);
                 throw new Error(`HTTP error! status: ${response.status}`);
             } else {
                 const returnedProfile = await response.json();

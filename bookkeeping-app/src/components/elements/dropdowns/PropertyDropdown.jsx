@@ -17,14 +17,12 @@ const Dropdown = () => {
         setIsExpanded(false);
     };
 
-    /* console.log(ctxPropertyList) */
-
     return (
         <div className={classes.mainContainer}>
             <div className={classes.display}>
                 <p>{ctxActiveProperty ? ctxActiveProperty?.name : "None Selected"}</p>
             </div>
-            <div className={classes.arrow} onClick={() => setIsExpanded((preVal) => !preVal)}>
+            <div role="expansion-button" className={classes.arrow} onClick={() => setIsExpanded((preVal) => !preVal)}>
                 <img src={isExpanded ? upChevIcon : downChevIcon} className={classes.icon} />
             </div>
             {isExpanded && (

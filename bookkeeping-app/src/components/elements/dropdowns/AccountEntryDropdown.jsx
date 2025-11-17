@@ -39,6 +39,7 @@ const AccountEntryDropdown = ({ vals, scrollRef, onChange, hasLeftBorder = false
     };
 
     useEffect(() => {
+        // Needs fix from issue #217 in github
         setSearchTerm(vals && vals.account.id ? vals.account.name : "");
     }, [ctxAccountList, vals]);
 
@@ -103,26 +104,28 @@ const AccountEntryDropdown = ({ vals, scrollRef, onChange, hasLeftBorder = false
                     ref={inputRef}
                     style={hasLeftBorder ? { borderLeft: "1px dashed var(--border-color)" } : {}}
                 />
-                <div className={`${classes.anchor} ${isExpanded ? "" : classes.noDisplay}`}>
-                    <div className={classes.dropDownContent} style={style}>
-                        <div className={classes.dropdownHeader}>
-                            <p>All Accounts</p>
-                            <Button onClick={() => setIsModalOpen(true)} text={"Add Account"} />
-                        </div>
-                        <div className={classes.separatorH}></div>
-                        <div className={classes.accountListing}>
-                            {filteredAccounts && filteredAccounts.length > 0 ? (
-                                filteredAccounts.map((account, index) => (
-                                    <p key={index} onClick={() => clickAccountHandler(account)}>
-                                        {account.name}
-                                    </p>
-                                ))
-                            ) : (
-                                <p>No matching accounts found.</p>
-                            )}
+                {isExpanded && (
+                    <div className={`${classes.anchor} ${isExpanded ? "" : classes.noDisplay}`} role="dropdown-anchor">
+                        <div className={classes.dropDownContent} style={style}>
+                            <div className={classes.dropdownHeader}>
+                                <p>All Accounts</p>
+                                <Button onClick={() => setIsModalOpen(true)} text={"Add Account"} />
+                            </div>
+                            <div className={classes.separatorH}></div>
+                            <div className={classes.accountListing}>
+                                {filteredAccounts && filteredAccounts.length > 0 ? (
+                                    filteredAccounts.map((account, index) => (
+                                        <p key={index} onClick={() => clickAccountHandler(account)}>
+                                            {account.name}
+                                        </p>
+                                    ))
+                                ) : (
+                                    <p>No matching accounts found.</p>
+                                )}
+                            </div>
                         </div>
                     </div>
-                </div>
+                )}
             </div>
         </>
     );
