@@ -197,9 +197,8 @@ describe("AccountsCtxProvider ctxAddAccount", () => {
             expect(mockFetch).toHaveBeenCalled();
         });
 
-        // Uncomment with completion is issue #224
-        // expect(mockMutate).not.toHaveBeenCalled();
-        // expect(mockShowToast).toHaveBeenCalledWith("Error adding Account", "error", 5000);
+        expect(mockMutate).not.toHaveBeenCalled();
+        expect(mockShowToast).toHaveBeenCalledWith("Error adding Account", "error", 5000);
 
         consoleError.mockRestore();
     });

@@ -93,6 +93,10 @@ export function AccountsCtxProvider(props) {
                 body: JSON.stringify(account),
             });
 
+            if (!response.ok) {
+                throw new Error(`HTTP error. Status: ${response.status}`);
+            }
+
             const newAccount = await response.json();
             mutate((prev) => (prev ? [...prev, newAccount] : [newAccount]), false);
             showToast("Account added", "success", 3000);
