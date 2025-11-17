@@ -73,8 +73,7 @@ export function JournalsCtxProvider(props) {
             });
 
             if (!response.ok) {
-                showToast("Error saving journal", "error", 5000);
-                throw new Error(`HTTP error! status: ${response.status}`);
+                throw new Error(`HTTP error. Status: ${response.status}`);
             }
 
             const returnedJournal = await response.json();
@@ -91,7 +90,7 @@ export function JournalsCtxProvider(props) {
             showToast("Journal saved", "success", 3000);
             return returnedJournal;
         } catch (e) {
-            console.log("Error: " + e);
+            console.error("Error: " + e);
             showToast("Error saving journal", "error", 5000);
         }
     };
@@ -108,11 +107,11 @@ export function JournalsCtxProvider(props) {
             });
 
             if (!response.ok) {
-                console.log("Error:", response.error);
-                return;
+                throw new Error(`HTTP error. Status: ${response.status}`);
             }
-        } catch (error) {
-            console.error("Error marking account inactive:", error);
+        } catch (e) {
+            console.error("Error: " + e);
+            showToast("Error deleting journal", "error", 5000);
         }
     };
 
