@@ -42,7 +42,7 @@ if (typeof global.fetch === "undefined") {
     global.fetch = jest.fn();
 }
 const mockFetch = jest.spyOn(global, "fetch");
-let consoleLogSpy;
+let consoleSpy;
 
 // Mock Parent Context Providers
 const mockAccessToken = "mock-token";
@@ -212,11 +212,11 @@ describe("AccountsCtxProvider ctxUpdateAccount", () => {
             error: undefined,
             mutate: mockMutate,
         }));
-        consoleLogSpy = jest.spyOn(console, "log").mockImplementation(() => {});
+        consoleSpy = jest.spyOn(console, "error").mockImplementation(() => {});
     });
 
     afterEach(() => {
-        consoleLogSpy.mockRestore();
+        consoleSpy.mockRestore();
     });
 
     const TestComponentWithUpdate = () => {
@@ -282,8 +282,8 @@ describe("AccountsCtxProvider ctxUpdateAccount", () => {
             expect(mockFetch).toHaveBeenCalled();
         });
 
-        //expect(mockMutate).not.toHaveBeenCalled();
-        //expect(mockShowToast).toHaveBeenCalledWith("Error updating Account", "error", 5000);
+        expect(mockMutate).not.toHaveBeenCalled();
+        expect(mockShowToast).toHaveBeenCalledWith("Error updating Account", "error", 5000);
     });
 });
 
@@ -298,11 +298,11 @@ describe("AccountsCtxProvider ctxDeleteAccount", () => {
             error: undefined,
             mutate: mockMutate,
         }));
-        consoleLogSpy = jest.spyOn(console, "log").mockImplementation(() => {});
+        consoleSpy = jest.spyOn(console, "error").mockImplementation(() => {});
     });
 
     afterEach(() => {
-        consoleLogSpy.mockRestore();
+        consoleSpy.mockRestore();
     });
 
     const TestComponentWithDelete = () => {
