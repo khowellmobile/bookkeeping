@@ -18,11 +18,23 @@ const AccountModal = ({ account, handleCloseModal }) => {
     const [isExpanded, setIsExpanded] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const [inputFields, setInputFields] = useState({
-        name: account.name,
-        type: account.type.charAt(0).toUpperCase() + account.type.slice(1),
-        initial_balance: account.initial_balance,
-        description: account.description,
+    const [inputFields, setInputFields] = useState(() => {
+        // Check to handle possible errors
+        if (account && Object.keys(account).length > 0) {
+            return {
+                name: account.name,
+                type: account.type.charAt(0).toUpperCase() + account.type.slice(1),
+                initial_balance: account.initial_balance,
+                description: account.description,
+            };
+        } else {
+            return {
+                name: "",
+                type: "",
+                initial_balance: "",
+                description: "",
+            };
+        }
     });
 
     const accountTypes = ["Asset", "Bank", "Equity", "Liability"];
@@ -74,7 +86,12 @@ const AccountModal = ({ account, handleCloseModal }) => {
     const validateInputs = () => {
         let errTxt = "";
 
-        if (inputFields.name.trim() === "") {
+        if (!account.id) {
+            setErrorText("Error: Account ID is missing. Edits are not saved.");
+            return false;
+        }
+
+        if (!inputFields.name || inputFields.name.trim() === "") {
             errTxt += "Account Name cannot be empty.\n";
         }
 
@@ -83,7 +100,11 @@ const AccountModal = ({ account, handleCloseModal }) => {
             errTxt += "Account type set to unsupported type.\n";
         }
 
-        if (inputFields.initial_balance.trim() === "" || isNaN(Number(inputFields.initial_balance.trim()))) {
+        if (
+            !inputFields.initial_balance ||
+            inputFields.initial_balance.trim() === "" ||
+            isNaN(Number(inputFields.initial_balance.trim()))
+        ) {
             errTxt += "Initial Balance must be a number and cannot be empty.\n";
         }
 
@@ -164,14 +185,8 @@ const AccountModal = ({ account, handleCloseModal }) => {
                     <div className={classes.actionItems}>
                         <p>{errorText}</p>
                         <span>
-                            <Button
-                                onClick={updateAccount}
-                                text={"Save & Close"}
-                            />
-                            <Button
-                                onClick={handleCancelClose}
-                                text={"Close"}
-                            />
+                            <Button onClick={updateAccount} text={"Save & Close"} />
+                            <Button onClick={handleCancelClose} text={"Close"} />
                         </span>
                     </div>
                 </div>
