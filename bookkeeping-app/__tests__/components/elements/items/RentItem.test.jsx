@@ -226,8 +226,7 @@ describe("RentItem functionality: Temporary Item (temp-ID)", () => {
         expect(mockSavePayment).not.toHaveBeenCalled();
     });
 
-    // This test case can be uncommented once the entity validation bug is fixed in RentItem.jsx
-    /* it("should fail validation if entity field is missing on save", () => {
+    it("should fail validation if entity field is empty obj on save", () => {
         const testTempItem = {
             id: "temp-123",
             status: "due",
@@ -241,7 +240,23 @@ describe("RentItem functionality: Temporary Item (temp-ID)", () => {
         fireEvent.click(saveButton);
 
         expect(mockSavePayment).not.toHaveBeenCalled();
-    }); */
+    });
+
+    it("should fail validation if entity field is null on save", () => {
+        const testTempItem = {
+            id: "temp-123",
+            status: "due",
+            amount: "100.00",
+            entity: null,
+            date: "2025-10-27",
+        };
+        renderRentItem(testTempItem);
+
+        const saveButton = screen.getByText("Save");
+        fireEvent.click(saveButton);
+
+        expect(mockSavePayment).not.toHaveBeenCalled();
+    });
 
     it("should fail validation if status field is missing on save", () => {
         const testTempItem = {
