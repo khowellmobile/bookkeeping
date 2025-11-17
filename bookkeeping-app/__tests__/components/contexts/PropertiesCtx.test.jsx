@@ -209,9 +209,8 @@ describe("PropertiesCtxProvider ctxAddProperty", () => {
             expect(mockFetch).toHaveBeenCalled();
         });
 
-        // Uncomment with completion is issue #224
-        // expect(mockMutate).not.toHaveBeenCalled();
-        // expect(mockShowToast).toHaveBeenCalledWith("Error adding Property", "error", 5000);
+        expect(mockMutate).not.toHaveBeenCalled();
+        expect(mockShowToast).toHaveBeenCalledWith("Error adding Property", "error", 5000);
 
         consoleError.mockRestore();
     });
@@ -298,7 +297,7 @@ describe("PropertiesCtxProvider ctxUpdateProperty", () => {
             expect(mockFetch).toHaveBeenCalled();
         });
 
-        //expect(mockMutate).not.toHaveBeenCalled();
-        //expect(mockShowToast).toHaveBeenCalledWith("Error updating Property", "error", 5000);
+        expect(mockMutate).not.toHaveBeenCalled();
+        expect(mockShowToast).toHaveBeenCalledWith("Error updating Property", "error", 5000);
     });
 });

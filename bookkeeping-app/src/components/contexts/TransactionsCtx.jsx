@@ -92,9 +92,7 @@ export function TransactionsCtxProvider(props) {
             });
 
             if (!response.ok) {
-                console.error("Error: ", response.error);
-                showToast("Error adding transactions", "error", 5000);
-                return;
+                throw new Error(`HTTP error. Status: ${response.status}`);
             }
 
             const newData = await response.json();
@@ -128,11 +126,9 @@ export function TransactionsCtxProvider(props) {
                 },
                 body: JSON.stringify(transformedTransaction),
             });
-            
+
             if (!response.ok) {
-                console.error("Error: ", response.error);
-                showToast("Error updating transactions", "error", 5000);
-                return;
+                throw new Error(`HTTP error. Status: ${response.status}`);
             }
 
             const updatedData = await response.json();
@@ -145,7 +141,7 @@ export function TransactionsCtxProvider(props) {
             showToast("Transaction updated", "success", 3000);
         } catch (error) {
             console.error("Error editing transaction:", error);
-            showToast("Error updating transactions", "error", 5000);
+            showToast("Error updating transaction", "error", 5000);
         }
     };
 

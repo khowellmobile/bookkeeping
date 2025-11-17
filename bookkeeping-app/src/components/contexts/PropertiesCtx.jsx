@@ -45,13 +45,8 @@ export function PropertiesCtxProvider(props) {
         return response.json();
     };
 
-    const baseUrl = BASE_URL;
-    const apiURL = `${baseUrl}/api/properties/`;
-    const {
-        data: ctxPropertyList,
-        error,
-        mutate,
-    } = useSWRImmutable( ctxAccessToken ? [`${apiURL}`] : null, fetcher);
+    const apiURL = `${BASE_URL}/api/properties/`;
+    const { data: ctxPropertyList, error, mutate } = useSWRImmutable(ctxAccessToken ? [`${apiURL}`] : null, fetcher);
 
     useEffect(() => {
         if (ctxPropertyList) {
@@ -73,7 +68,7 @@ export function PropertiesCtxProvider(props) {
 
     const ctxAddProperty = async (propertyToAdd) => {
         try {
-            const response = await fetch(`${baseUrl}/api/properties/`, {
+            const response = await fetch(`${BASE_URL}/api/properties/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -83,9 +78,7 @@ export function PropertiesCtxProvider(props) {
             });
 
             if (!response.ok) {
-                const errorData = await response.json();
-                console.error("Backend Error:", errorData);
-                showToast("Error adding Property", "error", 5000);
+                throw new Error(`HTTP error. Status: ${response.status}`);
             } else {
                 const newProperty = await response.json();
                 mutate((prev) => (prev ? [...prev, newProperty] : [newProperty]), false);
@@ -99,7 +92,7 @@ export function PropertiesCtxProvider(props) {
 
     const ctxUpdateProperty = async (updatedProperty) => {
         try {
-            const response = await fetch(`${baseUrl}/api/properties/${updatedProperty.id}/`, {
+            const response = await fetch(`${BASE_URL}/api/properties/${updatedProperty.id}/`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -109,7 +102,7 @@ export function PropertiesCtxProvider(props) {
             });
 
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                throw new Error(`HTTP error. Status: ${response.status}`);
             } else {
                 const returnedProperty = await response.json();
                 mutate(
@@ -123,7 +116,7 @@ export function PropertiesCtxProvider(props) {
             }
         } catch (e) {
             console.log("Error: " + e);
-            showToast("Error adding Property", "error", 5000);
+            showToast("Error updating Property", "error", 5000);
         }
     };
 

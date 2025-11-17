@@ -125,6 +125,10 @@ describe("JournalsCtxProvider initial render/consume", () => {
 describe("JournalsCtxProvider ctxUpdateJournal (POST - Add)", () => {
     beforeEach(() => {
         resetSWRMock();
+        consoleSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+    });
+    afterEach(() => {
+        consoleSpy.mockRestore();
     });
 
     test("should successfully add a journal, update SWR cache, and show success toast", async () => {
@@ -181,7 +185,6 @@ describe("JournalsCtxProvider ctxUpdateJournal (POST - Add)", () => {
             ok: false,
             json: async () => ({ error: "Server Error" }),
         });
-        consoleSpy = jest.spyOn(console, "log").mockImplementation(() => {});
 
         wrapAndRenderComponent(<GeneralTestComponent />);
 
@@ -194,8 +197,6 @@ describe("JournalsCtxProvider ctxUpdateJournal (POST - Add)", () => {
 
         expect(mockMutate).not.toHaveBeenCalled();
         expect(mockShowToast).toHaveBeenCalledWith("Error saving journal", "error", 5000);
-
-        consoleSpy.mockRestore();
     });
 });
 
@@ -205,7 +206,7 @@ describe("JournalsCtxProvider ctxUpdateJournal (PUT - Update)", () => {
             { id: 101, journal_date: "2025-01-01", description: "Old Desc" },
             { id: 103, journal_date: "2025-01-03", description: "Other Journal" },
         ]);
-        consoleSpy = jest.spyOn(console, "log").mockImplementation(() => {});
+        consoleSpy = jest.spyOn(console, "error").mockImplementation(() => {});
     });
     afterEach(() => {
         consoleSpy.mockRestore();
@@ -332,7 +333,6 @@ describe("JournalsCtxProvider ctxDeleteJournal", () => {
             error: "Not Found",
             json: async () => ({}),
         });
-        const consoleLogSpy = jest.spyOn(console, "log").mockImplementation(() => {});
 
         wrapAndRenderComponent(<GeneralTestComponent />);
 
@@ -343,6 +343,6 @@ describe("JournalsCtxProvider ctxDeleteJournal", () => {
             expect(mockFetch).toHaveBeenCalled();
         });
 
-        consoleLogSpy.mockRestore();
+        expect(mockShowToast).toHaveBeenCalledWith("Error deleting journal", "error", 5000);
     });
 });

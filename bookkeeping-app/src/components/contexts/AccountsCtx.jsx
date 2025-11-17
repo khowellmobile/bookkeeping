@@ -72,7 +72,7 @@ export function AccountsCtxProvider(props) {
             const data = await response.json();
             return data;
         } catch (e) {
-            console.log("Error: " + e);
+            console.error("Error: " + e);
         }
     };
 
@@ -92,6 +92,10 @@ export function AccountsCtxProvider(props) {
                 },
                 body: JSON.stringify(account),
             });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error. Status: ${response.status}`);
+            }
 
             const newAccount = await response.json();
             mutate((prev) => (prev ? [...prev, newAccount] : [newAccount]), false);
@@ -114,8 +118,7 @@ export function AccountsCtxProvider(props) {
             });
 
             if (!response.ok) {
-                console.log("Error:", response.error);
-                return;
+                throw new Error(`HTTP error. Status: ${response.status}`);
             }
 
             const updatedData = await response.json();
@@ -139,7 +142,7 @@ export function AccountsCtxProvider(props) {
             });
 
             if (!response.ok) {
-                console.log("Error:", response.error);
+                console.error("Error:", response.error);
                 return;
             }
 
