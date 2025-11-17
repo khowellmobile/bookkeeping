@@ -384,8 +384,8 @@ describe("TransactionsCtxProvider ctxAddTransaction", () => {
             expect(mockFetch).toHaveBeenCalled();
         });
 
-        // expect(mockMutate).not.toHaveBeenCalled();
-        // expect(mockShowToast).toHaveBeenCalledWith("Error adding Entity", "error", 5000);
+        expect(mockMutate).not.toHaveBeenCalled();
+        expect(mockShowToast).toHaveBeenCalledWith("Error adding transactions", "error", 5000);
 
         consoleError.mockRestore();
     });
@@ -479,8 +479,8 @@ describe("TransactionsCtxProvider ctxUpdateTransaction", () => {
             expect(mockFetch).toHaveBeenCalled();
         });
 
-        // expect(mockMutate).not.toHaveBeenCalled();
-        // expect(mockShowToast).toHaveBeenCalledWith("Error adding Entity", "error", 5000);
+        expect(mockMutate).not.toHaveBeenCalled();
+        expect(mockShowToast).toHaveBeenCalledWith("Error updating transaction", "error", 5000);
 
         consoleError.mockRestore();
     });
