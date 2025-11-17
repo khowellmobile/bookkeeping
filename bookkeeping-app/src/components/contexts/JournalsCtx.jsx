@@ -109,6 +109,8 @@ export function JournalsCtxProvider(props) {
             if (!response.ok) {
                 throw new Error(`HTTP error. Status: ${response.status}`);
             }
+
+            mutate((prev) => prev.filter((journal) => journal.id !== journalId), true);
         } catch (e) {
             console.error("Error: " + e);
             showToast("Error deleting journal", "error", 5000);
