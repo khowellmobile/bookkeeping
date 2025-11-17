@@ -111,6 +111,7 @@ export function JournalsCtxProvider(props) {
             }
 
             mutate((prev) => prev.filter((journal) => journal.id !== journalId), true);
+            showToast("Journal deleted", "success", 3000);
         } catch (e) {
             console.error("Error: " + e);
             showToast("Error deleting journal", "error", 5000);
