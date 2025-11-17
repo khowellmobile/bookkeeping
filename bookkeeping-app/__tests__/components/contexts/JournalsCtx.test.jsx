@@ -322,9 +322,8 @@ describe("JournalsCtxProvider ctxDeleteJournal", () => {
             );
         });
 
-        // Current implementation doesnt call show toast ot call mutate for delete
-        expect(mockMutate).not.toHaveBeenCalled();
-        expect(mockShowToast).not.toHaveBeenCalled();
+        expect(mockMutate).toHaveBeenCalled();
+        expect(mockShowToast).toHaveBeenCalledWith("Journal deleted", "success", 3000);
     });
 
     test("should log error if API call fails", async () => {
