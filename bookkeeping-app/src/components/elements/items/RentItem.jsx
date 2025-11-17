@@ -160,7 +160,7 @@ const RentItem = ({ item, dayIndex, updateFields, removePayment, handleSaveRentP
             errTxt += "Status type set to unsupported type.\n";
         }
 
-        if (!inputFields.entity) {
+        if (!inputFields.entity || Object.keys(inputFields.entity).length === 0) {
             errTxt += "Entity must be selected\n";
         }
 
