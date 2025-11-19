@@ -243,7 +243,7 @@ describe("AccountModal Validation (validateInputs)", () => {
     });
 });
 
-describe.only("AccountModal empty value handling", () => {
+describe("AccountModal empty value handling", () => {
     it("should handle render with empty account obj without error", () => {
         const emptyProps = {
             account: {},

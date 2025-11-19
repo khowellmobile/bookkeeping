@@ -85,8 +85,21 @@ export function RentPaymentsCtxProvider(props) {
                 throw new Error(`HTTP error. Status: ${response.status}`);
             }
 
-            const newPayment = await response.json();
-            mutate((prev) => (prev ? [...prev, newPayment] : [newPayment]), false);
+            const newPymt = await response.json();
+
+            mutate((prev) => {
+                let newPymtList = [...prev];
+
+                const targetIndex = new Date(newPymt.date).getDate();
+
+                if (!newPymtList[targetIndex]) {
+                    newPymtList[targetIndex] = [];
+                }
+
+                newPymtList[targetIndex] = [...newPymtList[targetIndex], newPymt];
+
+                return newPymtList;
+            }, false);
             showToast("Payment added", "success", 3000);
         } catch (error) {
             console.error("Error:", error);
