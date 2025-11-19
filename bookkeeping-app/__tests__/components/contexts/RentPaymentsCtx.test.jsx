@@ -104,9 +104,7 @@ const GeneralTestComponent = () => {
 
     return (
         <div>
-            <span data-testid="month-payment-count">
-                {ctxMonthPaymentList ? ctxMonthPaymentList.length : 0}
-            </span>
+            <span data-testid="month-payment-count">{ctxMonthPaymentList ? ctxMonthPaymentList.length : 0}</span>
             <button onClick={() => setCtxActiveDate(new Date("2025-02-10"))}>Set Active Date</button>
             <button onClick={() => ctxAddPayment(newPaymentData)}>Add Payment</button>
             <button onClick={() => ctxUpdatePayment(updatedPaymentData)}>Update Payment</button>
