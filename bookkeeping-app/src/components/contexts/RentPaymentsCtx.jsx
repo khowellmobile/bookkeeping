@@ -58,10 +58,6 @@ export function RentPaymentsCtxProvider(props) {
 
     const { data: ctxMonthPaymentList, error, mutate } = useSWRImmutable(swrKey, fetcher);
 
-    useEffect(() => {
-        console.log(ctxMonthPaymentList);
-    }, [ctxMonthPaymentList]);
-
     const ctxAddPayment = async (paymentToAdd) => {
         try {
             const url = new URL(`${BASE_URL}/api/rentPayments/`);
@@ -86,13 +82,12 @@ export function RentPaymentsCtxProvider(props) {
             });
 
             if (!response.ok) {
-                const errorData = await response.json();
-                console.error("Backend Error:", errorData);
-                showToast("Error adding payment", "error", 5000);
-            } else {
-                mutate();
-                showToast("Payment added", "success", 3000);
+                throw new Error(`HTTP error. Status: ${response.status}`);
             }
+
+            const newPayment = await response.json();
+            mutate((prev) => (prev ? [...prev, newPayment] : [newPayment]), false);
+            showToast("Payment added", "success", 3000);
         } catch (error) {
             console.error("Error:", error);
             showToast("Error adding payment", "error", 5000);
@@ -111,11 +106,12 @@ export function RentPaymentsCtxProvider(props) {
             });
 
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            } else {
-                showToast("Payment updated", "success", 3000);
-                mutate();
+                throw new Error(`HTTP error. Status: ${response.status}`);
             }
+
+            const updatedData = await response.json();
+            mutate((prev) => prev.map((pymt) => (pymt.id === updatedData.id ? updatedData : pymt)), false);
+            showToast("Payment updated", "success", 3000);
         } catch (e) {
             console.log("Error: " + e);
             showToast("Error updating payment", "error", 5000);
