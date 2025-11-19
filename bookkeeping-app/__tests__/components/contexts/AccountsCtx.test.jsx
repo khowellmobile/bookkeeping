@@ -361,6 +361,6 @@ describe("AccountsCtxProvider ctxDeleteAccount", () => {
             expect(mockFetch).toHaveBeenCalled();
         });
 
-        //expect(mockMutate).not.toHaveBeenCalled();
+        expect(mockMutate).not.toHaveBeenCalled();
     });
 });
