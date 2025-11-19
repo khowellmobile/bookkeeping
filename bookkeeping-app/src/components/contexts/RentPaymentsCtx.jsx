@@ -7,7 +7,6 @@ import AuthCtx from "./AuthCtx";
 import PropertiesCtx from "./PropertiesCtx";
 
 const RentPaymentsCtx = createContext({
-    ctxPaymentList: null,
     ctxMonthPaymentList: null,
     setCtxMonthPaymentList: () => {},
     ctxActiveDate: null,

@@ -10,14 +10,10 @@ import plusIcon from "../assets/plus-icon.svg";
 import RentItem from "../components/elements/items/RentItem";
 
 const RentsPage = () => {
-    const {
-        ctxMonthPaymentList,
-        setCtxMonthPaymentList,
-        ctxAddPayment,
-        ctxActiveDate,
-        setCtxActiveDate,
-    } = useContext(RentPaymentsCtx);
+    const { ctxMonthPaymentList, setCtxMonthPaymentList, ctxAddPayment, ctxActiveDate, setCtxActiveDate } =
+        useContext(RentPaymentsCtx);
 
+    const [tempItem, setTempItem] = useState(null);
     const [tempDate, setTempDate] = useState(new Date());
     const [isExpanded, setIsExpanded] = useState(false);
     const [daysOverflow, setDaysOverflow] = useState(false);
@@ -160,19 +156,7 @@ const RentsPage = () => {
             entity: "",
             date: `${currentYear}-${currentMonth + 1}-${dayId + 1}`,
         };
-        setCtxMonthPaymentList((prevPymtList) => {
-            const updatedPymtList = [...prevPymtList];
-
-            const targetIndex = dayId;
-
-            if (!updatedPymtList[targetIndex]) {
-                updatedPymtList[targetIndex] = [];
-            }
-
-            updatedPymtList[targetIndex] = [...updatedPymtList[targetIndex], newRentItem];
-
-            return updatedPymtList;
-        });
+        setTempItem(newRentItem);
     };
 
     const removePayment = (dayIndex, paymentId) => {
@@ -296,6 +280,18 @@ const RentsPage = () => {
                                             />
                                         );
                                     })}
+                                {tempItem && tempItem.id === `temp-${day.id}` && (
+                                    <RentItem
+                                        item={tempItem}
+                                        dayIndex={day.id}
+                                        updateFields={updateFields}
+                                        removePayment={() => setTempItem(null)}
+                                        handleSaveRentPayment={handleSaveRentPayment}
+                                        key={tempItem.id}
+                                        pushLeft={dayIndex % 7 == 6}
+                                        pushUp={dayIndex >= calendar.length - 7}
+                                    />
+                                )}
                             </div>
                         ))}
                     </div>
