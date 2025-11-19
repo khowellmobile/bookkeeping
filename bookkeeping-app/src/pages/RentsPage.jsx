@@ -10,8 +10,7 @@ import plusIcon from "../assets/plus-icon.svg";
 import RentItem from "../components/elements/items/RentItem";
 
 const RentsPage = () => {
-    const { ctxMonthPaymentList, setCtxMonthPaymentList, ctxAddPayment, ctxActiveDate, setCtxActiveDate } =
-        useContext(RentPaymentsCtx);
+    const { ctxMonthPaymentList, ctxAddPayment, ctxActiveDate, setCtxActiveDate } = useContext(RentPaymentsCtx);
 
     const [tempItem, setTempItem] = useState(null);
     const [tempDate, setTempDate] = useState(new Date());
@@ -46,40 +45,7 @@ const RentsPage = () => {
     };
 
     // Calendar is formatted paymentList
-    const [calendar, setCalendar] = useState(() => {
-        const initialDays = [];
-        const numDaysInMonth = getDaysInMonth(currentYear, currentMonth);
-
-        const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
-
-        if (firstDayOfMonth + numDaysInMonth > 35) {
-            setDaysOverflow(true);
-        } else {
-            setDaysOverflow(false);
-        }
-
-        // Days before start of month
-        for (let i = 0; i < firstDayOfMonth; i++) {
-            initialDays.push({ id: `empty-${i}`, isEmpty: true });
-        }
-
-        for (let i = 0; i < numDaysInMonth; i++) {
-            initialDays.push({
-                id: i,
-                hasEvent: ctxMonthPaymentList[i]?.length > 0,
-                items: ctxMonthPaymentList[i] || [],
-                dayOfMonth: i,
-            });
-        }
-
-        // Days after end of month
-        const totalDays = daysOverflow ? 42 : 35;
-        while (initialDays.length < totalDays) {
-            initialDays.push({ id: `empty-${initialDays.length}`, isEmpty: true });
-        }
-
-        return initialDays;
-    });
+    const [calendar, setCalendar] = useState([]);
 
     // Update calendar to reflect change in month, year, and payments
     useEffect(() => {
@@ -98,6 +64,9 @@ const RentsPage = () => {
         }
 
         for (let i = 0; i < numDaysInMonth; i++) {
+            if (!ctxMonthPaymentList) {
+                continue;
+            }
             newDays.push({
                 id: i,
                 hasEvent: ctxMonthPaymentList[i]?.length > 0,
@@ -120,25 +89,6 @@ const RentsPage = () => {
         }
     }, [isExpanded]);
 
-    const updateFields = (dayIndex, paymentId, newValues) => {
-        setCtxMonthPaymentList((prev) => {
-            const newPymtList = [...prev];
-
-            const dayToUpdate = [...newPymtList[dayIndex]];
-
-            const updatedDayPayments = dayToUpdate.map((payment) => {
-                if (payment.id === paymentId) {
-                    return { ...payment, ...newValues };
-                }
-                return payment;
-            });
-
-            newPymtList[dayIndex] = updatedDayPayments;
-
-            return newPymtList;
-        });
-    };
-
     const handleMonthClick = (monthIndex) => {
         setTempDate((prev) => new Date(prev.getFullYear(), monthIndex));
         setIsExpanded(false);
@@ -159,31 +109,8 @@ const RentsPage = () => {
         setTempItem(newRentItem);
     };
 
-    const removePayment = (dayIndex, paymentId) => {
-        setCtxMonthPaymentList((prev) => {
-            const oldPymtItems = [...prev];
-            const dayItems = prev[dayIndex];
-
-            const newDayItems = dayItems.filter((item) => item.id !== paymentId);
-
-            oldPymtItems[dayIndex] = newDayItems;
-
-            return oldPymtItems;
-        });
-    };
-
     const handleSaveRentPayment = async (dayIndex, payment) => {
-        const newPayment = await ctxAddPayment(payment);
-        setCtxMonthPaymentList((prev) => {
-            const pymtItemsCopy = [...prev];
-            const dayItems = pymtItemsCopy[dayIndex];
-
-            const newDayItems = [...dayItems, newPayment];
-
-            pymtItemsCopy[dayIndex] = newDayItems;
-
-            return pymtItemsCopy;
-        });
+        ctxAddPayment(payment);
     };
 
     return (
@@ -271,8 +198,6 @@ const RentsPage = () => {
                                             <RentItem
                                                 item={item}
                                                 dayIndex={day.id}
-                                                updateFields={updateFields}
-                                                removePayment={removePayment}
                                                 handleSaveRentPayment={handleSaveRentPayment}
                                                 key={item.id}
                                                 pushLeft={dayIndex % 7 == 6}
@@ -284,8 +209,7 @@ const RentsPage = () => {
                                     <RentItem
                                         item={tempItem}
                                         dayIndex={day.id}
-                                        updateFields={updateFields}
-                                        removePayment={() => setTempItem(null)}
+                                        removeTemp={() => setTempItem(null)}
                                         handleSaveRentPayment={handleSaveRentPayment}
                                         key={tempItem.id}
                                         pushLeft={dayIndex % 7 == 6}

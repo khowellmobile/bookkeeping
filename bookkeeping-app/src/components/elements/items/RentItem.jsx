@@ -8,7 +8,7 @@ import EntityDropdown from "../dropdowns/EntityDropdown";
 import ConfirmationModal from "../modals/ConfirmationModal";
 import Input from "../utilities/Input";
 
-const RentItem = ({ item, dayIndex, updateFields, removePayment, handleSaveRentPayment, pushLeft, pushUp }) => {
+const RentItem = ({ item, dayIndex, handleSaveRentPayment, pushLeft, pushUp, removeTemp }) => {
     const { ctxUpdatePayment } = useContext(RentPaymentsCtx);
     const { showToast } = useToast();
 
@@ -61,9 +61,8 @@ const RentItem = ({ item, dayIndex, updateFields, removePayment, handleSaveRentP
             inputFields.status !== item.status;
 
         if (String(item.id).startsWith("temp")) {
-            removePayment(dayIndex, item.id);
+            removeTemp();
         } else if (isChanged && validateInputs()) {
-            updateFields(dayIndex, item.id, inputFields);
             ctxUpdatePayment({ ...item, ...inputFields });
         } else if (isChanged && !validateInputs()) {
             showToast(errorText, "error", 5000); // ERROR TEXT NOT SETTING PROPERLY HERE
@@ -140,8 +139,11 @@ const RentItem = ({ item, dayIndex, updateFields, removePayment, handleSaveRentP
     }, [isClicked, handleClose]);
 
     const onConfirmModalAction = () => {
-        removePayment(dayIndex, item.id);
-        ctxUpdatePayment({ id: item.id, is_deleted: true });
+        if (String(item.id).startsWith("temp")) {
+            removeTemp();
+        } else {
+            ctxUpdatePayment({ id: item.id, is_deleted: true });
+        }
         setIsConfirmModalOpen(false);
     };
 
