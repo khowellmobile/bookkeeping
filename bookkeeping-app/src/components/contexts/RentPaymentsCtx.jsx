@@ -90,7 +90,7 @@ export function RentPaymentsCtxProvider(props) {
             mutate((prev) => {
                 let newPymtList = [...prev];
 
-                const targetIndex = new Date(newPymt.date).getDate();
+                const targetIndex = new Date(newPymt.date).getUTCDate();
 
                 if (!newPymtList[targetIndex]) {
                     newPymtList[targetIndex] = [];
