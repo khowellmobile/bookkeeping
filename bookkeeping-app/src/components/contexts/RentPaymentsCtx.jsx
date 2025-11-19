@@ -53,11 +53,36 @@ export function RentPaymentsCtxProvider(props) {
         sessionStorage.setItem("activeDate", JSON.stringify(ctxActiveDate));
     }, [ctxActiveProperty, ctxActiveDate, ctxAccessToken]);
 
-    const baseUrl = BASE_URL;
+    const fetcher = async (url) => {
+        const response = await fetch(url, {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${ctxAccessToken}`,
+            },
+        });
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    };
+
+    const currentMonth = ctxActiveDate.getMonth() + 1; // Month is 1-indexed for the API
+    const currentYear = ctxActiveDate.getFullYear();
+    const basePath = `${BASE_URL}/api/rentPayments/`;
+
+    // Dynamic SWR Key
+    const swrKey =
+        ctxActiveProperty && ctxActiveProperty.id && ctxAccessToken
+            ? `${basePath}?property_id=${ctxActiveProperty.id}&year=${currentYear}&month=${currentMonth}&format_by_day=true`
+            : null;
+
+    const { data: ctxMonthPaymentListTemp, error, mutate } = useSWRImmutable(swrKey, fetcher);
+
+    console.log(ctxMonthPaymentListTemp);
 
     const getCtxPaymentsByMonth = async (month, year) => {
         try {
-            const url = new URL(`${baseUrl}/api/rentPayments/`);
+            const url = new URL(`${BASE_URL}/api/rentPayments/`);
             if (ctxActiveProperty && ctxActiveProperty.id) {
                 url.searchParams.append("property_id", ctxActiveProperty.id);
             } else {
@@ -88,7 +113,7 @@ export function RentPaymentsCtxProvider(props) {
 
     const ctxAddPayment = async (paymentToAdd) => {
         try {
-            const url = new URL(`${baseUrl}/api/rentPayments/`);
+            const url = new URL(`${BASE_URL}/api/rentPayments/`);
             if (ctxActiveProperty && ctxActiveProperty.id) {
                 url.searchParams.append("property_id", ctxActiveProperty.id);
             }
@@ -126,7 +151,7 @@ export function RentPaymentsCtxProvider(props) {
 
     const ctxUpdatePayment = async (updatedPayment) => {
         try {
-            const response = await fetch(`${baseUrl}/api/rentPayments/${updatedPayment.id}/`, {
+            const response = await fetch(`${BASE_URL}/api/rentPayments/${updatedPayment.id}/`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
