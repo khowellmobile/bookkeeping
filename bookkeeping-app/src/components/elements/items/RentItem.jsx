@@ -74,6 +74,7 @@ const RentItem = ({ item, dayIndex, handleSaveRentPayment, pushLeft, pushUp, rem
             return;
         }
 
+        setErrorText("");
         setIsClicked(false);
         setTimeout(() => {
             setIsAbsolute(false);
