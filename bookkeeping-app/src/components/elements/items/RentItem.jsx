@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useContext, useCallback } from "react";
+import { useEffect, useState, useRef, useContext, useCallback, useMemo } from "react";
 
 import classes from "./RentItem.module.css";
 
@@ -31,6 +31,14 @@ const RentItem = ({ item, dayIndex, handleSaveRentPayment, pushLeft, pushUp, rem
         left: pushLeft && isClicked ? "-11.6rem" : "0",
     };
 
+    const isChanged = useMemo(() => {
+        return (
+            inputFields.amount !== item.amount ||
+            inputFields.entity !== item.entity ||
+            inputFields.status !== item.status
+        );
+    }, [inputFields, item]);
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
 
@@ -55,11 +63,6 @@ const RentItem = ({ item, dayIndex, handleSaveRentPayment, pushLeft, pushUp, rem
     };
 
     const handleClose = useCallback(() => {
-        const isChanged =
-            inputFields.amount !== item.amount ||
-            inputFields.entity !== item.entity ||
-            inputFields.status !== item.status;
-
         if (String(item.id).startsWith("temp")) {
             removeTemp();
         } else if (isChanged && validateInputs()) {
@@ -272,7 +275,7 @@ const RentItem = ({ item, dayIndex, handleSaveRentPayment, pushLeft, pushUp, rem
                                         className={`${(isClicked && classes[inputFields.status]) || classes.stat0}`}
                                         onClick={handleClose}
                                     >
-                                        {String(item.id).startsWith("temp") ? "Cancel" : "Close"}
+                                        {String(item.id).startsWith("temp") ? "Cancel" : isChanged ? "Save" : "Close"}
                                     </button>
 
                                     {String(item.id).startsWith("temp") && (
