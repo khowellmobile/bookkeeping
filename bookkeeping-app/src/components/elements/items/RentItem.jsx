@@ -71,7 +71,7 @@ const RentItem = ({ item, dayIndex, handleSaveRentPayment, pushLeft, pushUp, rem
                 amount: item.amount,
                 entity: item.entity,
             });
-            setErrorText("");
+            return;
         }
 
         setIsClicked(false);
@@ -167,7 +167,7 @@ const RentItem = ({ item, dayIndex, handleSaveRentPayment, pushLeft, pushUp, rem
         }
 
         if (errTxt !== "") {
-            setErrorText("Error: Invalid fields.");
+            setErrorText("Error: Invalid fields. Changes reset.");
         }
         return errTxt === "";
     }, [inputFields]);
