@@ -68,7 +68,7 @@ const RentItem = ({ item, dayIndex, handleSaveRentPayment, pushLeft, pushUp, rem
         } else if (isChanged && validateInputs()) {
             ctxUpdatePayment({ ...item, ...inputFields });
         } else if (isChanged && !validateInputs()) {
-            showToast(errorText, "error", 5000); // ERROR TEXT NOT SETTING PROPERLY HERE
+            showToast("Invalid fields. Changes Reset.", "error", 5000);
             setInputFields({
                 status: item.status,
                 amount: item.amount,
@@ -171,7 +171,7 @@ const RentItem = ({ item, dayIndex, handleSaveRentPayment, pushLeft, pushUp, rem
         }
 
         if (errTxt !== "") {
-            setErrorText("Error: Invalid fields. Changes reset.");
+            setErrorText("Error: Invalid fields. Changes Reset.");
         }
         return errTxt === "";
     }, [inputFields]);
