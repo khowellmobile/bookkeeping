@@ -129,11 +129,7 @@ describe("RentItem functionality: Editing and Closing (Existing Item)", () => {
 
         fireEvent.mouseDown(document.body);
         expect(mockShowToast).toHaveBeenCalledTimes(1);
-        expect(mockShowToast).toHaveBeenCalledWith(
-            expect.stringContaining(""), // Empty for now. Needs bug fix.
-            "error",
-            5000
-        );
+        expect(mockShowToast).toHaveBeenCalledWith("Invalid fields. Changes Reset.", "error", 5000);
 
         expect(mockUpdatePayment).not.toHaveBeenCalled();
         expect(screen.getByDisplayValue("100.00")).toBeInTheDocument();
