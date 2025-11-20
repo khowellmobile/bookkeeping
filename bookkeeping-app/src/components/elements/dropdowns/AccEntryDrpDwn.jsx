@@ -1,12 +1,12 @@
 import { useState, useContext, useEffect, useRef } from "react";
 
-import classes from "./AccountEntryDropdown.module.css";
+import classes from "./AccEntryDrpDwn.module.css";
 
 import AccountsCtx from "../../contexts/AccountsCtx";
 import AddAccountModal from "../modals/AddAccountModal";
 import Button from "../utilities/Button";
 
-const AccountEntryDropdown = ({ accountVal, scrollRef, onChange, hasLeftBorder = false }) => {
+const AccEntryDrpDwn = ({ accountVal, scrollRef, onChange, hasLeftBorder = false }) => {
     const { ctxAccountList } = useContext(AccountsCtx);
 
     const [searchTerm, setSearchTerm] = useState("");
@@ -149,4 +149,4 @@ const AccountEntryDropdown = ({ accountVal, scrollRef, onChange, hasLeftBorder =
     );
 };
 
-export default AccountEntryDropdown;
+export default AccEntryDrpDwn;

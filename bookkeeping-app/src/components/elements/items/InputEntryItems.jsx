@@ -5,6 +5,7 @@ import classes from "./InputEntryItems.module.css";
 import AccountEntryDropdown from "../dropdowns/AccountEntryDropdown";
 import EntityEntryDropdown from "../dropdowns/EntityEntryDropdown";
 import Input from "../utilities/Input";
+import AccEntryDrpDwn from "../dropdowns/AccEntryDrpDwn";
 
 const JournalEntryItem = ({ vals, index, onFocus, onItemChange, scrollRef }) => {
     const handleAccountChange = (account) => {
