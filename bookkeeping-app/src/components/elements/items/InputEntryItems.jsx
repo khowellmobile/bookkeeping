@@ -31,7 +31,7 @@ const JournalEntryItem = ({ vals, index, onFocus, onItemChange, scrollRef }) => 
             tabIndex={0}
             role="application" // Needed for testing blur events
         >
-            <AccountEntryDropdown vals={vals} scrollRef={scrollRef} onChange={handleAccountChange} />
+            <AccountEntryDropdown accountVal={vals.account} scrollRef={scrollRef} onChange={handleAccountChange} />
             <Input
                 type="number"
                 name="debit"

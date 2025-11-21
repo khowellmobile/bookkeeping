@@ -104,10 +104,6 @@ const AccountEntryDropdown = ({ accountVal, scrollRef, onChange, hasLeftBorder =
         setIsExpanded(false);
     };
 
-    useEffect(() => {
-        console.log(searchTerm);
-    }, [searchTerm]);
-
     return (
         <>
             {isModalOpen && <AddAccountModal handleCloseModal={handleCloseModal} />}
