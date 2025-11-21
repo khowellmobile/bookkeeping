@@ -5,6 +5,7 @@ import classes from "./InputEntryItems.module.css";
 import AccountEntryDropdown from "../dropdowns/AccountEntryDropdown";
 import EntityEntryDropdown from "../dropdowns/EntityEntryDropdown";
 import Input from "../utilities/Input";
+import AccEntryDrpDwn from "../dropdowns/AccEntryDrpDwn";
 
 const JournalEntryItem = ({ vals, index, onFocus, onItemChange, scrollRef }) => {
     const handleAccountChange = (account) => {
@@ -30,7 +31,7 @@ const JournalEntryItem = ({ vals, index, onFocus, onItemChange, scrollRef }) => 
             tabIndex={0}
             role="application" // Needed for testing blur events
         >
-            <AccountEntryDropdown vals={vals} scrollRef={scrollRef} onChange={handleAccountChange} />
+            <AccountEntryDropdown accountVal={vals.account} scrollRef={scrollRef} onChange={handleAccountChange} />
             <Input
                 type="number"
                 name="debit"
