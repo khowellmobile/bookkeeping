@@ -1,0 +1,53 @@
+.mainContainer {
+    --circle-size: 25rem;
+
+    width: 100%;
+    height: 100%;
+
+    border-radius: 0.25rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pieChart {
+    height: var(--circle-size);
+    width: var(--circle-size);
+    
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    position: absolute;
+}
+
+.slice {
+    width: var(--circle-size);
+    height: var(--circle-size);
+
+    cursor: pointer;
+
+    transform-origin: center;
+    transform-box: fill-box;
+    position: relative;
+    z-index: 0;
+    transition: all ease 0.25s;
+}
+
+.slice:hover {
+    filter: brightness(1.5);
+}
+
+.center {
+    width: calc(var(--circle-size) * 0.60);
+    height: calc(var(--circle-size) * 0.60);
+
+    background-color: var(--background-color);
+    border-radius: 50%;
+
+    position: relative;
+    z-index: 10;
+}
