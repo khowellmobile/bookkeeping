@@ -75,7 +75,7 @@ describe("AccountEntryDropdown Rendering and initial state", () => {
         });
     });
 
-    it("should not display the dropdown content initially", () => {
+    it("should have dropdown be display:none on render", () => {
         renderAccountDropdown();
         expect(screen.queryByText("All Accounts")).toBeInTheDocument();
         expect(screen.queryByText("Savings")).toBeInTheDocument();
