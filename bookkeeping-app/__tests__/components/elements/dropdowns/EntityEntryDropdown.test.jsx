@@ -61,16 +61,11 @@ describe("EntityEntryDropdown Rendering and initial state", () => {
         expect(screen.getByRole("textbox")).toHaveValue("");
     });
 
-    it("should not display the dropdown content initially", () => {
-        expect(screen.queryByText("All Entities")).not.toBeInTheDocument();
-        expect(screen.queryByText("Entity2")).not.toBeInTheDocument();
+    it("should have dropdown be display:none on render", () => {
+        expect(screen.getByRole("dropdown-anchor")).toHaveClass("noDisplay");
+        expect(screen.queryByText("All Entities")).toBeInTheDocument();
+        expect(screen.queryByText("Entity2")).toBeInTheDocument();
     });
-
-    // Uncomment when issue #217 in github is resolved
-    /* it("should display an empty input field when no account is initially selected", () => {
-        renderAccountDropdown({ account: null });
-        expect(screen.getByRole("textbox")).toHaveValue("");
-    }); */
 });
 
 describe("EntityEntryDropdown Opening and Filtering", () => {
@@ -90,6 +85,7 @@ describe("EntityEntryDropdown Opening and Filtering", () => {
         expect(screen.getByText("Add Entity")).toBeInTheDocument();
         expect(screen.getByText("Entity1")).toBeInTheDocument();
         expect(screen.getByText("Entity2")).toBeInTheDocument();
+        expect(screen.getByRole("dropdown-anchor")).not.toHaveClass("noDisplay");
     });
 
     it("should filter entities based on user input", () => {
@@ -126,38 +122,25 @@ describe("EntityEntryDropdown Selection and Closing", () => {
         fireEvent.change(input, { target: { value: "" } });
     });
 
-    // Add this test back in when issue #218 is completed
-    /* it("should close and update input when a new account is selected", async () => {
-        const savingsAccount = screen.getByText("Savings");
-        fireEvent.click(savingsAccount);
+    it("should close and update input when a new entity is selected", async () => {
+        expect(screen.getByRole("dropdown-anchor")).not.toHaveClass("noDisplay"); // Check open
 
-        expect(screen.getByRole("textbox")).toHaveValue("Savings");
-        await waitFor(() => {
-            expect(screen.queryByRole("dropdown-anchor")).not.toBeInTheDocument();
-            expect(screen.queryByText("All Accounts")).not.toBeInTheDocument();
-            expect(screen.queryByText("Checking")).not.toBeInTheDocument();
-        });
+        const entity2 = screen.getByText("Entity2");
+        fireEvent.click(entity2);
+
+        expect(screen.getByRole("textbox")).toHaveValue("Entity2");
+        expect(screen.getByRole("dropdown-anchor")).toHaveClass("noDisplay");
 
         expect(mockOnChange).toHaveBeenCalledTimes(1);
-        expect(mockOnChange).toHaveBeenCalledWith({ id: 2, name: "Savings" });
-    }); */
+        expect(mockOnChange).toHaveBeenCalledWith({ id: 2, name: "Entity2" });
+    });
 
-    it("should close the dropdown after blur delay", async () => {
-        const input = screen.getByRole("textbox");
+    it("should set dropdown to display none when clicked outside of", async () => {
+        expect(screen.getByRole("dropdown-anchor")).not.toHaveClass("noDisplay"); // Check open
+        fireEvent.mouseDown(document.body);
 
-        fireEvent.blur(input);
-
-        // Dropdown should still be visible immediately after blur (due to setTimeout)
-        expect(screen.getByText("All Entities")).toBeInTheDocument();
-
-        // Fast-forward time
-        await act(async () => {
-            jest.advanceTimersByTime(150);
-        });
-
-        // Dropdown should be closed after 150ms
         await waitFor(() => {
-            expect(screen.queryByText("All Entities")).not.toBeInTheDocument();
+            expect(screen.getByRole("dropdown-anchor")).toHaveClass("noDisplay");
         });
     });
 });
