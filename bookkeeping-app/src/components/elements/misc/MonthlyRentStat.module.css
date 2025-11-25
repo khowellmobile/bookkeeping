@@ -7,6 +7,75 @@
     border-radius: 0.25rem;
 
     display: flex;
+    flex-direction: column;
+}
+
+.header {
+    width: 100%;
+    height: 2.5rem;
+
+    border-bottom: 1px solid var(--border-color);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.header h2 {
+    margin-left: 0.5rem;
+
+    font-size: var(--header-font-size);
+    font-weight: 400;
+}
+
+.infoBar {
+    width: 100%;
+    height: 1.5rem;
+    padding: 0 0.5rem;
+
+    border-bottom: 1px solid var(--border-color);
+
+    display: flex;
+    align-items: center;
+}
+
+.dataItem {
+    margin-right: 1.5rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dataItem > p {
+    font-size: var(--small-font-size);
+    color: var(--primary-text-color);
+}
+
+.dataDot {
+    width: 0.75rem;
+    height: 0.75rem;
+
+    border-radius: 50%;
+
+    margin-right: 0.25rem;
+}
+
+
+.content {
+    width: 100%;
+    height: calc(100% - 4rem);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.chartDiv {
+    width: 55%;
+    height: 100%;
+
+    display: flex;
     align-items: center;
     justify-content: center;
 }
@@ -14,7 +83,7 @@
 .pieChart {
     height: var(--circle-size);
     width: var(--circle-size);
-    
+
     border-radius: 50%;
 
     display: flex;
@@ -33,21 +102,82 @@
     transform-origin: center;
     transform-box: fill-box;
     position: relative;
-    z-index: 0;
     transition: all ease 0.25s;
+
+    stroke: transparent;
+    stroke-width: 0;
 }
 
 .slice:hover {
+    transform: scale(1.05);
     filter: brightness(1.5);
+
+    position: relative;
+    z-index: 10;
+}
+
+.anchor {
+    width: 10rem;
+    height: 10rem;
+
+    outline: 1px solid red;
+
+    position: absolute;
+    z-index: 999;
 }
 
 .center {
-    width: calc(var(--circle-size) * 0.60);
-    height: calc(var(--circle-size) * 0.60);
+    width: calc(var(--circle-size) * 0.6);
+    height: calc(var(--circle-size) * 0.6);
 
     background-color: var(--background-color);
     border-radius: 50%;
 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     position: relative;
     z-index: 10;
+}
+
+.center > p {
+    font-size: var(--base-font-size);
+    font-weight: 500;
+}
+
+.center > span {
+    display: flex;
+    align-items: center;
+}
+
+.center > span > p {
+    font-size: var(--small-font-size);
+    font-weight: 400;
+}
+
+.dataDiv {
+    width: 45%;
+    height: 100%;
+    padding: 1rem;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.dataDiv > p {
+    font-size: var(--small-font-size);
+    color: var(--secondary-text-color);
+    font-weight: 400;
+}
+
+.dataDiv > h3 {
+    font-size: var(--header-font-size);
+    font-weight: 300;
+}
+
+.dataDiv > h3 > strong {
+    font-weight: 400;
 }
