@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState, useContext, useRef } from "react";
+import { createContext, useEffect, useState, useContext } from "react";
 import useSWRImmutable from "swr/immutable";
 
 import { BASE_URL } from "../../constants";
@@ -14,6 +14,7 @@ const RentPaymentsCtx = createContext({
     getCtxPaymentsByMonth: () => {},
     ctxAddPayment: () => {},
     ctxUpdatePayment: () => {},
+    ctxGetMonthlySummary: () => {},
 });
 
 const getInitialDate = () => {
@@ -59,6 +60,7 @@ export function RentPaymentsCtxProvider(props) {
     const { data: ctxMonthPaymentList, error, mutate } = useSWRImmutable(swrKey, fetcher);
 
     const ctxAddPayment = async (paymentToAdd) => {
+        console.log(ctxActiveProperty);
         try {
             const url = new URL(`${BASE_URL}/api/rentPayments/`);
             if (ctxActiveProperty && ctxActiveProperty.id) {
@@ -131,12 +133,52 @@ export function RentPaymentsCtxProvider(props) {
         }
     };
 
+    const ctxGetMonthlySummary = async (month, year) => {
+        try {
+            const url = new URL(`${BASE_URL}/api/rentPayments/monthsummary/`);
+            if (ctxActiveProperty && ctxActiveProperty.id) {
+                url.searchParams.append("property_id", ctxActiveProperty.id);
+            } else {
+                console.log("no active property");
+                return;
+            }
+
+            if (month && year && month >= 1 && month <= 12) {
+                url.searchParams.append("month", month);
+                url.searchParams.append("year", year);
+            } else {
+                console.error("Invalid month or year for monthly summary");
+                return;
+            }
+
+            const response = await fetch(url.toString(), {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${ctxAccessToken}`,
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error. Status: ${response.status}`);
+            }
+
+            const monthSummary = await response.json();
+            console.log(monthSummary);
+            return monthSummary;
+        } catch (e) {
+            console.log("Error: " + e);
+            showToast("Error getting summary", "error", 5000);
+        }
+    };
+
     const context = {
         ctxMonthPaymentList,
         ctxActiveDate,
         setCtxActiveDate,
         ctxAddPayment,
         ctxUpdatePayment,
+        ctxGetMonthlySummary,
     };
 
     return <RentPaymentsCtx.Provider value={context}>{props.children}</RentPaymentsCtx.Provider>;

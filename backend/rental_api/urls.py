@@ -16,6 +16,7 @@ urlpatterns = [
     path('properties/<int:pk>/', views.PropertyDetailAPIView.as_view(), name='property-detail'),
     path('rentPayments/', views.RentPaymentListAPIView.as_view(), name='rentPayment-list'),
     path('rentPayments/<int:pk>/', views.RentPaymentDetailAPIView.as_view(), name='rentPayment-detail'),
+    path('rentPayments/monthsummary/', views.RentPaymentMonthSummaryAPIView.as_view(), name='rentPayment-monthsummary'),
     
     path('profile/', views.UserProfileAPIView.as_view(), name='user-profile'),
 ]
