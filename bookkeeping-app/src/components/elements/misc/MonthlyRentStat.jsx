@@ -1,25 +1,70 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 
 import classes from "./MonthlyRentStat.module.css";
 
-const DATA_PERCENTAGES = [30, 50, 15, 5];
-const COLORS = ["rgb(82, 99, 255)", "rgb(96, 224, 124)", "rgb(255, 137, 69)", "rgb(255, 82, 82)"];
-const STATUS_TYPES = ["Scheduled", "Paid", "Due", "Overdue"];
+import RentPaymentsCtx from "../../contexts/RentPaymentsCtx";
+import PropertiesCtx from "../../contexts/PropertiesCtx";
+
+const COLORS = {
+    scheduled: "rgb(82, 99, 255)",
+    paid: "rgb(96, 224, 124)",
+    due: "rgb(255, 137, 69)",
+    overdue: "rgb(255, 82, 82)",
+};
+const STATUS_TYPES = ["scheduled", "paid", "due", "overdue"];
 
 const MonthlyRentStat = () => {
+    const { ctxGetMonthlySummary } = useContext(RentPaymentsCtx);
+    const { ctxActiveProperty } = useContext(PropertiesCtx);
+
+    const [monthlySummary, setMonthlySummary] = useState();
+    const [statusPercents, setStatusPercents] = useState();
     const [pieSlices, setPieSlices] = useState([]);
     const [activeSlice, setActiveSlice] = useState(null);
 
+    // Must use useEffect to ensure activeProperty when call is made
     useEffect(() => {
-        const slices = calulateSlicePathData(DATA_PERCENTAGES, COLORS);
-        setPieSlices(slices);
-    }, []);
+        const fetchMonthlySummary = async () => {
+            return await ctxGetMonthlySummary(12, 2025);
+        };
 
-    const setSlice = (index) => {
+        const loadSummary = async () => {
+            if (ctxActiveProperty) {
+                try {
+                    const monthSum = await fetchMonthlySummary();
+                    setMonthlySummary(monthSum);
+                    console.log(monthSum);
+                } catch (error) {
+                    console.error("Failed to fetch monthly summary:", error);
+                }
+            }
+        };
+
+        loadSummary();
+    }, [ctxActiveProperty]);
+
+    useEffect(() => {
+        if (monthlySummary && monthlySummary.payment_summary) {
+            const dataPercentages = monthlySummary.payment_summary.map((value) => {
+                const percentage = (value.amount / monthlySummary.total_rent_payments) * 100;
+                return { [value.status]: percentage };
+            });
+            const statusMap = dataPercentages.reduce((acc, current) => {
+                const key = Object.keys(current)[0];
+                acc[key] = current[key];
+                return acc;
+            }, {});
+            setStatusPercents(statusMap);
+            const slices = calulateSlicePathData(dataPercentages, COLORS);
+            setPieSlices(slices);
+        }
+    }, [monthlySummary]);
+
+    const setSlice = (status) => {
         setActiveSlice({
-            type: STATUS_TYPES[index],
-            percentage: DATA_PERCENTAGES[index],
-            amount: ((DATA_PERCENTAGES[index] / 100) * 5000).toFixed(2), // 5000 is example total rent
+            type: status,
+            percentage: statusPercents[status].toFixed(2),
+            amount: (statusPercents[status] / 100) * monthlySummary.total_rent_payments.toFixed(2),
         });
     };
 
@@ -44,16 +89,14 @@ const MonthlyRentStat = () => {
     };
 
     const calulateSlicePathData = (percentages, colors) => {
-        if (percentages.length !== colors.length) {
-            console.error("Percentages and colors arrays must have the same length.");
-            return [];
-        }
-
         const slices = [];
         let currentDegree = 0;
 
-        percentages.forEach((percentage, index) => {
-            const color = colors[index];
+        percentages.forEach((item) => {
+            const statusKey = Object.keys(item)[0];
+            const percentage = item[statusKey];
+            const color = colors[statusKey];
+
             const degreeLength = calculateDegreesByPercentage(percentage);
 
             if (degreeLength === 0) return;
@@ -68,6 +111,7 @@ const MonthlyRentStat = () => {
             slices.push({
                 pathData: pathData,
                 color: color,
+                status: statusKey,
             });
 
             currentDegree = endDegree;
@@ -84,8 +128,8 @@ const MonthlyRentStat = () => {
             <div className={classes.infoBar}>
                 {STATUS_TYPES.map((status, index) => {
                     return (
-                        <div className={classes.dataItem}>
-                            <div className={classes.dataDot} style={{ backgroundColor: COLORS[index] }} />
+                        <div className={classes.dataItem} key={index}>
+                            <div className={classes.dataDot} style={{ backgroundColor: COLORS[status] }} />
                             <p>{status}</p>
                         </div>
                     );
@@ -100,7 +144,7 @@ const MonthlyRentStat = () => {
                                 d={slice.pathData}
                                 fill={slice.color}
                                 className={classes.slice}
-                                onMouseEnter={() => setSlice(index)}
+                                onMouseEnter={() => setSlice(slice.status)}
                                 onMouseLeave={resetSlice}
                             />
                         ))}
@@ -120,7 +164,10 @@ const MonthlyRentStat = () => {
                 </div>
                 <div className={classes.dataDiv}>
                     <p>01/01/2025 - 01/31/2025</p>
-                    <h3>Total Projected Rent: <strong>$5000</strong></h3>
+                    <h3>
+                        Total Projected Rent:{" "}
+                        <strong>{monthlySummary ? `$${monthlySummary.total_rent_payments}` : "loading"}</strong>
+                    </h3>
                 </div>
             </div>
         </div>

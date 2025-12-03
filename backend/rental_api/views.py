@@ -8,6 +8,8 @@ from rest_framework.permissions import IsAuthenticated
 from datetime import date
 import calendar
 from django.db import transaction
+from django.db.models import Sum, Value, CharField
+from django.db.models.functions import Coalesce
 from .serializers import (
     TransactionSerializer,
     AccountSerializer,
@@ -617,6 +619,73 @@ class RentPaymentDetailAPIView(APIView):
                 return Response(serializer.data)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+class RentPaymentMonthSummaryAPIView(PropertyRequiredMixin, APIView):
+    """
+    API endpoint to summarize rent payments for a month.
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        property_obj = self.property_obj
+        year = request.query_params.get("year")
+        month = request.query_params.get("month")
+
+        if not year or not month or int(month) > 12 or int(month) < 1:
+            return Response(
+                {"error": "Both 'year' and 'month', in proper range, are required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        try:
+            year = int(year)
+            month = int(month)
+            if not (1 <= month <= 12):
+                raise ValueError
+        except ValueError:
+            return Response(
+                {"error": "Invalid 'year' or 'month' provided."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Total queryset for payments for the month
+        monthly_payments_queryset = RentPayment.objects.filter(
+            property=property_obj, date__year=year, date__month=month
+        )
+
+        # Sums together the total amount for the month
+        grand_total_aggregation = monthly_payments_queryset.aggregate(
+            overall_total=Coalesce(
+                Sum("amount"), Value(0.00), output_field=CharField()
+            ),
+        )
+
+        # Groups payments by status and sums their amounts
+        status_summary = (
+            monthly_payments_queryset.values("status")
+            .annotate(
+                total_amount=Coalesce(
+                    Sum("amount"), Value(0.00), output_field=CharField()
+                ),
+            )
+            .order_by("status")
+        )
+
+        payments_summary = [
+            {"status": item["status"], "amount": item["total_amount"]}
+            for item in status_summary
+        ]
+
+        return Response(
+            {
+                "year": year,
+                "month": month,
+                "payment_summary": payments_summary,
+                "total_rent_payments": grand_total_aggregation["overall_total"] or 0,
+            }
+        )
 
 
 class UserProfileAPIView(APIView):

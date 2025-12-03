@@ -78,9 +78,13 @@ function AuthenticatedApp() {
         return <>{wrapPage(PropertiesPage)}</>;
     };
 
+    const HomePageWithContext = () => {
+        return <RentPaymentsCtxProvider>{wrapPage(HomePage)}</RentPaymentsCtxProvider>;
+    };
+
     return (
         <Routes>
-            <Route path="/home" element={wrapPage(HomePage)} />
+            <Route path="/home" element={<HomePageWithContext />} />
             <Route path="/transactions" element={<TransactionsWithContext />} />
             <Route path="/rents" element={<RentsWithContext />} />
             <Route path="/accounts" element={<AccountsWithContext />} />
@@ -95,32 +99,3 @@ function AuthenticatedApp() {
 }
 
 export default AuthenticatedApp;
-
-/* return (
-        <AuthCtxProvider>
-            <PropertiesCtxProvider>
-                <AccountsCtxProvider>
-                    <EntitiesCtxProvider>
-                        <TransactionsCtxProvider>
-                            <JournalsCtxProvider>
-                                <RentPaymentsCtxProvider>
-                                    <Routes>
-                                        <Route path="/home" element={wrapPage(HomePage)} />
-                                        <Route path="/transactions" element={wrapPage(TransactionsPage)} />
-                                        <Route path="/rents" element={wrapPage(RentsPage)} />
-                                        <Route path="/accounts" element={wrapPage(AccountsPage)} />
-                                        <Route path="/journals" element={wrapPage(JournalsPage)} />
-                                        <Route path="/entities" element={wrapPage(EntitiesPage)} />
-                                        <Route path="/reports" element={wrapPage(ReportsPage)} />
-                                        <Route path="/properties" element={wrapPage(PropertiesPage)} />
-                                        <Route path="/support" element={wrapPage(SupportPage)} />
-                                        <Route path="/settings" element={wrapPage(SettingsPage)} />
-                                    </Routes>
-                                </RentPaymentsCtxProvider>
-                            </JournalsCtxProvider>
-                        </TransactionsCtxProvider>
-                    </EntitiesCtxProvider>
-                </AccountsCtxProvider>
-            </PropertiesCtxProvider>
-        </AuthCtxProvider>
-    ); */
