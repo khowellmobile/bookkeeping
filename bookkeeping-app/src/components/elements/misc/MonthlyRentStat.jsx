@@ -33,7 +33,6 @@ const MonthlyRentStat = () => {
                 try {
                     const monthSum = await fetchMonthlySummary();
                     setMonthlySummary(monthSum);
-                    console.log(monthSum);
                 } catch (error) {
                     console.error("Failed to fetch monthly summary:", error);
                 }
