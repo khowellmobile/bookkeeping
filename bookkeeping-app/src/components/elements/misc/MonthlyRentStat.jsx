@@ -12,6 +12,7 @@ const COLORS = {
     overdue: "rgb(255, 82, 82)",
 };
 const STATUS_TYPES = ["scheduled", "paid", "due", "overdue"];
+const currentDate = new Date();
 
 const MonthlyRentStat = () => {
     const { ctxGetMonthlySummary } = useContext(RentPaymentsCtx);
@@ -25,7 +26,7 @@ const MonthlyRentStat = () => {
     // Must use useEffect to ensure activeProperty when call is made
     useEffect(() => {
         const fetchMonthlySummary = async () => {
-            return await ctxGetMonthlySummary(12, 2025);
+            return await ctxGetMonthlySummary(currentDate.getMonth() + 1, currentDate.getFullYear());
         };
 
         const loadSummary = async () => {
@@ -162,7 +163,9 @@ const MonthlyRentStat = () => {
                     </div>
                 </div>
                 <div className={classes.dataDiv}>
-                    <p>01/01/2025 - 01/31/2025</p>
+                    <p>
+                        {currentDate.toLocaleDateString("en-US", { month: "long" })} - {currentDate.getFullYear()}
+                    </p>
                     <h3>
                         Total Projected Rent:{" "}
                         <strong>{monthlySummary ? `$${monthlySummary.total_rent_payments}` : "loading"}</strong>
