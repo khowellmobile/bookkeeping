@@ -11,7 +11,7 @@ const AccountListItem = ({ account }) => {
 
     const accountClickHandler = (account) => {
         setCtxActiveAccount(account);
-        navigate("/transactions");
+        navigate("/app/transactions");
     };
 
     return (

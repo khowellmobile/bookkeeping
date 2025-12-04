@@ -4,6 +4,7 @@ import classes from "./MonthlyRentStat.module.css";
 
 import RentPaymentsCtx from "../../contexts/RentPaymentsCtx";
 import PropertiesCtx from "../../contexts/PropertiesCtx";
+import NoResultsDisplay from "../utilities/NoResultsDisplay";
 
 const COLORS = {
     scheduled: "rgb(82, 99, 255)",
@@ -12,6 +13,7 @@ const COLORS = {
     overdue: "rgb(255, 82, 82)",
 };
 const STATUS_TYPES = ["scheduled", "paid", "due", "overdue"];
+const currentDate = new Date();
 
 const MonthlyRentStat = () => {
     const { ctxGetMonthlySummary } = useContext(RentPaymentsCtx);
@@ -25,7 +27,7 @@ const MonthlyRentStat = () => {
     // Must use useEffect to ensure activeProperty when call is made
     useEffect(() => {
         const fetchMonthlySummary = async () => {
-            return await ctxGetMonthlySummary(12, 2025);
+            return await ctxGetMonthlySummary(currentDate.getMonth() + 1, currentDate.getFullYear());
         };
 
         const loadSummary = async () => {
@@ -135,39 +137,48 @@ const MonthlyRentStat = () => {
                 })}
             </div>
             <div className={classes.content}>
-                <div className={classes.chartDiv}>
-                    <svg className={classes.pieChart} viewBox="-10 -10 120 120">
-                        {pieSlices.map((slice, index) => (
-                            <path
-                                key={index}
-                                d={slice.pathData}
-                                fill={slice.color}
-                                className={classes.slice}
-                                onMouseEnter={() => setSlice(slice.status)}
-                                onMouseLeave={resetSlice}
-                            />
-                        ))}
-                    </svg>
-                    <div className={classes.center}>
-                        {activeSlice && (
-                            <>
-                                <p>{activeSlice.type}</p>
-                                <span>
-                                    <p>
-                                        {activeSlice.percentage}% - ${activeSlice.amount}
-                                    </p>
-                                </span>
-                            </>
-                        )}
-                    </div>
-                </div>
-                <div className={classes.dataDiv}>
-                    <p>01/01/2025 - 01/31/2025</p>
-                    <h3>
-                        Total Projected Rent:{" "}
-                        <strong>{monthlySummary ? `$${monthlySummary.total_rent_payments}` : "loading"}</strong>
-                    </h3>
-                </div>
+                {monthlySummary ? (
+                    <>
+                        <div className={classes.chartDiv}>
+                            <svg className={classes.pieChart} viewBox="-10 -10 120 120">
+                                {pieSlices.map((slice, index) => (
+                                    <path
+                                        key={index}
+                                        d={slice.pathData}
+                                        fill={slice.color}
+                                        className={classes.slice}
+                                        onMouseEnter={() => setSlice(slice.status)}
+                                        onMouseLeave={resetSlice}
+                                    />
+                                ))}
+                            </svg>
+                            <div className={classes.center}>
+                                {activeSlice && (
+                                    <>
+                                        <p>{activeSlice.type}</p>
+                                        <span>
+                                            <p>
+                                                {activeSlice.percentage}% - ${activeSlice.amount}
+                                            </p>
+                                        </span>
+                                    </>
+                                )}
+                            </div>
+                        </div>
+                        <div className={classes.dataDiv}>
+                            <p>
+                                {currentDate.toLocaleDateString("en-US", { month: "long" })} -{" "}
+                                {currentDate.getFullYear()}
+                            </p>
+                            <h3>
+                                Total Projected Rent:{" "}
+                                <strong>{monthlySummary ? `$${monthlySummary.total_rent_payments}` : "loading"}</strong>
+                            </h3>
+                        </div>
+                    </>
+                ) : (
+                    <NoResultsDisplay mainText={"Nothing to see here"} guideText={"Have you chosen a Property?"} />
+                )}
             </div>
         </div>
     );

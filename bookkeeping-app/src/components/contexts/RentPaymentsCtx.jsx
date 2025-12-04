@@ -60,7 +60,6 @@ export function RentPaymentsCtxProvider(props) {
     const { data: ctxMonthPaymentList, error, mutate } = useSWRImmutable(swrKey, fetcher);
 
     const ctxAddPayment = async (paymentToAdd) => {
-        console.log(ctxActiveProperty);
         try {
             const url = new URL(`${BASE_URL}/api/rentPayments/`);
             if (ctxActiveProperty && ctxActiveProperty.id) {
@@ -164,7 +163,6 @@ export function RentPaymentsCtxProvider(props) {
             }
 
             const monthSummary = await response.json();
-            console.log(monthSummary);
             return monthSummary;
         } catch (e) {
             console.log("Error: " + e);

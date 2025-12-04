@@ -79,7 +79,11 @@ function AuthenticatedApp() {
     };
 
     const HomePageWithContext = () => {
-        return <RentPaymentsCtxProvider>{wrapPage(HomePage)}</RentPaymentsCtxProvider>;
+        return (
+            <AccountsCtxProvider>
+                <RentPaymentsCtxProvider>{wrapPage(HomePage)}</RentPaymentsCtxProvider>
+            </AccountsCtxProvider>
+        );
     };
 
     return (
