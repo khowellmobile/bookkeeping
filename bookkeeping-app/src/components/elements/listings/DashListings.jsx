@@ -10,8 +10,6 @@ import NoResultsDisplay from "../utilities/NoResultsDisplay.jsx";
 const AccountListing = () => {
     const { ctxAccountList } = useContext(AccountsCtx);
 
-    console.log(ctxAccountList);
-
     return (
         <div className={classes.mainContainer}>
             <section className={classes.header}>
