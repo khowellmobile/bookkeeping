@@ -46,9 +46,10 @@ export function AccountsCtxProvider(props) {
         mutate,
     } = useSWRImmutable(propertyId && ctxAccessToken ? [`${apiURL}?property_id=${propertyId}`] : null, fetcher);
 
+    // Resets active account if property changes
     useEffect(() => {
-        console.log("Changing active: ", ctxActiveAccount);
-    }, [ctxActiveAccount]);
+        setCtxActiveAccount({ name: "None Selected" });
+    }, [ctxActiveProperty, ctxAccessToken]);
 
     const ctxGetNonPropertyAccounts = async () => {
         try {
