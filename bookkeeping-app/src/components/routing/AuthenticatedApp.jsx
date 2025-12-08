@@ -35,9 +35,7 @@ function AuthenticatedApp() {
     const TransactionsWithContext = () => {
         return (
             <EntitiesCtxProvider>
-                <AccountsCtxProvider>
-                    <TransactionsCtxProvider>{wrapPage(TransactionsPage)}</TransactionsCtxProvider>
-                </AccountsCtxProvider>
+                <TransactionsCtxProvider>{wrapPage(TransactionsPage)}</TransactionsCtxProvider>
             </EntitiesCtxProvider>
         );
     };
@@ -51,15 +49,11 @@ function AuthenticatedApp() {
     };
 
     const AccountsWithContext = () => {
-        return <AccountsCtxProvider>{wrapPage(AccountsPage)}</AccountsCtxProvider>;
+        return wrapPage(AccountsPage);
     };
 
     const JournalsWithContext = () => {
-        return (
-            <AccountsCtxProvider>
-                <JournalsCtxProvider>{wrapPage(JournalsPage)}</JournalsCtxProvider>
-            </AccountsCtxProvider>
-        );
+        return <JournalsCtxProvider>{wrapPage(JournalsPage)}</JournalsCtxProvider>;
     };
 
     const EntitiesWithContext = () => {
@@ -71,19 +65,15 @@ function AuthenticatedApp() {
     };
 
     const ReportsWithContext = () => {
-        return <AccountsCtxProvider>{wrapPage(ReportsPage)}</AccountsCtxProvider>;
+        return wrapPage(ReportsPage);
     };
 
     const PropertiesWithContext = () => {
-        return <>{wrapPage(PropertiesPage)}</>;
+        return wrapPage(PropertiesPage);
     };
 
     const HomePageWithContext = () => {
-        return (
-            <AccountsCtxProvider>
-                <RentPaymentsCtxProvider>{wrapPage(HomePage)}</RentPaymentsCtxProvider>
-            </AccountsCtxProvider>
-        );
+        return <RentPaymentsCtxProvider>{wrapPage(HomePage)}</RentPaymentsCtxProvider>;
     };
 
     return (
