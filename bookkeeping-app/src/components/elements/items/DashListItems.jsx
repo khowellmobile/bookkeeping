@@ -10,8 +10,9 @@ const AccountListItem = ({ account }) => {
     const { setCtxActiveAccount } = useContext(AccountsCtx);
 
     const accountClickHandler = (account) => {
+        console.log("Account: ", account);
         setCtxActiveAccount(account);
-        navigate("/app/transactions");
+        /* navigate("/app/transactions"); */
     };
 
     return (

@@ -22,7 +22,7 @@ export function AccountsCtxProvider(props) {
     const { ctxAccessToken } = useContext(AuthCtx);
     const { ctxActiveProperty } = useContext(PropertiesCtx);
 
-    const [ctxActiveAccount, setCtxActiveAccount] = useState({ name: "None Selected" });
+    const [ctxActiveAccount, setCtxActiveAccount] = useState({});
 
     const fetcher = async (url) => {
         const response = await fetch(url, {
@@ -47,8 +47,8 @@ export function AccountsCtxProvider(props) {
     } = useSWRImmutable(propertyId && ctxAccessToken ? [`${apiURL}?property_id=${propertyId}`] : null, fetcher);
 
     useEffect(() => {
-        setCtxActiveAccount({ name: "None Selected" });
-    }, [ctxActiveProperty, ctxAccessToken]);
+        console.log("Changing active: ", ctxActiveAccount);
+    }, [ctxActiveAccount]);
 
     const ctxGetNonPropertyAccounts = async () => {
         try {
