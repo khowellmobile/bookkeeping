@@ -35,7 +35,7 @@ function AuthenticatedApp() {
     const TransactionsWithContext = () => {
         return (
             <EntitiesCtxProvider>
-                    <TransactionsCtxProvider>{wrapPage(TransactionsPage)}</TransactionsCtxProvider>
+                <TransactionsCtxProvider>{wrapPage(TransactionsPage)}</TransactionsCtxProvider>
             </EntitiesCtxProvider>
         );
     };
@@ -53,10 +53,7 @@ function AuthenticatedApp() {
     };
 
     const JournalsWithContext = () => {
-        return (
-                <JournalsCtxProvider>{wrapPage(JournalsPage)}</JournalsCtxProvider>
-    
-        );
+        return <JournalsCtxProvider>{wrapPage(JournalsPage)}</JournalsCtxProvider>;
     };
 
     const EntitiesWithContext = () => {
@@ -76,9 +73,7 @@ function AuthenticatedApp() {
     };
 
     const HomePageWithContext = () => {
-        return (
-                <RentPaymentsCtxProvider>{wrapPage(HomePage)}</RentPaymentsCtxProvider>
-        );
+        return <RentPaymentsCtxProvider>{wrapPage(HomePage)}</RentPaymentsCtxProvider>;
     };
 
     return (

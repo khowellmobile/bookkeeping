@@ -22,7 +22,7 @@ export function AccountsCtxProvider(props) {
     const { ctxAccessToken } = useContext(AuthCtx);
     const { ctxActiveProperty } = useContext(PropertiesCtx);
 
-    const [ctxActiveAccount, setCtxActiveAccount] = useState({});
+    const [ctxActiveAccount, setCtxActiveAccount] = useState({ name: "None Selected" });
 
     const fetcher = async (url) => {
         const response = await fetch(url, {
