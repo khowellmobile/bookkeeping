@@ -9,6 +9,7 @@ import { AuthCtxProvider } from "./components/contexts/AuthCtx";
 import { PropertiesCtxProvider } from "./components/contexts/PropertiesCtx";
 import AccountActivatePage from "./pages/AccountActivatePage";
 import PasswordResetPage from "./pages/PasswordResetPage";
+import { AccountsCtxProvider } from "./components/contexts/AccountsCtx";
 
 function App() {
     if (localStorage.getItem("theme") === "dark") {
@@ -33,7 +34,9 @@ function App() {
                     element={
                         <AuthCtxProvider>
                             <PropertiesCtxProvider>
-                                <AuthenticatedApp />
+                                <AccountsCtxProvider>
+                                    <AuthenticatedApp />
+                                </AccountsCtxProvider>
                             </PropertiesCtxProvider>
                         </AuthCtxProvider>
                     }
