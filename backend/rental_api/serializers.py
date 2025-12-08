@@ -8,6 +8,7 @@ from core_backend.models import (
     Journal,
     Property,
     RentPayment,
+    ReportHistory,
     User,
 )
 
@@ -419,6 +420,31 @@ class RentPaymentSerializer(serializers.ModelSerializer):
 
         instance.save()
         return instance
+
+
+class ReportHistorySerializer(serializers.ModelSerializer):
+    property = PropertySerializer(read_only=True)
+    property_id = serializers.IntegerField(required=False, write_only=True)
+
+    class Meta:
+        model = ReportHistory
+        fields = (
+            "id",
+            "user",
+            "property",
+            "property_id",
+            "type",
+            "report_range_type",
+            "start_date" "end_date",
+            "report_ran_on_date",
+            "is_deleted",
+            "created_at",
+        )
+
+    def create(self, validated_data):
+        user = self.context["request"].user
+        validated_data["user"] = user
+        return super().create(validated_data)
 
 
 class UserSerializer(serializers.ModelSerializer):

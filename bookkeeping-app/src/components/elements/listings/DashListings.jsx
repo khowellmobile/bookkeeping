@@ -72,6 +72,16 @@ const PropertyListing = () => {
 };
 
 const ReportListing = () => {
+    const reportTypesMapping = {
+        profit_loss: "Profit & Loss",
+        balance_sheet: "Balance Sheet",
+        year_to_date: "Year to Date",
+        all_time: "All Time",
+        custom: "Custom",
+    };
+
+    
+
     return (
         <div className={classes.mainContainer}>
             <section className={classes.header}>
