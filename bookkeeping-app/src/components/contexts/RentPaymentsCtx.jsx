@@ -15,6 +15,7 @@ const RentPaymentsCtx = createContext({
     ctxAddPayment: () => {},
     ctxUpdatePayment: () => {},
     ctxGetMonthlySummary: () => {},
+    isLoading: null,
 });
 
 const getInitialDate = () => {
@@ -57,7 +58,7 @@ export function RentPaymentsCtxProvider(props) {
             ? `${basePath}?property_id=${ctxActiveProperty.id}&year=${currentYear}&month=${currentMonth}&format_by_day=true`
             : null;
 
-    const { data: ctxMonthPaymentList, error, mutate } = useSWRImmutable(swrKey, fetcher);
+    const { data: ctxMonthPaymentList, isLoading, error, mutate } = useSWRImmutable(swrKey, fetcher);
 
     const ctxAddPayment = async (paymentToAdd) => {
         try {
@@ -177,6 +178,7 @@ export function RentPaymentsCtxProvider(props) {
         ctxAddPayment,
         ctxUpdatePayment,
         ctxGetMonthlySummary,
+        isLoading,
     };
 
     return <RentPaymentsCtx.Provider value={context}>{props.children}</RentPaymentsCtx.Provider>;

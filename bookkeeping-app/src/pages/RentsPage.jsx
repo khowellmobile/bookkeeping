@@ -8,9 +8,11 @@ import chevDownIcon from "../assets/chevron-down-icon.svg";
 import plusIcon from "../assets/plus-icon.svg";
 import NoResultsDisplay from "../components/elements/utilities/NoResultsDisplay";
 import RentItem from "../components/elements/items/RentItem";
+import IsLoadingDisplay from "../components/elements/utilities/IsLoadingDisplay";
 
 const RentsPage = () => {
-    const { ctxMonthPaymentList, ctxAddPayment, ctxActiveDate, setCtxActiveDate } = useContext(RentPaymentsCtx);
+    const { ctxMonthPaymentList, ctxAddPayment, ctxActiveDate, setCtxActiveDate, isLoading } =
+        useContext(RentPaymentsCtx);
 
     const [tempItem, setTempItem] = useState(null);
     const [tempDate, setTempDate] = useState(new Date());
@@ -220,6 +222,8 @@ const RentsPage = () => {
                                 </div>
                             ))}
                         </div>
+                    ) : isLoading ? (
+                        <IsLoadingDisplay />
                     ) : (
                         <NoResultsDisplay
                             mainText={"Nothing to Load"}
