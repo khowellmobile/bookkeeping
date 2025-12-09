@@ -84,6 +84,16 @@ const ReportListing = () => {
         custom: "Custom",
     };
 
+    const formatDate = (dateString) => {
+        if (!dateString) return "";
+        const parts = dateString.split("-");
+        if (parts.length === 3) {
+            const [year, month, day] = parts;
+            return `${day}/${month}/${year}`;
+        }
+        return dateString;
+    };
+
     return (
         <div className={classes.mainContainer}>
             <section className={classes.header}>
@@ -106,8 +116,8 @@ const ReportListing = () => {
                         return (
                             <ReportListItem
                                 name={reportTypesMapping[report.type]}
-                                range={`${report.start_date}-${report.end_date}`}
-                                date={report.report_ran_on_date}
+                                range={`${formatDate(report.start_date)}-${formatDate(report.end_date)}`}
+                                date={formatDate(report.report_ran_on_date)}
                                 key={index}
                             />
                         );
