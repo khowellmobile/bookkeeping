@@ -18,6 +18,7 @@ from .serializers import (
     PropertySerializer,
     RentPaymentSerializer,
     UserSerializer,
+    ReportHistorySerializer,
 )
 from core_backend.models import (
     Transaction,
@@ -26,6 +27,7 @@ from core_backend.models import (
     Journal,
     Property,
     RentPayment,
+    ReportHistory,
 )
 from .mixins import PropertyRequiredMixin
 
@@ -686,6 +688,32 @@ class RentPaymentMonthSummaryAPIView(PropertyRequiredMixin, APIView):
                 "total_rent_payments": grand_total_aggregation["overall_total"] or 0,
             }
         )
+
+
+# Mixin to check for and verify property id.
+class ReportHistoryListAPIView(PropertyRequiredMixin, APIView):
+    """
+    API endpoint to list all historical reports.
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        property_obj = self.property_obj
+        reports_queryset = property_obj.reports.all()
+        serializer = ReportHistorySerializer(reports_queryset, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        property_obj = self.property_obj
+        serializer = ReportHistorySerializer(
+            data=request.data, context={"request": request}
+        )
+
+        if serializer.is_valid():
+            serializer.save(user=request.user, property=property_obj)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserProfileAPIView(APIView):
