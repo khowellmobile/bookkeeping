@@ -324,6 +324,6 @@ class ReportHistory(models.Model):
     )
     start_date = models.DateField(null=True)
     end_date = models.DateField(null=True)
-    report_ran_on_date = models.DateField(null=True)
+    report_ran_on_date = models.DateField(null=True, auto_now_add=True)
     is_deleted = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)

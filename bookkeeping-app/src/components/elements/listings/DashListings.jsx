@@ -71,7 +71,11 @@ const PropertyListing = () => {
     );
 };
 
+import { useReportAPI } from "../../../hooks/useReportApi.jsx";
+
 const ReportListing = () => {
+    const { reportsData, isLoading, Error } = useReportAPI();
+
     const reportTypesMapping = {
         profit_loss: "Profit & Loss",
         balance_sheet: "Balance Sheet",
@@ -79,8 +83,6 @@ const ReportListing = () => {
         all_time: "All Time",
         custom: "Custom",
     };
-
-    
 
     return (
         <div className={classes.mainContainer}>
@@ -99,16 +101,17 @@ const ReportListing = () => {
                 </div>
             </section>
             <section className={classes.items}>
-                <ReportListItem name="Profit & Loss" range="1/1/25-3/31/25" date="4/5/25" />
-                <ReportListItem name="Balance Sheet" range="1/1/25-3/31/25" date="4/7/25" />
-                <ReportListItem name="Cash Flow Statement" range="2/1/25-3/31/25" date="4/10/25" />
-                <ReportListItem name="Profit & Loss" range="4/1/25-6/30/25" date="7/5/25" />
-                <ReportListItem name="Tax Summary" range="1/1/25-4/1/25" date="4/12/25" />
-                <ReportListItem name="Balance Sheet" range="4/1/25-6/30/25" date="7/10/25" />
-                <ReportListItem name="Profit & Loss" range="5/1/25-7/31/25" date="8/5/25" />
-                <ReportListItem name="Cash Flow Statement" range="3/1/25-5/31/25" date="6/5/25" />
-                <ReportListItem name="Tax Summary" range="2/1/25-4/30/25" date="5/1/25" />
-                <ReportListItem name="Balance Sheet" range="7/1/25-9/30/25" date="10/5/25" />
+                {reportsData &&
+                    reportsData.map((report, index) => {
+                        return (
+                            <ReportListItem
+                                name={reportTypesMapping[report.type]}
+                                range={`${report.start_date}-${report.end_date}`}
+                                date={report.report_ran_on_date}
+                                key={index}
+                            />
+                        );
+                    })}
             </section>
         </div>
     );
