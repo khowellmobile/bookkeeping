@@ -285,3 +285,45 @@ class RentPayment(models.Model):
 
     def __str__(self):
         return f"{self.entity.name}: ${self.amount}"
+
+
+REPORT_TYPE_CHOICES = [
+    ("na", "NA"),
+    ("balance_sheet", "Balance Sheet"),
+    ("profit_loss", "Profit & Loss"),
+]
+
+REPORT_DATE_RANGE_CHOICES = [
+    ("last_year", "Last Year"),
+    ("year_to_date", "Year to Date"),
+    ("all_time", "All Time"),
+    ("custom", "Custom"),
+]
+
+
+class ReportHistory(models.Model):
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="reports", null=True
+    )
+    property = models.ForeignKey(
+        Property, on_delete=models.CASCADE, related_name="reports", null=True
+    )
+    type = models.CharField(
+        max_length=25,
+        choices=REPORT_TYPE_CHOICES,
+        default="na",
+        null=True,
+        blank=True,
+    )
+    report_range_type = models.CharField(
+        max_length=25,
+        choices=REPORT_DATE_RANGE_CHOICES,
+        default="custom",
+        null=True,
+        blank=True,
+    )
+    start_date = models.DateField(null=True)
+    end_date = models.DateField(null=True)
+    report_ran_on_date = models.DateField(null=True, auto_now_add=True)
+    is_deleted = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
