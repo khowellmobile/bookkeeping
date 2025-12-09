@@ -1,7 +1,8 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import classes from "./ReportsPage.module.css";
 
+import { useReportAPI } from "../hooks/useReportApi";
 import AccountsCtx from "../components/contexts/AccountsCtx";
 import PrintIcon from "../assets/print-icon.svg";
 import ArrowLeftIcon from "../assets/arrow-left-icon.svg";
@@ -13,17 +14,16 @@ import ProfitLoss from "../components/elements/reports/ProfitLoss";
 import Button from "../components/elements/utilities/Button";
 
 const ReportsPage = () => {
+    const { addReport } = useReportAPI();
     const { ctxAccountList } = useContext(AccountsCtx);
 
+    const [activeReport, setActiveReport] = useState(<></>);
     const [reportType, setReportType] = useState("Profit & Loss");
     const [reportRangeType, setReportRangeType] = useState("Custom");
     const [dateRange, setDateRange] = useState({
         startDate: "",
         endDate: "",
     });
-    const [isTypeExpanded, setIsTypeExpanded] = useState(false);
-    const [isRangeExpanded, setIsRangeExpanded] = useState(false);
-    const [historyOpen, setHistoryOpen] = useState(true);
     const [quickSelectList, setQuickSelectList] = useState([
         ["All Time", "Balance Sheet"],
         ["All Time", "Profit & Loss"],
@@ -31,16 +31,12 @@ const ReportsPage = () => {
         ["Last Year", "Profit & Loss"],
     ]);
 
+    const [isTypeExpanded, setIsTypeExpanded] = useState(false);
+    const [isRangeExpanded, setIsRangeExpanded] = useState(false);
+    const [historyOpen, setHistoryOpen] = useState(true);
+
     const rangeTypes = ["Last Year", "Year to Date", "All Time", "Custom"];
     const reportTypes = ["Balance Sheet", "Profit & Loss"];
-
-    const getReportComponent = () => {
-        if (reportType == "Balance Sheet") {
-            return <BalanceSheet accounts={ctxAccountList} />;
-        } else if (reportType == "Profit & Loss") {
-            return <ProfitLoss accounts={ctxAccountList} />;
-        }
-    };
 
     const handleDateChange = (e) => {
         const { name, value } = e.target;
@@ -111,6 +107,29 @@ const ReportsPage = () => {
 
         setReportRangeType(rangeType);
         setIsRangeExpanded(false);
+    };
+
+    const handleRunReport = () => {
+        if (reportType == "Balance Sheet") {
+            setActiveReport(<BalanceSheet accounts={ctxAccountList} />);
+            addReport({
+                type: "balance_sheet",
+                report_range_type: reportRangeType,
+                start_date: dateRange.startDate,
+                end_date: dateRange.endDate,
+            });
+        } else if (reportType == "Profit & Loss") {
+            setActiveReport(<ProfitLoss accounts={ctxAccountList} />);
+            addReport({
+                type: "profit_loss",
+                report_range_type: reportRangeType,
+                start_date: dateRange.startDate,
+                end_date: dateRange.endDate,
+            });
+        } else {
+            setActiveReport(<h1>Unrecognized report type</h1>);
+            return;
+        }
     };
 
     return (
@@ -204,7 +223,7 @@ const ReportsPage = () => {
                             </div>
                         </div>
                         <div>
-                            <Button text={"Run Report"} />
+                            <Button onClick={handleRunReport} text={"Run Report"} />
                         </div>
                     </div>
                 </div>
@@ -260,7 +279,7 @@ const ReportsPage = () => {
                             <img className={classes.icon} src={PrintIcon} alt="Icon" />
                         </div>
                     </div>
-                    <div className={classes.report}>{ctxAccountList && getReportComponent()}</div>
+                    <div className={classes.report}>{activeReport}</div>
                 </div>
             </div>
         </div>
