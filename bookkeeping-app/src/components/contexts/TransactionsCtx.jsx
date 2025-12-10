@@ -20,7 +20,7 @@ export function TransactionsCtxProvider(props) {
     const { showToast } = useToast();
 
     const { ctxAccessToken } = useContext(AuthCtx);
-    const { ctxActiveAccount } = useContext(AccountsCtx);
+    const { ctxActiveAccount, ctxRefetchAccounts } = useContext(AccountsCtx);
     const { ctxActiveEntity } = useContext(EntitiesCtx);
     const { ctxActiveProperty } = useContext(PropertiesCtx);
 
@@ -97,6 +97,7 @@ export function TransactionsCtxProvider(props) {
 
             const newData = await response.json();
             mutate((prev) => [...(prev || []), ...newData], false);
+            ctxRefetchAccounts(); // Ensures that ctxAccountList has new balances
             showToast("Transactions added", "success", 3000);
         } catch (error) {
             console.error("Error sending transactions:", error);
