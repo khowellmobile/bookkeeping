@@ -14,6 +14,7 @@ const AccountsCtx = createContext({
     ctxAddAccount: () => {},
     ctxUpdateAccount: () => {},
     ctxDeleteAccount: () => {},
+    ctxRefetchAccounts: () => {},
 });
 
 export function AccountsCtxProvider(props) {
@@ -45,6 +46,9 @@ export function AccountsCtxProvider(props) {
         error,
         mutate,
     } = useSWRImmutable(propertyId && ctxAccessToken ? [`${apiURL}?property_id=${propertyId}`] : null, fetcher);
+
+    // exposing mutate to consuming components
+    const ctxRefetchAccounts = () => mutate();
 
     // Resets active account if property changes
     useEffect(() => {
@@ -161,6 +165,7 @@ export function AccountsCtxProvider(props) {
         ctxAddAccount,
         ctxUpdateAccount,
         ctxDeleteAccount,
+        ctxRefetchAccounts,
     };
 
     return <AccountsCtx.Provider value={context}>{props.children}</AccountsCtx.Provider>;
