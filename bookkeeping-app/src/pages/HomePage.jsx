@@ -4,9 +4,9 @@ import Shortcuts from "../components/elements/misc/Shortcuts";
 import DashBlock from "../components/elements/misc/DashBlock";
 
 import { AccountListing, PropertyListing, ReportListing } from "../components/elements/listings/DashListings";
+import MonthlyRentStat from "../components/elements/misc/MonthlyRentStat";
 
 const HomePage = () => {
-
     const exampleText =
         "Your contractors W2s are ready for download! Head to the journals page to print them out right away!";
 
@@ -38,7 +38,7 @@ const HomePage = () => {
                 </div>
                 <div className={classes.subTwoRight}>
                     <div className={classes.largeBlock}>
-                        <p>What goes here?</p>
+                        <MonthlyRentStat />
                     </div>
                 </div>
             </div>

@@ -14,6 +14,7 @@ const AccountsCtx = createContext({
     ctxAddAccount: () => {},
     ctxUpdateAccount: () => {},
     ctxDeleteAccount: () => {},
+    ctxRefetchAccounts: () => {},
 });
 
 export function AccountsCtxProvider(props) {
@@ -46,6 +47,10 @@ export function AccountsCtxProvider(props) {
         mutate,
     } = useSWRImmutable(propertyId && ctxAccessToken ? [`${apiURL}?property_id=${propertyId}`] : null, fetcher);
 
+    // exposing mutate to consuming components
+    const ctxRefetchAccounts = () => mutate();
+
+    // Resets active account if property changes
     useEffect(() => {
         setCtxActiveAccount({ name: "None Selected" });
     }, [ctxActiveProperty, ctxAccessToken]);
@@ -72,7 +77,7 @@ export function AccountsCtxProvider(props) {
             const data = await response.json();
             return data;
         } catch (e) {
-            console.log("Error: " + e);
+            console.error("Error: " + e);
         }
     };
 
@@ -92,6 +97,10 @@ export function AccountsCtxProvider(props) {
                 },
                 body: JSON.stringify(account),
             });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error. Status: ${response.status}`);
+            }
 
             const newAccount = await response.json();
             mutate((prev) => (prev ? [...prev, newAccount] : [newAccount]), false);
@@ -114,8 +123,7 @@ export function AccountsCtxProvider(props) {
             });
 
             if (!response.ok) {
-                console.log("Error:", response.error);
-                return;
+                throw new Error(`HTTP error. Status: ${response.status}`);
             }
 
             const updatedData = await response.json();
@@ -139,7 +147,7 @@ export function AccountsCtxProvider(props) {
             });
 
             if (!response.ok) {
-                console.log("Error:", response.error);
+                console.error("Error:", response.error);
                 return;
             }
 
@@ -157,6 +165,7 @@ export function AccountsCtxProvider(props) {
         ctxAddAccount,
         ctxUpdateAccount,
         ctxDeleteAccount,
+        ctxRefetchAccounts,
     };
 
     return <AccountsCtx.Provider value={context}>{props.children}</AccountsCtx.Provider>;

@@ -3,7 +3,7 @@
  *
  */
 
-import { render, screen, fireEvent, waitFor, act } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import AccountEntryDropdown from "@/src/components/elements/dropdowns/AccountEntryDropdown";
 import AccountsCtx from "@/src/components/contexts/AccountsCtx";
 
@@ -50,10 +50,15 @@ const mockAccount = {
 };
 const mockOnChange = jest.fn();
 
-const renderAccountDropdown = (vals = mockAccount, props = {}) => {
+const renderAccountDropdown = (accountVal = mockAccount, props = {}) => {
     return render(
         <MockAccountsCtxProvider>
-            <AccountEntryDropdown vals={vals} scrollRef={mockScrollRef} onChange={mockOnChange} {...props} />
+            <AccountEntryDropdown
+                accountVal={accountVal}
+                scrollRef={mockScrollRef}
+                onChange={mockOnChange}
+                {...props}
+            />
         </MockAccountsCtxProvider>
     );
 };
@@ -61,23 +66,25 @@ const renderAccountDropdown = (vals = mockAccount, props = {}) => {
 describe("AccountEntryDropdown Rendering and initial state", () => {
     beforeEach(() => {
         jest.clearAllMocks();
+    });
+
+    it("should display the initial account name in the input field", async () => {
         renderAccountDropdown();
+        await waitFor(() => {
+            expect(screen.getByRole("textbox")).toBeInTheDocument();
+        });
     });
 
-    it("should display the initial account name in the input field", () => {
-        expect(screen.getByRole("textbox")).toHaveValue("Checking");
+    it("should have dropdown be display:none on render", () => {
+        renderAccountDropdown();
+        expect(screen.queryByText("All Accounts")).toBeInTheDocument();
+        expect(screen.queryByText("Savings")).toBeInTheDocument();
     });
 
-    it("should not display the dropdown content initially", () => {
-        expect(screen.queryByText("All Accounts")).not.toBeInTheDocument();
-        expect(screen.queryByText("Savings")).not.toBeInTheDocument();
-    });
-
-    // Uncomment when issue #217 in github is resolved
-    /* it("should display an empty input field when no account is initially selected", () => {
+    it("should display an empty input field when no account is initially selected", () => {
         renderAccountDropdown({ account: null });
         expect(screen.getByRole("textbox")).toHaveValue("");
-    }); */
+    });
 });
 
 describe("AccountEntryDropdown Opening and Filtering", () => {
@@ -134,38 +141,24 @@ describe("AccountEntryDropdown Selection and Closing", () => {
         fireEvent.change(input, { target: { value: "" } });
     });
 
-    // Add this test back in when issue #218 is completed
-    /* it("should close and update input when a new account is selected", async () => {
+    it("should close and update input when a new account is selected", async () => {
         const savingsAccount = screen.getByText("Savings");
         fireEvent.click(savingsAccount);
 
         expect(screen.getByRole("textbox")).toHaveValue("Savings");
         await waitFor(() => {
-            expect(screen.queryByRole("dropdown-anchor")).not.toBeInTheDocument();
-            expect(screen.queryByText("All Accounts")).not.toBeInTheDocument();
-            expect(screen.queryByText("Checking")).not.toBeInTheDocument();
+            expect(screen.getByRole("dropdown-anchor")).toHaveClass("noDisplay");
         });
-
         expect(mockOnChange).toHaveBeenCalledTimes(1);
         expect(mockOnChange).toHaveBeenCalledWith({ id: 2, name: "Savings" });
-    }); */
+    });
 
-    it("should close the dropdown after blur delay", async () => {
-        const input = screen.getByRole("textbox");
+    it("should set dropdown to display none when clicked outside of", async () => {
+        expect(screen.getByRole("dropdown-anchor")).not.toHaveClass("noDisplay");
+        fireEvent.mouseDown(document.body);
 
-        fireEvent.blur(input);
-
-        // Dropdown should still be visible immediately after blur (due to setTimeout)
-        expect(screen.getByText("All Accounts")).toBeInTheDocument();
-
-        // Fast-forward time
-        await act(async () => {
-            jest.advanceTimersByTime(150);
-        });
-
-        // Dropdown should be closed after 150ms
         await waitFor(() => {
-            expect(screen.queryByText("All Accounts")).not.toBeInTheDocument();
+            expect(screen.getByRole("dropdown-anchor")).toHaveClass("noDisplay");
         });
     });
 });

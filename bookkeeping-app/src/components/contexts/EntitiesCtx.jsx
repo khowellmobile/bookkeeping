@@ -94,8 +94,7 @@ export function EntitiesCtxProvider(props) {
             });
 
             if (!response.ok) {
-                showToast("Error updating entity", "error", 5000);
-                throw new Error(`HTTP error! status: ${response.status}`);
+                throw new Error(`HTTP error. Status: ${response.status}`);
             } else {
                 const returnedEntity = await response.json();
                 mutate((prevEntityList) => {

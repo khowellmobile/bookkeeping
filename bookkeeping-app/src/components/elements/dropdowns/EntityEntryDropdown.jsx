@@ -18,6 +18,7 @@ const EntityEntryDropdown = ({ scrollRef, onChange, hasLeftBorder = false }) => 
     const [pxScroll, setPxScroll] = useState(0);
 
     const inputRef = useRef();
+    const containerRef = useRef();
 
     let style = isOffScreenBottom
         ? { bottom: `calc(1.5rem + ${pxScroll}px + 1px)` }
@@ -65,33 +66,45 @@ const EntityEntryDropdown = ({ scrollRef, onChange, hasLeftBorder = false }) => 
             );
             setFilteredEntitys(filtered);
         }
-
-        // Clear selection in components further up tree when user clears search box
-        if (searchTerm == "") {
-            onChange("");
-        }
     }, [searchTerm, ctxEntityList]);
 
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (containerRef.current && !containerRef.current.contains(event.target)) {
+                setIsExpanded(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [setIsExpanded]);
+
     const clickEntityHandler = (entity) => {
-        setIsExpanded(false);
         setSearchTerm(entity.name);
         onChange(entity);
         if (inputRef.current) {
             inputRef.current.focus();
         }
+        handleBlur();
+    };
+
+    const handleFocus = () => {
+        setIsExpanded(true);
+        if (inputRef.current) {
+            inputRef.current.select();
+        }
     };
 
     const handleBlur = () => {
-        setTimeout(() => {
-            setIsExpanded(false);
-        }, 100);
+        setIsExpanded(false);
     };
 
     return (
         <>
             {isModalOpen && <AddEntityModal handleCloseModal={handleCloseModal} />}
 
-            <div className={classes.mainContainer} onFocus={() => checkOffScreen()}>
+            <div className={classes.mainContainer} onFocus={() => checkOffScreen()} ref={containerRef}>
                 <input
                     type="text"
                     value={searchTerm}
@@ -99,33 +112,30 @@ const EntityEntryDropdown = ({ scrollRef, onChange, hasLeftBorder = false }) => 
                         setSearchTerm(e.target.value);
                         setIsExpanded(true);
                     }}
-                    onFocus={() => setIsExpanded(true)}
-                    onBlur={handleBlur}
+                    onFocus={handleFocus}
                     ref={inputRef}
                     style={hasLeftBorder ? { borderLeft: "1px dashed var(--border-color)" } : {}}
                 />
-                {isExpanded && (
-                    <div className={`${classes.anchor} ${isExpanded ? "" : classes.noDisplay}`}>
-                        <div className={classes.dropDownContent} style={style}>
-                            <div className={classes.dropdownHeader}>
-                                <p>All Entities</p>
-                                <Button onClick={() => setIsModalOpen(true)} text={"Add Entity"} />
-                            </div>
-                            <div className={classes.separatorH}></div>
-                            <div className={classes.entityListing}>
-                                {filteredEntitys && filteredEntitys.length > 0 ? (
-                                    filteredEntitys.map((entity, index) => (
-                                        <p key={index} onClick={() => clickEntityHandler(entity)}>
-                                            {entity.name}
-                                        </p>
-                                    ))
-                                ) : (
-                                    <p>No matching entities found.</p>
-                                )}
-                            </div>
+                <div className={`${classes.anchor} ${isExpanded ? "" : classes.noDisplay}`} role="dropdown-anchor">
+                    <div className={classes.dropDownContent} style={style}>
+                        <div className={classes.dropdownHeader}>
+                            <p>All Entities</p>
+                            <Button onClick={() => setIsModalOpen(true)} text={"Add Entity"} />
+                        </div>
+                        <div className={classes.separatorH}></div>
+                        <div className={classes.entityListing}>
+                            {filteredEntitys && filteredEntitys.length > 0 ? (
+                                filteredEntitys.map((entity, index) => (
+                                    <p key={index} onClick={() => clickEntityHandler(entity)}>
+                                        {entity.name}
+                                    </p>
+                                ))
+                            ) : (
+                                <p>No matching entities found.</p>
+                            )}
                         </div>
                     </div>
-                )}
+                </div>
             </div>
         </>
     );

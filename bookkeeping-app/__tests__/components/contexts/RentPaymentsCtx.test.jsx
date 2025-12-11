@@ -9,6 +9,7 @@ import { RentPaymentsCtxProvider } from "@/src/components/contexts/RentPaymentsC
 import RentPaymentsCtx from "@/src/components/contexts/RentPaymentsCtx";
 import PropertiesCtx from "@/src/components/contexts/PropertiesCtx";
 import AuthCtx from "@/src/components/contexts/AuthCtx";
+import useSWRImmutable from "swr/immutable";
 
 // Mocking environment variables
 jest.mock("@/src/constants", () => ({
@@ -43,6 +44,14 @@ jest.mock("swr/immutable", () => ({
 }));
 
 const mockMutate = jest.fn();
+const defaultSWRData = { id: 1, amount: 100, date: "2025-01-01", entity: { id: 200, name: "Tenant 200" } };
+
+// Configure the SWR mock to return initial data
+useSWRImmutable.mockImplementation(() => ({
+    data: [defaultSWRData],
+    error: undefined,
+    mutate: mockMutate,
+}));
 
 // Mock the useToast hook
 const mockShowToast = jest.fn();
@@ -80,34 +89,22 @@ const wrapAndRenderComponent = (component) => {
 };
 
 const GeneralTestComponent = () => {
-    const {
-        ctxPaymentList,
-        ctxMonthPaymentList,
-        setCtxActiveDate,
-        getCtxPaymentsByMonth,
-        ctxAddPayment,
-        ctxUpdatePayment,
-    } = useContext(RentPaymentsCtx);
-
+    const { ctxMonthPaymentList, setCtxActiveDate, ctxAddPayment, ctxUpdatePayment } = useContext(RentPaymentsCtx);
     const newPaymentData = {
         amount: 1200,
-        date: "2025-11-01",
+        date: "2025-01-01",
         entity: { id: 5, name: "Tenant A" },
     };
     const updatedPaymentData = {
-        id: 99,
-        amount: 1500,
+        id: 1,
+        amount: 2000,
         date: "2025-10-05",
         entity_id: 8,
     };
 
     return (
         <div>
-            <span data-testid="payment-list-count">{ctxPaymentList ? ctxPaymentList.length : 0}</span>
-            <span data-testid="month-payment-count">
-                {ctxMonthPaymentList ? Object.keys(ctxMonthPaymentList).length : 0}
-            </span>
-            <button onClick={() => getCtxPaymentsByMonth(11, 2025)}>Fetch Month Payments</button>
+            <span data-testid="month-payment-count">{ctxMonthPaymentList ? ctxMonthPaymentList.length : 0}</span>
             <button onClick={() => setCtxActiveDate(new Date("2025-02-10"))}>Set Active Date</button>
             <button onClick={() => ctxAddPayment(newPaymentData)}>Add Payment</button>
             <button onClick={() => ctxUpdatePayment(updatedPaymentData)}>Update Payment</button>
@@ -119,6 +116,11 @@ describe("RentPaymentsCtxProvider initial render/consumption", () => {
     beforeEach(() => {
         jest.clearAllMocks();
         mockSessionStorage.clear();
+        useSWRImmutable.mockImplementation(() => ({
+            data: [defaultSWRData],
+            error: undefined,
+            mutate: mockMutate,
+        }));
         consoleLogSpy = jest.spyOn(console, "log").mockImplementation(() => {});
     });
 
@@ -134,96 +136,17 @@ describe("RentPaymentsCtxProvider initial render/consumption", () => {
         );
     });
 
-    test("should call getCtxPaymentsByMonth on initial render (due to useEffect)", async () => {
-        mockFetch.mockResolvedValueOnce({
-            ok: true,
-            json: async () => ({
-                1: [{ id: 101, amount: 500 }],
-            }),
-        });
+    test("should fetch monthPaymentList and store it in SWR variable", () => {
         wrapAndRenderComponent(<GeneralTestComponent />);
-
-        await waitFor(() => {
-            expect(mockFetch).toHaveBeenCalled();
-        });
-
-        const currentMonth = new Date().getMonth() + 1;
-        const currentYear = new Date().getFullYear();
-        expect(mockFetch).toHaveBeenCalledWith(
-            `http://test-url.com/api/rentPayments/?property_id=1&year=${currentYear}&month=${currentMonth}&format_by_day=true`,
-            expect.any(Object)
-        );
+        const paymentListCount = screen.getByTestId("month-payment-count");
+        expect(paymentListCount).toHaveTextContent("1");
     });
 });
 
-describe("RentPaymentsCtxProvider getCtxPaymentsByMonth", () => {
+describe("RentPaymentsCtxProvider ctxAddPayment", () => {
     beforeEach(() => {
         jest.clearAllMocks();
         mockSessionStorage.clear();
-        consoleLogSpy = jest.spyOn(console, "log").mockImplementation(() => {});
-    });
-
-    afterEach(() => {
-        consoleLogSpy.mockRestore();
-    });
-
-    test("should call getCtxPaymentsByMonth when ctxActiveDate changes", async () => {
-        mockFetch
-            .mockResolvedValueOnce({
-                ok: true,
-                json: async () => ({ 1: [] }),
-            }) // Initial call
-            .mockResolvedValueOnce({
-                ok: true,
-                json: async () => ({ 10: [{ id: 200, amount: 700 }] }),
-            }); // Second fetch from date change
-        wrapAndRenderComponent(<GeneralTestComponent />);
-
-        // Wait for useEffect to trigger intial fetch
-        await waitFor(() => expect(mockFetch).toHaveBeenCalledTimes(1));
-
-        const dateButton = screen.getByText("Set Active Date");
-        fireEvent.click(dateButton);
-
-        // Wait for useEffect to trigger fetch
-        await waitFor(() => {
-            expect(mockFetch).toHaveBeenCalledTimes(2);
-        });
-
-        expect(mockFetch).toHaveBeenCalledWith(
-            `http://test-url.com/api/rentPayments/?property_id=1&year=2025&month=2&format_by_day=true`,
-            expect.any(Object)
-        );
-    });
-
-    test("should log error if fetching monthly payments fails", async () => {
-        mockFetch.mockResolvedValueOnce({
-            ok: false,
-            status: 404,
-            json: async () => ({ detail: "Not Found" }),
-        });
-
-        wrapAndRenderComponent(<GeneralTestComponent />);
-
-        await waitFor(() => {
-            expect(mockFetch).toHaveBeenCalled();
-        });
-        expect(consoleLogSpy).toHaveBeenCalledWith("Error: HTTP error! status: 404");
-        const monthPaymentCount = screen.getByTestId("month-payment-count");
-        expect(monthPaymentCount).toHaveTextContent("0");
-    });
-});
-
-describe("RentPaymentsCtxProvider ctxAddPayment (POST)", () => {
-    beforeEach(() => {
-        jest.clearAllMocks();
-        mockSessionStorage.clear();
-
-        // mock the inital useEffect fetch
-        mockFetch.mockResolvedValue({
-            ok: true,
-            json: async () => ({}),
-        });
         consoleLogSpy = jest.spyOn(console, "log").mockImplementation(() => {});
     });
 
@@ -235,8 +158,8 @@ describe("RentPaymentsCtxProvider ctxAddPayment (POST)", () => {
         const newPaymentResponse = {
             id: 100,
             amount: 1200,
-            date: "2025-11-01",
-            entity_id: 5,
+            date: "2025-01-01",
+            entity: { id: 5, name: "Tenant A" },
         };
         mockFetch.mockResolvedValueOnce({
             ok: true,
@@ -247,33 +170,41 @@ describe("RentPaymentsCtxProvider ctxAddPayment (POST)", () => {
         fireEvent.click(addButton);
 
         await waitFor(() => {
-            expect(mockFetch).toHaveBeenCalledTimes(2);
+            expect(mockFetch).toHaveBeenCalled();
         });
 
         const expectedUrl = "http://test-url.com/api/rentPayments/?property_id=1";
         const expectedBodyObject = {
             amount: 1200,
-            date: "2025-11-01",
+            date: "2025-01-01",
             entity_id: 5,
         };
-        const [receivedUrl, receivedOptions] = mockFetch.mock.calls.find((call) => call[1].method === "POST");
-
-        expect(receivedUrl.toString()).toBe(expectedUrl);
-        expect(receivedOptions.method).toBe("POST");
-        expect(receivedOptions.body).toBe(JSON.stringify(expectedBodyObject));
-        expect(receivedOptions.headers).toEqual(
-            expect.objectContaining({
+        const expectedOptions = {
+            method: "POST",
+            body: JSON.stringify(expectedBodyObject),
+            headers: {
                 Authorization: `Bearer mock-token`,
                 "Content-Type": "application/json",
-            })
-        );
+            },
+        };
 
-        // Mutate not called in current interation of RentPaymentsCtx/ctxAddPayment
+        expect(mockFetch).toHaveBeenCalledTimes(1);
+        const [receivedUrl, receivedOptions] = mockFetch.mock.calls[0];
+        expect(receivedUrl.toString()).toBe(expectedUrl);
+        expect(receivedOptions.method).toBe(expectedOptions.method);
+        expect(receivedOptions.body).toBe(expectedOptions.body);
+        expect(receivedOptions.headers).toEqual(expect.objectContaining(expectedOptions.headers));
+
+        // Check issue #245 for direction.
         /* const updaterFn = mockMutate.mock.calls[0][0];
-        const existingCacheData = mockInitialEntityList; // SWR data is the entity list
+        const existingCacheData = [defaultSWRData];
         const newCacheData = updaterFn(existingCacheData);
-        expect(newCacheData).toEqual([...existingCacheData, newPaymentResponse]); // Appends new payment to entity list cache
+        const dayIndex = 1; // Keeping testing data as first day for simplicity
+        console.log(newCacheData);
+        expect(newCacheData[0]).toEqual(newPaymentResponse);
         expect(mockMutate.mock.calls[0][1]).toBe(false);
+
+        expect(mockMutate).toHaveBeenCalledTimes(1);
         expect(mockShowToast).toHaveBeenCalledWith("Payment added", "success", 3000); */
     });
 
@@ -291,12 +222,96 @@ describe("RentPaymentsCtxProvider ctxAddPayment (POST)", () => {
         fireEvent.click(addButton);
 
         await waitFor(() => {
-            expect(mockFetch).toHaveBeenCalledTimes(2);
+            expect(mockFetch).toHaveBeenCalledTimes(1);
         });
 
-        //expect(mockMutate).not.toHaveBeenCalled();
-        //expect(mockShowToast).toHaveBeenCalledWith("Error adding payment", "error", 5000);
+        expect(mockMutate).not.toHaveBeenCalled();
+        expect(mockShowToast).toHaveBeenCalledWith("Error adding payment", "error", 5000);
 
         consoleLogSpy.mockRestore();
+    });
+});
+
+describe("RentPaymentsCtxProvider ctxUpdatePayment", () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+        useSWRImmutable.mockImplementation(() => ({
+            data: [defaultSWRData],
+            error: undefined,
+            mutate: mockMutate,
+        }));
+        consoleSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+    });
+
+    afterEach(() => {
+        consoleSpy.mockRestore();
+    });
+
+    test("should successfully update a rent item, update SWR cache, and show success toast", async () => {
+        const updatedRentData = { id: 1, amount: 2000, date: "2025-10-05", entity_id: 8 };
+        const updatedRentResponse = { id: 1, amount: 2000, date: "2025-10-05", entity: { id: 8, name: "Tenant 8" } };
+        mockFetch.mockResolvedValueOnce({
+            ok: true,
+            json: async () => updatedRentResponse,
+        });
+
+        wrapAndRenderComponent(<GeneralTestComponent />);
+
+        const updateButton = screen.getByText("Update Payment");
+        fireEvent.click(updateButton);
+
+        await waitFor(() => {
+            expect(mockFetch).toHaveBeenCalled();
+        });
+
+        // Define the expected request details
+        const expectedUrl = "http://test-url.com/api/rentPayments/1/";
+        const expectedBodyObject = updatedRentData;
+        const expectedOptions = {
+            method: "PUT",
+            body: JSON.stringify(expectedBodyObject),
+            headers: {
+                Authorization: `Bearer mock-token`,
+                "Content-Type": "application/json",
+            },
+        };
+
+        expect(mockFetch).toHaveBeenCalledTimes(1);
+        const [receivedUrl, receivedOptions] = mockFetch.mock.calls[0];
+        expect(receivedUrl.toString()).toBe(expectedUrl);
+        expect(receivedOptions.method).toBe(expectedOptions.method);
+        expect(receivedOptions.body).toBe(expectedOptions.body);
+        expect(receivedOptions.headers).toEqual(expect.objectContaining(expectedOptions.headers));
+
+        // Ensuring mutate is called properly with correct data
+        const updaterFn = mockMutate.mock.calls[0][0];
+        const existingCacheData = [defaultSWRData];
+        const newCacheData = updaterFn(existingCacheData);
+        expect(newCacheData).toEqual([
+            { id: 1, amount: 2000, date: "2025-10-05", entity: { id: 8, name: "Tenant 8" } },
+        ]);
+        expect(mockMutate.mock.calls[0][1]).toBe(false);
+
+        expect(mockMutate).toHaveBeenCalledTimes(1);
+        expect(mockShowToast).toHaveBeenCalledWith("Payment updated", "success", 3000);
+    });
+
+    test("should handle API failure when updating an account and show error toast", async () => {
+        mockFetch.mockResolvedValueOnce({
+            ok: false,
+            json: async () => ({ error: "Server Error" }),
+        });
+
+        wrapAndRenderComponent(<GeneralTestComponent />);
+
+        const updateButton = screen.getByText("Update Payment");
+        fireEvent.click(updateButton);
+
+        await waitFor(() => {
+            expect(mockFetch).toHaveBeenCalled();
+        });
+
+        expect(mockMutate).not.toHaveBeenCalled();
+        expect(mockShowToast).toHaveBeenCalledWith("Error updating payment", "error", 5000);
     });
 });

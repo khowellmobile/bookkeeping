@@ -6,6 +6,12 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { TransactionEntryItem } from "@/src/components/elements/items/InputEntryItems";
 
+// Mocking enviroment variables
+jest.mock("@/src/constants", () => ({
+    ENVIRONMENT: "test",
+    BASE_URL: "http://test-url.com",
+}));
+
 // Mocking components
 jest.mock("@/src/components/elements/utilities/Input", () => ({ name, value, onChange }) => (
     <input data-testid={`${name}-input`} type="text" name={name} value={value} onChange={onChange} />

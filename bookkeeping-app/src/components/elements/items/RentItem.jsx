@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useContext, useCallback } from "react";
+import { useEffect, useState, useRef, useContext, useCallback, useMemo } from "react";
 
 import classes from "./RentItem.module.css";
 
@@ -8,7 +8,7 @@ import EntityDropdown from "../dropdowns/EntityDropdown";
 import ConfirmationModal from "../modals/ConfirmationModal";
 import Input from "../utilities/Input";
 
-const RentItem = ({ item, dayIndex, updateFields, removePayment, handleSaveRentPayment, pushLeft, pushUp }) => {
+const RentItem = ({ item, dayIndex, handleSaveRentPayment, pushLeft, pushUp, removeTemp }) => {
     const { ctxUpdatePayment } = useContext(RentPaymentsCtx);
     const { showToast } = useToast();
 
@@ -30,6 +30,14 @@ const RentItem = ({ item, dayIndex, updateFields, removePayment, handleSaveRentP
         top: pushUp && isClicked ? "-8.1rem" : "0",
         left: pushLeft && isClicked ? "-11.6rem" : "0",
     };
+
+    const isChanged = useMemo(() => {
+        return (
+            inputFields.amount !== item.amount ||
+            inputFields.entity !== item.entity ||
+            inputFields.status !== item.status
+        );
+    }, [inputFields, item]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -55,26 +63,21 @@ const RentItem = ({ item, dayIndex, updateFields, removePayment, handleSaveRentP
     };
 
     const handleClose = useCallback(() => {
-        const isChanged =
-            inputFields.amount !== item.amount ||
-            inputFields.entity !== item.entity ||
-            inputFields.status !== item.status;
-
         if (String(item.id).startsWith("temp")) {
-            removePayment(dayIndex, item.id);
+            removeTemp();
         } else if (isChanged && validateInputs()) {
-            updateFields(dayIndex, item.id, inputFields);
             ctxUpdatePayment({ ...item, ...inputFields });
         } else if (isChanged && !validateInputs()) {
-            showToast(errorText, "error", 5000); // ERROR TEXT NOT SETTING PROPERLY HERE
+            showToast("Invalid fields. Changes Reset.", "error", 5000);
             setInputFields({
                 status: item.status,
                 amount: item.amount,
                 entity: item.entity,
             });
-            setErrorText("");
+            return;
         }
 
+        setErrorText("");
         setIsClicked(false);
         setTimeout(() => {
             setIsAbsolute(false);
@@ -140,8 +143,11 @@ const RentItem = ({ item, dayIndex, updateFields, removePayment, handleSaveRentP
     }, [isClicked, handleClose]);
 
     const onConfirmModalAction = () => {
-        removePayment(dayIndex, item.id);
-        ctxUpdatePayment({ id: item.id, is_deleted: true });
+        if (String(item.id).startsWith("temp")) {
+            removeTemp();
+        } else {
+            ctxUpdatePayment({ id: item.id, is_deleted: true });
+        }
         setIsConfirmModalOpen(false);
     };
 
@@ -160,12 +166,12 @@ const RentItem = ({ item, dayIndex, updateFields, removePayment, handleSaveRentP
             errTxt += "Status type set to unsupported type.\n";
         }
 
-        if (!inputFields.entity) {
+        if (!inputFields.entity || Object.keys(inputFields.entity).length === 0) {
             errTxt += "Entity must be selected\n";
         }
 
         if (errTxt !== "") {
-            setErrorText("Error: Invalid fields.");
+            setErrorText("Error: Invalid fields. Changes Reset.");
         }
         return errTxt === "";
     }, [inputFields]);
@@ -269,7 +275,7 @@ const RentItem = ({ item, dayIndex, updateFields, removePayment, handleSaveRentP
                                         className={`${(isClicked && classes[inputFields.status]) || classes.stat0}`}
                                         onClick={handleClose}
                                     >
-                                        {String(item.id).startsWith("temp") ? "Cancel" : "Close"}
+                                        {String(item.id).startsWith("temp") ? "Cancel" : isChanged ? "Save" : "Close"}
                                     </button>
 
                                     {String(item.id).startsWith("temp") && (

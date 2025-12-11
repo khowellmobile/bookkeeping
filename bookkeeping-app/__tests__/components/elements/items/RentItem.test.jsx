@@ -44,7 +44,7 @@ jest.mock("@/src/components/elements/modals/ConfirmationModal", () => ({ text, o
 
 const mockUpdatePayment = jest.fn();
 const mockUpdateFields = jest.fn();
-const mockRemovePayment = jest.fn();
+const mockRemoveTemp = jest.fn();
 const mockSavePayment = jest.fn();
 const MockRentPaymentsCtxProvider = ({ children }) => (
     <RentPaymentsCtx.Provider value={{ ctxUpdatePayment: mockUpdatePayment }}>{children}</RentPaymentsCtx.Provider>
@@ -72,8 +72,7 @@ const renderRentItem = (item = mockItem) => {
             <RentItem
                 item={item}
                 dayIndex={0}
-                updateFields={mockUpdateFields}
-                removePayment={mockRemovePayment}
+                removeTemp={mockRemoveTemp}
                 handleSaveRentPayment={mockSavePayment}
                 pushLeft={false}
                 pushUp={false}
@@ -101,7 +100,7 @@ describe("RentItem functionality: Editing and Closing (Existing Item)", () => {
         renderRentItem();
     });
 
-    it("should call updateFields and ctxUpdatePayment on close if fields are changed and valid", () => {
+    it("should call ctxUpdatePayment on close if fields are changed and valid", () => {
         const itemBox = screen.getByText("$100.00, Test Entity").closest("div");
         fireEvent.click(itemBox);
 
@@ -112,13 +111,6 @@ describe("RentItem functionality: Editing and Closing (Existing Item)", () => {
         fireEvent.click(paidTag);
 
         fireEvent.mouseDown(document.body);
-        const expectedUpdatedFields = {
-            amount: "150.50",
-            status: "paid",
-            entity: mockItem.entity,
-        };
-        expect(mockUpdateFields).toHaveBeenCalledWith(0, 1, expectedUpdatedFields);
-
         expect(mockUpdatePayment).toHaveBeenCalledWith(
             expect.objectContaining({
                 id: 1,
@@ -137,13 +129,8 @@ describe("RentItem functionality: Editing and Closing (Existing Item)", () => {
 
         fireEvent.mouseDown(document.body);
         expect(mockShowToast).toHaveBeenCalledTimes(1);
-        expect(mockShowToast).toHaveBeenCalledWith(
-            expect.stringContaining(""), // Empty for now. Needs bug fix.
-            "error",
-            5000
-        );
+        expect(mockShowToast).toHaveBeenCalledWith("Invalid fields. Changes Reset.", "error", 5000);
 
-        expect(mockUpdateFields).not.toHaveBeenCalled();
         expect(mockUpdatePayment).not.toHaveBeenCalled();
         expect(screen.getByDisplayValue("100.00")).toBeInTheDocument();
     });
@@ -167,7 +154,6 @@ describe("RentItem functionality: Deletion (Existing Item)", () => {
         const confirmButton = screen.getByTestId("confirm-btn");
         fireEvent.click(confirmButton);
 
-        expect(mockRemovePayment).toHaveBeenCalledWith(0, 1);
         expect(mockUpdatePayment).toHaveBeenCalledWith({ id: 1, is_deleted: true });
     });
 });
@@ -205,7 +191,7 @@ describe("RentItem functionality: Temporary Item (temp-ID)", () => {
         const cancelButton = screen.getByText("Cancel");
         fireEvent.click(cancelButton);
 
-        expect(mockRemovePayment).toHaveBeenCalledWith(0, "temp-123");
+        expect(mockRemoveTemp).toHaveBeenCalled();
         expect(mockSavePayment).not.toHaveBeenCalled();
         expect(mockUpdateFields).not.toHaveBeenCalled();
     });
@@ -226,8 +212,7 @@ describe("RentItem functionality: Temporary Item (temp-ID)", () => {
         expect(mockSavePayment).not.toHaveBeenCalled();
     });
 
-    // This test case can be uncommented once the entity validation bug is fixed in RentItem.jsx
-    /* it("should fail validation if entity field is missing on save", () => {
+    it("should fail validation if entity field is empty obj on save", () => {
         const testTempItem = {
             id: "temp-123",
             status: "due",
@@ -241,7 +226,23 @@ describe("RentItem functionality: Temporary Item (temp-ID)", () => {
         fireEvent.click(saveButton);
 
         expect(mockSavePayment).not.toHaveBeenCalled();
-    }); */
+    });
+
+    it("should fail validation if entity field is null on save", () => {
+        const testTempItem = {
+            id: "temp-123",
+            status: "due",
+            amount: "100.00",
+            entity: null,
+            date: "2025-10-27",
+        };
+        renderRentItem(testTempItem);
+
+        const saveButton = screen.getByText("Save");
+        fireEvent.click(saveButton);
+
+        expect(mockSavePayment).not.toHaveBeenCalled();
+    });
 
     it("should fail validation if status field is missing on save", () => {
         const testTempItem = {

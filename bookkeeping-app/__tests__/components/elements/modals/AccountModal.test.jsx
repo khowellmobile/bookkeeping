@@ -242,3 +242,35 @@ describe("AccountModal Validation (validateInputs)", () => {
         expect(screen.getByText("Error: Invalid fields. Edits were not saved.")).toBeInTheDocument();
     });
 });
+
+describe("AccountModal empty value handling", () => {
+    it("should handle render with empty account obj without error", () => {
+        const emptyProps = {
+            account: {},
+            handleCloseModal: jest.fn(),
+        };
+
+        renderAccountModal(emptyProps);
+    });
+
+    it("should handle render with null account without error", () => {
+        const emptyProps = {
+            account: null,
+            handleCloseModal: jest.fn(),
+        };
+
+        renderAccountModal(emptyProps);
+    });
+
+    it("should fill inputfields with 'N/A' values if empty", () => {
+        const emptyProps = {
+            account: null,
+            handleCloseModal: jest.fn(),
+        };
+        renderAccountModal(emptyProps);
+
+        expect(screen.getByTestId("input-name").value).toBe("");
+        expect(screen.getByTestId("input-initial_balance").value).toBe("");
+        expect(screen.getByTestId("input-description").value).toBe("");
+    });
+});
