@@ -66,8 +66,11 @@ const MockAuthsCtxProvider = ({ children }) => (
 );
 
 const mockActiveAccount = { id: 300, name: "Account 0" };
+const mockCtxRefetchAccount = jest.fn();
 const MockAccountsCtxProvider = ({ children }) => (
-    <AccountsCtx.Provider value={{ ctxActiveAccount: mockActiveAccount }}>{children}</AccountsCtx.Provider>
+    <AccountsCtx.Provider value={{ ctxActiveAccount: mockActiveAccount, ctxRefetchAccounts: mockCtxRefetchAccount }}>
+        {children}
+    </AccountsCtx.Provider>
 );
 
 const mockActiveEntity = { id: 200, name: "Entity 0" };
