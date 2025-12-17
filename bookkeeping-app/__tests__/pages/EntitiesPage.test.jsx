@@ -17,8 +17,22 @@ jest.mock("@/src/constants", () => ({
 
 // Mocking context providers
 const mockCtxEntityList = [
-    { id: 1, name: "Entity 1", company: "Company 1" },
-    { id: 2, name: "Entity 2", company: "Company 2" },
+    {
+        id: 1,
+        name: "Entity 1",
+        company: "Company 1",
+        address: "Address 1",
+        phone_number: "123-123-1234",
+        email: "entity1@email.com",
+    },
+    {
+        id: 2,
+        name: "Entity 2",
+        company: "Company 2",
+        address: "Address 2",
+        phone_number: "456-456-4567",
+        email: "entity2@email.com",
+    },
 ];
 const mockCtxUpdateEntity = jest.fn();
 let mockCtxActiveEntity;
@@ -68,10 +82,13 @@ jest.mock("@/src/components/elements/modals/AddEntityModal", () => ({ handleClos
         Add Entity Modal
     </div>
 ));
-jest.mock("@/src/components/elements/modals/ConfirmationModal.jsx", () => ({ text, onConfirm }) => (
+jest.mock("@/src/components/elements/modals/ConfirmationModal.jsx", () => ({ text, onConfirm, onCancel }) => (
     <div data-testid="confirmation-modal">
-        <button data-testid="confirm-delete-action" onClick={onConfirm}>
+        <button data-testid="confirm-action" onClick={onConfirm}>
             {text.confirm_txt}
+        </button>
+        <button data-testid="cancel-action" onClick={onCancel}>
+            {text.cancel_txt}
         </button>
     </div>
 ));
@@ -150,9 +167,216 @@ describe("EntitiesPage basic UI changes", () => {
         expect(screen.getByTestId("edit-entity-button")).toBeInTheDocument();
     });
 
-    it("should change isEditing when the edit button is clicked", () => {
+    it("should change isEditing to true when the edit button is clicked", () => {
+        expect(screen.getByRole("input-cluster")).not.toHaveClass("editing");
         fireEvent.click(screen.getByText("Entity 1"));
         fireEvent.click(screen.getByTestId("edit-entity-button"));
         expect(screen.getByRole("input-cluster")).toHaveClass("editing");
+    });
+
+    it("should change isEditing to false when the cancel button is clicked", () => {
+        fireEvent.click(screen.getByText("Entity 1"));
+        fireEvent.click(screen.getByTestId("edit-entity-button"));
+        expect(screen.getByRole("input-cluster")).toHaveClass("editing");
+
+        const cancelButton = screen.getByText("Cancel");
+        expect(cancelButton).toBeInTheDocument();
+        fireEvent.click(cancelButton);
+
+        expect(screen.getByRole("input-cluster")).not.toHaveClass("editing");
+    });
+
+    it("should open the Add Entity Modal when the button is clicked", () => {
+        expect(screen.queryByTestId("add-entity-modal")).not.toBeInTheDocument();
+
+        fireEvent.click(screen.getByText("Add New Entity"));
+
+        expect(screen.getByTestId("add-entity-modal")).toBeInTheDocument();
+    });
+
+    it("should close the Add Entity Modal when handleCloseModal is called", () => {
+        fireEvent.click(screen.getByText("Add New Entity"));
+
+        const modal = screen.getByTestId("add-entity-modal");
+        fireEvent.click(modal);
+
+        expect(screen.queryByTestId("add-entity-modal")).not.toBeInTheDocument();
+    });
+});
+
+describe("EntitiesPage confimration modal functionality", () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+        renderEntitiesPage();
+    });
+
+    it("should open the confirmation modal when `delete` is clicked", async () => {
+        fireEvent.click(screen.getByText("Entity 1"));
+        fireEvent.click(screen.getByTestId("edit-entity-button"));
+        fireEvent.click(screen.getByText("Delete"));
+
+        expect(screen.getByTestId("confirmation-modal")).toBeInTheDocument();
+    });
+
+    it("should open the confirmation modal when `cancel` is clicked w/ changes", async () => {
+        fireEvent.click(screen.getByText("Entity 1"));
+        fireEvent.click(screen.getByTestId("edit-entity-button"));
+
+        const nameInput = screen.getByTestId("input-name");
+        fireEvent.change(nameInput, { target: { value: "changed name", name: "name" } });
+
+        fireEvent.click(screen.getByText("Cancel"));
+
+        expect(screen.getByTestId("confirmation-modal")).toBeInTheDocument();
+    });
+
+    it("should open the confirmation modal when different entity is clicked w/ changes", async () => {
+        fireEvent.click(screen.getByText("Entity 1"));
+        fireEvent.click(screen.getByTestId("edit-entity-button"));
+
+        const nameInput = screen.getByTestId("input-name");
+        fireEvent.change(nameInput, { target: { value: "changed name", name: "name" } });
+
+        fireEvent.click(screen.getByText("Entity 2"));
+
+        expect(screen.getByTestId("confirmation-modal")).toBeInTheDocument();
+    });
+
+    it("should not open the confirmation modal when `cancel` is clicked w/o changes", async () => {
+        fireEvent.click(screen.getByText("Entity 1"));
+        fireEvent.click(screen.getByTestId("edit-entity-button"));
+
+        fireEvent.click(screen.getByText("Cancel"));
+
+        expect(screen.queryByTestId("confirmation-modal")).not.toBeInTheDocument();
+    });
+
+    it("should not call updateEntity and close modal when `keep editing` is clicked", async () => {
+        fireEvent.click(screen.getByText("Entity 1"));
+        fireEvent.click(screen.getByTestId("edit-entity-button"));
+
+        const nameInput = screen.getByTestId("input-name");
+        fireEvent.change(nameInput, { target: { value: "changed name", name: "name" } });
+
+        fireEvent.click(screen.getByText("Cancel"));
+
+        expect(screen.getByTestId("confirmation-modal")).toBeInTheDocument();
+
+        fireEvent.click(screen.getByTestId("cancel-action"));
+
+        expect(mockCtxUpdateEntity).not.toHaveBeenCalled();
+        expect(mockCtxActiveEntity.name).toBe("Entity 1");
+        expect(screen.getByTestId("input-name").value).toBe("changed name");
+    });
+
+    it("should not call updateEntity, clear changes, and close modal when `discard changes` is clicked", async () => {
+        fireEvent.click(screen.getByText("Entity 1"));
+        fireEvent.click(screen.getByTestId("edit-entity-button"));
+
+        const nameInput = screen.getByTestId("input-name");
+        fireEvent.change(nameInput, { target: { value: "changed name", name: "name" } });
+
+        fireEvent.click(screen.getByText("Cancel"));
+
+        expect(screen.getByTestId("confirmation-modal")).toBeInTheDocument();
+
+        fireEvent.click(screen.getByTestId("confirm-action"));
+
+        expect(mockCtxUpdateEntity).not.toHaveBeenCalled();
+        expect(mockCtxActiveEntity.name).toBe("Entity 1");
+        expect(screen.getByTestId("input-name").value).toBe("Entity 1");
+    });
+});
+
+describe("EntitiesPage entity editing", () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+        renderEntitiesPage();
+    });
+
+    it("should display tool buttons when editing icon clicked", () => {
+        fireEvent.click(screen.getByText("Entity 1"));
+        fireEvent.click(screen.getByTestId("edit-entity-button"));
+        expect(screen.getByText("Save")).toBeInTheDocument();
+        expect(screen.getByText("Cancel")).toBeInTheDocument();
+        expect(screen.getByText("Delete")).toBeInTheDocument();
+    });
+
+    it("should update the entity when save is clicked", async () => {
+        fireEvent.click(screen.getByText("Entity 1"));
+        fireEvent.click(screen.getByTestId("edit-entity-button"));
+
+        const newName = "new_name";
+        const nameInput = screen.getByTestId("input-name");
+        fireEvent.change(nameInput, { target: { value: newName, name: "name" } });
+
+        fireEvent.click(screen.getByText("Save"));
+
+        expect(mockCtxUpdateEntity).toHaveBeenCalledTimes(1);
+        expect(mockCtxUpdateEntity).toHaveBeenCalledWith({
+            ...mockCtxEntityList[0],
+            name: newName,
+            created_at: "", // Not sure where this value is coming from, not in mock data
+        });
+    });
+
+    it("should delete the entity when delete is clicked", async () => {
+        fireEvent.click(screen.getByText("Entity 1"));
+        fireEvent.click(screen.getByTestId("edit-entity-button"));
+
+        fireEvent.click(screen.getByText("Delete"));
+
+        expect(screen.getByTestId("confirmation-modal")).toBeInTheDocument();
+        fireEvent.click(screen.getByTestId("confirm-action"));
+
+        expect(mockCtxUpdateEntity).toHaveBeenCalledTimes(1);
+        expect(mockCtxUpdateEntity).toHaveBeenCalledWith({
+            id: 1,
+            is_deleted: true,
+        });
+    });
+});
+
+describe("EntitiesPage edit field validation", () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+        renderEntitiesPage();
+    });
+
+    it("should not update (fail validation) the entity when name is empty", async () => {
+        fireEvent.click(screen.getByText("Entity 1"));
+        fireEvent.click(screen.getByTestId("edit-entity-button"));
+
+        const nameInput = screen.getByTestId("input-name");
+        fireEvent.change(nameInput, { target: { value: "", name: "name" } });
+
+        fireEvent.click(screen.getByText("Save"));
+
+        expect(mockCtxUpdateEntity).not.toHaveBeenCalled();
+        expect(screen.getByText("Error: Invalid edits. Check formats and try again.")).toBeInTheDocument();
+    });
+
+    it("should not update (fail validation) the entity when phone number is not correct format", async () => {
+        fireEvent.click(screen.getByText("Entity 1"));
+        fireEvent.click(screen.getByTestId("edit-entity-button"));
+
+        const nameInput = screen.getByTestId("input-phone_number");
+        fireEvent.change(nameInput, { target: { value: "1234", name: "phone_number" } });
+
+        fireEvent.click(screen.getByText("Save"));
+
+        expect(mockCtxUpdateEntity).not.toHaveBeenCalled();
+    });
+
+    it("should not update (fail validation) the entity when email is not correct format", async () => {
+        fireEvent.click(screen.getByText("Entity 1"));
+        fireEvent.click(screen.getByTestId("edit-entity-button"));
+
+        const nameInput = screen.getByTestId("input-phone_number");
+        fireEvent.change(nameInput, { target: { value: "test@email@test.com", name: "email" } });
+
+        fireEvent.click(screen.getByText("Save"));
+
+        expect(mockCtxUpdateEntity).not.toHaveBeenCalled();
     });
 });
