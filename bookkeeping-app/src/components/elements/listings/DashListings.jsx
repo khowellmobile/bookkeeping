@@ -111,7 +111,7 @@ const ReportListing = () => {
                 </div>
             </section>
             <section className={classes.items}>
-                {reportsData ?
+                {reportsData ? (
                     reportsData.map((report, index) => {
                         return (
                             <ReportListItem
@@ -121,8 +121,13 @@ const ReportListing = () => {
                                 key={index}
                             />
                         );
-                    }) :
-                    <NoResultsDisplay mainText={"No report history to load."} guideText={"Have you chosen a Property?"} /> }
+                    })
+                ) : (
+                    <NoResultsDisplay
+                        mainText={"No report history to load."}
+                        guideText={"Have you chosen a Property?"}
+                    />
+                )}
             </section>
         </div>
     );
