@@ -158,7 +158,7 @@ const MonthlyRentStat = () => {
                                         <p>{activeSlice.type}</p>
                                         <span>
                                             <p>
-                                                {activeSlice.percentage}% - ${activeSlice.amount}
+                                                {activeSlice.percentage}% - ${activeSlice.amount.toFixed(2)}
                                             </p>
                                         </span>
                                     </>
@@ -172,7 +172,9 @@ const MonthlyRentStat = () => {
                             </p>
                             <h3>
                                 Total Projected Rent:{" "}
-                                <strong>{monthlySummary ? `$${monthlySummary.total_rent_payments}` : "loading"}</strong>
+                                <strong>
+                                    {monthlySummary ? `$${monthlySummary.total_rent_payments.toFixed(2)}` : "loading"}
+                                </strong>
                             </h3>
                         </div>
                     </>
