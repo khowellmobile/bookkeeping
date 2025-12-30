@@ -37,7 +37,7 @@ const AccountModal = ({ account, handleCloseModal }) => {
         }
     });
 
-    const accountTypes = ["Asset", "Bank", "Equity", "Liability"];
+    const accountTypes = ["Asset", "Bank", "Equity", "Liability", "Revenue", "Expense", "Credit Card"];
 
     const handleValueChange = (event) => {
         const name = event.target.name;
@@ -61,7 +61,10 @@ const AccountModal = ({ account, handleCloseModal }) => {
 
     const updateAccount = async () => {
         if (validateInputs()) {
-            ctxUpdateAccount({ ...editedAccount, id: account.id });
+            // Shifting credit card to match backend format
+            const type = editedAccount.type == "credit card" ? "credit-card" : editedAccount.type.toLowerCase();
+            console.log({ ...editedAccount, type: type, id: account.id });
+            ctxUpdateAccount({ ...editedAccount, type: type, id: account.id });
             handleCloseModal();
         }
     };
