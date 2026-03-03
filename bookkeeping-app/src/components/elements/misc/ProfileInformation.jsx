@@ -1,8 +1,9 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 import classes from "./ProfileInformation.module.css";
 
-import AuthCtx from "../../contexts/AuthCtx";
+import { UseAuth } from "../../../hooks/UseAuth";
+
 import penIcon from "../../../assets/pen-icon-grey.svg";
 import saveIcon from "../../../assets/save-icon-grey.svg";
 import LogoutModal from "../modals/LogoutModal";
@@ -10,16 +11,17 @@ import Button from "../utilities/Button";
 import PwdPopup from "../utilities/PwdPopup";
 
 const ProfileInformation = () => {
-    const { ctxUpdateUser, ctxUserData, ctxUpdatePwd } = useContext(AuthCtx);
+    const { updateUser, userData, updatePwd: authUpdatePwd } = UseAuth();
+    const emptyProfile = { first_name: "", last_name: "", email: "" };
 
     const [pwdMsg, setPwdMsg] = useState("You will be logged out when your password changes.");
-    const [profileData, setProfileData] = useState(ctxUserData);
+    const [profileData, setProfileData] = useState(emptyProfile);
     const [passwordData, setPasswordData] = useState({
         password_current: "",
         password_new: "",
         password_confirm: "",
     });
-    const [initalData, setInitialData] = useState(ctxUserData);
+    const [initalData, setInitialData] = useState(emptyProfile);
     const [inputState, setInputState] = useState({
         first_name: false,
         last_name: false,
@@ -45,6 +47,18 @@ const ProfileInformation = () => {
             specChar: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]/.test(passwordData.password_new),
         });
     }, [passwordData.password_new]);
+
+    useEffect(() => {
+        if (userData && Object.keys(userData).length > 0) {
+            const nextProfile = {
+                first_name: userData.first_name || "",
+                last_name: userData.last_name || "",
+                email: userData.email || "",
+            };
+            setProfileData(nextProfile);
+            setInitialData(nextProfile);
+        }
+    }, [userData]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -72,7 +86,7 @@ const ProfileInformation = () => {
         });
     };
 
-    const updateBackendProfile = () => {
+    const updateBackendProfile = async () => {
         if (JSON.stringify(profileData) === JSON.stringify(initalData)) {
             return;
         }
@@ -83,19 +97,21 @@ const ProfileInformation = () => {
             email: profileData.email,
         };
 
-        ctxUpdateUser(dataToSend);
-        setInitialData((prev) => ({ ...prev, ...dataToSend }));
+        const response = await updateUser(dataToSend);
+        if (response?.success) {
+            setInitialData((prev) => ({ ...prev, ...dataToSend }));
+        }
     };
 
     const changePasswordState = () => {
         if (inputState.password) {
-            updatePwd();
+            handleUpdatePwd();
         } else {
             setInputState((prev) => ({ ...prev, password: true }));
         }
     };
 
-    const updatePwd = async () => {
+    const handleUpdatePwd = async () => {
         if (passwordData.password_new !== passwordData.password_confirm) {
             setPwdMsg("New password must match password confirmation.");
             return;
@@ -108,16 +124,16 @@ const ProfileInformation = () => {
             return;
         }
 
-        const resText = await ctxUpdatePwd(
+        const response = await authUpdatePwd(
             passwordData.password_current,
             passwordData.password_new,
             passwordData.password_confirm
         );
 
-        if (resText && resText !== "") {
-            setPwdMsg(resText);
-        } else {
+        if (response?.success) {
             setShowLogout(true);
+        } else {
+            setPwdMsg(response?.error || "Unable to update password.");
         }
     };
 
@@ -132,6 +148,9 @@ const ProfileInformation = () => {
     };
 
     const capitilizeFirst = (str) => {
+        if (!str) {
+            return "";
+        }
         return str.charAt(0).toUpperCase() + str.slice(1);
     };
 
@@ -241,7 +260,7 @@ const ProfileInformation = () => {
                                     <input
                                         type="password"
                                         name="password_current"
-                                        value={profileData.password}
+                                        value={passwordData.password_current}
                                         style={!inputState.password ? disabledStyle : null}
                                         onChange={handlePwdInput}
                                         disabled={!inputState.password}
@@ -280,7 +299,7 @@ const ProfileInformation = () => {
                                             type="password"
                                             name="password_new"
                                             style={{ borderRadius: "0.25rem" }}
-                                            value={profileData.password}
+                                            value={passwordData.password_new}
                                             onChange={handlePwdInput}
                                             onFocus={() => setIsExpanded(true)}
                                             onBlur={() => setIsExpanded(false)}
@@ -294,7 +313,7 @@ const ProfileInformation = () => {
                                             type="password"
                                             name="password_confirm"
                                             style={{ borderRadius: "0.25rem" }}
-                                            value={profileData.passwordConfirm}
+                                            value={passwordData.password_confirm}
                                             onChange={handlePwdInput}
                                         />
                                     </span>
