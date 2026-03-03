@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { BASE_URL } from "../constants";
 
@@ -13,24 +12,32 @@ export function UseAuth() {
         }
     }, [accessToken]);
 
-    const login = async (username, password) => {
+    const login = async (email, password) => {
         try {
-            const response = await fetch(`${baseUrl}/api/auth/jwt/create/`, {
+            const response = await fetch(`${BASE_URL}/api/auth/jwt/create/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ username, password }),
+                body: JSON.stringify({
+                    username: email,
+                    password: password,
+                }),
             });
+
             if (!response.ok) {
-                throw new Error("Login failed");
+                const errorData = await response.json();
+                const errorMessage = errorData?.detail || "Login failed please try again.";
+                return { success: false, message: errorMessage };
             }
+
             const data = await response.json();
-            localStorage.setItem("accessToken", data.access);
-            setAccessToken(data.access);
-            return { success: true };
-        } catch (e) {
-            return { success: false, error: e.message };
+            const { access } = data;
+            localStorage.setItem("accessToken", access);
+            setAccessToken(access);
+            return { success: true, message: "Login successful." };
+        } catch (error) {
+            return { success: false, message: "A network error occurred. Please try again." };
         }
     };
 
@@ -124,7 +131,10 @@ export function UseAuth() {
                 body: JSON.stringify({ email: email }),
             });
             if (response.status === 204 || response.ok) {
-                return { success: true, message: "Success! If the email is registered, you will receive a reset link shortly." };
+                return {
+                    success: true,
+                    message: "Success! If the email is registered, you will receive a reset link shortly.",
+                };
             } else {
                 return { success: false, message: "An error occurred. Please try again." };
             }
