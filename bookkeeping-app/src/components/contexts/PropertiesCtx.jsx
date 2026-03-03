@@ -1,9 +1,9 @@
-import { createContext, useState, useEffect, useContext } from "react";
+import { createContext, useState, useEffect } from "react";
 import useSWRImmutable from "swr/immutable";
 
 import { BASE_URL } from "../../constants";
 import { useToast } from "./ToastCtx";
-import AuthCtx from "./AuthCtx";
+import { UseAuth } from "../../hooks/UseAuth";
 
 const PropertiesCtx = createContext({
     ctxActiveProperty: null,
@@ -18,7 +18,7 @@ const PropertiesCtx = createContext({
 export function PropertiesCtxProvider(props) {
     const { showToast } = useToast();
 
-    const { ctxAccessToken } = useContext(AuthCtx);
+    const { accessToken: ctxAccessToken } = UseAuth();
 
     const [ctxActiveProperty, setCtxActiveProperty] = useState();
 

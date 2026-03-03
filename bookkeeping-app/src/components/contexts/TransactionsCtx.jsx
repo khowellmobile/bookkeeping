@@ -3,10 +3,10 @@ import useSWRImmutable from "swr/immutable";
 
 import { BASE_URL } from "../../constants";
 import { useToast } from "./ToastCtx";
-import AuthCtx from "./AuthCtx";
 import AccountsCtx from "./AccountsCtx";
 import EntitiesCtx from "./EntitiesCtx";
 import PropertiesCtx from "./PropertiesCtx";
+import { UseAuth } from "../../hooks/UseAuth";
 
 const TransactionsCtx = createContext({
     ctxTranList: null,
@@ -19,7 +19,7 @@ const TransactionsCtx = createContext({
 export function TransactionsCtxProvider(props) {
     const { showToast } = useToast();
 
-    const { ctxAccessToken } = useContext(AuthCtx);
+    const { accessToken: ctxAccessToken } = UseAuth();
     const { ctxActiveAccount, ctxRefetchAccounts } = useContext(AccountsCtx);
     const { ctxActiveEntity } = useContext(EntitiesCtx);
     const { ctxActiveProperty } = useContext(PropertiesCtx);

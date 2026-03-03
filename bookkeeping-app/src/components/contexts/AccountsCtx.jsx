@@ -3,8 +3,8 @@ import useSWRImmutable from "swr/immutable";
 
 import { useToast } from "./ToastCtx";
 import { BASE_URL } from "../../constants";
-import AuthCtx from "./AuthCtx";
 import PropertiesCtx from "./PropertiesCtx";
+import { UseAuth } from "../../hooks/UseAuth";
 
 const AccountsCtx = createContext({
     ctxActiveAccount: null,
@@ -20,7 +20,7 @@ const AccountsCtx = createContext({
 export function AccountsCtxProvider(props) {
     const { showToast } = useToast();
 
-    const { ctxAccessToken } = useContext(AuthCtx);
+    const { accessToken: ctxAccessToken } = UseAuth();
     const { ctxActiveProperty } = useContext(PropertiesCtx);
 
     const [ctxActiveAccount, setCtxActiveAccount] = useState({ name: "None Selected" });

@@ -1,54 +1,16 @@
 import classes from "./LoginModal.module.css";
-import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { BASE_URL } from "../../../constants";
-
-import AuthCtx from "../../contexts/AuthCtx";
+import { useState } from "react";
+import { UseAuth } from "../../../hooks/UseAuth";
 
 const LoginModal = ({ handleCloseModal, switchModal }) => {
-    const { setCtxAccessToken, requestPswdReset } = useContext(AuthCtx);
+    const { login, requestPswdReset } = UseAuth();
 
     const navigate = useNavigate();
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState("");
-
-    const handleLogin = (event) => {
-        event.preventDefault();
-
-        fetch(`${BASE_URL}/api/auth/jwt/create/`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                username: email,
-                password: password,
-            }),
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    return response.json().then((errorData) => {
-                        console.error("Login failed:", errorData);
-                        setMessage("Login failed please try again.");
-                        throw new Error("Login failed.");
-                    });
-                }
-                return response.json();
-            })
-            .then((data) => {
-                const { access } = data;
-                localStorage.setItem("accessToken", access);
-                setCtxAccessToken(access);
-                navigate("/app/home");
-                handleCloseModal();
-            })
-            .catch((error) => {
-                console.error("Login failed:", error);
-                setMessage("Login failed please try again.");
-            });
-    };
 
     const pswdResetClick = async () => {
         if (!email || email.trim().length == 0) {
@@ -57,7 +19,18 @@ const LoginModal = ({ handleCloseModal, switchModal }) => {
         }
 
         const responseMsg = await requestPswdReset(email);
-        setMessage(responseMsg);
+        setMessage(responseMsg.message);
+    };
+
+    const handleLogin = async (e) => {
+        e.preventDefault();
+        const responseMsg = await login(email, password);
+        setMessage(responseMsg.message);
+
+        if (responseMsg.success) {
+            console.log("success");
+            navigate("/app/home");
+        }
     };
 
     return (

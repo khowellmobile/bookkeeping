@@ -1,6 +1,5 @@
 import { Routes, Route } from "react-router-dom";
 
-import { AuthCtxProvider } from "../contexts/AuthCtx";
 import { AccountsCtxProvider } from "../contexts/AccountsCtx";
 import { EntitiesCtxProvider } from "../contexts/EntitiesCtx";
 import { TransactionsCtxProvider } from "../contexts/TransactionsCtx";

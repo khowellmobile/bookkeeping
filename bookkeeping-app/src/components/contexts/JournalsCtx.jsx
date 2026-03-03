@@ -3,8 +3,8 @@ import useSWRImmutable from "swr/immutable";
 
 import { BASE_URL } from "../../constants";
 import { useToast } from "./ToastCtx";
-import AuthCtx from "./AuthCtx";
 import PropertiesCtx from "./PropertiesCtx";
+import { UseAuth } from "../../hooks/UseAuth";
 
 const JournalsCtx = createContext({
     ctxJournalList: null,
@@ -17,7 +17,7 @@ const JournalsCtx = createContext({
 export function JournalsCtxProvider(props) {
     const { showToast } = useToast();
 
-    const { ctxAccessToken } = useContext(AuthCtx);
+    const { accessToken: ctxAccessToken } = UseAuth();
     const { ctxActiveProperty } = useContext(PropertiesCtx);
 
     const fetcher = async (url) => {
