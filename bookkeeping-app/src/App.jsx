@@ -9,6 +9,7 @@ import { PropertiesCtxProvider } from "./components/contexts/PropertiesCtx";
 import AccountActivatePage from "./pages/AccountActivatePage";
 import PasswordResetPage from "./pages/PasswordResetPage";
 import { AccountsCtxProvider } from "./components/contexts/AccountsCtx";
+import { AuthCtxProvider } from "./components/contexts/AuthCtx";
 
 function App() {
     if (localStorage.getItem("theme") === "dark") {
@@ -18,17 +19,26 @@ function App() {
     return (
         <ToastCtxProvider>
             <Routes>
-                <Route path="/" element={<SplashPage />} />
+                <Route
+                    path="/"
+                    element={
+                        <AuthCtxProvider>
+                            <SplashPage />
+                        </AuthCtxProvider>
+                    }
+                />
                 <Route path="/activate/:uid/:token" element={<AccountActivatePage />} />
                 <Route path="/password/reset/confirm/:uid/:token" element={<PasswordResetPage />} />
                 <Route
                     path="/app/*"
                     element={
-                        <PropertiesCtxProvider>
-                            <AccountsCtxProvider>
-                                <AuthenticatedApp />
-                            </AccountsCtxProvider>
-                        </PropertiesCtxProvider>
+                        <AuthCtxProvider>
+                            <PropertiesCtxProvider>
+                                <AccountsCtxProvider>
+                                    <AuthenticatedApp />
+                                </AccountsCtxProvider>
+                            </PropertiesCtxProvider>
+                        </AuthCtxProvider>
                     }
                 />
             </Routes>

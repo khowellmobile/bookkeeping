@@ -6,7 +6,7 @@ import { useToast } from "./ToastCtx";
 import AccountsCtx from "./AccountsCtx";
 import EntitiesCtx from "./EntitiesCtx";
 import PropertiesCtx from "./PropertiesCtx";
-import { UseAuth } from "../../hooks/UseAuth";
+import AuthCtx from "./AuthCtx";
 
 const TransactionsCtx = createContext({
     ctxTranList: null,
@@ -19,7 +19,7 @@ const TransactionsCtx = createContext({
 export function TransactionsCtxProvider(props) {
     const { showToast } = useToast();
 
-    const { accessToken: ctxAccessToken } = UseAuth();
+    const { ctxAccessToken } = useContext(AuthCtx);
     const { ctxActiveAccount, ctxRefetchAccounts } = useContext(AccountsCtx);
     const { ctxActiveEntity } = useContext(EntitiesCtx);
     const { ctxActiveProperty } = useContext(PropertiesCtx);

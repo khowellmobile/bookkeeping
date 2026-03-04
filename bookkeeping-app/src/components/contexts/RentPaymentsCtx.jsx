@@ -4,7 +4,7 @@ import useSWRImmutable from "swr/immutable";
 import { BASE_URL } from "../../constants";
 import { useToast } from "./ToastCtx";
 import PropertiesCtx from "./PropertiesCtx";
-import { UseAuth } from "../../hooks/UseAuth";
+import AuthCtx from "./AuthCtx";
 
 const RentPaymentsCtx = createContext({
     ctxMonthPaymentList: null,
@@ -26,7 +26,7 @@ const getInitialDate = () => {
 export function RentPaymentsCtxProvider(props) {
     const { showToast } = useToast();
 
-    const { accessToken: ctxAccessToken } = UseAuth();
+    const { ctxAccessToken } = useContext(AuthCtx);
     const { ctxActiveProperty } = useContext(PropertiesCtx);
 
     const [ctxActiveDate, setCtxActiveDate] = useState(getInitialDate());
