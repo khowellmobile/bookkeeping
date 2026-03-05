@@ -139,7 +139,6 @@ export function RentPaymentsCtxProvider(props) {
             if (ctxActiveProperty && ctxActiveProperty.id) {
                 url.searchParams.append("property_id", ctxActiveProperty.id);
             } else {
-                console.log("no active property");
                 return;
             }
 

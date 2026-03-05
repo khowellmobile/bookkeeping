@@ -28,7 +28,6 @@ const LoginModal = ({ handleCloseModal, switchModal }) => {
         setMessage(responseMsg.message);
 
         if (responseMsg.success) {
-            console.log("success");
             navigate("/app/home");
         }
     };

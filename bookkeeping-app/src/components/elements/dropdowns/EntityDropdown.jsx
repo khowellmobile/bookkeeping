@@ -60,7 +60,7 @@ const EntityDropdown = ({ initalVal, onChange, altClass }) => {
                 setIsOffBotScreen(isOffScreenBottom);
             }
         } catch (error) {
-            console.log(error, "Safe to ignore");
+            /* console.log(error, "Safe to ignore"); */
         }
     };
 

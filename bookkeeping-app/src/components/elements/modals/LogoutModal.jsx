@@ -11,7 +11,6 @@ const LogoutModal = () => {
 
     const logoutUser = () => {
         logout();
-        console.log("logged out user");
         navigate("/");
     };
 

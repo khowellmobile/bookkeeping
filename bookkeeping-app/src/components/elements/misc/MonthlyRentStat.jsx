@@ -46,7 +46,6 @@ const MonthlyRentStat = () => {
 
     useEffect(() => {
         if (monthlySummary && monthlySummary.payment_summary) {
-            console.log(monthlySummary);
             const total = Number(monthlySummary.total_rent_payments) || 0;
             const dataPercentages = monthlySummary.payment_summary.map((value) => {
                 const percentage = total > 0 ? (value.amount / total) * 100 : 0;
@@ -72,8 +71,6 @@ const MonthlyRentStat = () => {
             });
             return;
         } else if (!statusPercents?.[status] || !monthlySummary) {
-            console.log(statusPercents);
-            console.log(monthlySummary);
             return;
         }
 
