@@ -3,26 +3,54 @@ import { BASE_URL } from "../../constants";
 
 const AuthCtx = createContext({
     ctxAccessToken: null,
-    ctxUserData: null,
+    ctxUserData: {},
 });
 
 export function AuthCtxProvider(props) {
-    const [ctxAccessToken, setCtxAccessToken] = useState(localStorage.getItem("accessToken"));
-    const [ctxUserData, setCtxUserData] = useState(null);
+    const [ctxAccessToken, setCtxAccessToken] = useState(localStorage.getItem("accessToken") || null);
+    const [ctxUserData, setCtxUserData] = useState({});
 
     useEffect(() => {
+        let isMounted = true;
+
         const getUserData = async () => {
             if (!ctxAccessToken) {
-                setCtxUserData(null);
+                if (isMounted) {
+                    setCtxUserData({});
+                }
                 return;
             }
-            const response = await fetch(`${BASE_URL}/api/profile/`, {
-                headers: { Authorization: `Bearer ${ctxAccessToken}` },
-            });
-            if (response.ok) setCtxUserData(await response.json());
-            else setCtxUserData(null);
+
+            try {
+                const response = await fetch(`${BASE_URL}/api/profile/`, {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${ctxAccessToken}`,
+                    },
+                });
+
+                if (!isMounted) {
+                    return;
+                }
+
+                if (response.ok) {
+                    const profile = await response.json();
+                    setCtxUserData(profile);
+                } else {
+                    setCtxUserData({});
+                }
+            } catch (error) {
+                if (isMounted) {
+                    setCtxUserData({});
+                }
+            }
         };
+
         getUserData();
+
+        return () => {
+            isMounted = false;
+        };
     }, [ctxAccessToken]);
 
     const context = {

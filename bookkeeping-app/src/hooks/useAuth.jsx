@@ -28,7 +28,7 @@ export function useAuth() {
             const { access } = data;
             localStorage.setItem("accessToken", access);
             setCtxAccessToken(access);
-            await getUser();
+            await getUser(access);
             return { success: true, message: "Login successful." };
         } catch (error) {
             return { success: false, message: "A network error occurred. Please try again." };
@@ -41,13 +41,19 @@ export function useAuth() {
         setCtxUserData({});
     };
 
-    const getUser = async () => {
+    const getUser = async (tokenOverride) => {
+        const token = tokenOverride || ctxAccessToken;
+        if (!token) {
+            setCtxUserData({});
+            return { success: false, error: "No access token available." };
+        }
+
         try {
             const response = await fetch(`${BASE_URL}/api/profile/`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${ctxAccessToken}`,
+                    Authorization: `Bearer ${token}`,
                 },
             });
             if (!response.ok) {
@@ -55,8 +61,10 @@ export function useAuth() {
             }
             const returnedProfile = await response.json();
             setCtxUserData(returnedProfile);
+            return { success: true, data: returnedProfile };
         } catch (e) {
-            // Optionally handle error
+            setCtxUserData({});
+            return { success: false, error: e?.message || "Unable to fetch user profile." };
         }
     };
 
