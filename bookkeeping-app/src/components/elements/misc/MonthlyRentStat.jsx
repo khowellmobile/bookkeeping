@@ -46,6 +46,7 @@ const MonthlyRentStat = () => {
 
     useEffect(() => {
         if (monthlySummary && monthlySummary.payment_summary) {
+            console.log(monthlySummary);
             const total = Number(monthlySummary.total_rent_payments) || 0;
             const dataPercentages = monthlySummary.payment_summary.map((value) => {
                 const percentage = total > 0 ? (value.amount / total) * 100 : 0;
@@ -63,7 +64,16 @@ const MonthlyRentStat = () => {
     }, [monthlySummary]);
 
     const setSlice = (status) => {
-        if (!statusPercents?.[status] || !monthlySummary) {
+        if (monthlySummary.payment_summary.length == 0) {
+            setActiveSlice({
+                type: "No Rents Listed",
+                percentage: 0,
+                amount: 0.0,
+            });
+            return;
+        } else if (!statusPercents?.[status] || !monthlySummary) {
+            console.log(statusPercents);
+            console.log(monthlySummary);
             return;
         }
 
@@ -97,6 +107,16 @@ const MonthlyRentStat = () => {
     const calulateSlicePathData = (percentages, colors) => {
         const slices = [];
         let currentDegree = 0;
+
+        // If no rents for the month
+        if (percentages.length == 0) {
+            slices.push({
+                type: "circle",
+                color: "rgba(128, 128, 128, 0.301)",
+                status: "none",
+            });
+            return slices;
+        }
 
         percentages.forEach((item) => {
             const statusKey = Object.keys(item)[0];
@@ -157,7 +177,7 @@ const MonthlyRentStat = () => {
                     <>
                         <div className={classes.chartDiv}>
                             <svg className={classes.pieChart} viewBox="-10 -10 120 120">
-                                {pieSlices.map((slice, index) => (
+                                {pieSlices.map((slice, index) =>
                                     slice.type === "circle" ? (
                                         <circle
                                             key={index}
@@ -178,8 +198,8 @@ const MonthlyRentStat = () => {
                                             onMouseEnter={() => setSlice(slice.status)}
                                             onMouseLeave={resetSlice}
                                         />
-                                    )
-                                ))}
+                                    ),
+                                )}
                             </svg>
                             <div className={classes.center}>
                                 {activeSlice && (
