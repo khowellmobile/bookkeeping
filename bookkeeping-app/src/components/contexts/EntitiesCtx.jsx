@@ -4,7 +4,7 @@ import useSWRImmutable from "swr/immutable";
 import { BASE_URL } from "../../constants";
 import { useToast } from "./ToastCtx";
 import PropertiesCtx from "./PropertiesCtx";
-import { UseAuth } from "../../hooks/UseAuth";
+import AuthCtx from "./AuthCtx";
 
 const EntitiesCtx = createContext({
     ctxEntityList: null,
@@ -19,7 +19,7 @@ const EntitiesCtx = createContext({
 export function EntitiesCtxProvider(props) {
     const { showToast } = useToast();
 
-    const { accessToken: ctxAccessToken } = UseAuth();
+    const { ctxAccessToken } = useContext(AuthCtx);
     const { ctxActiveProperty } = useContext(PropertiesCtx);
 
     const [ctxActiveEntity, setCtxActiveEntity] = useState();

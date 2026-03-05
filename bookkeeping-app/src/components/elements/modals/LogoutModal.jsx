@@ -2,12 +2,12 @@ import { useNavigate } from "react-router-dom";
 
 import classes from "./LogoutModal.module.css";
 
-import { UseAuth } from "../../../hooks/UseAuth";
+import { useAuth } from "../../../hooks/useAuth";
 
 const LogoutModal = () => {
     const navigate = useNavigate();
 
-    const { logout } = UseAuth();
+    const { logout } = useAuth();
 
     const logoutUser = () => {
         logout();

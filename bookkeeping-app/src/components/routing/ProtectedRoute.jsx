@@ -1,8 +1,9 @@
 import { Navigate } from "react-router-dom";
-import { UseAuth } from "../../hooks/UseAuth";
+import { useContext } from "react";
+import AuthCtx from "../contexts/AuthCtx";
 
 function ProtectedRoute({ children }) {
-    const { accessToken: ctxAccessToken } = UseAuth();
+    const { ctxAccessToken } = useContext(AuthCtx);
     if (!ctxAccessToken) {
         return <Navigate to="/" replace />;
     }

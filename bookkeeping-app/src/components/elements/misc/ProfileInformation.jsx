@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 
 import classes from "./ProfileInformation.module.css";
 
-import { UseAuth } from "../../../hooks/UseAuth";
+import { useAuth } from "../../../hooks/useAuth";
+import AuthCtx from "../../contexts/AuthCtx";
 
 import penIcon from "../../../assets/pen-icon-grey.svg";
 import saveIcon from "../../../assets/save-icon-grey.svg";
@@ -11,7 +12,8 @@ import Button from "../utilities/Button";
 import PwdPopup from "../utilities/PwdPopup";
 
 const ProfileInformation = () => {
-    const { updateUser, userData, updatePwd: authUpdatePwd } = UseAuth();
+    const { updateUser, updatePwd: authUpdatePwd } = useAuth();
+    const { ctxUserData } = useContext(AuthCtx);
     const emptyProfile = { first_name: "", last_name: "", email: "" };
 
     const [pwdMsg, setPwdMsg] = useState("You will be logged out when your password changes.");
@@ -49,16 +51,16 @@ const ProfileInformation = () => {
     }, [passwordData.password_new]);
 
     useEffect(() => {
-        if (userData && Object.keys(userData).length > 0) {
+        if (ctxUserData && Object.keys(ctxUserData).length > 0) {
             const nextProfile = {
-                first_name: userData.first_name || "",
-                last_name: userData.last_name || "",
-                email: userData.email || "",
+                first_name: ctxUserData.first_name || "",
+                last_name: ctxUserData.last_name || "",
+                email: ctxUserData.email || "",
             };
             setProfileData(nextProfile);
             setInitialData(nextProfile);
         }
-    }, [userData]);
+    }, [ctxUserData]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -127,7 +129,7 @@ const ProfileInformation = () => {
         const response = await authUpdatePwd(
             passwordData.password_current,
             passwordData.password_new,
-            passwordData.password_confirm
+            passwordData.password_confirm,
         );
 
         if (response?.success) {

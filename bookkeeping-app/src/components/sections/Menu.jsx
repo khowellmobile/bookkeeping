@@ -13,10 +13,10 @@ import SupportIcon from "../../assets/support-icon.svg";
 import UserIcon from "../../assets/user-icon-white.svg";
 
 import MenuLineItem from "../elements/items/MenuLineItem";
-import { UseAuth } from "../../hooks/UseAuth";
+import { useAuth } from "../../hooks/useAuth";
 
 const Menu = () => {
-    const { logout } = UseAuth();
+    const { logout } = useAuth();
 
     return (
         <div className={classes.mainContainer}>
