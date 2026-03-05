@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from "react";
 
 import classes from "./ProfileInformation.module.css";
 
-import { UseAuth } from "../../../hooks/useAuth";
+import { useAuth } from "../../../hooks/useAuth";
 import AuthCtx from "../../contexts/AuthCtx";
 
 import penIcon from "../../../assets/pen-icon-grey.svg";
@@ -12,7 +12,7 @@ import Button from "../utilities/Button";
 import PwdPopup from "../utilities/PwdPopup";
 
 const ProfileInformation = () => {
-    const { updateUser, updatePwd: authUpdatePwd } = UseAuth();
+    const { updateUser, updatePwd: authUpdatePwd } = useAuth();
     const { ctxUserData } = useContext(AuthCtx);
     const emptyProfile = { first_name: "", last_name: "", email: "" };
 

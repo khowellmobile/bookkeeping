@@ -1,10 +1,10 @@
 import classes from "./LoginModal.module.css";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { UseAuth } from "../../../hooks/UseAuth";
+import { useAuth } from "../../../hooks/useAuth";
 
 const LoginModal = ({ handleCloseModal, switchModal }) => {
-    const { login, requestPswdReset } = UseAuth();
+    const { login, requestPswdReset } = useAuth();
 
     const navigate = useNavigate();
 

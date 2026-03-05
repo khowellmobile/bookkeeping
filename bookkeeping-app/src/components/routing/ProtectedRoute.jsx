@@ -1,4 +1,5 @@
 import { Navigate } from "react-router-dom";
+import { useContext } from "react";
 import AuthCtx from "../contexts/AuthCtx";
 
 function ProtectedRoute({ children }) {

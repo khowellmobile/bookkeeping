@@ -1,13 +1,12 @@
 import { useContext, useState, useEffect } from "react";
 
-import { UseAuth } from "./UseAuth.jsx";
-
 import PropertiesCtx from "../components/contexts/PropertiesCtx.jsx";
 import { BASE_URL } from "../constants.jsx";
+import AuthCtx from "../components/contexts/AuthCtx.jsx";
 
 const useReportAPI = () => {
     // Get the token from the context
-    const { accessToken: ctxAccessToken } = UseAuth();
+    const { ctxAccessToken } = useContext(AuthCtx);
     const { ctxActiveProperty } = useContext(PropertiesCtx);
 
     const [reportsData, setReportsData] = useState(null);

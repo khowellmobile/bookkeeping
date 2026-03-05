@@ -1,16 +1,9 @@
-import { useState, useEffect } from "react";
+import { useContext } from "react";
 import { BASE_URL } from "../constants";
+import AuthCtx from "../components/contexts/AuthCtx";
 
-export function UseAuth() {
-    const [accessToken, setAccessToken] = useState(localStorage.getItem("accessToken") || null);
-    const [userData, setUserData] = useState({});
-    const baseUrl = BASE_URL;
-
-    useEffect(() => {
-        if (accessToken) {
-            getUser();
-        }
-    }, [accessToken]);
+export function useAuth() {
+    const { ctxAccessToken, setCtxAccessToken, setCtxUserData } = useContext(AuthCtx);
 
     const login = async (email, password) => {
         try {
@@ -34,7 +27,8 @@ export function UseAuth() {
             const data = await response.json();
             const { access } = data;
             localStorage.setItem("accessToken", access);
-            setAccessToken(access);
+            setCtxAccessToken(access);
+            await getUser();
             return { success: true, message: "Login successful." };
         } catch (error) {
             return { success: false, message: "A network error occurred. Please try again." };
@@ -43,24 +37,24 @@ export function UseAuth() {
 
     const logout = () => {
         localStorage.removeItem("accessToken");
-        setAccessToken(null);
-        setUserData({});
+        setCtxAccessToken(null);
+        setCtxUserData({});
     };
 
     const getUser = async () => {
         try {
-            const response = await fetch(`${baseUrl}/api/profile/`, {
+            const response = await fetch(`${BASE_URL}/api/profile/`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${accessToken}`,
+                    Authorization: `Bearer ${ctxAccessToken}`,
                 },
             });
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const returnedProfile = await response.json();
-            setUserData(returnedProfile);
+            setCtxUserData(returnedProfile);
         } catch (e) {
             // Optionally handle error
         }
@@ -68,11 +62,11 @@ export function UseAuth() {
 
     const updateUser = async (updatedUser) => {
         try {
-            const response = await fetch(`${baseUrl}/api/profile/`, {
+            const response = await fetch(`${BASE_URL}/api/profile/`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${accessToken}`,
+                    Authorization: `Bearer ${ctxAccessToken}`,
                 },
                 body: JSON.stringify(updatedUser),
             });
@@ -80,7 +74,7 @@ export function UseAuth() {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const returnedProfile = await response.json();
-            setUserData(returnedProfile);
+            setCtxUserData(returnedProfile);
             return { success: true };
         } catch (e) {
             return { success: false, error: e.message };
@@ -89,11 +83,11 @@ export function UseAuth() {
 
     const updatePwd = async (pwdCurr, pwdNew, pwdCnfm) => {
         try {
-            const response = await fetch(`${baseUrl}/api/auth/users/set_password/`, {
+            const response = await fetch(`${BASE_URL}/api/auth/users/set_password/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${accessToken}`,
+                    Authorization: `Bearer ${ctxAccessToken}`,
                 },
                 body: JSON.stringify({
                     current_password: pwdCurr,
@@ -123,7 +117,7 @@ export function UseAuth() {
 
     const requestPswdReset = async (email) => {
         try {
-            const response = await fetch(`${baseUrl}/api/auth/users/reset_password/`, {
+            const response = await fetch(`${BASE_URL}/api/auth/users/reset_password/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -144,9 +138,6 @@ export function UseAuth() {
     };
 
     return {
-        accessToken,
-        setAccessToken,
-        userData,
         login,
         logout,
         getUser,
