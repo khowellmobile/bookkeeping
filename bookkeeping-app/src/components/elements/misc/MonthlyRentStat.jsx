@@ -20,7 +20,7 @@ const MonthlyRentStat = () => {
     const { ctxActiveProperty } = useContext(PropertiesCtx);
 
     const [monthlySummary, setMonthlySummary] = useState();
-    const [statusPercents, setStatusPercents] = useState();
+    const [statusPercents, setStatusPercents] = useState({});
     const [pieSlices, setPieSlices] = useState([]);
     const [activeSlice, setActiveSlice] = useState(null);
 
@@ -46,8 +46,10 @@ const MonthlyRentStat = () => {
 
     useEffect(() => {
         if (monthlySummary && monthlySummary.payment_summary) {
+            console.log(monthlySummary);
+            const total = Number(monthlySummary.total_rent_payments) || 0;
             const dataPercentages = monthlySummary.payment_summary.map((value) => {
-                const percentage = (value.amount / monthlySummary.total_rent_payments) * 100;
+                const percentage = total > 0 ? (value.amount / total) * 100 : 0;
                 return { [value.status]: percentage };
             });
             const statusMap = dataPercentages.reduce((acc, current) => {
@@ -62,10 +64,23 @@ const MonthlyRentStat = () => {
     }, [monthlySummary]);
 
     const setSlice = (status) => {
+        if (monthlySummary.payment_summary.length == 0) {
+            setActiveSlice({
+                type: "No Rents Listed",
+                percentage: 0,
+                amount: 0.0,
+            });
+            return;
+        } else if (!statusPercents?.[status] || !monthlySummary) {
+            console.log(statusPercents);
+            console.log(monthlySummary);
+            return;
+        }
+
         setActiveSlice({
             type: status,
             percentage: statusPercents[status].toFixed(2),
-            amount: (statusPercents[status] / 100) * monthlySummary.total_rent_payments.toFixed(2),
+            amount: (statusPercents[status] / 100) * monthlySummary.total_rent_payments,
         });
     };
 
@@ -93,6 +108,16 @@ const MonthlyRentStat = () => {
         const slices = [];
         let currentDegree = 0;
 
+        // If no rents for the month
+        if (percentages.length == 0) {
+            slices.push({
+                type: "circle",
+                color: "rgba(128, 128, 128, 0.301)",
+                status: "none",
+            });
+            return slices;
+        }
+
         percentages.forEach((item) => {
             const statusKey = Object.keys(item)[0];
             const percentage = item[statusKey];
@@ -102,6 +127,16 @@ const MonthlyRentStat = () => {
 
             if (degreeLength === 0) return;
 
+            // SVG arc commands cannot draw a true 360-degree slice. Render a full circle instead.
+            if (degreeLength >= 359.999) {
+                slices.push({
+                    type: "circle",
+                    color: color,
+                    status: statusKey,
+                });
+                return;
+            }
+
             const endDegree = currentDegree + degreeLength;
 
             const startCoord = getSVGCoordinates(currentDegree);
@@ -110,6 +145,7 @@ const MonthlyRentStat = () => {
             const pathData = `M 50 50 L ${startCoord} A 50 50 0 ${largeArcFlag} 1 ${endCoord} Z`;
 
             slices.push({
+                type: "path",
                 pathData: pathData,
                 color: color,
                 status: statusKey,
@@ -141,16 +177,29 @@ const MonthlyRentStat = () => {
                     <>
                         <div className={classes.chartDiv}>
                             <svg className={classes.pieChart} viewBox="-10 -10 120 120">
-                                {pieSlices.map((slice, index) => (
-                                    <path
-                                        key={index}
-                                        d={slice.pathData}
-                                        fill={slice.color}
-                                        className={classes.slice}
-                                        onMouseEnter={() => setSlice(slice.status)}
-                                        onMouseLeave={resetSlice}
-                                    />
-                                ))}
+                                {pieSlices.map((slice, index) =>
+                                    slice.type === "circle" ? (
+                                        <circle
+                                            key={index}
+                                            cx="50"
+                                            cy="50"
+                                            r="50"
+                                            fill={slice.color}
+                                            className={classes.slice}
+                                            onMouseEnter={() => setSlice(slice.status)}
+                                            onMouseLeave={resetSlice}
+                                        />
+                                    ) : (
+                                        <path
+                                            key={index}
+                                            d={slice.pathData}
+                                            fill={slice.color}
+                                            className={classes.slice}
+                                            onMouseEnter={() => setSlice(slice.status)}
+                                            onMouseLeave={resetSlice}
+                                        />
+                                    ),
+                                )}
                             </svg>
                             <div className={classes.center}>
                                 {activeSlice && (
