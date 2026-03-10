@@ -1,5 +1,5 @@
 // api client module (example)
-import { BASE_URL } from "../constants";
+import { BASE_URL } from "./constants";
 
 class ApiError extends Error {
     constructor({ message, status = 0, details = null, method, url }) {
