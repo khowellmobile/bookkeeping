@@ -32,25 +32,26 @@ export function PropertiesCtxProvider(props) {
         }
     }, [ctxActiveProperty]);
 
-    const { data: ctxPropertyList, mutate } = useSWRImmutable(
-        ctxAccessToken ? "/api/properties/" : null,
-        (path) => api.get(path)
+    const { data: ctxPropertyList, mutate } = useSWRImmutable(ctxAccessToken ? "/api/properties/" : null, (path) =>
+        api.get(path),
     );
 
+    // Checking if stored property is in current property list.
+    // Protects against setting an active property for a different users property list.
     useEffect(() => {
-        if (ctxPropertyList) {
-            const storedPropertyId = sessionStorage.getItem("activePropertyId");
-            if (storedPropertyId) {
-                const id = parseInt(storedPropertyId, 10);
+        if (!ctxPropertyList) return;
 
-                const foundProperty = ctxPropertyList.find((property) => property.id === id);
+        const storedPropertyId = sessionStorage.getItem("activePropertyId");
+        if (!storedPropertyId) return;
 
-                if (foundProperty) {
-                    setCtxActiveProperty(foundProperty);
-                } else {
-                    console.warn(`Stored property ID ${storedPropertyId} not found in fetched data.`);
-                    sessionStorage.removeItem("activePropertyId");
-                }
+        const foundProperty = ctxPropertyList.find((property) => property.id === storedPropertyId);
+
+        if (foundProperty) {
+            if (ctxActiveProperty?.id !== foundProperty.id) {
+                setCtxActiveProperty(foundProperty);
+            } else {
+                console.warn(`Stored property ID ${storedPropertyId} not found in fetched data.`);
+                sessionStorage.removeItem("activePropertyId");
             }
         }
     }, [ctxPropertyList, setCtxActiveProperty]);
@@ -75,7 +76,7 @@ export function PropertiesCtxProvider(props) {
             mutate(
                 (prevPropList) =>
                     prevPropList.map((property) => (property.id === returnedProperty.id ? returnedProperty : property)),
-                false
+                false,
             );
             showToast("Property updated", "success", 3000);
         } catch (error) {
