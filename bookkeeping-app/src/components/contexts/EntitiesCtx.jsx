@@ -1,17 +1,15 @@
 import { createContext, useState, useContext, useEffect } from "react";
 import useSWRImmutable from "swr/immutable";
 
-import { BASE_URL } from "../../constants";
 import { useToast } from "./ToastCtx";
+import { ApiError, api } from "../../Client";
 import PropertiesCtx from "./PropertiesCtx";
 import AuthCtx from "./AuthCtx";
 
 const EntitiesCtx = createContext({
     ctxEntityList: null,
-    setCtxEntityList: () => {},
     ctxActiveEntity: null,
     setCtxActiveEntity: () => {},
-    populateCtxEntities: () => {},
     ctxAddEntity: () => {},
     ctxUpdateEntity: () => {},
 });
@@ -29,83 +27,57 @@ export function EntitiesCtxProvider(props) {
         if (ctxActiveEntity) setCtxActiveEntity(null);
     }, [ctxActiveProperty]);
 
-    const fetcher = async (url) => {
-        const response = await fetch(url, {
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${ctxAccessToken}`,
-            },
-        });
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-    };
-
-    const baseUrl = BASE_URL;
-    const apiURL = `${baseUrl}/api/entities/`;
     const propertyId = ctxActiveProperty?.id;
-    const {
-        data: ctxEntityList,
-        error,
-        mutate,
-    } = useSWRImmutable(propertyId && ctxAccessToken ? [`${apiURL}?property_id=${propertyId}`] : null, fetcher);
+    const { data: ctxEntityList, mutate } = useSWRImmutable(
+        propertyId && ctxAccessToken ? ["/api/entities/", propertyId] : null,
+        ([path, id]) => api.get(path, { query: { property_id: id } })
+    );
 
     const ctxAddEntity = async (entityToAdd) => {
         try {
-            const url = new URL(`${baseUrl}/api/entities/`);
-            if (ctxActiveProperty && ctxActiveProperty.id) {
-                url.searchParams.append("property_id", ctxActiveProperty.id);
-            }
-
-            const response = await fetch(url.toString(), {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${ctxAccessToken}`,
-                },
-                body: JSON.stringify(entityToAdd),
+            const newEntity = await api.post("/api/entities/", entityToAdd, {
+                query: { property_id: ctxActiveProperty?.id },
             });
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                console.error("Backend Error:", errorData);
-                showToast("Error adding entity", "error", 5000);
-            } else {
-                const newEntity = await response.json();
-                mutate((prev) => (prev ? [...prev, newEntity] : [newEntity]), false);
-                showToast("Entity added", "success", 3000);
-            }
+            mutate((prev) => (prev ? [...prev, newEntity] : [newEntity]), false);
+            showToast("Entity added", "success", 3000);
         } catch (error) {
-            console.error("Error:", error);
-            showToast("Error adding entity", "error", 5000);
+            if (error instanceof ApiError) {
+                if (error.status === 400 || error.status === 422) {
+                    showToast("Invalid entity data", "error", 5000);
+                } else if (error.status === 401) {
+                    showToast("Session expired. Please log in again.", "error", 5000);
+                } else {
+                    showToast("Error adding entity", "error", 5000);
+                }
+            } else {
+                showToast("Network error. Please try again.", "error", 5000);
+            }
         }
     };
 
     const ctxUpdateEntity = async (updatedEntity) => {
         try {
-            const response = await fetch(`${baseUrl}/api/entities/${updatedEntity.id}/`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${ctxAccessToken}`,
-                },
-                body: JSON.stringify(updatedEntity),
-            });
+            const returnedEntity = await api.put(`/api/entities/${updatedEntity.id}/`, updatedEntity);
 
-            if (!response.ok) {
-                throw new Error(`HTTP error. Status: ${response.status}`);
+            mutate((prevEntityList) => {
+                if (!prevEntityList) return [];
+                return prevEntityList.map((entity) => (entity.id === returnedEntity.id ? returnedEntity : entity));
+            }, false);
+            showToast("Entity updated", "success", 3000);
+        } catch (error) {
+            if (error instanceof ApiError) {
+                if (error.status === 400 || error.status === 422) {
+                    showToast("Invalid entity data", "error", 5000);
+                } else if (error.status === 401) {
+                    showToast("Session expired. Please log in again.", "error", 5000);
+                    // Log user out here?
+                } else {
+                    showToast("Error updating entity", "error", 5000);
+                }
             } else {
-                const returnedEntity = await response.json();
-                mutate((prevEntityList) => {
-                    if (!prevEntityList) return [];
-                    return prevEntityList.map((entity) => (entity.id === returnedEntity.id ? returnedEntity : entity));
-                }, false);
-                showToast("Entity updated", "success", 3000);
+                showToast("Network error. Please try again.", "error", 5000);
             }
-        } catch (e) {
-            console.log("Error: " + e);
-            showToast("Error updating entity", "error", 5000);
         }
     };
 

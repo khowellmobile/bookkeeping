@@ -1,7 +1,7 @@
 import { createContext, useContext } from "react";
 import useSWRImmutable from "swr/immutable";
 
-import { BASE_URL } from "../../constants";
+import { ApiError, api } from "../../Client";
 import { useToast } from "./ToastCtx";
 import PropertiesCtx from "./PropertiesCtx";
 import AuthCtx from "./AuthCtx";
@@ -20,27 +20,11 @@ export function JournalsCtxProvider(props) {
     const { ctxAccessToken } = useContext(AuthCtx);
     const { ctxActiveProperty } = useContext(PropertiesCtx);
 
-    const fetcher = async (url) => {
-        const response = await fetch(url, {
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${ctxAccessToken}`,
-            },
-        });
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-    };
-
-    const baseUrl = BASE_URL;
-    const apiURL = `${baseUrl}/api/journals/`;
     const propertyId = ctxActiveProperty?.id;
-    const {
-        data: ctxJournalList,
-        error,
-        mutate,
-    } = useSWRImmutable(propertyId && ctxAccessToken ? [`${apiURL}?property_id=${propertyId}`] : null, fetcher);
+    const { data: ctxJournalList, mutate } = useSWRImmutable(
+        propertyId && ctxAccessToken ? ["/api/journals/", propertyId] : null,
+        ([path, id]) => api.get(path, { query: { property_id: id } })
+    );
 
     const ctxUpdateJournal = async (selectedJournalId, url, method, sendData) => {
         const tranformedJournalItems = sendData.journal_items.map((item) => ({
@@ -58,25 +42,13 @@ export function JournalsCtxProvider(props) {
         };
 
         try {
-            const finalUrl = method == "POST" ? new URL(`${baseUrl}/api/journals/`) : url;
-            if (method == "POST" && ctxActiveProperty && ctxActiveProperty.id) {
-                finalUrl.searchParams.append("property_id", ctxActiveProperty.id);
-            }
+            const returnedJournal =
+                method == "POST"
+                    ? await api.post("/api/journals/", sendData, {
+                          query: { property_id: ctxActiveProperty?.id },
+                      })
+                    : await api.put(url, sendData);
 
-            const response = await fetch(finalUrl, {
-                method: method,
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${ctxAccessToken}`,
-                },
-                body: JSON.stringify(sendData),
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error. Status: ${response.status}`);
-            }
-
-            const returnedJournal = await response.json();
             if (method == "POST") {
                 mutate((prevJournalList) => [...(prevJournalList || []), returnedJournal], false);
             } else if (method == "PUT") {
@@ -89,32 +61,26 @@ export function JournalsCtxProvider(props) {
 
             showToast("Journal saved", "success", 3000);
             return returnedJournal;
-        } catch (e) {
-            console.error("Error: " + e);
-            showToast("Error saving journal", "error", 5000);
+        } catch (error) {
+            if (error instanceof ApiError) {
+                showToast("Error saving journal", "error", 5000);
+            } else {
+                showToast("Network error. Please try again.", "error", 5000);
+            }
         }
     };
 
     const ctxDeleteJournal = async (journalId) => {
         try {
-            const response = await fetch(`${baseUrl}/api/journals/${journalId}/`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${ctxAccessToken}`,
-                },
-                body: JSON.stringify({ is_deleted: true }),
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error. Status: ${response.status}`);
-            }
-
+            await api.put(`/api/journals/${journalId}/`, { is_deleted: true });
             mutate((prev) => prev.filter((journal) => journal.id !== journalId), true);
             showToast("Journal deleted", "success", 3000);
-        } catch (e) {
-            console.error("Error: " + e);
-            showToast("Error deleting journal", "error", 5000);
+        } catch (error) {
+            if (error instanceof ApiError) {
+                showToast("Error deleting journal", "error", 5000);
+            } else {
+                showToast("Network error. Please try again.", "error", 5000);
+            }
         }
     };
 

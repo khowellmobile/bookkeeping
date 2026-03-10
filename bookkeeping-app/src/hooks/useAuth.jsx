@@ -1,9 +1,19 @@
 import { useContext } from "react";
 import { BASE_URL } from "../constants";
 import AuthCtx from "../components/contexts/AuthCtx";
+import { configureApiClient } from "../Client";
 
 export function useAuth() {
     const { ctxAccessToken, setCtxAccessToken, setCtxUserData } = useContext(AuthCtx);
+
+    configureApiClient({
+        tokenGetter: () => localStorage.getItem("accessToken"),
+        unauthorizedHandler: () => {
+            localStorage.removeItem("accessToken");
+            setCtxAccessToken(null);
+            setCtxUserData({});
+        },
+    });
 
     const login = async (email, password) => {
         try {

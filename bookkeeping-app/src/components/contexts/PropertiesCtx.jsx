@@ -1,7 +1,7 @@
 import { createContext, useState, useEffect, useContext } from "react";
 import useSWRImmutable from "swr/immutable";
 
-import { BASE_URL } from "../../constants";
+import { ApiError, api } from "../../Client";
 import { useToast } from "./ToastCtx";
 import AuthCtx from "./AuthCtx";
 
@@ -32,91 +32,59 @@ export function PropertiesCtxProvider(props) {
         }
     }, [ctxActiveProperty]);
 
-    const fetcher = async (url) => {
-        const response = await fetch(url, {
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${ctxAccessToken}`,
-            },
-        });
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-    };
+    const { data: ctxPropertyList, mutate } = useSWRImmutable(ctxAccessToken ? "/api/properties/" : null, (path) =>
+        api.get(path),
+    );
 
-    const apiURL = `${BASE_URL}/api/properties/`;
-    const { data: ctxPropertyList, error, mutate } = useSWRImmutable(ctxAccessToken ? [`${apiURL}`] : null, fetcher);
-
+    // Checking if stored property is in current property list.
+    // Protects against setting an active property for a different users property list.
     useEffect(() => {
-        if (ctxPropertyList) {
-            const storedPropertyId = sessionStorage.getItem("activePropertyId");
-            if (storedPropertyId) {
-                const id = parseInt(storedPropertyId, 10);
+        if (!ctxPropertyList) return;
 
-                const foundProperty = ctxPropertyList.find((property) => property.id === id);
+        const storedPropertyId = sessionStorage.getItem("activePropertyId");
+        if (!storedPropertyId) return;
 
-                if (foundProperty) {
-                    setCtxActiveProperty(foundProperty);
-                } else {
-                    console.warn(`Stored property ID ${storedPropertyId} not found in fetched data.`);
-                    sessionStorage.removeItem("activePropertyId");
-                }
+        const foundProperty = ctxPropertyList.find((property) => property.id === storedPropertyId);
+
+        if (foundProperty) {
+            if (ctxActiveProperty?.id !== foundProperty.id) {
+                setCtxActiveProperty(foundProperty);
+            } else {
+                console.warn(`Stored property ID ${storedPropertyId} not found in fetched data.`);
+                sessionStorage.removeItem("activePropertyId");
             }
         }
     }, [ctxPropertyList, setCtxActiveProperty]);
 
     const ctxAddProperty = async (propertyToAdd) => {
         try {
-            const response = await fetch(`${BASE_URL}/api/properties/`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${ctxAccessToken}`,
-                },
-                body: JSON.stringify(propertyToAdd),
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error. Status: ${response.status}`);
+            const newProperty = await api.post("/api/properties/", propertyToAdd);
+            mutate((prev) => (prev ? [...prev, newProperty] : [newProperty]), false);
+            showToast("Property added", "success", 3000);
+        } catch (error) {
+            if (error instanceof ApiError) {
+                showToast("Error adding Property", "error", 5000);
             } else {
-                const newProperty = await response.json();
-                mutate((prev) => (prev ? [...prev, newProperty] : [newProperty]), false);
-                showToast("Property added", "success", 3000);
+                showToast("Network error. Please try again.", "error", 5000);
             }
-        } catch (e) {
-            console.error("Error:", e);
-            showToast("Error adding Property", "error", 5000);
         }
     };
 
     const ctxUpdateProperty = async (updatedProperty) => {
         try {
-            const response = await fetch(`${BASE_URL}/api/properties/${updatedProperty.id}/`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${ctxAccessToken}`,
-                },
-                body: JSON.stringify(updatedProperty),
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error. Status: ${response.status}`);
+            const returnedProperty = await api.put(`/api/properties/${updatedProperty.id}/`, updatedProperty);
+            mutate(
+                (prevPropList) =>
+                    prevPropList.map((property) => (property.id === returnedProperty.id ? returnedProperty : property)),
+                false,
+            );
+            showToast("Property updated", "success", 3000);
+        } catch (error) {
+            if (error instanceof ApiError) {
+                showToast("Error updating Property", "error", 5000);
             } else {
-                const returnedProperty = await response.json();
-                mutate(
-                    (prevPropList) =>
-                        prevPropList.map((property) =>
-                            property.id === returnedProperty.id ? returnedProperty : property
-                        ),
-                    false
-                );
-                showToast("Property updated", "success", 3000);
+                showToast("Network error. Please try again.", "error", 5000);
             }
-        } catch (e) {
-            console.log("Error: " + e);
-            showToast("Error updating Property", "error", 5000);
         }
     };
 
