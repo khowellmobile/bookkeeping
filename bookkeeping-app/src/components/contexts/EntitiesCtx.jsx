@@ -1,7 +1,6 @@
 import { createContext, useState, useContext, useEffect } from "react";
 import useSWRImmutable from "swr/immutable";
 
-import { BASE_URL } from "../../constants";
 import { useToast } from "./ToastCtx";
 import { ApiError, api } from "../../Client";
 import PropertiesCtx from "./PropertiesCtx";
@@ -28,27 +27,11 @@ export function EntitiesCtxProvider(props) {
         if (ctxActiveEntity) setCtxActiveEntity(null);
     }, [ctxActiveProperty]);
 
-    const fetcher = async (url) => {
-        const response = await fetch(url, {
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${ctxAccessToken}`,
-            },
-        });
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-    };
-
-    const baseUrl = BASE_URL;
-    const apiURL = `${baseUrl}/api/entities/`;
     const propertyId = ctxActiveProperty?.id;
-    const {
-        data: ctxEntityList,
-        error,
-        mutate,
-    } = useSWRImmutable(propertyId && ctxAccessToken ? [`${apiURL}?property_id=${propertyId}`] : null, fetcher);
+    const { data: ctxEntityList, mutate } = useSWRImmutable(
+        propertyId && ctxAccessToken ? ["/api/entities/", propertyId] : null,
+        ([path, id]) => api.get(path, { query: { property_id: id } })
+    );
 
     const ctxAddEntity = async (entityToAdd) => {
         try {

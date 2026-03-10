@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect } from "react";
-import { BASE_URL } from "../../constants";
+import { api, configureApiClient } from "../../Client";
 
 const AuthCtx = createContext({
     ctxAccessToken: null,
@@ -20,26 +20,13 @@ export function AuthCtxProvider(props) {
                 }
                 return;
             }
-
             try {
-                const response = await fetch(`${BASE_URL}/api/profile/`, {
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${ctxAccessToken}`,
-                    },
-                });
-
+                const profile = await api.get("/api/profile/");
                 if (!isMounted) {
                     return;
                 }
-
-                if (response.ok) {
-                    const profile = await response.json();
-                    setCtxUserData(profile);
-                } else {
-                    setCtxUserData({});
-                }
-            } catch (error) {
+                setCtxUserData(profile || {});
+            } catch {
                 if (isMounted) {
                     setCtxUserData({});
                 }
