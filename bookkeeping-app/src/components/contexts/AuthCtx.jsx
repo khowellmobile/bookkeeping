@@ -7,27 +7,34 @@ const AuthCtx = createContext({
 });
 
 export function AuthCtxProvider(props) {
-    const [ctxAccessToken, setCtxAccessToken] = useState(localStorage.getItem("accessToken") || null);
+    const [ctxAccessToken, setCtxAccessToken] = useState(null);
     const [ctxUserData, setCtxUserData] = useState({});
+
+    useEffect(() => {
+        configureApiClient({
+            tokenGetter: () => ctxAccessToken,
+            unauthorizedHandler: () => {
+                setCtxAccessToken(null);
+                setCtxUserData({});
+            },
+        });
+    }, [ctxAccessToken]);
 
     useEffect(() => {
         let isMounted = true;
 
         const getUserData = async () => {
-            if (!ctxAccessToken) {
-                if (isMounted) {
-                    setCtxUserData({});
-                }
-                return;
-            }
             try {
+                await api.post("/api/auth/refresh/", {}, { authRequired: false });
                 const profile = await api.get("/api/profile/");
                 if (!isMounted) {
                     return;
                 }
                 setCtxUserData(profile || {});
+                setCtxAccessToken("cookie-session");
             } catch {
                 if (isMounted) {
+                    setCtxAccessToken(null);
                     setCtxUserData({});
                 }
             }
@@ -38,7 +45,7 @@ export function AuthCtxProvider(props) {
         return () => {
             isMounted = false;
         };
-    }, [ctxAccessToken]);
+    }, []);
 
     const context = {
         ctxAccessToken,
