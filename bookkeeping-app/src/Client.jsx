@@ -30,13 +30,33 @@ function buildUrl(path, query) {
     return url.toString();
 }
 
-async function request({ method = "GET", path, query, body, authRequired = true, signal }) {
+function getCookie(name) {
+    if (typeof document === "undefined") {
+        return null;
+    }
+
+    const escapedName = name.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+    const match = document.cookie.match(new RegExp(`(?:^|; )${escapedName}=([^;]*)`));
+    return match ? decodeURIComponent(match[1]) : null;
+}
+
+function shouldAttachCsrf(method) {
+    return !["GET", "HEAD", "OPTIONS", "TRACE"].includes(String(method).toUpperCase());
+}
+
+async function request({ method = "GET", path, query, body, authRequired = true, signal, _retried = false }) {
     const url = buildUrl(path, query);
     const headers = { "Content-Type": "application/json" };
 
-    if (authRequired) {
-        const token = getAccessToken();
-        if (token) headers.Authorization = `Bearer ${token}`;
+    if (authRequired && getAccessToken()) {
+        // Cookie auth is used; tokenGetter now acts only as authenticated-session marker.
+    }
+
+    if (shouldAttachCsrf(method)) {
+        const csrfToken = getCookie("csrftoken");
+        if (csrfToken) {
+            headers["X-CSRFToken"] = csrfToken;
+        }
     }
 
     let res;
@@ -44,11 +64,29 @@ async function request({ method = "GET", path, query, body, authRequired = true,
         res = await fetch(url, {
             method,
             headers,
+            credentials: "include",
             body: body ? JSON.stringify(body) : undefined,
             signal,
         });
     } catch {
         throw new ApiError({ message: "Network error. Please try again.", method, url });
+    }
+
+    if (res.status === 401 && authRequired && !_retried && !path.includes("/api/auth/refresh/")) {
+        try {
+            await request({
+                method: "POST",
+                path: "/api/auth/refresh/",
+                body: {},
+                authRequired: false,
+                signal,
+                _retried: true,
+            });
+
+            return request({ method, path, query, body, authRequired, signal, _retried: true });
+        } catch {
+            onUnauthorized();
+        }
     }
 
     if (res.status === 401) {
