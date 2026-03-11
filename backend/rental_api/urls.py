@@ -1,9 +1,11 @@
 # rental_api/urls.py
 from django.urls import path
 from . import views
-from rest_framework_simplejwt.views import TokenObtainPairView
 
 urlpatterns = [
+    path('auth/login/', views.CookieTokenObtainPairView.as_view(), name='cookie-login'),
+    path('auth/refresh/', views.CookieTokenRefreshView.as_view(), name='cookie-refresh'),
+    path('auth/logout/', views.CookieLogoutView.as_view(), name='cookie-logout'),
     path('transactions/', views.TransactionListAPIView.as_view(), name='transaction-list'),
     path('transactions/<int:pk>/', views.TransactionDetailAPIView.as_view(), name='transaction-detail'),
     path('accounts/', views.AccountListAPIView.as_view(), name='account-list'),
