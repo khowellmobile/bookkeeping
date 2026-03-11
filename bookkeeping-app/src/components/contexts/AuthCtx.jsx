@@ -9,6 +9,7 @@ const AuthCtx = createContext({
 export function AuthCtxProvider(props) {
     const [ctxAccessToken, setCtxAccessToken] = useState(null);
     const [ctxUserData, setCtxUserData] = useState({});
+    const [ctxAuthLoading, setCtxAuthLoading] = useState(true);
 
     useEffect(() => {
         configureApiClient({
@@ -37,6 +38,10 @@ export function AuthCtxProvider(props) {
                     setCtxAccessToken(null);
                     setCtxUserData({});
                 }
+            } finally {
+                if (isMounted) {
+                    setCtxAuthLoading(false);
+                }
             }
         };
 
@@ -52,6 +57,7 @@ export function AuthCtxProvider(props) {
         setCtxAccessToken,
         ctxUserData,
         setCtxUserData,
+        ctxAuthLoading,
     };
 
     return <AuthCtx.Provider value={context}>{props.children}</AuthCtx.Provider>;

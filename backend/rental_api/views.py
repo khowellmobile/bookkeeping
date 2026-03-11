@@ -43,9 +43,7 @@ from .mixins import PropertyRequiredMixin
 
 def _set_auth_cookies(response, access_token, refresh_token=None):
     access_max_age = int(settings.SIMPLE_JWT["ACCESS_TOKEN_LIFETIME"].total_seconds())
-    refresh_max_age = int(
-        settings.SIMPLE_JWT["REFRESH_TOKEN_LIFETIME"].total_seconds()
-    )
+    refresh_max_age = int(settings.SIMPLE_JWT["REFRESH_TOKEN_LIFETIME"].total_seconds())
 
     response.set_cookie(
         settings.JWT_AUTH_COOKIE_ACCESS,
