@@ -23,10 +23,10 @@ export function JournalsCtxProvider(props) {
     const propertyId = ctxActiveProperty?.id;
     const { data: ctxJournalList, mutate } = useSWRImmutable(
         propertyId && ctxAccessToken ? ["/api/journals/", propertyId] : null,
-        ([path, id]) => api.get(path, { query: { property_id: id } })
+        ([path, id]) => api.get(path, { query: { property_id: id } }),
     );
 
-    const ctxUpdateJournal = async (selectedJournalId, url, method, sendData) => {
+    const ctxUpdateJournal = async (selectedJournalId, method, sendData) => {
         const tranformedJournalItems = sendData.journal_items.map((item) => ({
             ...item,
             account_id: item.account.id,
@@ -47,14 +47,14 @@ export function JournalsCtxProvider(props) {
                     ? await api.post("/api/journals/", sendData, {
                           query: { property_id: ctxActiveProperty?.id },
                       })
-                    : await api.put(url, sendData);
+                    : await api.put(`/api/journals/${selectedJournalId}/`, sendData);
 
             if (method == "POST") {
                 mutate((prevJournalList) => [...(prevJournalList || []), returnedJournal], false);
             } else if (method == "PUT") {
                 mutate((prevJournalList) => {
                     return prevJournalList.map((journal) =>
-                        journal.id === selectedJournalId ? returnedJournal : journal
+                        journal.id === selectedJournalId ? returnedJournal : journal,
                     );
                 }, false);
             }
