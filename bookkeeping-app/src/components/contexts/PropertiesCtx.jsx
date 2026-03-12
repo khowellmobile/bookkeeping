@@ -23,6 +23,7 @@ export function PropertiesCtxProvider(props) {
     const [ctxActiveProperty, setCtxActiveProperty] = useState();
 
     useEffect(() => {
+        // No active property and no property id stored then show toast
         if (!ctxActiveProperty && !sessionStorage.getItem("activePropertyId") && ctxAccessToken) {
             showToast("Please select a Property", "warning", 5000);
         }
@@ -44,7 +45,7 @@ export function PropertiesCtxProvider(props) {
         const storedPropertyId = sessionStorage.getItem("activePropertyId");
         if (!storedPropertyId) return;
 
-        const foundProperty = ctxPropertyList.find((property) => property.id === storedPropertyId);
+        const foundProperty = ctxPropertyList.find((property) => property.id == storedPropertyId);
 
         if (foundProperty) {
             if (ctxActiveProperty?.id !== foundProperty.id) {
