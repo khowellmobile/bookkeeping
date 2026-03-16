@@ -17,12 +17,10 @@ const JournalsPage = () => {
         setToJournal,
         debitTotal,
         creditTotal,
-        isBalanced,
         isJournalChanged,
         handleFocusLastItem,
         handleItemChange,
         updateField,
-        updateJournal,
         deleteJournal,
         saveInfo,
     } = useJournal();
