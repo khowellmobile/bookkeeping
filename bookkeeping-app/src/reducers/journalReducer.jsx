@@ -21,10 +21,11 @@ function journalReducer(state, action) {
     switch (action.type) {
         case "UPDATE_FIELD":
             return { ...state, [action.field]: action.value };
-        case "UPDATE_ITEM":
+        case "UPDATE_ITEM": {
             const newItems = [...state.items];
             newItems[action.index] = { ...newItems[action.index], ...action.payload };
             return { ...state, items: newItems };
+        }
         case "ADD_ROW":
             return { ...state, items: [...state.items, { ...EMPTY_ITEM }] };
         case "SET_ACTIVE":
