@@ -218,7 +218,9 @@ export const useJournal = () => {
         const hasDateError = !isValidDateString(journalDate);
 
         if (hasLineError || hasDateError || !isBalanced) {
-            return { ok: false, message: "Invalid journal fields or unbalanced totals." };
+            const message = "Invalid journal fields or unbalanced totals.";
+            showToast(message, "error", 5000);
+            return { ok: false, message };
         }
 
         const method = isEditing ? "PUT" : "POST";
@@ -226,7 +228,9 @@ export const useJournal = () => {
         const returnedJournal = await updateJournal(id, method, sendData);
 
         if (!returnedJournal) {
-            return { ok: false, message: "Save failed." };
+            const message = "Save failed.";
+            showToast(message, "error", 5000);
+            return { ok: false, message };
         }
 
         dispatch({
@@ -235,7 +239,7 @@ export const useJournal = () => {
         });
 
         return { ok: true };
-    }, [activeJournal, updateJournal, isBalanced, isEditing, journalDate, journalItems, journalName]);
+    }, [activeJournal, updateJournal, isBalanced, isEditing, journalDate, journalItems, journalName, showToast]);
 
     return {
         state,
