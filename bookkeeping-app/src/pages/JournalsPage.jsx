@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useRef, useContext, useEffect } from "react";
+import { useState, useCallback, useMemo, useRef, useContext, useEffect, useReducer } from "react";
 
 import classes from "./JournalsPage.module.css";
 
@@ -9,6 +9,31 @@ import NoResultsDisplay from "../components/elements/utilities/NoResultsDisplay"
 import Input from "../components/elements/utilities/Input";
 import { JournalEntryItem } from "../components/elements/items/InputEntryItems";
 import Button from "../components/elements/utilities/Button";
+import journalReducer, { initialJournalState } from "../reducers/journalReducer";
+
+const normalizeAmount = (value) => {
+    const parsed = parseFloat(value);
+    if (Number.isNaN(parsed) || parsed < 0) return "";
+    return value;
+};
+
+const isValidDateString = (date) => {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return false;
+    const parsed = new Date(date);
+    return !Number.isNaN(parsed.getTime());
+};
+
+const isItemNonEmpty = (item) =>
+    item.account !== "" ||
+    (item.amount !== "" && item.amount !== null && item.amount !== undefined) ||
+    (item.memo && item.memo.trim() !== "");
+
+const isItemValid = (item) => {
+    if (!item.account) return false;
+    if (item.amount === "" || Number(item.amount) < 0) return false;
+    if (item.type !== "debit" && item.type !== "credit") return false;
+    return true;
+};
 
 const JournalsPage = () => {
     const { ctxJournalList, ctxUpdateJournal, ctxDeleteJournal } = useContext(JournalsCtx);
@@ -16,152 +41,135 @@ const JournalsPage = () => {
 
     const scrollRef = useRef();
 
-    const [isEditing, setIsEditing] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
-
-    const [activeJournal, setActiveJournal] = useState(null);
-    const [journalName, setJournalName] = useState("");
-    const [journalDate, setJournalDate] = useState("");
-    const [journalItems, setJournalItems] = useState(
-        Array(14)
-            .fill(null)
-            .map(() => ({
-                account: "",
-                amount: "",
-                memo: "",
-                type: "",
-            })),
-    );
     const [confirmAction, setConfirmAction] = useState({
         type: null,
         payload: null,
     });
 
+    const [state, dispatch] = useReducer(journalReducer, initialJournalState);
+    const { name: journalName, date: journalDate, items: journalItems, activeJournal, isEditing } = state;
+
+    const clearInputs = useCallback(() => {
+        dispatch({ type: "RESET" });
+    }, []);
+
+    const setToEditIndex = useCallback(
+        (index) => {
+            const journal = ctxJournalList[index];
+
+            if (!journal) {
+                clearInputs();
+                return;
+            }
+
+            dispatch({
+                type: "SET_ACTIVE",
+                payload: journal,
+            });
+        },
+        [clearInputs, ctxJournalList],
+    );
+
     // Clear active journal on property change
     useEffect(() => {
         clearInputs();
-    }, [ctxActiveProperty]);
+    }, [clearInputs, ctxActiveProperty]);
 
-    const debitTotal = useMemo(() => {
-        if (journalItems) {
-            return journalItems.reduce((sum, item) => {
-                if (item.type == "debit") {
-                    const amount = parseFloat(item.amount);
-                    return sum + (isNaN(amount) ? 0 : amount);
-                }
-                return sum;
-            }, 0);
-        } else {
-            return 0;
+    const { debitTotal, creditTotal } = useMemo(() => {
+        return journalItems.reduce(
+            (acc, item) => {
+                const amount = parseFloat(item.amount);
+                const safeAmount = Number.isNaN(amount) ? 0 : amount;
+
+                if (item.type === "debit") acc.debitTotal += safeAmount;
+                if (item.type === "credit") acc.creditTotal += safeAmount;
+
+                return acc;
+            },
+            { debitTotal: 0, creditTotal: 0 },
+        );
+    }, [journalItems]);
+
+    const isBalanced = useMemo(() => Math.abs(debitTotal - creditTotal) < 0.0001, [debitTotal, creditTotal]);
+
+    const isJournalItemsEmpty = useMemo(() => journalItems.every((item) => !isItemNonEmpty(item)), [journalItems]);
+
+    const isJournalChanged = useMemo(() => {
+        if (!activeJournal) {
+            return journalName !== "" || journalDate !== "" || !isJournalItemsEmpty;
         }
-    }, [journalItems]);
 
-    const creditTotal = useMemo(() => {
-        if (journalItems) {
-            return journalItems.reduce((sum, item) => {
-                if (item.type == "credit") {
-                    const amount = parseFloat(item.amount);
-                    return sum + (isNaN(amount) ? 0 : amount);
-                }
-                return sum;
-            }, 0);
-        } else {
-            return 0;
-        }
-    }, [journalItems]);
-
-    const isJournalItemsEmpty = useMemo(() => {
-        return journalItems.every((item) => item.account === "" && item.amount === "" && item.memo === "");
-    }, [journalItems]);
+        return (
+            journalName !== activeJournal.name ||
+            journalDate !== activeJournal.date ||
+            JSON.stringify(journalItems) !== JSON.stringify(activeJournal.journal_items)
+        );
+    }, [activeJournal, isJournalItemsEmpty, journalDate, journalItems, journalName]);
 
     const handleFocusLastItem = useCallback(
         (index) => {
             if (index === journalItems.length - 1) {
-                setJournalItems([...journalItems, { account: "", amount: "", memo: "", type: "" }]);
+                dispatch({ type: "ADD_ROW" });
             }
         },
-        [journalItems, setJournalItems],
+        [journalItems.length],
     );
 
-    const handleItemChange = useCallback(
-        (index, name, value) => {
-            // Shallow copy
-            const newJournalItems = [...journalItems];
+    const handleItemChange = useCallback((index, name, value) => {
+        let payload = {};
 
-            // Deep copy
-            const updatedItem = { ...newJournalItems[index] };
+        if (name === "account") {
+            payload = { account: value };
+        } else if (name === "debit" || name === "credit") {
+            payload = {
+                type: name,
+                amount: normalizeAmount(value),
+            };
+        } else if (name === "memo") {
+            payload = { memo: value };
+        }
 
-            if (name === "account") {
-                updatedItem.account = value;
-            } else if (name === "debit" || name === "credit") {
-                updatedItem.type = name;
-                updatedItem.amount = checkAmount(value);
-            } else if (name === "memo") {
-                updatedItem.memo = value;
-            }
-
-            newJournalItems[index] = updatedItem;
-
-            setJournalItems(newJournalItems);
-        },
-        [journalItems, setJournalItems],
-    );
-
-    const saveInfo = async () => {
-        // Getting non-empty items
-        const journal_items = journalItems.filter((item) => {
-            return (
-                (item.account !== "" && item.account !== null && item.account !== undefined) ||
-                (item.amount !== "" && item.amount !== null && item.amount !== undefined && item.amount !== 0) ||
-                (item.memo && item.memo.trim() !== "")
-            );
+        dispatch({
+            type: "UPDATE_ITEM",
+            index,
+            payload,
         });
+    }, []);
 
-        const name = journalName;
-        const date = journalDate;
-        const method = isEditing ? "PUT" : "POST";
-        const id = activeJournal ? activeJournal.id : null;
-
+    const saveInfo = useCallback(async () => {
+        const journal_items = journalItems.filter(isItemNonEmpty);
         const sendData = {
-            name: name,
-            date: date,
+            name: journalName,
+            date: journalDate,
             journal_items: journal_items,
         };
 
-        const hasError = sendData.journal_items.some((item) => !checkInput(item));
-        const dateError = !checkDate(date);
+        const hasLineError = sendData.journal_items.some((item) => !isItemValid(item));
+        const hasDateError = !isValidDateString(journalDate);
 
-        if (hasError || dateError) {
-            alert("Invalid Journal Fields. Please check formats and try again.");
-            return;
+        if (hasLineError || hasDateError || !isBalanced) {
+            return { ok: false, message: "Invalid journal fields or unbalanced totals." };
         }
 
+        const method = isEditing ? "PUT" : "POST";
+        const id = activeJournal ? activeJournal.id : null;
         const returnedJournal = await ctxUpdateJournal(id, method, sendData);
-        setActiveJournal(returnedJournal);
-        setJournalName(returnedJournal.name);
-        setJournalDate(returnedJournal.date);
-        setJournalItems(returnedJournal.journal_items);
-        setIsEditing(true);
-    };
 
-    const isJournalChanged = () => {
-        if (!activeJournal) {
-            if (journalName != "" || journalDate != "" || !isJournalItemsEmpty) {
-                return true;
-            } else {
-                return false;
-            }
+        if (!returnedJournal) {
+            return { ok: false, message: "Save failed." };
         }
 
-        return (
-            journalName != activeJournal.name ||
-            journalDate != activeJournal.date ||
-            JSON.stringify(journalItems) != JSON.stringify(activeJournal.journal_items)
-        );
-    };
+        dispatch({
+            type: "SET_ACTIVE",
+            payload: returnedJournal,
+        });
+
+        return { ok: true };
+    }, [activeJournal, ctxUpdateJournal, isBalanced, isEditing, journalDate, journalItems, journalName]);
 
     const handleHistoryClick = (index) => {
-        if ((activeJournal === null || ctxJournalList[index]?.id !== activeJournal.id) && isJournalChanged()) {
+        if ((activeJournal === null || ctxJournalList[index]?.id !== activeJournal.id) && isJournalChanged) {
             setIsModalOpen(true);
             setConfirmAction({
                 type: "switch_active",
@@ -173,7 +181,7 @@ const JournalsPage = () => {
     };
 
     const handleNewEntryClick = () => {
-        if (isJournalChanged()) {
+        if (isJournalChanged) {
             setIsModalOpen(true);
             setConfirmAction({
                 type: "discard_and_new",
@@ -190,31 +198,6 @@ const JournalsPage = () => {
             type: "delete_entry",
             payload: null,
         });
-    };
-
-    const setToEditIndex = (index) => {
-        setJournalItems(ctxJournalList[index]?.journal_items || []);
-        setJournalDate(ctxJournalList[index]?.date || "");
-        setJournalName(ctxJournalList[index]?.name || "");
-        setActiveJournal(ctxJournalList[index] || {});
-        setIsEditing(true);
-    };
-
-    const clearInputs = () => {
-        setJournalDate("");
-        setJournalName("");
-        setActiveJournal(null);
-        setJournalItems(
-            Array(14)
-                .fill(null)
-                .map(() => ({
-                    account: "",
-                    amount: "",
-                    memo: "",
-                    type: "",
-                })),
-        );
-        setIsEditing(false);
     };
 
     const onConfirmModalAction = () => {
@@ -257,30 +240,6 @@ const JournalsPage = () => {
             default:
                 return { msg: "", confirm_txt: "", cancel_txt: "" };
         }
-    };
-
-    const checkAmount = (val) => {
-        if (val >= 0 && !isNaN(parseFloat(val))) {
-            return val;
-        } else {
-            return "";
-        }
-    };
-
-    const checkDate = (date) => {
-        const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-
-        return dateRegex.test(date);
-    };
-
-    const checkInput = (inputs) => {
-        if (inputs.amount < 0) {
-            return false;
-        } else if (!inputs.account) {
-            return false;
-        }
-
-        return true;
     };
 
     return (
@@ -339,13 +298,25 @@ const JournalsPage = () => {
                             <Input
                                 type="text"
                                 value={journalName}
-                                onChange={(event) => setJournalName(event.target.value)}
+                                onChange={(event) =>
+                                    dispatch({
+                                        type: "UPDATE_FIELD",
+                                        field: "name",
+                                        value: event.target.value,
+                                    })
+                                }
                                 placeholder="Enter Journal Name"
                             />
                             <Input
                                 type="date"
                                 value={journalDate}
-                                onChange={(event) => setJournalDate(event.target.value)}
+                                onChange={(event) =>
+                                    dispatch({
+                                        type: "UPDATE_FIELD",
+                                        field: "date",
+                                        value: event.target.value,
+                                    })
+                                }
                                 placeholder="Choose Date"
                             />
                         </section>
