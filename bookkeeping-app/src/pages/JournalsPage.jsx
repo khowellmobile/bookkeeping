@@ -1,4 +1,4 @@
-import { useState, useRef, useContext } from "react";
+import { useState, useRef } from "react";
 
 import classes from "./JournalsPage.module.css";
 import { useJournal } from "../hooks/useJournal";
