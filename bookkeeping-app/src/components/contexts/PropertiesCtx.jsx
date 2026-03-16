@@ -50,10 +50,10 @@ export function PropertiesCtxProvider(props) {
         if (foundProperty) {
             if (ctxActiveProperty?.id !== foundProperty.id) {
                 setCtxActiveProperty(foundProperty);
-            } else {
-                console.warn(`Stored property ID ${storedPropertyId} not found in fetched data.`);
-                sessionStorage.removeItem("activePropertyId");
             }
+        } else {
+            console.warn(`Stored property ID ${storedPropertyId} not found in fetched data.`);
+            sessionStorage.removeItem("activePropertyId");
         }
     }, [ctxPropertyList, setCtxActiveProperty]);
 
