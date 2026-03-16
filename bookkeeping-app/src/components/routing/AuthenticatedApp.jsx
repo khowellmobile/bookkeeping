@@ -1,10 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 
-import { AccountsCtxProvider } from "../contexts/AccountsCtx";
 import { EntitiesCtxProvider } from "../contexts/EntitiesCtx";
 import { TransactionsCtxProvider } from "../contexts/TransactionsCtx";
-import { PropertiesCtxProvider } from "../contexts/PropertiesCtx";
-import { JournalsCtxProvider } from "../contexts/JournalsCtx";
 import { RentPaymentsCtxProvider } from "../contexts/RentPaymentsCtx";
 
 import HomePage from "../../pages/HomePage";
@@ -52,7 +49,7 @@ function AuthenticatedApp() {
     };
 
     const JournalsWithContext = () => {
-        return <JournalsCtxProvider>{wrapPage(JournalsPage)}</JournalsCtxProvider>;
+        return wrapPage(JournalsPage);
     };
 
     const EntitiesWithContext = () => {
