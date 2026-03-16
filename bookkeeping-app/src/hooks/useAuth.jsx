@@ -1,17 +1,19 @@
 import { useContext } from "react";
 import { BASE_URL } from "../constants";
 import AuthCtx from "../components/contexts/AuthCtx";
+import { api } from "../Client";
 
 export function useAuth() {
-    const { ctxAccessToken, setCtxAccessToken, setCtxUserData } = useContext(AuthCtx);
+    const { setCtxAccessToken, setCtxUserData } = useContext(AuthCtx);
 
     const login = async (email, password) => {
         try {
-            const response = await fetch(`${BASE_URL}/api/auth/jwt/create/`, {
+            const response = await fetch(`${BASE_URL}/api/auth/login/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
+                credentials: "include",
                 body: JSON.stringify({
                     username: email,
                     password: password,
@@ -24,45 +26,32 @@ export function useAuth() {
                 return { success: false, message: errorMessage };
             }
 
-            const data = await response.json();
-            const { access } = data;
-            localStorage.setItem("accessToken", access);
-            setCtxAccessToken(access);
-            await getUser(access);
+            setCtxAccessToken("cookie-session");
+            await getUser();
             return { success: true, message: "Login successful." };
         } catch (error) {
             return { success: false, message: "A network error occurred. Please try again." };
         }
     };
 
-    const logout = () => {
-        localStorage.removeItem("accessToken");
+    const logout = async () => {
+        try {
+            await api.post("/api/auth/logout/", {});
+        } catch {
+            // Even if logout endpoint fails, clear client auth state.
+        }
         setCtxAccessToken(null);
         setCtxUserData({});
     };
 
-    const getUser = async (tokenOverride) => {
-        const token = tokenOverride || ctxAccessToken;
-        if (!token) {
-            setCtxUserData({});
-            return { success: false, error: "No access token available." };
-        }
-
+    const getUser = async () => {
         try {
-            const response = await fetch(`${BASE_URL}/api/profile/`, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const returnedProfile = await response.json();
+            const returnedProfile = await api.get("/api/profile/");
             setCtxUserData(returnedProfile);
+            setCtxAccessToken("cookie-session");
             return { success: true, data: returnedProfile };
         } catch (e) {
+            setCtxAccessToken(null);
             setCtxUserData({});
             return { success: false, error: e?.message || "Unable to fetch user profile." };
         }
@@ -70,18 +59,7 @@ export function useAuth() {
 
     const updateUser = async (updatedUser) => {
         try {
-            const response = await fetch(`${BASE_URL}/api/profile/`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${ctxAccessToken}`,
-                },
-                body: JSON.stringify(updatedUser),
-            });
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const returnedProfile = await response.json();
+            const returnedProfile = await api.put("/api/profile/", updatedUser);
             setCtxUserData(returnedProfile);
             return { success: true };
         } catch (e) {
@@ -91,20 +69,15 @@ export function useAuth() {
 
     const updatePwd = async (pwdCurr, pwdNew, pwdCnfm) => {
         try {
-            const response = await fetch(`${BASE_URL}/api/auth/users/set_password/`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${ctxAccessToken}`,
-                },
-                body: JSON.stringify({
-                    current_password: pwdCurr,
-                    new_password: pwdNew,
-                    re_new_password: pwdCnfm,
-                }),
+            await api.post("/api/auth/users/set_password/", {
+                current_password: pwdCurr,
+                new_password: pwdNew,
+                re_new_password: pwdCnfm,
             });
-            if (!response.ok) {
-                const errorData = await response.json();
+            return { success: true };
+        } catch (e) {
+            const errorData = e?.details;
+            if (errorData) {
                 let errorMessage = "Unknown error";
                 if (errorData.current_password) {
                     errorMessage = errorData.current_password[0];
@@ -117,8 +90,6 @@ export function useAuth() {
                 }
                 return { success: false, error: errorMessage };
             }
-            return { success: true };
-        } catch (e) {
             return { success: false, error: "Network error updating Password" };
         }
     };

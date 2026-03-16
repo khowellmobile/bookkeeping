@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect } from "react";
-import { BASE_URL } from "../../constants";
+import { api, configureApiClient } from "../../Client";
 
 const AuthCtx = createContext({
     ctxAccessToken: null,
@@ -7,41 +7,40 @@ const AuthCtx = createContext({
 });
 
 export function AuthCtxProvider(props) {
-    const [ctxAccessToken, setCtxAccessToken] = useState(localStorage.getItem("accessToken") || null);
+    const [ctxAccessToken, setCtxAccessToken] = useState(null);
     const [ctxUserData, setCtxUserData] = useState({});
+    const [ctxAuthLoading, setCtxAuthLoading] = useState(true);
+
+    useEffect(() => {
+        configureApiClient({
+            tokenGetter: () => ctxAccessToken,
+            unauthorizedHandler: () => {
+                setCtxAccessToken(null);
+                setCtxUserData({});
+            },
+        });
+    }, [ctxAccessToken]);
 
     useEffect(() => {
         let isMounted = true;
 
         const getUserData = async () => {
-            if (!ctxAccessToken) {
-                if (isMounted) {
-                    setCtxUserData({});
-                }
-                return;
-            }
-
             try {
-                const response = await fetch(`${BASE_URL}/api/profile/`, {
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${ctxAccessToken}`,
-                    },
-                });
-
+                await api.post("/api/auth/refresh/", {}, { authRequired: false });
+                const profile = await api.get("/api/profile/");
                 if (!isMounted) {
                     return;
                 }
-
-                if (response.ok) {
-                    const profile = await response.json();
-                    setCtxUserData(profile);
-                } else {
+                setCtxUserData(profile || {});
+                setCtxAccessToken("cookie-session");
+            } catch {
+                if (isMounted) {
+                    setCtxAccessToken(null);
                     setCtxUserData({});
                 }
-            } catch (error) {
+            } finally {
                 if (isMounted) {
-                    setCtxUserData({});
+                    setCtxAuthLoading(false);
                 }
             }
         };
@@ -51,13 +50,14 @@ export function AuthCtxProvider(props) {
         return () => {
             isMounted = false;
         };
-    }, [ctxAccessToken]);
+    }, []);
 
     const context = {
         ctxAccessToken,
         setCtxAccessToken,
         ctxUserData,
         setCtxUserData,
+        ctxAuthLoading,
     };
 
     return <AuthCtx.Provider value={context}>{props.children}</AuthCtx.Provider>;

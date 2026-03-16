@@ -1,7 +1,7 @@
 import { createContext, useEffect, useState, useContext } from "react";
 import useSWRImmutable from "swr/immutable";
 
-import { BASE_URL } from "../../constants";
+import { ApiError, api } from "../../Client";
 import { useToast } from "./ToastCtx";
 import PropertiesCtx from "./PropertiesCtx";
 import AuthCtx from "./AuthCtx";
@@ -35,38 +35,32 @@ export function RentPaymentsCtxProvider(props) {
         sessionStorage.setItem("activeDate", JSON.stringify(ctxActiveDate));
     }, [ctxActiveDate]);
 
-    const fetcher = async (url) => {
-        const response = await fetch(url, {
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${ctxAccessToken}`,
-            },
-        });
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-    };
-
     const currentMonth = ctxActiveDate.getMonth() + 1; // Month is 1-indexed for the API
     const currentYear = ctxActiveDate.getFullYear();
-    const basePath = `${BASE_URL}/api/rentPayments/`;
 
     // Dynamic SWR Key
     const swrKey =
         ctxActiveProperty && ctxActiveProperty.id && ctxAccessToken
-            ? `${basePath}?property_id=${ctxActiveProperty.id}&year=${currentYear}&month=${currentMonth}&format_by_day=true`
+            ? ["/api/rentPayments/", ctxActiveProperty.id, currentYear, currentMonth]
             : null;
 
-    const { data: ctxMonthPaymentList, isLoading, error, mutate } = useSWRImmutable(swrKey, fetcher);
+    const { data: ctxMonthPaymentList, isLoading, mutate } = useSWRImmutable(
+        swrKey,
+        ([path, propertyId, year, month]) =>
+            api.get(path, {
+                query: {
+                    property_id: propertyId,
+                    year,
+                    month,
+                    format_by_day: true,
+                },
+            })
+    );
 
     const ctxAddPayment = async (paymentToAdd) => {
-        try {
-            const url = new URL(`${BASE_URL}/api/rentPayments/`);
-            if (ctxActiveProperty && ctxActiveProperty.id) {
-                url.searchParams.append("property_id", ctxActiveProperty.id);
-            }
+        if (!ctxActiveProperty?.id) return;
 
+        try {
             const transformedPayment = {
                 ...paymentToAdd,
                 entity_id: paymentToAdd.entity.id,
@@ -74,20 +68,9 @@ export function RentPaymentsCtxProvider(props) {
 
             delete transformedPayment.entity;
 
-            const response = await fetch(url.toString(), {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${ctxAccessToken}`,
-                },
-                body: JSON.stringify(transformedPayment),
+            const newPymt = await api.post("/api/rentPayments/", transformedPayment, {
+                query: { property_id: ctxActiveProperty.id },
             });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error. Status: ${response.status}`);
-            }
-
-            const newPymt = await response.json();
 
             mutate((prev) => {
                 let newPymtList = [...prev];
@@ -104,69 +87,50 @@ export function RentPaymentsCtxProvider(props) {
             }, false);
             showToast("Payment added", "success", 3000);
         } catch (error) {
-            console.error("Error:", error);
-            showToast("Error adding payment", "error", 5000);
+            if (error instanceof ApiError) {
+                showToast("Error adding payment", "error", 5000);
+            } else {
+                showToast("Network error. Please try again.", "error", 5000);
+            }
         }
     };
 
     const ctxUpdatePayment = async (updatedPayment) => {
         try {
-            const response = await fetch(`${BASE_URL}/api/rentPayments/${updatedPayment.id}/`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${ctxAccessToken}`,
-                },
-                body: JSON.stringify(updatedPayment),
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error. Status: ${response.status}`);
-            }
-
-            const updatedData = await response.json();
+            const updatedData = await api.put(`/api/rentPayments/${updatedPayment.id}/`, updatedPayment);
             mutate((prev) => prev.map((pymt) => (pymt.id === updatedData.id ? updatedData : pymt)), false);
             showToast("Payment updated", "success", 3000);
-        } catch (e) {
-            console.log("Error: " + e);
-            showToast("Error updating payment", "error", 5000);
+        } catch (error) {
+            if (error instanceof ApiError) {
+                showToast("Error updating payment", "error", 5000);
+            } else {
+                showToast("Network error. Please try again.", "error", 5000);
+            }
         }
     };
 
     const ctxGetMonthlySummary = async (month, year) => {
-        try {
-            const url = new URL(`${BASE_URL}/api/rentPayments/monthsummary/`);
-            if (ctxActiveProperty && ctxActiveProperty.id) {
-                url.searchParams.append("property_id", ctxActiveProperty.id);
-            } else {
-                return;
-            }
+        if (!ctxActiveProperty?.id) return;
 
+        try {
             if (month && year && month >= 1 && month <= 12) {
-                url.searchParams.append("month", month);
-                url.searchParams.append("year", year);
+                return await api.get("/api/rentPayments/monthsummary/", {
+                    query: {
+                        property_id: ctxActiveProperty.id,
+                        month,
+                        year,
+                    },
+                });
             } else {
                 console.error("Invalid month or year for monthly summary");
                 return;
             }
-
-            const response = await fetch(url.toString(), {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${ctxAccessToken}`,
-                },
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error. Status: ${response.status}`);
+        } catch (error) {
+            if (error instanceof ApiError) {
+                showToast("Error getting summary", "error", 5000);
+            } else {
+                showToast("Network error. Please try again.", "error", 5000);
             }
-
-            const monthSummary = await response.json();
-            return monthSummary;
-        } catch (e) {
-            console.log("Error: " + e);
-            showToast("Error getting summary", "error", 5000);
         }
     };
 

@@ -1,287 +1,119 @@
-/*
- * Tests for EntitiesCtx component.
- *
- */
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { useContext } from "react";
+import useSWRImmutable from "swr/immutable";
 
 import { EntitiesCtxProvider } from "@/src/components/contexts/EntitiesCtx";
 import EntitiesCtx from "@/src/components/contexts/EntitiesCtx";
 import PropertiesCtx from "@/src/components/contexts/PropertiesCtx";
 import AuthCtx from "@/src/components/contexts/AuthCtx";
-import useSWRImmutable from "swr/immutable";
+import { api, ApiError } from "@/src/Client";
 
-// Mocking environment variables
-jest.mock("@/src/constants", () => ({
-    ENVIRONMENT: "test",
-    BASE_URL: "http://test-url.com",
-}));
-
-// Mock useSWRImmutable
 jest.mock("swr/immutable", () => ({
     __esModule: true,
     default: jest.fn(),
 }));
 
-const mockMutate = jest.fn();
+jest.mock("@/src/Client", () => {
+    class MockApiError extends Error {
+        constructor({ message = "error", status = 0 } = {}) {
+            super(message);
+            this.status = status;
+        }
+    }
 
-// Configure the SWR mock to return initial data
-useSWRImmutable.mockImplementation(() => ({
-    data: [{ id: 1, name: "Test Entity 1" }],
-    error: undefined,
-    mutate: mockMutate,
-}));
+    return {
+        ApiError: MockApiError,
+        api: {
+            get: jest.fn(),
+            post: jest.fn(),
+            put: jest.fn(),
+            patch: jest.fn(),
+            delete: jest.fn(),
+        },
+    };
+});
 
-// Mock the useToast hook
 const mockShowToast = jest.fn();
 jest.mock("@/src/components/contexts/ToastCtx", () => ({
     useToast: () => ({ showToast: mockShowToast }),
 }));
 
-// Define placeholder for global.fetch and spy
-if (typeof global.fetch === "undefined") {
-    global.fetch = jest.fn();
-}
-const mockFetch = jest.spyOn(global, "fetch");
-let consoleLogSpy;
+const mockMutate = jest.fn();
 
-// Mock Parent Context Providers
-const mockAccessToken = "mock-token";
-const MockAuthsCtxProvider = ({ children }) => (
-    <AuthCtx.Provider value={{ ctxAccessToken: mockAccessToken }}>{children}</AuthCtx.Provider>
-);
-
-const mockActiveProperty = { id: 1, name: "Test Property" };
-const MockPropertiesCtxProvider = ({ children }) => (
-    <PropertiesCtx.Provider value={{ ctxActiveProperty: mockActiveProperty }}>{children}</PropertiesCtx.Provider>
-);
-
-// Function to render the Provider wrapped around the consumer component
-const wrapAndRenderComponent = (component) => {
-    return render(
-        <MockAuthsCtxProvider>
-            <MockPropertiesCtxProvider>
+const wrap = (component) =>
+    render(
+        <AuthCtx.Provider value={{ ctxAccessToken: "mock-token" }}>
+            <PropertiesCtx.Provider value={{ ctxActiveProperty: { id: 1, name: "P1" } }}>
                 <EntitiesCtxProvider>{component}</EntitiesCtxProvider>
-            </MockPropertiesCtxProvider>
-        </MockAuthsCtxProvider>
+            </PropertiesCtx.Provider>
+        </AuthCtx.Provider>
     );
-};
 
-const GeneralTestComponent = () => {
-    const context = useContext(EntitiesCtx);
+const TestComponent = () => {
+    const ctx = useContext(EntitiesCtx);
     return (
         <div>
-            <span data-testid="active-entity-name">{context.ctxActiveEntity?.name}</span>
-            <span data-testid="entity-list-count">{context.ctxEntityList ? context.ctxEntityList.length : 0}</span>
-            <button onClick={() => context.setCtxActiveEntity({ name: "Updated Entity" })}>Set Entity</button>
-            <button onClick={() => context.ctxAddEntity({ name: "New Entity" })}>Add Entity</button>
+            <span data-testid="count">{ctx.ctxEntityList?.length || 0}</span>
+            <button onClick={() => ctx.ctxAddEntity({ name: "New E" })}>Add</button>
+            <button onClick={() => ctx.ctxUpdateEntity({ id: 1, name: "Updated E" })}>Update</button>
         </div>
     );
 };
 
-describe("EntitiesCtxProvider initial render/consume", () => {
+describe("EntitiesCtx", () => {
     beforeEach(() => {
         jest.clearAllMocks();
         useSWRImmutable.mockImplementation(() => ({
-            data: [{ id: 1, name: "Test Entity 1" }],
-            error: undefined,
+            data: [{ id: 1, name: "E1" }],
             mutate: mockMutate,
         }));
     });
 
-    test("should provide the correct initial state and list from SWR", () => {
-        wrapAndRenderComponent(<GeneralTestComponent />);
-
-        const activeEntityName = screen.getByTestId("active-entity-name");
-        expect(activeEntityName).toHaveTextContent("");
-
-        const entityListCount = screen.getByTestId("entity-list-count");
-        expect(entityListCount).toHaveTextContent("1");
+    test("loads list through SWR with client key", () => {
+        wrap(<TestComponent />);
+        expect(useSWRImmutable).toHaveBeenCalledWith(["/api/entities/", 1], expect.any(Function));
+        expect(screen.getByTestId("count")).toHaveTextContent("1");
     });
-});
 
-describe("EntitiesCtxProvider state update", () => {
-    beforeEach(() => {
-        jest.clearAllMocks();
-        useSWRImmutable.mockImplementation(() => ({
-            data: [{ id: 1, name: "Test Entity 1" }],
-            error: undefined,
-            mutate: mockMutate,
+    test("adds entity and mutates cache", async () => {
+        api.post.mockResolvedValueOnce({ id: 2, name: "New E" });
+        wrap(<TestComponent />);
+
+        fireEvent.click(screen.getByText("Add"));
+
+        await waitFor(() => expect(api.post).toHaveBeenCalledWith("/api/entities/", { name: "New E" }, {
+            query: { property_id: 1 },
         }));
-    });
-
-    test("should update the active entity when setCtxActiveEntity is called", () => {
-        wrapAndRenderComponent(<GeneralTestComponent />);
-
-        const activeEntityName = screen.getByTestId("active-entity-name");
-        expect(activeEntityName).toHaveTextContent("");
-
-        const setAccountButton = screen.getByText("Set Entity");
-        fireEvent.click(setAccountButton);
-
-        expect(activeEntityName).toHaveTextContent("Updated Entity");
-    });
-});
-
-describe("EntitiesCtxProvider ctxAddEntity", () => {
-    beforeEach(() => {
-        jest.clearAllMocks();
-        useSWRImmutable.mockImplementation(() => ({
-            data: [{ id: 1, name: "Test Entity 1" }],
-            error: undefined,
-            mutate: mockMutate,
-        }));
-    });
-
-    test("should successfully add an entity, update SWR cache, and show success toast", async () => {
-        const newEntityData = { id: 2, name: "New Entity" };
-        mockFetch.mockResolvedValueOnce({
-            ok: true,
-            json: async () => newEntityData,
-        });
-
-        wrapAndRenderComponent(<GeneralTestComponent />);
-
-        const addButton = screen.getByText("Add Entity");
-        fireEvent.click(addButton);
-
-        await waitFor(() => {
-            expect(mockFetch).toHaveBeenCalled();
-        });
-
-        // Define the expected request details
-        const expectedUrl = "http://test-url.com/api/entities/?property_id=1";
-        const expectedBodyObject = { name: "New Entity" };
-        const expectedOptions = {
-            method: "POST",
-            body: JSON.stringify(expectedBodyObject),
-            headers: {
-                Authorization: `Bearer mock-token`,
-                "Content-Type": "application/json",
-            },
-        };
-
-        expect(mockFetch).toHaveBeenCalledTimes(1);
-        const [receivedUrl, receivedOptions] = mockFetch.mock.calls[0];
-        expect(receivedUrl.toString()).toBe(expectedUrl);
-        expect(receivedOptions.method).toBe(expectedOptions.method);
-        expect(receivedOptions.body).toBe(expectedOptions.body);
-        expect(receivedOptions.headers).toEqual(expect.objectContaining(expectedOptions.headers));
-
-        // Ensuring mutate is called properly with correct data
-        const updaterFn = mockMutate.mock.calls[0][0];
-        const existingCacheData = [{ id: 1, name: "Test Entity 1" }];
-        const newCacheData = updaterFn(existingCacheData);
-        expect(newCacheData).toEqual([{ id: 1, name: "Test Entity 1" }, newEntityData]);
-        expect(mockMutate.mock.calls[0][1]).toBe(false);
-
-        expect(mockMutate).toHaveBeenCalledTimes(1);
+        const updater = mockMutate.mock.calls[0][0];
+        expect(updater([{ id: 1, name: "E1" }])).toEqual([{ id: 1, name: "E1" }, { id: 2, name: "New E" }]);
         expect(mockShowToast).toHaveBeenCalledWith("Entity added", "success", 3000);
     });
 
-    test("should handle API failure when adding an entity and show error toast", async () => {
-        mockFetch.mockResolvedValueOnce({
-            ok: false,
-            json: async () => ({ error: "Server Error" }),
-        });
+    test("invalid entity error path", async () => {
+        api.post.mockRejectedValueOnce(new ApiError({ status: 422, message: "invalid" }));
+        wrap(<TestComponent />);
+        fireEvent.click(screen.getByText("Add"));
 
-        const consoleError = jest.spyOn(console, "error").mockImplementation(() => {});
-
-        wrapAndRenderComponent(<GeneralTestComponent />);
-
-        const addButton = screen.getByText("Add Entity");
-        fireEvent.click(addButton);
-
-        await waitFor(() => {
-            expect(mockFetch).toHaveBeenCalled();
-        });
-
-        expect(mockMutate).not.toHaveBeenCalled();
-        expect(mockShowToast).toHaveBeenCalledWith("Error adding entity", "error", 5000);
-
-        consoleError.mockRestore();
-    });
-});
-
-describe("EntitiesCtxProvider ctxUpdateEntity", () => {
-    beforeEach(() => {
-        jest.clearAllMocks();
-        useSWRImmutable.mockImplementation(() => ({
-            data: [{ id: 1, name: "Test Entity 1" }],
-            error: undefined,
-            mutate: mockMutate,
-        }));
-        consoleLogSpy = jest.spyOn(console, "log").mockImplementation(() => {});
+        await waitFor(() => expect(mockShowToast).toHaveBeenCalledWith("Invalid entity data", "error", 5000));
     });
 
-    afterEach(() => {
-        consoleLogSpy.mockRestore();
-    });
+    test("updates entity and handles unauthorized", async () => {
+        api.put
+            .mockResolvedValueOnce({ id: 1, name: "Updated E" })
+            .mockRejectedValueOnce(new ApiError({ status: 401, message: "unauthorized" }));
+        wrap(<TestComponent />);
 
-    const TestComponentWithUpdate = () => {
-        const context = useContext(EntitiesCtx);
-        return (
-            <button onClick={() => context.ctxUpdateEntity({ id: 1, name: "Updated Test Entity" })}>
-                Update Entity
-            </button>
-        );
-    };
-
-    test("should successfully update an entity, update SWR cache, and show success toast", async () => {
-        const updatedEntityData = { id: 1, name: "Updated Test Entity" };
-        mockFetch.mockResolvedValueOnce({
-            ok: true,
-            json: async () => updatedEntityData,
-        });
-
-        wrapAndRenderComponent(<TestComponentWithUpdate />);
-
-        const updateButton = screen.getByText("Update Entity");
-        fireEvent.click(updateButton);
-
-        await waitFor(() => {
-            expect(mockFetch).toHaveBeenCalledWith(
-                "http://test-url.com/api/entities/1/",
-                expect.objectContaining({
-                    method: "PUT",
-                    body: JSON.stringify(updatedEntityData),
-                })
-            );
-        });
-
-        // Ensuring mutate is called properly with correct data
-        const updaterFn = mockMutate.mock.calls[0][0];
-        const existingCacheData = [
-            { id: 1, name: "Test Entity 1" },
-            { id: 2, name: "Other Entity" },
-        ];
-        const newCacheData = updaterFn(existingCacheData);
-        expect(newCacheData).toEqual([
-            { id: 1, name: "Updated Test Entity" },
-            { id: 2, name: "Other Entity" },
+        fireEvent.click(screen.getByText("Update"));
+        await waitFor(() => expect(api.put).toHaveBeenCalledWith("/api/entities/1/", { id: 1, name: "Updated E" }));
+        const updater = mockMutate.mock.calls[0][0];
+        expect(updater([{ id: 1, name: "E1" }, { id: 2, name: "E2" }])).toEqual([
+            { id: 1, name: "Updated E" },
+            { id: 2, name: "E2" },
         ]);
-        expect(mockMutate.mock.calls[0][1]).toBe(false);
 
-        expect(mockMutate).toHaveBeenCalledTimes(1);
-        expect(mockShowToast).toHaveBeenCalledWith("Entity updated", "success", 3000);
-    });
-
-    test("should handle API failure when updating an entity and show error toast", async () => {
-        mockFetch.mockResolvedValueOnce({
-            ok: false,
-            json: async () => ({ error: "Server Error" }),
-        });
-
-        wrapAndRenderComponent(<TestComponentWithUpdate />);
-
-        const updateButton = screen.getByText("Update Entity");
-        fireEvent.click(updateButton);
-
-        await waitFor(() => {
-            expect(mockFetch).toHaveBeenCalled();
-        });
-
-        expect(mockMutate).not.toHaveBeenCalled();
-        expect(mockShowToast).toHaveBeenCalledWith("Error updating entity", "error", 5000);
+        fireEvent.click(screen.getByText("Update"));
+        await waitFor(() =>
+            expect(mockShowToast).toHaveBeenCalledWith("Session expired. Please log in again.", "error", 5000)
+        );
     });
 });

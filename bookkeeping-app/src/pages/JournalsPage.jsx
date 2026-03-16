@@ -30,7 +30,7 @@ const JournalsPage = () => {
                 amount: "",
                 memo: "",
                 type: "",
-            }))
+            })),
     );
     const [confirmAction, setConfirmAction] = useState({
         type: null,
@@ -80,7 +80,7 @@ const JournalsPage = () => {
                 setJournalItems([...journalItems, { account: "", amount: "", memo: "", type: "" }]);
             }
         },
-        [journalItems, setJournalItems]
+        [journalItems, setJournalItems],
     );
 
     const handleItemChange = useCallback(
@@ -104,7 +104,7 @@ const JournalsPage = () => {
 
             setJournalItems(newJournalItems);
         },
-        [journalItems, setJournalItems]
+        [journalItems, setJournalItems],
     );
 
     const saveInfo = async () => {
@@ -119,13 +119,8 @@ const JournalsPage = () => {
 
         const name = journalName;
         const date = journalDate;
-        let url = "http://localhost:8000/api/journals/";
         const method = isEditing ? "PUT" : "POST";
         const id = activeJournal ? activeJournal.id : null;
-
-        if (isEditing) {
-            url = url + `${activeJournal.id}/`;
-        }
 
         const sendData = {
             name: name,
@@ -138,9 +133,10 @@ const JournalsPage = () => {
 
         if (hasError || dateError) {
             alert("Invalid Journal Fields. Please check formats and try again.");
+            return;
         }
 
-        const returnedJournal = await ctxUpdateJournal(id, url, method, sendData);
+        const returnedJournal = await ctxUpdateJournal(id, method, sendData);
         setActiveJournal(returnedJournal);
         setJournalName(returnedJournal.name);
         setJournalDate(returnedJournal.date);
@@ -216,7 +212,7 @@ const JournalsPage = () => {
                     amount: "",
                     memo: "",
                     type: "",
-                }))
+                })),
         );
         setIsEditing(false);
     };
