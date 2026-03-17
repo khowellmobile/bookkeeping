@@ -1,7 +1,7 @@
 import { createContext, useEffect, useState, useContext } from "react";
 import useSWRImmutable from "swr/immutable";
 
-import { ApiError, api } from "../../Client";
+import { ApiError, api } from "../Client";
 import { useToast } from "./ToastCtx";
 import PropertiesCtx from "./PropertiesCtx";
 import AuthCtx from "./AuthCtx";

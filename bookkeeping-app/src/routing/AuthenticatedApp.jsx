@@ -1,23 +1,20 @@
 import { Routes, Route } from "react-router-dom";
 
-import { AccountsCtxProvider } from "../contexts/AccountsCtx";
 import { EntitiesCtxProvider } from "../contexts/EntitiesCtx";
 import { TransactionsCtxProvider } from "../contexts/TransactionsCtx";
-import { PropertiesCtxProvider } from "../contexts/PropertiesCtx";
-import { JournalsCtxProvider } from "../contexts/JournalsCtx";
 import { RentPaymentsCtxProvider } from "../contexts/RentPaymentsCtx";
 
-import HomePage from "../../pages/HomePage";
-import TransactionsPage from "../../pages/TransactionsPage";
-import RentsPage from "../../pages/RentsPage";
-import AccountsPage from "../../pages/AccountsPage";
-import JournalsPage from "../../pages/JournalsPage";
-import ReportsPage from "../../pages/ReportsPage";
-import SupportPage from "../../pages/SupportPage";
-import SettingsPage from "../../pages/SettingsPage";
-import EntitiesPage from "../../pages/EntitiesPage";
-import PropertiesPage from "../../pages/PropertiesPage";
-import Layout from "../layout/Layout";
+import HomePage from "../pages/HomePage";
+import TransactionsPage from "../pages/TransactionsPage";
+import RentsPage from "../pages/RentsPage";
+import AccountsPage from "../pages/AccountsPage";
+import JournalsPage from "../pages/JournalsPage";
+import ReportsPage from "../pages/ReportsPage";
+import SupportPage from "../pages/SupportPage";
+import SettingsPage from "../pages/SettingsPage";
+import EntitiesPage from "../pages/EntitiesPage";
+import PropertiesPage from "../pages/PropertiesPage";
+import Layout from "../components/layout/Layout";
 import ProtectedRoute from "./ProtectedRoute";
 
 function AuthenticatedApp() {
@@ -52,7 +49,7 @@ function AuthenticatedApp() {
     };
 
     const JournalsWithContext = () => {
-        return <JournalsCtxProvider>{wrapPage(JournalsPage)}</JournalsCtxProvider>;
+        return wrapPage(JournalsPage);
     };
 
     const EntitiesWithContext = () => {

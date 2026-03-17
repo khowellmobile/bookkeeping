@@ -3,7 +3,7 @@ import { useContext, useEffect, useState } from "react";
 import classes from "./ReportsPage.module.css";
 
 import { useReportAPI } from "../hooks/useReportApi";
-import AccountsCtx from "../components/contexts/AccountsCtx";
+import AccountsCtx from "../contexts/AccountsCtx";
 import PrintIcon from "../assets/print-icon.svg";
 import ArrowLeftIcon from "../assets/arrow-left-icon.svg";
 import ArrowRightIcon from "../assets/arrow-right-icon.svg";
@@ -287,3 +287,4 @@ const ReportsPage = () => {
 };
 
 export default ReportsPage;
+

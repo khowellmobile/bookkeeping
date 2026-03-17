@@ -1,7 +1,7 @@
 import { createContext, useState, useEffect, useContext } from "react";
 import useSWRImmutable from "swr/immutable";
 
-import { ApiError, api } from "../../Client";
+import { ApiError, api } from "../Client";
 import { useToast } from "./ToastCtx";
 import AuthCtx from "./AuthCtx";
 
@@ -50,10 +50,10 @@ export function PropertiesCtxProvider(props) {
         if (foundProperty) {
             if (ctxActiveProperty?.id !== foundProperty.id) {
                 setCtxActiveProperty(foundProperty);
-            } else {
-                console.warn(`Stored property ID ${storedPropertyId} not found in fetched data.`);
-                sessionStorage.removeItem("activePropertyId");
             }
+        } else {
+            console.warn(`Stored property ID ${storedPropertyId} not found in fetched data.`);
+            sessionStorage.removeItem("activePropertyId");
         }
     }, [ctxPropertyList, setCtxActiveProperty]);
 

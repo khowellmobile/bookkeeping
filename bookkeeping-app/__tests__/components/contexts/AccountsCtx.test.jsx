@@ -2,10 +2,10 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { useContext } from "react";
 import useSWRImmutable from "swr/immutable";
 
-import { AccountsCtxProvider } from "@/src/components/contexts/AccountsCtx";
-import AccountsCtx from "@/src/components/contexts/AccountsCtx";
-import PropertiesCtx from "@/src/components/contexts/PropertiesCtx";
-import AuthCtx from "@/src/components/contexts/AuthCtx";
+import { AccountsCtxProvider } from "@/src/contexts/AccountsCtx";
+import AccountsCtx from "@/src/contexts/AccountsCtx";
+import PropertiesCtx from "@/src/contexts/PropertiesCtx";
+import AuthCtx from "@/src/contexts/AuthCtx";
 import { api, ApiError } from "@/src/Client";
 
 jest.mock("swr/immutable", () => ({
@@ -34,7 +34,7 @@ jest.mock("@/src/Client", () => {
 });
 
 const mockShowToast = jest.fn();
-jest.mock("@/src/components/contexts/ToastCtx", () => ({
+jest.mock("@/src/contexts/ToastCtx", () => ({
     useToast: () => ({ showToast: mockShowToast }),
 }));
 
@@ -127,3 +127,4 @@ describe("AccountsCtx", () => {
         expect(deleteFn([{ id: 1, name: "A1" }, { id: 2, name: "A2" }])).toEqual([{ id: 2, name: "A2" }]);
     });
 });
+

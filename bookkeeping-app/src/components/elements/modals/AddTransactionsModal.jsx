@@ -2,7 +2,7 @@ import classes from "./AddTransactionsModal.module.css";
 
 import { useState, useCallback, useRef, useContext, useEffect } from "react";
 
-import TransactionsCtx from "../../contexts/TransactionsCtx";
+import TransactionsCtx from "../../../contexts/TransactionsCtx";
 
 import { TransactionEntryItem } from "../items/InputEntryItems";
 import AccountDropdown from "../dropdowns/AccountDropdown";

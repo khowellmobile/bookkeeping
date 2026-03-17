@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { BASE_URL } from "../constants";
-import AuthCtx from "../components/contexts/AuthCtx";
+import AuthCtx from "../contexts/AuthCtx";
 import { api } from "../Client";
 
 export function useAuth() {
@@ -125,3 +125,4 @@ export function useAuth() {
         requestPswdReset,
     };
 }
+

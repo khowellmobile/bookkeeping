@@ -2,7 +2,7 @@ import { useState, useContext } from "react";
 
 import classes from "./RentInformation.module.css";
 
-import RentPaymentsCtx from "../../contexts/RentPaymentsCtx";
+import RentPaymentsCtx from "../../../contexts/RentPaymentsCtx";
 import NoResultsDisplay from "../utilities/NoResultsDisplay";
 
 const RentInformation = () => {
@@ -27,10 +27,7 @@ const RentInformation = () => {
                         );
                     })
                 ) : (
-                    <NoResultsDisplay
-                        mainText={"No Transactions to load."}
-                        guideText={""}
-                    />
+                    <NoResultsDisplay mainText={"No Transactions to load."} guideText={""} />
                 )}
             </section>
         </div>

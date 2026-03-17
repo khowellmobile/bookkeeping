@@ -6,7 +6,7 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 
 import AccountItem from "@/src/components/elements/items/AccountItem";
-import AccountsCtx from "@/src/components/contexts/AccountsCtx";
+import AccountsCtx from "@/src/contexts/AccountsCtx";
 
 // Mocking enviroment variables
 jest.mock("@/src/constants", () => ({
@@ -173,3 +173,4 @@ describe("ConfirmationModal (Delete/Inactive) Functionality", () => {
         expect(screen.queryByTestId("confirmation-modal")).not.toBeInTheDocument();
     });
 });
+
