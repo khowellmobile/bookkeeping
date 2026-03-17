@@ -3,13 +3,13 @@ import "./App.css";
 import { Routes, Route } from "react-router-dom";
 
 import SplashPage from "./pages/SplashPage";
-import { ToastCtxProvider } from "./components/contexts/ToastCtx";
-import AuthenticatedApp from "./components/routing/AuthenticatedApp";
-import { PropertiesCtxProvider } from "./components/contexts/PropertiesCtx";
+import { ToastCtxProvider } from "./contexts/ToastCtx";
+import AuthenticatedApp from "./routing/AuthenticatedApp";
+import { PropertiesCtxProvider } from "./contexts/PropertiesCtx";
 import AccountActivatePage from "./pages/AccountActivatePage";
 import PasswordResetPage from "./pages/PasswordResetPage";
-import { AccountsCtxProvider } from "./components/contexts/AccountsCtx";
-import { AuthCtxProvider } from "./components/contexts/AuthCtx";
+import { AccountsCtxProvider } from "./contexts/AccountsCtx";
+import { AuthCtxProvider } from "./contexts/AuthCtx";
 
 function App() {
     if (localStorage.getItem("theme") === "dark") {

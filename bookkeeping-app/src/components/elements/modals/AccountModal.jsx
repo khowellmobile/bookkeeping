@@ -1,6 +1,6 @@
 import classes from "./AccountModal.module.css";
 
-import AccountsCtx from "../../contexts/AccountsCtx";
+import AccountsCtx from "../../../contexts/AccountsCtx";
 import { useContext, useState } from "react";
 
 import ConfirmationModal from "./ConfirmationModal";

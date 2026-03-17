@@ -5,7 +5,7 @@
 
 import { render, screen, fireEvent } from "@testing-library/react";
 import AccountDropdown from "@/src/components/elements/dropdowns/AccountDropdown";
-import AccountsCtx from "@/src/components/contexts/AccountsCtx";
+import AccountsCtx from "@/src/contexts/AccountsCtx";
 
 // Mocking enviroment variables
 jest.mock("@/src/constants", () => ({
@@ -112,3 +112,4 @@ describe("AccountDropdown onChange call", () => {
         expect(mockOnChange).toHaveBeenCalledWith({ id: 2, name: "Savings" });
     });
 });
+

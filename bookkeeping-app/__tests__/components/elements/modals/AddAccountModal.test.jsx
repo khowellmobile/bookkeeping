@@ -5,7 +5,7 @@
 
 import { render, screen, fireEvent, act } from "@testing-library/react";
 import AddAccountModal from "@/src/components/elements/modals/AddAccountModal";
-import AccountsCtx from "@/src/components/contexts/AccountsCtx";
+import AccountsCtx from "@/src/contexts/AccountsCtx";
 
 // Mocking enviroment variables
 jest.mock("@/src/constants", () => ({
@@ -201,3 +201,4 @@ describe("AddAccountModal Validation (validateInputs)", () => {
         expect(mockHandleCloseModal).toHaveBeenCalledTimes(1);
     });
 });
+

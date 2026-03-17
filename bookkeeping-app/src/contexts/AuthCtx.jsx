@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect } from "react";
-import { api, configureApiClient } from "../../Client";
+import { api, configureApiClient } from "../Client";
 
 const AuthCtx = createContext({
     ctxAccessToken: null,

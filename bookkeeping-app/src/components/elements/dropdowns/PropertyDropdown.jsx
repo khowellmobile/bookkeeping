@@ -2,7 +2,7 @@ import { useState, useContext } from "react";
 
 import classes from "./PropertyDropdown.module.css";
 
-import PropertiesCtx from "../../contexts/PropertiesCtx";
+import PropertiesCtx from "../../../contexts/PropertiesCtx";
 
 import upChevIcon from "../../../assets/chevron-up-icon.svg";
 import downChevIcon from "../../../assets/chevron-down-icon.svg";

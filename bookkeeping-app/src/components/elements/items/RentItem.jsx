@@ -2,8 +2,8 @@ import { useEffect, useState, useRef, useContext, useCallback, useMemo } from "r
 
 import classes from "./RentItem.module.css";
 
-import { useToast } from "../../contexts/ToastCtx";
-import RentPaymentsCtx from "../../contexts/RentPaymentsCtx";
+import { useToast } from "../../../contexts/ToastCtx";
+import RentPaymentsCtx from "../../../contexts/RentPaymentsCtx";
 import EntityDropdown from "../dropdowns/EntityDropdown";
 import ConfirmationModal from "../modals/ConfirmationModal";
 import Input from "../utilities/Input";

@@ -2,10 +2,10 @@ import { useContext, useReducer, useCallback, useEffect, useMemo } from "react";
 import useSWRImmutable from "swr/immutable";
 
 import { ApiError, api } from "../Client";
-import PropertiesCtx from "../components/contexts/PropertiesCtx";
-import AuthCtx from "../components/contexts/AuthCtx";
+import PropertiesCtx from "../contexts/PropertiesCtx";
+import AuthCtx from "../contexts/AuthCtx";
 import journalReducer, { initialJournalState } from "../reducers/journalReducer";
-import { useToast } from "../components/contexts/ToastCtx";
+import { useToast } from "../contexts/ToastCtx";
 
 // Defining utility functions
 const normalizeAmount = (value) => {
@@ -258,3 +258,4 @@ export const useJournal = () => {
         saveInfo,
     };
 };
+

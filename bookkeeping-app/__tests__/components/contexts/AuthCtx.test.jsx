@@ -1,8 +1,8 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { useContext } from "react";
 
-import { AuthCtxProvider } from "@/src/components/contexts/AuthCtx";
-import AuthCtx from "@/src/components/contexts/AuthCtx";
+import { AuthCtxProvider } from "@/src/contexts/AuthCtx";
+import AuthCtx from "@/src/contexts/AuthCtx";
 import { api } from "@/src/Client";
 
 jest.mock("@/src/Client", () => ({
@@ -74,3 +74,4 @@ describe("AuthCtx", () => {
         expect(screen.getByTestId("email")).toHaveTextContent("new@test.com");
     });
 });
+

@@ -5,7 +5,7 @@
 
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import AccountEntryDropdown from "@/src/components/elements/dropdowns/AccountEntryDropdown";
-import AccountsCtx from "@/src/components/contexts/AccountsCtx";
+import AccountsCtx from "@/src/contexts/AccountsCtx";
 
 // Mocking enviroment variables
 jest.mock("@/src/constants", () => ({
@@ -189,3 +189,4 @@ describe("AccountEntryDropdown Add Account Modal", () => {
         expect(screen.queryByTestId("add-account-modal")).not.toBeInTheDocument();
     });
 });
+

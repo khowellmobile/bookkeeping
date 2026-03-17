@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import classes from "./TransactionModal.module.css";
 
-import TransactionsCtx from "../../contexts/TransactionsCtx.jsx";
+import TransactionsCtx from "../../../contexts/TransactionsCtx.jsx";
 
 import AccountDropdown from "../dropdowns/AccountDropdown.jsx";
 import EntityDropdown from "../dropdowns/EntityDropdown.jsx";

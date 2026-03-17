@@ -2,8 +2,8 @@ import { useState, useContext, useEffect } from "react";
 
 import classes from "./EntitiesPage.module.css";
 
-import EntitiesCtx from "../components/contexts/EntitiesCtx";
-import TransactionsCtx from "../components/contexts/TransactionsCtx";
+import EntitiesCtx from "../contexts/EntitiesCtx";
+import TransactionsCtx from "../contexts/TransactionsCtx";
 import penIcon from "../assets/pen-icon.svg";
 import TransactionItem from "../components/elements/items/TransactionItem";
 import AddEntityModal from "../components/elements/modals/AddEntityModal";
@@ -338,3 +338,4 @@ const EntitiesPage = () => {
 };
 
 export default EntitiesPage;
+

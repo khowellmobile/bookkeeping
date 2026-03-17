@@ -2,7 +2,7 @@ import { useState, useContext, useEffect, useRef } from "react";
 
 import classes from "./AccountEntryDropdown.module.css";
 
-import AccountsCtx from "../../contexts/AccountsCtx";
+import AccountsCtx from "../../../contexts/AccountsCtx";
 import AddAccountModal from "../modals/AddAccountModal";
 import Button from "../utilities/Button";
 

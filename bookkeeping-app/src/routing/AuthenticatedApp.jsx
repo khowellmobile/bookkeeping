@@ -4,17 +4,17 @@ import { EntitiesCtxProvider } from "../contexts/EntitiesCtx";
 import { TransactionsCtxProvider } from "../contexts/TransactionsCtx";
 import { RentPaymentsCtxProvider } from "../contexts/RentPaymentsCtx";
 
-import HomePage from "../../pages/HomePage";
-import TransactionsPage from "../../pages/TransactionsPage";
-import RentsPage from "../../pages/RentsPage";
-import AccountsPage from "../../pages/AccountsPage";
-import JournalsPage from "../../pages/JournalsPage";
-import ReportsPage from "../../pages/ReportsPage";
-import SupportPage from "../../pages/SupportPage";
-import SettingsPage from "../../pages/SettingsPage";
-import EntitiesPage from "../../pages/EntitiesPage";
-import PropertiesPage from "../../pages/PropertiesPage";
-import Layout from "../layout/Layout";
+import HomePage from "../pages/HomePage";
+import TransactionsPage from "../pages/TransactionsPage";
+import RentsPage from "../pages/RentsPage";
+import AccountsPage from "../pages/AccountsPage";
+import JournalsPage from "../pages/JournalsPage";
+import ReportsPage from "../pages/ReportsPage";
+import SupportPage from "../pages/SupportPage";
+import SettingsPage from "../pages/SettingsPage";
+import EntitiesPage from "../pages/EntitiesPage";
+import PropertiesPage from "../pages/PropertiesPage";
+import Layout from "../components/layout/Layout";
 import ProtectedRoute from "./ProtectedRoute";
 
 function AuthenticatedApp() {

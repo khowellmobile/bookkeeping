@@ -5,7 +5,7 @@
 
 import { render, screen, fireEvent } from "@testing-library/react";
 import EntityDropdown from "@/src/components/elements/dropdowns/EntityDropdown";
-import EntitiesCtx from "@/src/components/contexts/EntitiesCtx";
+import EntitiesCtx from "@/src/contexts/EntitiesCtx";
 
 // Mocking enviroment variables
 jest.mock("@/src/constants", () => ({
@@ -162,3 +162,4 @@ describe("EntityDropdown Off-Screen Logic (with altClass)", () => {
         expect(dropDownContent).toHaveStyle("top: -20rem");
     });
 });
+

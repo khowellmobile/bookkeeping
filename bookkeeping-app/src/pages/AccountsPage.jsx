@@ -2,7 +2,7 @@ import { useContext, useState, useEffect } from "react";
 
 import classes from "./AccountsPage.module.css";
 
-import AccountsCtx from "../components/contexts/AccountsCtx";
+import AccountsCtx from "../contexts/AccountsCtx";
 import AddAccountModal from "../components/elements/modals/AddAccountModal";
 import AccountItem from "../components/elements/items/AccountItem";
 import NoResultsDisplay from "../components/elements/utilities/NoResultsDisplay";
@@ -83,3 +83,4 @@ const AccountsPage = () => {
 };
 
 export default AccountsPage;
+

@@ -1,6 +1,6 @@
 import classes from "./DashListItems.module.css";
 
-import AccountsCtx from "../../contexts/AccountsCtx.jsx";
+import AccountsCtx from "../../../contexts/AccountsCtx.jsx";
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 
