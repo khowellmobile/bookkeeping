@@ -5,12 +5,10 @@
 
 import { render, screen, fireEvent } from "@testing-library/react";
 import LogoutModal from "@/src/components/elements/modals/LogoutModal";
-import AuthCtx from "@/src/contexts/AuthCtx";
+import { useAuth } from "@/src/hooks/useAuth";
 
-// Mocking enviroment variables
-jest.mock("@/src/constants", () => ({
-    ENVIRONMENT: "test",
-    BASE_URL: "http://test-url.com",
+jest.mock("@/src/hooks/useAuth", () => ({
+    useAuth: jest.fn(),
 }));
 
 const mockNavigate = jest.fn();
@@ -18,17 +16,11 @@ jest.mock("react-router-dom", () => ({
     useNavigate: () => mockNavigate,
 }));
 
-const mockLogoutUser = jest.fn();
-const MockAuthsCtxProvider = ({ children }) => (
-    <AuthCtx.Provider value={{ logoutUser: mockLogoutUser }}>{children}</AuthCtx.Provider>
-);
+const mockLogout = jest.fn();
 
 const renderLogoutModal = () => {
-    return render(
-        <MockAuthsCtxProvider>
-            <LogoutModal />
-        </MockAuthsCtxProvider>
-    );
+    useAuth.mockReturnValue({ logout: mockLogout });
+    return render(<LogoutModal />);
 };
 
 describe("LoginModal render and functionality", () => {
@@ -43,11 +35,11 @@ describe("LoginModal render and functionality", () => {
         expect(screen.queryByText("Back to Login")).toBeInTheDocument();
     });
 
-    it("should call logoutUser() and navigate the user back to the splash page", () => {
+    it("should call logout() and navigate the user back to the splash page", () => {
         const logoutButton = screen.queryByText("Back to Login");
         fireEvent.click(logoutButton);
 
-        expect(mockLogoutUser).toHaveBeenCalledTimes(1);
+        expect(mockLogout).toHaveBeenCalledTimes(1);
         expect(mockNavigate).toHaveBeenCalledWith("/");
     });
 });
