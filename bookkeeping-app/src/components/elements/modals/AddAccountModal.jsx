@@ -2,7 +2,6 @@ import { useContext, useEffect, useState } from "react";
 
 import classes from "./AddModalStyle.module.css";
 
-import AccountsCtx from "../../contexts/AccountsCtx";
 import BaseAddModal from "./BaseAddModal";
 import AddInputCluster from "../utilities/AddInputCluster";
 import upChevIcon from "../../../assets/chevron-up-icon.svg";

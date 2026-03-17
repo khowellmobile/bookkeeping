@@ -5,7 +5,7 @@
 
 import { render, screen, fireEvent,waitFor, act } from "@testing-library/react";
 import LoginModal from "@/src/components/elements/modals/LoginModal";
-import AuthCtx from "@/src/components/contexts/AuthCtx";
+import AuthCtx from "@/src/contexts/AuthCtx";
 
 // Mocking enviroment variables
 jest.mock("@/src/constants", () => ({
@@ -223,3 +223,4 @@ describe("LoginModal handleLogin functionality", () => {
         });
     });
 });
+

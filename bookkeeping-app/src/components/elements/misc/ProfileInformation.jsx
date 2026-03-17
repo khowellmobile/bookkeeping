@@ -3,7 +3,7 @@ import { useState, useEffect, useContext } from "react";
 import classes from "./ProfileInformation.module.css";
 
 import { useAuth } from "../../../hooks/useAuth";
-import AuthCtx from "../../contexts/AuthCtx";
+import AuthCtx from "../../../contexts/AuthCtx";
 
 import penIcon from "../../../assets/pen-icon-grey.svg";
 import saveIcon from "../../../assets/save-icon-grey.svg";

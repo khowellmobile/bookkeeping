@@ -2,10 +2,10 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { useContext } from "react";
 import useSWRImmutable from "swr/immutable";
 
-import { EntitiesCtxProvider } from "@/src/components/contexts/EntitiesCtx";
-import EntitiesCtx from "@/src/components/contexts/EntitiesCtx";
-import PropertiesCtx from "@/src/components/contexts/PropertiesCtx";
-import AuthCtx from "@/src/components/contexts/AuthCtx";
+import { EntitiesCtxProvider } from "@/src/contexts/EntitiesCtx";
+import EntitiesCtx from "@/src/contexts/EntitiesCtx";
+import PropertiesCtx from "@/src/contexts/PropertiesCtx";
+import AuthCtx from "@/src/contexts/AuthCtx";
 import { api, ApiError } from "@/src/Client";
 
 jest.mock("swr/immutable", () => ({
@@ -34,7 +34,7 @@ jest.mock("@/src/Client", () => {
 });
 
 const mockShowToast = jest.fn();
-jest.mock("@/src/components/contexts/ToastCtx", () => ({
+jest.mock("@/src/contexts/ToastCtx", () => ({
     useToast: () => ({ showToast: mockShowToast }),
 }));
 
@@ -117,3 +117,4 @@ describe("EntitiesCtx", () => {
         );
     });
 });
+

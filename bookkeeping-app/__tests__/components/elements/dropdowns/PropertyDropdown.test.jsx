@@ -5,7 +5,7 @@
 
 import { render, screen, fireEvent } from "@testing-library/react";
 import PropertyDropdown from "@/src/components/elements/dropdowns/PropertyDropdown";
-import PropertiesCtx from "@/src/components/contexts/PropertiesCtx";
+import PropertiesCtx from "@/src/contexts/PropertiesCtx";
 
 // Mocking enviroment variables
 jest.mock("@/src/constants", () => ({
@@ -122,3 +122,4 @@ describe("PropertyDropdown setActiveProperty call", () => {
         expect(mockSetActiveProperty).toHaveBeenCalledWith({ id: 2, name: "Property2" });
     });
 });
+

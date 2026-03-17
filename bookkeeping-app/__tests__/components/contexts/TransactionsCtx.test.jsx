@@ -2,12 +2,12 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { useContext } from "react";
 import useSWRImmutable from "swr/immutable";
 
-import { TransactionsCtxProvider } from "@/src/components/contexts/TransactionsCtx";
-import TransactionsCtx from "@/src/components/contexts/TransactionsCtx";
-import EntitiesCtx from "@/src/components/contexts/EntitiesCtx";
-import AccountsCtx from "@/src/components/contexts/AccountsCtx";
-import PropertiesCtx from "@/src/components/contexts/PropertiesCtx";
-import AuthCtx from "@/src/components/contexts/AuthCtx";
+import { TransactionsCtxProvider } from "@/src/contexts/TransactionsCtx";
+import TransactionsCtx from "@/src/contexts/TransactionsCtx";
+import EntitiesCtx from "@/src/contexts/EntitiesCtx";
+import AccountsCtx from "@/src/contexts/AccountsCtx";
+import PropertiesCtx from "@/src/contexts/PropertiesCtx";
+import AuthCtx from "@/src/contexts/AuthCtx";
 import { api, ApiError } from "@/src/Client";
 
 jest.mock("swr/immutable", () => ({
@@ -36,7 +36,7 @@ jest.mock("@/src/Client", () => {
 });
 
 const mockShowToast = jest.fn();
-jest.mock("@/src/components/contexts/ToastCtx", () => ({
+jest.mock("@/src/contexts/ToastCtx", () => ({
     useToast: () => ({ showToast: mockShowToast }),
 }));
 
@@ -154,3 +154,4 @@ describe("TransactionsCtx", () => {
         await waitFor(() => expect(mockShowToast).toHaveBeenCalledWith("Error updating transaction", "error", 5000));
     });
 });
+

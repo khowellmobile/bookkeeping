@@ -2,10 +2,10 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { useContext } from "react";
 import useSWRImmutable from "swr/immutable";
 
-import { RentPaymentsCtxProvider } from "@/src/components/contexts/RentPaymentsCtx";
-import RentPaymentsCtx from "@/src/components/contexts/RentPaymentsCtx";
-import PropertiesCtx from "@/src/components/contexts/PropertiesCtx";
-import AuthCtx from "@/src/components/contexts/AuthCtx";
+import { RentPaymentsCtxProvider } from "@/src/contexts/RentPaymentsCtx";
+import RentPaymentsCtx from "@/src/contexts/RentPaymentsCtx";
+import PropertiesCtx from "@/src/contexts/PropertiesCtx";
+import AuthCtx from "@/src/contexts/AuthCtx";
 import { api, ApiError } from "@/src/Client";
 
 jest.mock("swr/immutable", () => ({
@@ -34,7 +34,7 @@ jest.mock("@/src/Client", () => {
 });
 
 const mockShowToast = jest.fn();
-jest.mock("@/src/components/contexts/ToastCtx", () => ({
+jest.mock("@/src/contexts/ToastCtx", () => ({
     useToast: () => ({ showToast: mockShowToast }),
 }));
 
@@ -130,3 +130,4 @@ describe("RentPaymentsCtx", () => {
         await waitFor(() => expect(mockShowToast).toHaveBeenCalledWith("Error adding payment", "error", 5000));
     });
 });
+

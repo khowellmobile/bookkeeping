@@ -2,8 +2,8 @@ import { useContext } from "react";
 
 import classes from "./DashListings.module.css";
 
-import AccountsCtx from "../../contexts/AccountsCtx.jsx";
-import PropertiesCtx from "../../contexts/PropertiesCtx.jsx";
+import AccountsCtx from "../../../contexts/AccountsCtx.jsx";
+import PropertiesCtx from "../../../contexts/PropertiesCtx.jsx";
 import { AccountListItem, PropertyListItem, ReportListItem } from "../items/DashListItems.jsx";
 import NoResultsDisplay from "../utilities/NoResultsDisplay.jsx";
 

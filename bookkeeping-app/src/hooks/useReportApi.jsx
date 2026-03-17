@@ -1,7 +1,7 @@
 import { useContext, useState, useEffect } from "react";
 
-import PropertiesCtx from "../components/contexts/PropertiesCtx.jsx";
-import AuthCtx from "../components/contexts/AuthCtx.jsx";
+import PropertiesCtx from "../contexts/PropertiesCtx.jsx";
+import AuthCtx from "../contexts/AuthCtx.jsx";
 import { api } from "../Client";
 
 const useReportAPI = () => {
@@ -64,3 +64,4 @@ const useReportAPI = () => {
 };
 
 export { useReportAPI };
+
