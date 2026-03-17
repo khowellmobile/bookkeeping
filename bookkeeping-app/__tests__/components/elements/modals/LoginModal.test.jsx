@@ -3,14 +3,12 @@
  *
  */
 
-import { render, screen, fireEvent,waitFor, act } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor, act } from "@testing-library/react";
 import LoginModal from "@/src/components/elements/modals/LoginModal";
-import AuthCtx from "@/src/contexts/AuthCtx";
+import { useAuth } from "@/src/hooks/useAuth";
 
-// Mocking enviroment variables
-jest.mock("@/src/constants", () => ({
-    ENVIRONMENT: "test",
-    BASE_URL: "http://test-url.com",
+jest.mock("@/src/hooks/useAuth", () => ({
+    useAuth: jest.fn(),
 }));
 
 const mockNavigate = jest.fn();
@@ -18,38 +16,23 @@ jest.mock("react-router-dom", () => ({
     useNavigate: () => mockNavigate,
 }));
 
-// Define placeholder for global.fetch if not already defined
-if (typeof global.fetch === "undefined") {
-    global.fetch = jest.fn();
-}
-
-const mockFetch = jest.spyOn(global, "fetch");
-const localStorageSetItem = jest.fn();
-Object.defineProperty(window, "localStorage", {
-    value: {
-        setItem: localStorageSetItem,
-    },
-    writable: true,
-});
-let consoleErrorSpy;
-
-// Mocking context provider
-const mockSetAccessToken = jest.fn();
+const mockLogin = jest.fn();
 const mockRequestPswdReset = jest.fn();
-const MockAuthsCtxProvider = ({ children }) => (
-    <AuthCtx.Provider value={{ setCtxAccessToken: mockSetAccessToken, requestPswdReset: mockRequestPswdReset }}>
-        {children}
-    </AuthCtx.Provider>
-);
 
 const mockHandleCloseModal = jest.fn();
 const mockSwitchModal = jest.fn();
 // Functon to create a login modal with context and props
 const renderLoginModal = () => {
+    mockLogin.mockResolvedValue({ success: false, message: "" });
+    mockRequestPswdReset.mockResolvedValue({ success: true, message: "Success!" });
+
+    useAuth.mockReturnValue({
+        login: mockLogin,
+        requestPswdReset: mockRequestPswdReset,
+    });
+
     return render(
-        <MockAuthsCtxProvider>
-            <LoginModal handleCloseModal={mockHandleCloseModal} switchModal={mockSwitchModal} />
-        </MockAuthsCtxProvider>
+        <LoginModal handleCloseModal={mockHandleCloseModal} switchModal={mockSwitchModal} />
     );
 };
 
@@ -143,8 +126,6 @@ describe("LoginModal password reset link", () => {
 describe("LoginModal handleLogin functionality", () => {
     const testEmail = "test@user.com";
     const testPassword = "password123";
-    const testAccessToken = "mock.jwt.access.token";
-    const apiUrl = "http://test-url.com/api/auth/jwt/create/";
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -152,19 +133,12 @@ describe("LoginModal handleLogin functionality", () => {
 
         fireEvent.change(screen.getByTestId("input-email"), { target: { value: testEmail } });
         fireEvent.change(screen.getByTestId("input-password"), { target: { value: testPassword } });
-
-        // Spy on console.error but replace with empty function
-        consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
-    });
-
-    afterEach(() => {
-        consoleErrorSpy.mockRestore();
     });
 
     it("should handle successful login (200 OK)", async () => {
-        mockFetch.mockResolvedValueOnce({
-            ok: true,
-            json: async () => ({ access: testAccessToken, refresh: "mock.refresh.token" }),
+        mockLogin.mockResolvedValueOnce({
+            success: true,
+            message: "Login successful.",
         });
 
         const loginButton = screen.getByRole("button", { name: /login/i });
@@ -173,25 +147,17 @@ describe("LoginModal handleLogin functionality", () => {
             fireEvent.click(loginButton);
         });
 
-        expect(mockFetch).toHaveBeenCalledWith(apiUrl, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username: testEmail, password: testPassword }),
-        });
-
         await waitFor(() => {
-            expect(localStorageSetItem).toHaveBeenCalledWith("accessToken", testAccessToken);
-            expect(mockSetAccessToken).toHaveBeenCalledWith(testAccessToken);
+            expect(mockLogin).toHaveBeenCalledWith(testEmail, testPassword);
+            expect(screen.getByText("Login successful.")).toBeInTheDocument();
             expect(mockNavigate).toHaveBeenCalledWith("/app/home");
-            expect(mockHandleCloseModal).toHaveBeenCalledTimes(1);
         });
     });
 
     it("should handle login failure (non-ok response, e.g., 401)", async () => {
-        mockFetch.mockResolvedValueOnce({
-            ok: false,
-            status: 401,
-            json: async () => ({ detail: "Invalid credentials" }),
+        mockLogin.mockResolvedValueOnce({
+            success: false,
+            message: "Invalid credentials",
         });
 
         const loginButton = screen.getByRole("button", { name: /login/i });
@@ -201,15 +167,17 @@ describe("LoginModal handleLogin functionality", () => {
         });
 
         await waitFor(() => {
-            expect(screen.getByText("Login failed please try again.")).toBeInTheDocument();
-            expect(localStorageSetItem).not.toHaveBeenCalled();
+            expect(mockLogin).toHaveBeenCalledWith(testEmail, testPassword);
+            expect(screen.getByText("Invalid credentials")).toBeInTheDocument();
             expect(mockNavigate).not.toHaveBeenCalled();
-            expect(mockHandleCloseModal).not.toHaveBeenCalled();
         });
     });
 
     it("should handle network failure (.catch block)", async () => {
-        mockFetch.mockRejectedValueOnce(new Error("Network Error"));
+        mockLogin.mockResolvedValueOnce({
+            success: false,
+            message: "A network error occurred. Please try again.",
+        });
 
         const loginButton = screen.getByRole("button", { name: /login/i });
 
@@ -218,8 +186,8 @@ describe("LoginModal handleLogin functionality", () => {
         });
 
         await waitFor(() => {
-            expect(screen.getByText("Login failed please try again.")).toBeInTheDocument();
-            expect(localStorageSetItem).not.toHaveBeenCalled();
+            expect(mockLogin).toHaveBeenCalledWith(testEmail, testPassword);
+            expect(screen.getByText("A network error occurred. Please try again.")).toBeInTheDocument();
         });
     });
 });
