@@ -1,4 +1,4 @@
-import { createContext, useState, useContext } from "react";
+import { createContext, useState, useContext, useEffect } from "react";
 import useSWRImmutable from "swr/immutable";
 
 import { ApiError, api } from "../Client";
@@ -27,9 +27,12 @@ export function TransactionsCtxProvider(props) {
     const [ctxFilterBy, setCtxFilterBy] = useState();
 
     const getSWRKey = () => {
+        console.log(!ctxActiveProperty, !ctxActiveProperty, !ctxActiveProperty?.id);
         if (!ctxAccessToken || !ctxActiveProperty || !ctxActiveProperty.id) {
             return null;
         }
+
+        console.log(ctxActiveAccount);
 
         if (ctxFilterBy == "account" && ctxActiveAccount && ctxActiveAccount.id) {
             return ["/api/transactions/", ctxActiveProperty.id, "account", ctxActiveAccount.id];
@@ -39,6 +42,8 @@ export function TransactionsCtxProvider(props) {
             return;
         }
     };
+
+    /* console.log(getSWRKey()); */
 
     const swrKey = getSWRKey();
     const { data: ctxTranList, mutate } = useSWRImmutable(swrKey, ([path, propertyId, filterType, filterId]) => {
@@ -51,6 +56,10 @@ export function TransactionsCtxProvider(props) {
 
         return api.get(path, { query });
     });
+
+    /* useEffect(() => {
+        console.log(ctxTranList);
+    }, [ctxTranList]); */
 
     const ctxAddTransactions = async (transactionsToAdd) => {
         const transformedTransactionsArray = transactionsToAdd.map((transaction) => ({
@@ -100,7 +109,7 @@ export function TransactionsCtxProvider(props) {
             mutate((prevTransactions) => {
                 if (!prevTransactions) return [];
                 return prevTransactions.map((transaction) =>
-                    transaction.id === updatedData.id ? updatedData : transaction
+                    transaction.id === updatedData.id ? updatedData : transaction,
                 );
             }, false);
             showToast("Transaction updated", "success", 3000);
