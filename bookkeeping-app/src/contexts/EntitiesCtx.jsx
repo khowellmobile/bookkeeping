@@ -22,10 +22,6 @@ export function EntitiesCtxProvider(props) {
 
     const [ctxActiveEntity, setCtxActiveEntity] = useState();
 
-/*     useEffect(() => {
-        console.log(ctxActiveEntity);
-    }, [ctxActiveEntity]); */
-
     // Clears active entity on property change
     useEffect(() => {
         if (ctxActiveEntity) setCtxActiveEntity(null);

@@ -27,25 +27,18 @@ export function TransactionsCtxProvider(props) {
     const [ctxFilterBy, setCtxFilterBy] = useState();
 
     const getSWRKey = () => {
-        /* console.log(!ctxActiveProperty, !ctxActiveProperty, !ctxActiveProperty?.id); */
-        if (!ctxAccessToken || !ctxActiveProperty || !ctxActiveProperty.id) {
-            /* console.log("NULL"); */
+        if (!ctxAccessToken || !ctxActiveProperty?.id) {
             return null;
         }
 
-        if (ctxFilterBy == "account" && ctxActiveAccount && ctxActiveAccount.id) {
-            /* console.log("SORTED BY ACCOUNT"); */
+        if (ctxFilterBy == "account" && ctxActiveAccount?.id) {
             return ["/api/transactions/", ctxActiveProperty.id, "account", ctxActiveAccount.id];
-        } else if (ctxFilterBy == "entity" && ctxActiveEntity && ctxActiveEntity.id) {
-            console.log("SORTED BY ENTITY", ctxFilterBy == "entity" && ctxActiveEntity && ctxActiveEntity?.id);
+        } else if (ctxFilterBy == "entity" && ctxActiveEntity?.id) {
             return ["/api/transactions/", ctxActiveProperty.id, "entity", ctxActiveEntity.id];
         } else {
-            console.log("NONE RETURN", ctxFilterBy == "entity", ctxActiveEntity, ctxActiveEntity?.id);
             return;
         }
     };
-
-    /* console.log(getSWRKey()); */
 
     const swrKey = getSWRKey();
     const { data: ctxTranList, mutate } = useSWRImmutable(swrKey, ([path, propertyId, filterType, filterId]) => {
@@ -58,10 +51,6 @@ export function TransactionsCtxProvider(props) {
 
         return api.get(path, { query });
     });
-
-    /* useEffect(() => {
-        console.log(ctxTranList);
-    }, [ctxTranList]); */
 
     const ctxAddTransactions = async (transactionsToAdd) => {
         const transformedTransactionsArray = transactionsToAdd.map((transaction) => ({
