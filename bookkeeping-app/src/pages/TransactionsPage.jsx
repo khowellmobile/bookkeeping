@@ -93,7 +93,8 @@ const TransactionsPage = () => {
                         <p>Payee</p>
                         <p>Account</p>
                         <p>Memo</p>
-                        <p>Amount</p>
+                        <p>Debit</p>
+                        <p>Credit</p>
                         <p>Reconciled</p>
                     </div>
                     <div className={classes.listingItems}>
