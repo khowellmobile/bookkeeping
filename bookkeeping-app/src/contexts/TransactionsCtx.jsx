@@ -27,18 +27,20 @@ export function TransactionsCtxProvider(props) {
     const [ctxFilterBy, setCtxFilterBy] = useState();
 
     const getSWRKey = () => {
-        console.log(!ctxActiveProperty, !ctxActiveProperty, !ctxActiveProperty?.id);
+        /* console.log(!ctxActiveProperty, !ctxActiveProperty, !ctxActiveProperty?.id); */
         if (!ctxAccessToken || !ctxActiveProperty || !ctxActiveProperty.id) {
+            /* console.log("NULL"); */
             return null;
         }
 
-        console.log(ctxActiveAccount);
-
         if (ctxFilterBy == "account" && ctxActiveAccount && ctxActiveAccount.id) {
+            /* console.log("SORTED BY ACCOUNT"); */
             return ["/api/transactions/", ctxActiveProperty.id, "account", ctxActiveAccount.id];
         } else if (ctxFilterBy == "entity" && ctxActiveEntity && ctxActiveEntity.id) {
+            console.log("SORTED BY ENTITY", ctxFilterBy == "entity" && ctxActiveEntity && ctxActiveEntity?.id);
             return ["/api/transactions/", ctxActiveProperty.id, "entity", ctxActiveEntity.id];
         } else {
+            console.log("NONE RETURN", ctxFilterBy == "entity", ctxActiveEntity, ctxActiveEntity?.id);
             return;
         }
     };

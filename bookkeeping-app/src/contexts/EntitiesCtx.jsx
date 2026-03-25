@@ -22,6 +22,10 @@ export function EntitiesCtxProvider(props) {
 
     const [ctxActiveEntity, setCtxActiveEntity] = useState();
 
+/*     useEffect(() => {
+        console.log(ctxActiveEntity);
+    }, [ctxActiveEntity]); */
+
     // Clears active entity on property change
     useEffect(() => {
         if (ctxActiveEntity) setCtxActiveEntity(null);
@@ -30,7 +34,7 @@ export function EntitiesCtxProvider(props) {
     const propertyId = ctxActiveProperty?.id;
     const { data: ctxEntityList, mutate } = useSWRImmutable(
         propertyId && ctxAccessToken ? ["/api/entities/", propertyId] : null,
-        ([path, id]) => api.get(path, { query: { property_id: id } })
+        ([path, id]) => api.get(path, { query: { property_id: id } }),
     );
 
     const ctxAddEntity = async (entityToAdd) => {

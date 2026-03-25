@@ -338,4 +338,3 @@ const EntitiesPage = () => {
 };
 
 export default EntitiesPage;
-
