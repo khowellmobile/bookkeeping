@@ -29,8 +29,8 @@ function AuthenticatedApp() {
     };
 
     return (
-        <TransactionsCtxProvider>
-            <EntitiesCtxProvider>
+        <EntitiesCtxProvider>
+            <TransactionsCtxProvider>
                 <RentPaymentsCtxProvider>
                     <Routes>
                         <Route path="/home" element={wrapPage(HomePage)} />
@@ -45,8 +45,8 @@ function AuthenticatedApp() {
                         <Route path="/settings" element={wrapPage(SettingsPage)} />
                     </Routes>
                 </RentPaymentsCtxProvider>
-            </EntitiesCtxProvider>
-        </TransactionsCtxProvider>
+            </TransactionsCtxProvider>
+        </EntitiesCtxProvider>
     );
 }
 
