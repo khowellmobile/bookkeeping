@@ -5,7 +5,7 @@
 
 import { render, screen, fireEvent } from "@testing-library/react";
 import RentItem from "@/src/components/elements/items/RentItem";
-import RentPaymentsCtx from "@/src/components/contexts/RentPaymentsCtx";
+import RentPaymentsCtx from "@/src/contexts/RentPaymentsCtx";
 
 // Mocking enviroment variables
 jest.mock("@/src/constants", () => ({
@@ -15,7 +15,7 @@ jest.mock("@/src/constants", () => ({
 
 // Mock useToast hook
 const mockShowToast = jest.fn();
-jest.mock("@/src/components/contexts/ToastCtx", () => ({
+jest.mock("@/src/contexts/ToastCtx", () => ({
     useToast: () => ({ showToast: mockShowToast }),
 }));
 
@@ -260,3 +260,4 @@ describe("RentItem functionality: Temporary Item (temp-ID)", () => {
         expect(mockSavePayment).not.toHaveBeenCalled();
     });
 });
+

@@ -1,8 +1,8 @@
 import { useContext, useState, useEffect } from "react";
 
-import PropertiesCtx from "../components/contexts/PropertiesCtx.jsx";
-import { BASE_URL } from "../constants.jsx";
-import AuthCtx from "../components/contexts/AuthCtx.jsx";
+import PropertiesCtx from "../contexts/PropertiesCtx.jsx";
+import AuthCtx from "../contexts/AuthCtx.jsx";
+import { api } from "../Client";
 
 const useReportAPI = () => {
     // Get the token from the context
@@ -21,24 +21,11 @@ const useReportAPI = () => {
             setError(null);
 
             try {
-                const url = new URL(`${BASE_URL}/api/reports/`);
-                if (ctxActiveProperty && ctxActiveProperty.id) {
-                    url.searchParams.append("property_id", ctxActiveProperty.id);
-                }
-
-                const response = await fetch(url.toString(), {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${ctxAccessToken}`,
+                const result = await api.get("/api/reports/", {
+                    query: {
+                        property_id: ctxActiveProperty?.id,
                     },
                 });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const result = await response.json();
                 setReportsData(result);
             } catch (e) {
                 setError(e);
@@ -62,27 +49,12 @@ const useReportAPI = () => {
         const sendReport = { ...reportToAdd, report_range_type: reportTypesMapping[reportToAdd.report_range_type] };
 
         try {
-            const url = new URL(`${BASE_URL}/api/reports/`);
-            if (ctxActiveProperty && ctxActiveProperty.id) {
-                url.searchParams.append("property_id", ctxActiveProperty.id);
-            }
-
-            const response = await fetch(url.toString(), {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${ctxAccessToken}`,
+            const newReport = await api.post("/api/reports/", sendReport, {
+                query: {
+                    property_id: ctxActiveProperty?.id,
                 },
-                body: JSON.stringify(sendReport),
             });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData);
-            } else {
-                const newReport = await response.json();
-                setReportsData((prev) => [...prev, newReport]);
-            }
+            setReportsData((prev) => [...(prev || []), newReport]);
         } catch (error) {
             console.error("Error saving report:", error);
         }
@@ -92,3 +64,4 @@ const useReportAPI = () => {
 };
 
 export { useReportAPI };
+

@@ -2,8 +2,8 @@ import { useEffect, useState, useContext } from "react";
 
 import classes from "./MonthlyRentStat.module.css";
 
-import RentPaymentsCtx from "../../contexts/RentPaymentsCtx";
-import PropertiesCtx from "../../contexts/PropertiesCtx";
+import RentPaymentsCtx from "../../../contexts/RentPaymentsCtx";
+import PropertiesCtx from "../../../contexts/PropertiesCtx";
 import NoResultsDisplay from "../utilities/NoResultsDisplay";
 
 const COLORS = {

@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 
 import classes from "./AddModalStyle.module.css";
 
-import PropertiesCtx from "../../contexts/PropertiesCtx";
+import PropertiesCtx from "../../../contexts/PropertiesCtx";
 import BaseAddModal from "./BaseAddModal";
 import upChevIcon from "../../../assets/chevron-up-icon.svg";
 import downChevIcon from "../../../assets/chevron-down-icon.svg";

@@ -5,7 +5,7 @@
 
 import { render, screen, fireEvent, waitFor, act } from "@testing-library/react";
 import EntityEntryDropdown from "@/src/components/elements/dropdowns/EntityEntryDropdown";
-import EntitiesCtx from "@/src/components/contexts/EntitiesCtx";
+import EntitiesCtx from "@/src/contexts/EntitiesCtx";
 
 // Mocking enviroment variables
 jest.mock("@/src/constants", () => ({
@@ -171,3 +171,4 @@ describe("AccountEntryDropdown Add Account Modal", () => {
         expect(screen.queryByTestId("add-entity-modal")).not.toBeInTheDocument();
     });
 });
+

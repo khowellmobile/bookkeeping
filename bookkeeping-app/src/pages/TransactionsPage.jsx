@@ -4,8 +4,8 @@ import classes from "./TransactionsPage.module.css";
 
 import AccountDropdown from "../components/elements/dropdowns/AccountDropdown";
 import TransactionItem from "../components/elements/items/TransactionItem";
-import TransactionsCtx from "../components/contexts/TransactionsCtx";
-import AccountsCtx from "../components/contexts/AccountsCtx";
+import TransactionsCtx from "../contexts/TransactionsCtx";
+import AccountsCtx from "../contexts/AccountsCtx";
 import AddTransactionsModal from "../components/elements/modals/AddTransactionsModal";
 import NoResultsDisplay from "../components/elements/utilities/NoResultsDisplay";
 import Button from "../components/elements/utilities/Button";
@@ -100,3 +100,4 @@ const TransactionsPage = () => {
 };
 
 export default TransactionsPage;
+

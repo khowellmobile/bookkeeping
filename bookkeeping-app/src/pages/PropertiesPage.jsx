@@ -2,7 +2,7 @@ import { useState, useContext, useEffect } from "react";
 
 import classes from "./PropertiesPage.module.css";
 
-import PropertiesCtx from "../components/contexts/PropertiesCtx";
+import PropertiesCtx from "../contexts/PropertiesCtx";
 import ConfirmationModal from "../components/elements/modals/ConfirmationModal";
 import penIcon from "../assets/pen-icon.svg";
 import AddPropertyModal from "../components/elements/modals/AddPropertyModal";

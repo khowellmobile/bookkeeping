@@ -1,6 +1,6 @@
 import classes from "./AccountItem.module.css";
 
-import AccountsCtx from "../../contexts/AccountsCtx";
+import AccountsCtx from "../../../contexts/AccountsCtx";
 import { useContext, useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 

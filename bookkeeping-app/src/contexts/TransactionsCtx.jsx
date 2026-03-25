@@ -1,7 +1,7 @@
-import { createContext, useState, useContext } from "react";
+import { createContext, useState, useContext, useEffect } from "react";
 import useSWRImmutable from "swr/immutable";
 
-import { BASE_URL } from "../../constants";
+import { ApiError, api } from "../Client";
 import { useToast } from "./ToastCtx";
 import AccountsCtx from "./AccountsCtx";
 import EntitiesCtx from "./EntitiesCtx";
@@ -26,41 +26,40 @@ export function TransactionsCtxProvider(props) {
 
     const [ctxFilterBy, setCtxFilterBy] = useState();
 
-    const fetcher = async (url) => {
-        const response = await fetch(url, {
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${ctxAccessToken}`,
-            },
-        });
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-    };
-
-    const apiURL = `${BASE_URL}/api/transactions/`;
-
     const getSWRKey = () => {
+        console.log(!ctxActiveProperty, !ctxActiveProperty, !ctxActiveProperty?.id);
         if (!ctxAccessToken || !ctxActiveProperty || !ctxActiveProperty.id) {
             return null;
         }
 
-        const url = new URL(apiURL);
-        url.searchParams.append("property_id", ctxActiveProperty.id);
+        console.log(ctxActiveAccount);
+
         if (ctxFilterBy == "account" && ctxActiveAccount && ctxActiveAccount.id) {
-            url.searchParams.append("account_id", ctxActiveAccount.id);
+            return ["/api/transactions/", ctxActiveProperty.id, "account", ctxActiveAccount.id];
         } else if (ctxFilterBy == "entity" && ctxActiveEntity && ctxActiveEntity.id) {
-            url.searchParams.append("entity_id", ctxActiveEntity.id);
+            return ["/api/transactions/", ctxActiveProperty.id, "entity", ctxActiveEntity.id];
         } else {
             return;
         }
-
-        return url.toString();
     };
 
+    /* console.log(getSWRKey()); */
+
     const swrKey = getSWRKey();
-    const { data: ctxTranList, error, mutate } = useSWRImmutable(swrKey, fetcher);
+    const { data: ctxTranList, mutate } = useSWRImmutable(swrKey, ([path, propertyId, filterType, filterId]) => {
+        const query = { property_id: propertyId };
+        if (filterType === "account") {
+            query.account_id = filterId;
+        } else if (filterType === "entity") {
+            query.entity_id = filterId;
+        }
+
+        return api.get(path, { query });
+    });
+
+    /* useEffect(() => {
+        console.log(ctxTranList);
+    }, [ctxTranList]); */
 
     const ctxAddTransactions = async (transactionsToAdd) => {
         const transformedTransactionsArray = transactionsToAdd.map((transaction) => ({
@@ -74,34 +73,21 @@ export function TransactionsCtxProvider(props) {
             delete transaction.account;
         });
 
+        if (!ctxActiveProperty?.id) return;
+
         try {
-            const url = new URL(`${BASE_URL}/api/transactions/`);
-            if (ctxActiveProperty && ctxActiveProperty.id) {
-                url.searchParams.append("property_id", ctxActiveProperty.id);
-            } else {
-                return;
-            }
-
-            const response = await fetch(url, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${ctxAccessToken}`,
-                },
-                body: JSON.stringify(transformedTransactionsArray),
+            const newData = await api.post("/api/transactions/", transformedTransactionsArray, {
+                query: { property_id: ctxActiveProperty.id },
             });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error. Status: ${response.status}`);
-            }
-
-            const newData = await response.json();
             mutate((prev) => [...(prev || []), ...newData], false);
             ctxRefetchAccounts(); // Ensures that ctxAccountList has new balances
             showToast("Transactions added", "success", 3000);
         } catch (error) {
-            console.error("Error sending transactions:", error);
-            showToast("Error adding transactions", "error", 5000);
+            if (error instanceof ApiError) {
+                showToast("Error adding transactions", "error", 5000);
+            } else {
+                showToast("Network error. Please try again.", "error", 5000);
+            }
         }
     };
 
@@ -119,30 +105,20 @@ export function TransactionsCtxProvider(props) {
         }
 
         try {
-            const response = await fetch(`${BASE_URL}/api/transactions/${transaction.id}/`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${ctxAccessToken}`,
-                },
-                body: JSON.stringify(transformedTransaction),
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error. Status: ${response.status}`);
-            }
-
-            const updatedData = await response.json();
+            const updatedData = await api.put(`/api/transactions/${transaction.id}/`, transformedTransaction);
             mutate((prevTransactions) => {
                 if (!prevTransactions) return [];
                 return prevTransactions.map((transaction) =>
-                    transaction.id === updatedData.id ? updatedData : transaction
+                    transaction.id === updatedData.id ? updatedData : transaction,
                 );
             }, false);
             showToast("Transaction updated", "success", 3000);
         } catch (error) {
-            console.error("Error editing transaction:", error);
-            showToast("Error updating transaction", "error", 5000);
+            if (error instanceof ApiError) {
+                showToast("Error updating transaction", "error", 5000);
+            } else {
+                showToast("Network error. Please try again.", "error", 5000);
+            }
         }
     };
 

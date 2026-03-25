@@ -1,6 +1,6 @@
 import classes from "./EntityEntryDropdown.module.css";
 
-import EntitiesCtx from "../../contexts/EntitiesCtx";
+import EntitiesCtx from "../../../contexts/EntitiesCtx";
 
 import { useState, useContext, useEffect, useRef } from "react";
 import AddEntityModal from "../modals/AddEntityModal";

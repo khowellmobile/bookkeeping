@@ -5,7 +5,7 @@
 
 import { render, screen, fireEvent } from "@testing-library/react";
 import TransactionModal from "@/src/components/elements/modals/TransactionModal";
-import TransactionsCtx from "@/src/components/contexts/TransactionsCtx";
+import TransactionsCtx from "@/src/contexts/TransactionsCtx";
 
 // Mocking enviroment variables
 jest.mock("@/src/constants", () => ({
@@ -339,3 +339,4 @@ describe("TransactionModal Validation (validateInputs", () => {
         expect(screen.getByText("Error: Invalid fields. Edits were not saved.")).toBeInTheDocument();
     });
 });
+

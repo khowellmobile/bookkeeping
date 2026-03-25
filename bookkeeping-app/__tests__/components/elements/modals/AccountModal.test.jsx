@@ -5,7 +5,7 @@
 
 import { render, screen, fireEvent } from "@testing-library/react";
 import AccountModal from "@/src/components/elements/modals/AccountModal";
-import AccountsCtx from "@/src/components/contexts/AccountsCtx";
+import AccountsCtx from "@/src/contexts/AccountsCtx";
 
 // Mocking enviroment variables
 jest.mock("@/src/constants", () => ({
@@ -274,3 +274,4 @@ describe("AccountModal empty value handling", () => {
         expect(screen.getByTestId("input-description").value).toBe("");
     });
 });
+

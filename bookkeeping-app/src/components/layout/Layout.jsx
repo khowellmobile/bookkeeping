@@ -1,6 +1,6 @@
 import classes from "./Layout.module.css";
 
-import AuthCtx from "../contexts/AuthCtx";
+import AuthCtx from "../../contexts/AuthCtx";
 import Header from "../sections/Header";
 import Menu from "../sections/Menu";
 import NotificationIcon from "../../assets/notification-icon.svg";

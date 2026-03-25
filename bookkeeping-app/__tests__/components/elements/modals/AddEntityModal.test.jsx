@@ -5,7 +5,7 @@
 
 import { render, screen, fireEvent, act } from "@testing-library/react";
 import AddEntityModal from "@/src/components/elements/modals/AddEntityModal";
-import EntitiesCtx from "@/src/components/contexts/EntitiesCtx";
+import EntitiesCtx from "@/src/contexts/EntitiesCtx";
 
 // Mocking enviroment variables
 jest.mock("@/src/constants", () => ({
@@ -186,3 +186,4 @@ describe("AddEntityModal Validation (validateInputs)", () => {
         expect(mockHandleCloseModal).toHaveBeenCalledTimes(1);
     });
 });
+
