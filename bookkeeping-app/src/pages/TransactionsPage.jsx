@@ -10,6 +10,15 @@ import AddTransactionsModal from "../components/elements/modals/AddTransactionsM
 import NoResultsDisplay from "../components/elements/utilities/NoResultsDisplay";
 import Button from "../components/elements/utilities/Button";
 
+const initialTranState = {
+    date: "",
+    account: "",
+    entity: "",
+    memo: "",
+    amount: "",
+    type: "",
+};
+
 const TransactionsPage = () => {
     const { setCtxTranList, ctxTranList, setCtxFilterBy } = useContext(TransactionsCtx);
     const { ctxActiveAccount, setCtxActiveAccount } = useContext(AccountsCtx);
@@ -18,6 +27,7 @@ const TransactionsPage = () => {
 
     const [searchTerm, setSearchTerm] = useState("");
     const [filteredTransactions, setFilteredTransactions] = useState([]);
+    const [tranList, setTranList] = useState([initialTranState]);
 
     useEffect(() => {
         setCtxFilterBy("account");
@@ -34,11 +44,15 @@ const TransactionsPage = () => {
                 (transaction) =>
                     transaction.account.name.toLowerCase().includes(lowercasedSearchTerm) ||
                     transaction.entity.name.toLowerCase().includes(lowercasedSearchTerm) ||
-                    transaction.memo.toLowerCase().includes(lowercasedSearchTerm)
+                    transaction.memo.toLowerCase().includes(lowercasedSearchTerm),
             );
             setFilteredTransactions(filtered);
         }
     }, [searchTerm, ctxTranList]);
+
+    const addTransaction = () => {
+        setTranList((prev) => [...prev, initialTranState]);
+    };
 
     return (
         <>
@@ -68,6 +82,7 @@ const TransactionsPage = () => {
                             ></input>
                         </div>
                         <div>
+                            <Button onClick={addTransaction} text={"Add Transcation"} />
                             <Button onClick={() => setIsModalOpen(true)} text={"Add Transcations"} />
                         </div>
                     </div>
@@ -82,6 +97,10 @@ const TransactionsPage = () => {
                         <p>Reconciled</p>
                     </div>
                     <div className={classes.listingItems}>
+                        {tranList &&
+                            tranList.map((transaction, index) => (
+                                <TransactionItem vals={transaction} setPageTrans={setCtxTranList} key={index} />
+                            ))}
                         {filteredTransactions && filteredTransactions.length > 0 ? (
                             filteredTransactions.map((transaction, index) => (
                                 <TransactionItem vals={transaction} setPageTrans={setCtxTranList} key={index} />
@@ -100,4 +119,3 @@ const TransactionsPage = () => {
 };
 
 export default TransactionsPage;
-
