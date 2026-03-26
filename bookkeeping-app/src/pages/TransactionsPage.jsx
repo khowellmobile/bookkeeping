@@ -1,9 +1,10 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect, useRef } from "react";
 
 import classes from "./TransactionsPage.module.css";
 
 import AccountDropdown from "../components/elements/dropdowns/AccountDropdown";
 import TransactionItem from "../components/elements/items/TransactionItem";
+import { TransactionEntryItem } from "../components/elements/items/InputEntryItems";
 import TransactionsCtx from "../contexts/TransactionsCtx";
 import AccountsCtx from "../contexts/AccountsCtx";
 import AddTransactionsModal from "../components/elements/modals/AddTransactionsModal";
@@ -28,6 +29,8 @@ const TransactionsPage = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [filteredTransactions, setFilteredTransactions] = useState([]);
     const [tranList, setTranList] = useState([initialTranState]);
+
+    const scrollRef = useRef();
 
     useEffect(() => {
         setCtxFilterBy("account");
@@ -97,14 +100,21 @@ const TransactionsPage = () => {
                         <p>Credit</p>
                         <p>Reconciled</p>
                     </div>
-                    <div className={classes.listingItems}>
+                    <div className={classes.listingItems} ref={scrollRef}>
                         {tranList &&
                             tranList.map((transaction, index) => (
-                                <TransactionItem vals={transaction} setPageTrans={setCtxTranList} key={index} />
+                                <TransactionEntryItem
+                                    vals={transaction}
+                                    index={index}
+                                    onFocus={() => {}}
+                                    onItemChange={() => {}}
+                                    key={index}
+                                    scrollRef={scrollRef}
+                                />
                             ))}
                         {filteredTransactions && filteredTransactions.length > 0 ? (
-                            filteredTransactions.map((transaction, index) => (
-                                <TransactionItem vals={transaction} setPageTrans={setCtxTranList} key={index} />
+                            filteredTransactions.map((transaction) => (
+                                <TransactionItem vals={transaction} key={index} />
                             ))
                         ) : (
                             <NoResultsDisplay
