@@ -28,7 +28,7 @@ const TransactionsPage = () => {
 
     const [searchTerm, setSearchTerm] = useState("");
     const [filteredTransactions, setFilteredTransactions] = useState([]);
-    const [tranList, setTranList] = useState([initialTranState]);
+    const [tranList, setTranList] = useState([]);
 
     const scrollRef = useRef();
 
@@ -55,6 +55,14 @@ const TransactionsPage = () => {
 
     const addTransaction = () => {
         setTranList((prev) => [...prev, initialTranState]);
+    };
+
+    const handleChange = (index, item) => {
+        const newTranList = [...tranList];
+
+        newTranList[index] = item;
+
+        setTranList(newTranList);
     };
 
     return (
@@ -107,12 +115,12 @@ const TransactionsPage = () => {
                                     vals={transaction}
                                     index={index}
                                     onFocus={() => {}}
-                                    onItemChange={() => {}}
+                                    onItemChange={handleChange}
                                     key={index}
                                     scrollRef={scrollRef}
                                 />
                             ))}
-                        {filteredTransactions && filteredTransactions.length > 0 ? (
+                        {/* {filteredTransactions && filteredTransactions.length > 0 ? (
                             filteredTransactions.map((transaction) => (
                                 <TransactionItem vals={transaction} key={index} />
                             ))
@@ -121,7 +129,7 @@ const TransactionsPage = () => {
                                 mainText={"No Transactions to load."}
                                 guideText={"Have you chosen a Property and Account?"}
                             />
-                        )}
+                        )} */}
                     </div>
                 </div>
             </div>

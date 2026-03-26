@@ -28,7 +28,7 @@ const AddTransactionsModal = ({ ctxActiveAccount, handleCloseModal }) => {
                 amount: "",
                 type: "",
                 is_reconciled: false,
-            }))
+            })),
     );
 
     const handleFocusLastItem = useCallback(
@@ -48,7 +48,7 @@ const AddTransactionsModal = ({ ctxActiveAccount, handleCloseModal }) => {
                 ]);
             }
         },
-        [transactionItems, setTransactionItems]
+        [transactionItems, setTransactionItems],
     );
 
     const handleChange = (index, newItem) => {
