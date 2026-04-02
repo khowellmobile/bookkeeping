@@ -9,7 +9,7 @@ import Button from "../utilities/Button.jsx";
 import { useTransactions } from "../../../hooks/useTransactions.jsx";
 
 const TransactionModal = ({ vals, handleCloseModal }) => {
-    const { ctxUpdateTransaction } = useTransactions();
+    const { updateTransaction } = useTransactions();
 
     const [inputFields, setInputFields] = useState({
         date: vals.date,
@@ -62,13 +62,13 @@ const TransactionModal = ({ vals, handleCloseModal }) => {
 
     const handleDeleteClick = () => {
         setEditedTransaction((prev) => ({ ...prev, is_deleted: true }));
-        ctxUpdateTransaction({ id: vals.id, is_deleted: true });
+        updateTransaction({ id: vals.id, is_deleted: true });
         handleCloseModal();
     };
 
     const handleUpdateClick = () => {
         if (validateInputs()) {
-            ctxUpdateTransaction({ id: vals.id, ...editedTransaction });
+            updateTransaction({ id: vals.id, ...editedTransaction });
             handleCloseModal();
         }
     };

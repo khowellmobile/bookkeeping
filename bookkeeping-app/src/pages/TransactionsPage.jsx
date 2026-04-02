@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect, useRef } from "react";
+import { useContext, useEffect, useRef } from "react";
 
 import classes from "./TransactionsPage.module.css";
 
@@ -7,7 +7,6 @@ import TransactionItem from "../components/elements/items/TransactionItem";
 import { TransactionEntryItem } from "../components/elements/items/InputEntryItems";
 import TransactionsCtx from "../contexts/TransactionsCtx";
 import AccountsCtx from "../contexts/AccountsCtx";
-import AddTransactionsModal from "../components/elements/modals/AddTransactionsModal";
 import NoResultsDisplay from "../components/elements/utilities/NoResultsDisplay";
 import Button from "../components/elements/utilities/Button";
 
@@ -58,7 +57,9 @@ const TransactionsPage = () => {
                                     <b>Tip:</b> Empty transactions will not be saved
                                 </p>
                             )}
-                            {ctxActiveAccount?.id && <Button onClick={addTransactions} text={"Save Transactions"} />}
+                            {ctxActiveAccount?.id && transToAdd?.length > 0 && (
+                                <Button onClick={addTransactions} text={"Save Transactions"} />
+                            )}
                             {ctxActiveAccount?.id && <Button onClick={addEmptyTransaction} text={"Add Transcation"} />}
                         </div>
                     </div>

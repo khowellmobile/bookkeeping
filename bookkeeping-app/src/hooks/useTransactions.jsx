@@ -7,6 +7,7 @@ import AuthCtx from "../contexts/AuthCtx";
 import PropertiesCtx from "../contexts/PropertiesCtx";
 import TransactionsCtx from "../contexts/TransactionsCtx";
 import AccountsCtx from "../contexts/AccountsCtx";
+import EntitiesCtx from "../contexts/EntitiesCtx";
 
 const emptyTransaction = {
     date: "",
@@ -35,8 +36,10 @@ const isItemEmpty = (item) => {
     return Object.values(item).every((value) => value === "");
 };
 
-const containsStr = (item, str) => {
-    return item.toUpperCase().includes(str.toUpperCase());
+const containsStr = (value, search) => {
+    const normalizedValue = typeof value === "string" ? value : "";
+    const normalizedSearch = typeof search === "string" ? search : "";
+    return normalizedValue.toUpperCase().includes(normalizedSearch.toUpperCase());
 };
 
 export const useTransactions = () => {
@@ -46,6 +49,7 @@ export const useTransactions = () => {
     const { ctxAccessToken } = useContext(AuthCtx);
     const { ctxRefetchAccounts, ctxActiveAccount } = useContext(AccountsCtx);
     const { ctxFilterBy } = useContext(TransactionsCtx);
+    const { ctxActiveEntity } = useContext(EntitiesCtx);
 
     const [transToAdd, setTransToAdd] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
@@ -80,9 +84,9 @@ export const useTransactions = () => {
         if (tranList) {
             const filtered = tranList.filter(
                 (transaction) =>
-                    containsStr(transaction.account.name, searchTerm) ||
-                    containsStr(transaction.entity.name, searchTerm) ||
-                    containsStr(transaction.memo, searchTerm),
+                    containsStr(transaction?.account?.name, searchTerm) ||
+                    containsStr(transaction?.entity?.name, searchTerm) ||
+                    containsStr(transaction?.memo, searchTerm),
             );
             return filtered;
         } else {

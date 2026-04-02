@@ -12,10 +12,12 @@ import SearchBox from "../components/elements/utilities/SearchBox";
 import NoResultsDisplay from "../components/elements/utilities/NoResultsDisplay";
 import Input from "../components/elements/utilities/Input";
 import Button from "../components/elements/utilities/Button";
+import { useTransactions } from "../hooks/useTransactions";
 
 const EntitiesPage = () => {
     const { ctxEntityList, ctxUpdateEntity, ctxActiveEntity, setCtxActiveEntity } = useContext(EntitiesCtx);
-    const { ctxTranList, setCtxTranList, setCtxFilterBy } = useContext(TransactionsCtx);
+    const { setCtxFilterBy } = useContext(TransactionsCtx);
+    const { tranList } = useTransactions();
 
     const initalInputState = {
         name: "",
@@ -319,10 +321,8 @@ const EntitiesPage = () => {
                             <p>Reconciled</p>
                         </div>
                         <div className={classes.listingItems}>
-                            {ctxTranList && ctxTranList.length > 0 ? (
-                                ctxTranList.map((transaction, index) => (
-                                    <TransactionItem vals={transaction} setPageTrans={setCtxTranList} key={index} />
-                                ))
+                            {tranList && tranList.length > 0 ? (
+                                tranList.map((transaction, index) => <TransactionItem vals={transaction} key={index} />)
                             ) : (
                                 <NoResultsDisplay
                                     mainText={"No Transactions to Load."}
