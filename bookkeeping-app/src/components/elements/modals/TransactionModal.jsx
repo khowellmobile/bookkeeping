@@ -1,16 +1,15 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import classes from "./TransactionModal.module.css";
-
-import TransactionsCtx from "../../../contexts/TransactionsCtx.jsx";
 
 import AccountDropdown from "../dropdowns/AccountDropdown.jsx";
 import EntityDropdown from "../dropdowns/EntityDropdown.jsx";
 import ConfirmationModal from "./ConfirmationModal.jsx";
 import Input from "../utilities/Input.jsx";
 import Button from "../utilities/Button.jsx";
+import { useTransactions } from "../../../hooks/useTransactions.jsx";
 
 const TransactionModal = ({ vals, handleCloseModal }) => {
-    const { ctxUpdateTransaction } = useContext(TransactionsCtx);
+    const { ctxUpdateTransaction } = useTransactions();
 
     const [inputFields, setInputFields] = useState({
         date: vals.date,

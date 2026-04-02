@@ -33,6 +33,15 @@
     justify-content: space-between;
 }
 
+.buttonDiv {
+    display: flex;
+    align-items: center;
+}
+
+.buttonDiv button {
+    margin-left: 0.5rem;
+}
+
 .transactionsSearch {
     width: 15rem;
     height: 2rem;

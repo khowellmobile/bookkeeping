@@ -59,14 +59,6 @@ const AddTransactionsModal = ({ ctxActiveAccount, handleCloseModal }) => {
         setTransactionItems(newTransactionItems);
     };
 
-    const checkAmount = (val) => {
-        if (!isNaN(parseFloat(val))) {
-            return val;
-        } else {
-            return "";
-        }
-    };
-
     const checkInput = (inputs) => {
         const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
 

@@ -155,7 +155,7 @@ const JournalsPage = () => {
                     <div className={classes.journalEntry}>
                         <section className={classes.header}>
                             {isEditing ? <h2>Edit an Entry</h2> : <h2>Make an Entry</h2>}
-                            <div className={classes.headerTools}>
+                            <div>
                                 <Button onClick={saveInfo} text={isEditing ? "Save Edits" : "Save Entry"} />
                                 <Button onClick={handleNewEntryClick} text={isEditing ? "New Entry" : "Clear Inputs"} />
                                 {isEditing && <Button onClick={handleDeleteClick} text={"Delete Entry"} />}

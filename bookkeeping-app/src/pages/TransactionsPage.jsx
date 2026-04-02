@@ -11,24 +11,21 @@ import AddTransactionsModal from "../components/elements/modals/AddTransactionsM
 import NoResultsDisplay from "../components/elements/utilities/NoResultsDisplay";
 import Button from "../components/elements/utilities/Button";
 
-const initialTranState = {
-    date: "",
-    account: "",
-    entity: "",
-    memo: "",
-    amount: "",
-    type: "",
-};
+import { useTransactions } from "../hooks/useTransactions";
 
 const TransactionsPage = () => {
-    const { setCtxTranList, ctxTranList, setCtxFilterBy } = useContext(TransactionsCtx);
+    const { setCtxFilterBy } = useContext(TransactionsCtx);
     const { ctxActiveAccount, setCtxActiveAccount } = useContext(AccountsCtx);
 
-    const [isModalOpen, setIsModalOpen] = useState(false);
-
-    const [searchTerm, setSearchTerm] = useState("");
-    const [filteredTransactions, setFilteredTransactions] = useState([]);
-    const [tranList, setTranList] = useState([]);
+    const {
+        transToAdd,
+        filteredTransactions,
+        searchTerm,
+        setSearchTerm,
+        addEmptyTransaction,
+        handleChange,
+        addTransactions,
+    } = useTransactions();
 
     const scrollRef = useRef();
 
@@ -36,45 +33,8 @@ const TransactionsPage = () => {
         setCtxFilterBy("account");
     }, []);
 
-    const handleCloseModal = () => {
-        setIsModalOpen(false);
-    };
-
-    useEffect(() => {
-        if (ctxTranList) {
-            const lowercasedSearchTerm = searchTerm.toLowerCase();
-            const filtered = ctxTranList.filter(
-                (transaction) =>
-                    transaction.account.name.toLowerCase().includes(lowercasedSearchTerm) ||
-                    transaction.entity.name.toLowerCase().includes(lowercasedSearchTerm) ||
-                    transaction.memo.toLowerCase().includes(lowercasedSearchTerm),
-            );
-            setFilteredTransactions(filtered);
-        }
-    }, [searchTerm, ctxTranList]);
-
-    const addTransaction = () => {
-        setTranList((prev) => [...prev, initialTranState]);
-    };
-
-    const handleChange = (index, item) => {
-        const newTranList = [...tranList];
-
-        newTranList[index] = item;
-
-        setTranList(newTranList);
-    };
-
     return (
         <>
-            {isModalOpen && (
-                <AddTransactionsModal
-                    ctxActiveAccount={ctxActiveAccount}
-                    setPageTrans={setCtxTranList}
-                    handleCloseModal={handleCloseModal}
-                />
-            )}
-
             <div className={classes.mainContainer}>
                 <div className={classes.tranasctionsHeader}>
                     <h2>Transactions</h2>
@@ -92,9 +52,14 @@ const TransactionsPage = () => {
                                 }}
                             ></input>
                         </div>
-                        <div>
-                            <Button onClick={addTransaction} text={"Add Transcation"} />
-                            <Button onClick={() => setIsModalOpen(true)} text={"Add Transcations"} />
+                        <div className={classes.buttonDiv}>
+                            {transToAdd?.length > 0 && (
+                                <p>
+                                    <b>Tip:</b> Empty transactions will not be saved
+                                </p>
+                            )}
+                            {ctxActiveAccount?.id && <Button onClick={addTransactions} text={"Save Transactions"} />}
+                            {ctxActiveAccount?.id && <Button onClick={addEmptyTransaction} text={"Add Transcation"} />}
                         </div>
                     </div>
                 </div>
@@ -109,8 +74,8 @@ const TransactionsPage = () => {
                         <p>Reconciled</p>
                     </div>
                     <div className={classes.listingItems} ref={scrollRef}>
-                        {tranList &&
-                            tranList.map((transaction, index) => (
+                        {transToAdd?.length > 0 &&
+                            transToAdd.map((transaction, index) => (
                                 <TransactionEntryItem
                                     vals={transaction}
                                     index={index}
@@ -120,16 +85,16 @@ const TransactionsPage = () => {
                                     scrollRef={scrollRef}
                                 />
                             ))}
-                        {/* {filteredTransactions && filteredTransactions.length > 0 ? (
-                            filteredTransactions.map((transaction) => (
+                        {filteredTransactions?.length > 0 &&
+                            filteredTransactions.map((transaction, index) => (
                                 <TransactionItem vals={transaction} key={index} />
-                            ))
-                        ) : (
+                            ))}
+                        {filteredTransactions?.length == 0 && transToAdd?.length == 0 && (
                             <NoResultsDisplay
                                 mainText={"No Transactions to load."}
                                 guideText={"Have you chosen a Property and Account?"}
                             />
-                        )} */}
+                        )}
                     </div>
                 </div>
             </div>
