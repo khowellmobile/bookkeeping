@@ -1,16 +1,15 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import classes from "./TransactionModal.module.css";
-
-import TransactionsCtx from "../../../contexts/TransactionsCtx.jsx";
 
 import AccountDropdown from "../dropdowns/AccountDropdown.jsx";
 import EntityDropdown from "../dropdowns/EntityDropdown.jsx";
 import ConfirmationModal from "./ConfirmationModal.jsx";
 import Input from "../utilities/Input.jsx";
 import Button from "../utilities/Button.jsx";
+import { useTransactions } from "../../../hooks/useTransactions.jsx";
 
 const TransactionModal = ({ vals, handleCloseModal }) => {
-    const { ctxUpdateTransaction } = useContext(TransactionsCtx);
+    const { updateTransaction } = useTransactions();
 
     const [inputFields, setInputFields] = useState({
         date: vals.date,
@@ -63,13 +62,13 @@ const TransactionModal = ({ vals, handleCloseModal }) => {
 
     const handleDeleteClick = () => {
         setEditedTransaction((prev) => ({ ...prev, is_deleted: true }));
-        ctxUpdateTransaction({ id: vals.id, is_deleted: true });
+        updateTransaction({ id: vals.id, is_deleted: true });
         handleCloseModal();
     };
 
     const handleUpdateClick = () => {
         if (validateInputs()) {
-            ctxUpdateTransaction({ id: vals.id, ...editedTransaction });
+            updateTransaction({ id: vals.id, ...editedTransaction });
             handleCloseModal();
         }
     };

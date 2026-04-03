@@ -48,9 +48,9 @@ describe("TransactionItem Rendering", () => {
         expect(screen.getByText("Groceries <food>")).toBeInTheDocument();
     });
 
-    it("should format debit amounts with parentheses and two decimal places", () => {
+    it("should format debit amounts without parenthesis and two decimal places", () => {
         renderTransactionItem();
-        expect(screen.getByText("(55.75)")).toBeInTheDocument();
+        expect(screen.getByText("55.75")).toBeInTheDocument();
     });
 
     it("should format credit amounts without parentheses and with two decimal places (and handle rounding)", () => {
