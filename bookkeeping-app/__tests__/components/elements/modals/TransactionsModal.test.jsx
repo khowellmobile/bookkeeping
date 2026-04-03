@@ -5,7 +5,7 @@
 
 import { render, screen, fireEvent } from "@testing-library/react";
 import TransactionModal from "@/src/components/elements/modals/TransactionModal";
-import TransactionsCtx from "@/src/contexts/TransactionsCtx";
+import { useTransactions } from "@/src/hooks/useTransactions.jsx";
 
 // Mocking enviroment variables
 jest.mock("@/src/constants", () => ({
@@ -13,20 +13,18 @@ jest.mock("@/src/constants", () => ({
     BASE_URL: "http://test-url.com",
 }));
 
-// Mocking context provider
 const mockUpdateTransaction = jest.fn();
-const MockTransactionsCtxProvider = ({ children }) => (
-    <TransactionsCtx.Provider value={{ ctxUpdateTransaction: mockUpdateTransaction }}>
-        {children}
-    </TransactionsCtx.Provider>
-);
+
+jest.mock("@/src/hooks/useTransactions.jsx", () => ({
+    useTransactions: jest.fn(),
+}));
 
 // Mocking child components used within TransactionModal
 jest.mock("@/src/components/elements/dropdowns/AccountDropdown.jsx", () => (props) => (
-    <div data-testid="account-dropdown" onClick={() => props.onChange("New Account")} />
+    <div data-testid="account-dropdown" onClick={() => props.onChange({ id: 2, name: "New Account" })} />
 ));
 jest.mock("@/src/components/elements/dropdowns/EntityDropdown.jsx", () => (props) => (
-    <div data-testid="entity-dropdown" onClick={() => props.onChange("New Entity")} />
+    <div data-testid="entity-dropdown" onClick={() => props.onChange({ id: 3, name: "New Entity" })} />
 ));
 jest.mock("@/src/components/elements/modals/ConfirmationModal.jsx", () => ({ text, onConfirm }) => (
     <div data-testid="confirmation-modal">
@@ -47,8 +45,8 @@ const mockProps = {
     vals: {
         id: 1,
         date: "2025-10-21",
-        entity: "Payee Name",
-        account: "Checking",
+        entity: { id: 10, name: "Payee Name" },
+        account: { id: 20, name: "Checking" },
         amount: "100.00",
         type: "debit",
         memo: "Test Memo",
@@ -58,17 +56,14 @@ const mockProps = {
 
 // Functon to create a transaction modal with context and props
 const renderTransactionModal = (props = mockProps) => {
-    return render(
-        <MockTransactionsCtxProvider>
-            <TransactionModal {...props} />
-        </MockTransactionsCtxProvider>
-    );
+    return render(<TransactionModal {...props} />);
 };
 
 // Test suite to test input changes
 describe("TransactionModal Input Changes", () => {
     beforeEach(() => {
         mockUpdateTransaction.mockClear();
+        useTransactions.mockReturnValue({ updateTransaction: mockUpdateTransaction });
         renderTransactionModal();
     });
 
@@ -158,10 +153,11 @@ describe("TransactionModal Input Changes", () => {
 describe("TransactionModal editedTransaction changes", () => {
     beforeEach(() => {
         mockUpdateTransaction.mockClear();
+        useTransactions.mockReturnValue({ updateTransaction: mockUpdateTransaction });
         renderTransactionModal();
     });
 
-    it("should update editedTransaction memo on user input of good value and pass it to ctxUpdateTransaction on save", async () => {
+    it("should update editedTransaction memo on user input of good value and pass it to updateTransaction on save", async () => {
         const newMemo = "Updated Memo for utilities";
 
         const memoInput = screen.getByTestId("input-memo");
@@ -177,7 +173,7 @@ describe("TransactionModal editedTransaction changes", () => {
         });
     });
 
-    it("should update editedTransaction amount and type on user input of good debit value and pass it to ctxUpdateTransaction on save", async () => {
+    it("should update editedTransaction amount and type on user input of good debit value and pass it to updateTransaction on save", async () => {
         const newValue = 200.0;
 
         const amountInput = screen.getByTestId("input-debit");
@@ -194,7 +190,7 @@ describe("TransactionModal editedTransaction changes", () => {
         });
     });
 
-    it("should update editedTransaction amount and type on user input of good credit value and pass it to ctxUpdateTransaction on save", async () => {
+    it("should update editedTransaction amount and type on user input of good credit value and pass it to updateTransaction on save", async () => {
         const newValue = 200.0;
 
         const amountInput = screen.getByTestId("input-credit");
@@ -211,7 +207,7 @@ describe("TransactionModal editedTransaction changes", () => {
         });
     });
 
-    it("should update editedTransaction date on user input of good value and pass it to ctxUpdateTransaction on save", async () => {
+    it("should update editedTransaction date on user input of good value and pass it to updateTransaction on save", async () => {
         const newDate = "2025-05-05";
 
         const dateInput = screen.getByTestId("input-date");
@@ -236,7 +232,7 @@ describe("TransactionModal editedTransaction changes", () => {
 
         expect(mockUpdateTransaction).toHaveBeenCalledWith(
             expect.objectContaining({
-                account: "New Account",
+                account: { id: 2, name: "New Account" },
             })
         );
     });
@@ -250,7 +246,7 @@ describe("TransactionModal editedTransaction changes", () => {
 
         expect(mockUpdateTransaction).toHaveBeenCalledWith(
             expect.objectContaining({
-                entity: "New Entity",
+                entity: { id: 3, name: "New Entity" },
             })
         );
     });
@@ -259,6 +255,7 @@ describe("TransactionModal editedTransaction changes", () => {
 describe("TransactionModal Delete Functionality", () => {
     beforeEach(() => {
         mockUpdateTransaction.mockClear();
+        useTransactions.mockReturnValue({ updateTransaction: mockUpdateTransaction });
         renderTransactionModal();
     });
 
@@ -280,12 +277,13 @@ describe("TransactionModal Delete Functionality", () => {
 describe("TransactionModal Validation (validateInputs", () => {
     const renderModal = (props) => {
         mockUpdateTransaction.mockClear();
+        useTransactions.mockReturnValue({ updateTransaction: mockUpdateTransaction });
         renderTransactionModal(props);
     };
 
     it("should prevent save and display error when Payee (entity) is empty", () => {
         const invalidProps = {
-            vals: { id: 1, entity: "" },
+            vals: { ...mockProps.vals, id: 1, entity: "" },
             handleCloseModal: jest.fn(),
         };
         renderModal(invalidProps);
@@ -299,7 +297,7 @@ describe("TransactionModal Validation (validateInputs", () => {
 
     it("should prevent save and display error when Account is empty", () => {
         const invalidProps = {
-            vals: { id: 1, account: "" },
+            vals: { ...mockProps.vals, id: 1, account: "" },
             handleCloseModal: jest.fn(),
         };
         renderModal(invalidProps);
@@ -313,7 +311,7 @@ describe("TransactionModal Validation (validateInputs", () => {
 
     it("should prevent save and display error when Amount is empty", () => {
         const invalidProps = {
-            vals: { id: 1, amount: "" },
+            vals: { ...mockProps.vals, id: 1, amount: "" },
             handleCloseModal: jest.fn(),
         };
         renderModal(invalidProps);
@@ -327,7 +325,7 @@ describe("TransactionModal Validation (validateInputs", () => {
 
     it("should prevent save and display error when Amount is NaN", () => {
         const invalidProps = {
-            vals: { id: 1, amount: "abd" },
+            vals: { ...mockProps.vals, id: 1, amount: "abd" },
             handleCloseModal: jest.fn(),
         };
         renderModal(invalidProps);
