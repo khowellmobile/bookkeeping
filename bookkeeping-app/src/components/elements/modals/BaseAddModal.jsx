@@ -1,5 +1,5 @@
 import { useState } from "react";
-import ConfirmationModal from "./ConfirmationModal";
+import ConfirmModal from "./ConfirmModal";
 import classes from "./BaseAddModal.module.css";
 import Button from "../utilities/Button";
 
@@ -26,7 +26,7 @@ const BaseModal = ({ children, handleCloseModal, hasUnsavedChanges, title, handl
     return (
         <>
             {isModalOpen && (
-                <ConfirmationModal
+                <ConfirmModal
                     text={{
                         msg: "You have unsaved changes. Are you sure you want to discard them?",
                         confirm_txt: "Discard Changes",

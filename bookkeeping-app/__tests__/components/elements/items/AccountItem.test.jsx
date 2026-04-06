@@ -34,7 +34,7 @@ jest.mock("@/src/components/elements/modals/AccountModal", () => ({ account, han
         Edit Modal for {account.name}
     </div>
 ));
-jest.mock("@/src/components/elements/modals/ConfirmationModal", () => ({ text, onConfirm, onCancel }) => (
+jest.mock("@/src/components/elements/modals/ConfirmModal", () => ({ text, onConfirm, onCancel }) => (
     <div data-testid="confirmation-modal">
         <button onClick={onConfirm}>Confirm Delete</button>
         <button onClick={onCancel}>Cancel Delete</button>

@@ -20,7 +20,7 @@ const MockAccountsCtxProvider = ({ children }) => (
 );
 
 // Mocking child components used within AccountModal
-jest.mock("@/src/components/elements/modals/ConfirmationModal.jsx", () => ({ text, onConfirm }) => (
+jest.mock("@/src/components/elements/modals/ConfirmModal.jsx", () => ({ text, onConfirm }) => (
     <div data-testid="confirmation-modal">
         <button data-testid="confirm-delete-action" onClick={onConfirm}>
             {text.confirm_txt}

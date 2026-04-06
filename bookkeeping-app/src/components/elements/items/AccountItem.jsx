@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 import AccountModal from "../modals/AccountModal";
 import ThreeDotsIcon from "../../../assets/three-dots-icon.svg";
-import ConfirmationModal from "../modals/ConfirmationModal";
+import ConfirmModal from "../modals/ConfirmModal";
 
 const AccountItem = ({ account }) => {
     const navigate = useNavigate();
@@ -54,7 +54,7 @@ const AccountItem = ({ account }) => {
         <>
             {isModalOpen && <AccountModal account={account} handleCloseModal={handleCloseModal} />}
             {isDeleteModalOpen && (
-                <ConfirmationModal
+                <ConfirmModal
                     text={{
                         msg: "Are you sure you wish to mark this Account inactive?",
                         confirm_txt: "Delete",

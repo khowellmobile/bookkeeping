@@ -3,7 +3,7 @@ import classes from "./TransactionModal.module.css";
 
 import AccountDropdown from "../dropdowns/AccountDropdown.jsx";
 import EntityDropdown from "../dropdowns/EntityDropdown.jsx";
-import ConfirmationModal from "./ConfirmationModal.jsx";
+import ConfirmModal from "./ConfirmModal.jsx";
 import Input from "../utilities/Input.jsx";
 import Button from "../utilities/Button.jsx";
 import { useTransactions } from "../../../hooks/useTransactions.jsx";
@@ -158,7 +158,7 @@ const TransactionModal = ({ vals, handleCloseModal }) => {
     return (
         <>
             {isConfirmModalOpen && (
-                <ConfirmationModal
+                <ConfirmModal
                     text={{
                         msg: "You have unsaved changes. Are you sure you want to discard them?",
                         confirm_txt: "Discard Changes",
@@ -170,7 +170,7 @@ const TransactionModal = ({ vals, handleCloseModal }) => {
             )}
 
             {isDeleteModalOpen && (
-                <ConfirmationModal
+                <ConfirmModal
                     text={{
                         msg: "Are you sure you wish to delete this transcation?",
                         confirm_txt: "Delete",

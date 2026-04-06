@@ -26,7 +26,7 @@ jest.mock("@/src/components/elements/dropdowns/AccountDropdown.jsx", () => (prop
 jest.mock("@/src/components/elements/dropdowns/EntityDropdown.jsx", () => (props) => (
     <div data-testid="entity-dropdown" onClick={() => props.onChange({ id: 3, name: "New Entity" })} />
 ));
-jest.mock("@/src/components/elements/modals/ConfirmationModal.jsx", () => ({ text, onConfirm }) => (
+jest.mock("@/src/components/elements/modals/ConfirmModal.jsx", () => ({ text, onConfirm }) => (
     <div data-testid="confirmation-modal">
         <button data-testid="confirm-delete-action" onClick={onConfirm}>
             {text.confirm_txt}

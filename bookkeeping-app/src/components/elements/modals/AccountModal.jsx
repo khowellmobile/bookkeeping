@@ -3,7 +3,7 @@ import classes from "./AccountModal.module.css";
 import AccountsCtx from "../../../contexts/AccountsCtx";
 import { useContext, useState } from "react";
 
-import ConfirmationModal from "./ConfirmationModal";
+import ConfirmModal from "./ConfirmModal";
 
 import upChevIcon from "../../../assets/chevron-up-icon.svg";
 import downChevIcon from "../../../assets/chevron-down-icon.svg";
@@ -123,7 +123,7 @@ const AccountModal = ({ account, handleCloseModal }) => {
     return (
         <>
             {isModalOpen && (
-                <ConfirmationModal
+                <ConfirmModal
                     text={{
                         msg: "You have unsaved changes. Are you sure you want to discard them?",
                         confirm_txt: "Discard Changes",

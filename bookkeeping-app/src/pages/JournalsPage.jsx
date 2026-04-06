@@ -3,7 +3,7 @@ import { useState, useRef } from "react";
 import classes from "./JournalsPage.module.css";
 import { useJournal } from "../hooks/useJournal";
 
-import ConfirmationModal from "../components/elements/modals/ConfirmationModal";
+import ConfirmModal from "../components/elements/modals/ConfirmModal";
 import NoResultsDisplay from "../components/elements/utilities/NoResultsDisplay";
 import Input from "../components/elements/utilities/Input";
 import { JournalEntryItem } from "../components/elements/items/InputEntryItems";
@@ -112,7 +112,7 @@ const JournalsPage = () => {
     return (
         <>
             {isModalOpen && confirmAction.type && (
-                <ConfirmationModal
+                <ConfirmModal
                     text={getModalText()}
                     onConfirm={onConfirmModalAction}
                     onCancel={onCancelModalAction}

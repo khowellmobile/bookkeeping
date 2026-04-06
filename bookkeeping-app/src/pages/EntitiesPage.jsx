@@ -7,7 +7,7 @@ import TransactionsCtx from "../contexts/TransactionsCtx";
 import penIcon from "../assets/pen-icon.svg";
 import TransactionItem from "../components/elements/items/TransactionItem";
 import AddEntityModal from "../components/elements/modals/AddEntityModal";
-import ConfirmationModal from "../components/elements/modals/ConfirmationModal";
+import ConfirmModal from "../components/elements/modals/ConfirmModal";
 import SearchBox from "../components/elements/utilities/SearchBox";
 import NoResultsDisplay from "../components/elements/utilities/NoResultsDisplay";
 import Input from "../components/elements/utilities/Input";
@@ -210,7 +210,7 @@ const EntitiesPage = () => {
             {isModalOpen && <AddEntityModal handleCloseModal={handleCloseModal} />}
 
             {isConfirmModalOpen && confirmAction.type && (
-                <ConfirmationModal
+                <ConfirmModal
                     text={getModalText()}
                     onConfirm={onConfirmModalAction}
                     onCancel={onCancelModalAction}

@@ -5,7 +5,7 @@ import classes from "./RentItem.module.css";
 import { useToast } from "../../../contexts/ToastCtx";
 import RentPaymentsCtx from "../../../contexts/RentPaymentsCtx";
 import EntityDropdown from "../dropdowns/EntityDropdown";
-import ConfirmationModal from "../modals/ConfirmationModal";
+import ConfirmModal from "../modals/ConfirmModal";
 import Input from "../utilities/Input";
 
 const RentItem = ({ item, dayIndex, handleSaveRentPayment, pushLeft, pushUp, removeTemp }) => {
@@ -179,7 +179,7 @@ const RentItem = ({ item, dayIndex, handleSaveRentPayment, pushLeft, pushUp, rem
     return (
         <>
             {isConfirmModalOpen && (
-                <ConfirmationModal
+                <ConfirmModal
                     text={{
                         msg: "Are you sure you wish to delete this Payment?",
                         confirm_txt: "Delete",

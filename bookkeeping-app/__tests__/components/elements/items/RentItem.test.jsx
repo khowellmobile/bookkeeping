@@ -30,7 +30,7 @@ jest.mock("@/src/components/elements/dropdowns/EntityDropdown", () => ({ initalV
         </button>
     </div>
 ));
-jest.mock("@/src/components/elements/modals/ConfirmationModal", () => ({ text, onConfirm, onCancel }) => (
+jest.mock("@/src/components/elements/modals/ConfirmModal", () => ({ text, onConfirm, onCancel }) => (
     <div data-testid="confirmation-modal">
         <p>{text.msg}</p>
         <button data-testid="confirm-btn" onClick={onConfirm}>

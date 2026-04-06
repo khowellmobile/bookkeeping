@@ -3,7 +3,7 @@ import { useState, useContext, useEffect } from "react";
 import classes from "./PropertiesPage.module.css";
 
 import PropertiesCtx from "../contexts/PropertiesCtx";
-import ConfirmationModal from "../components/elements/modals/ConfirmationModal";
+import ConfirmModal from "../components/elements/modals/ConfirmModal";
 import penIcon from "../assets/pen-icon.svg";
 import AddPropertyModal from "../components/elements/modals/AddPropertyModal";
 import SearchBox from "../components/elements/utilities/SearchBox";
@@ -183,7 +183,7 @@ const PropertiesPage = () => {
     return (
         <>
             {isModalOpen && confirmAction.type && (
-                <ConfirmationModal
+                <ConfirmModal
                     text={getModalText()}
                     onConfirm={onConfirmModalAction}
                     onCancel={onCancelModalAction}
