@@ -3,18 +3,17 @@ import { useEffect, useState, useRef, useContext, useCallback, useMemo } from "r
 import classes from "./RentItem.module.css";
 
 import { useToast } from "../../../contexts/ToastCtx";
+import { useConfirmModal } from "../../../contexts/ConfirmModalCtx";
 import RentPaymentsCtx from "../../../contexts/RentPaymentsCtx";
-import EntityDropdown from "../dropdowns/EntityDropdown";
-import ConfirmModal from "../modals/ConfirmModal";
 import Input from "../utilities/Input";
 
 const RentItem = ({ item, dayIndex, handleSaveRentPayment, pushLeft, pushUp, removeTemp }) => {
     const { ctxUpdatePayment } = useContext(RentPaymentsCtx);
     const { showToast } = useToast();
+    const { showConfirmModal } = useConfirmModal();
 
     const itemBoxRef = useRef(null);
 
-    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
     const [isClicked, setIsClicked] = useState(String(item.id).startsWith("temp"));
     const [isAbsolute, setIsAbsolute] = useState(String(item.id).startsWith("temp"));
     const [errorText, setErrorText] = useState("");
@@ -103,7 +102,20 @@ const RentItem = ({ item, dayIndex, handleSaveRentPayment, pushLeft, pushUp, rem
     };
 
     const handleDelete = () => {
-        setIsConfirmModalOpen(true);
+        showConfirmModal(
+            {
+                msg: "Are you sure you wish to delete this Payment?",
+                confirm_txt: "Delete",
+                cancel_txt: "Cancel Deletion",
+            },
+            () => {
+                if (String(item.id).startsWith("temp")) {
+                    removeTemp();
+                } else {
+                    ctxUpdatePayment({ id: item.id, is_deleted: true });
+                }
+            }
+        );
     };
 
     const handleTagClick = (statName) => {
@@ -142,18 +154,7 @@ const RentItem = ({ item, dayIndex, handleSaveRentPayment, pushLeft, pushUp, rem
         };
     }, [isClicked, handleClose]);
 
-    const onConfirmModalAction = () => {
-        if (String(item.id).startsWith("temp")) {
-            removeTemp();
-        } else {
-            ctxUpdatePayment({ id: item.id, is_deleted: true });
-        }
-        setIsConfirmModalOpen(false);
-    };
 
-    const onCancelModalAction = () => {
-        setIsConfirmModalOpen(false);
-    };
 
     const validateInputs = useCallback(() => {
         let errTxt = "";
@@ -178,18 +179,6 @@ const RentItem = ({ item, dayIndex, handleSaveRentPayment, pushLeft, pushUp, rem
 
     return (
         <>
-            {isConfirmModalOpen && (
-                <ConfirmModal
-                    text={{
-                        msg: "Are you sure you wish to delete this Payment?",
-                        confirm_txt: "Delete",
-                        cancel_txt: "Cancel Deletion",
-                    }}
-                    onConfirm={onConfirmModalAction}
-                    onCancel={onCancelModalAction}
-                />
-            )}
-
             <div className={classes.mainContainer}>
                 {isAbsolute && <div className={classes.placeholder} />}
                 <div

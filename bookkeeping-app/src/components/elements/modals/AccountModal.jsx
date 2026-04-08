@@ -3,7 +3,7 @@ import classes from "./AccountModal.module.css";
 import AccountsCtx from "../../../contexts/AccountsCtx";
 import { useContext, useState } from "react";
 
-import ConfirmModal from "./ConfirmModal";
+import { useConfirmModal } from "../../../contexts/ConfirmModalCtx";
 
 import upChevIcon from "../../../assets/chevron-up-icon.svg";
 import downChevIcon from "../../../assets/chevron-down-icon.svg";
@@ -12,11 +12,11 @@ import Button from "../utilities/Button";
 
 const AccountModal = ({ account, handleCloseModal }) => {
     const { ctxUpdateAccount } = useContext(AccountsCtx);
+    const { showConfirmModal } = useConfirmModal();
 
     const [editedAccount, setEditedAccount] = useState({});
     const [errorText, setErrorText] = useState("");
     const [isExpanded, setIsExpanded] = useState(false);
-    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const [inputFields, setInputFields] = useState(() => {
         // Check to handle possible errors
@@ -76,19 +76,17 @@ const AccountModal = ({ account, handleCloseModal }) => {
 
     const handleCancelClose = () => {
         if (Object.keys(editedAccount).length > 1) {
-            setIsModalOpen(true);
+            showConfirmModal(
+                {
+                    msg: "You have unsaved changes. Are you sure you want to discard them?",
+                    confirm_txt: "Discard Changes",
+                    cancel_txt: "Keep Editing",
+                },
+                handleCloseModal
+            );
         } else {
             handleCloseModal();
         }
-    };
-
-    const onConfirm = () => {
-        setIsModalOpen(false);
-        handleCloseModal();
-    };
-
-    const onCancel = () => {
-        setIsModalOpen(false);
     };
 
     const validateInputs = () => {
@@ -122,17 +120,6 @@ const AccountModal = ({ account, handleCloseModal }) => {
 
     return (
         <>
-            {isModalOpen && (
-                <ConfirmModal
-                    text={{
-                        msg: "You have unsaved changes. Are you sure you want to discard them?",
-                        confirm_txt: "Discard Changes",
-                        cancel_txt: "Keep Editing",
-                    }}
-                    onConfirm={onConfirm}
-                    onCancel={onCancel}
-                />
-            )}
             <div className={classes.modalOverlay}>
                 <div className={classes.mainContainer}>
                     <h2>Edit Account</h2>
