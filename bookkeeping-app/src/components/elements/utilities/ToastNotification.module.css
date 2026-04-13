@@ -28,7 +28,7 @@
 
     position: relative;
 
-    transition: all ease .75s;
+    transition: all ease 0.75s;
 }
 
 .close {
