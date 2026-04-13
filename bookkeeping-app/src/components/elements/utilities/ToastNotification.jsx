@@ -6,7 +6,7 @@ import errorIcon from "../../../assets/error-filled-icon.svg";
 import closeIcon from "../../../assets/cancel-icon.svg";
 import { useEffect, useState } from "react";
 
-const ToastNotification = ({ text, type, duration = 3000 }) => {
+const ToastNotification = ({ text, type, duration = 3000, forceHideToast }) => {
     const [isOnScreen, setIsOnSCreen] = useState(false);
 
     useEffect(() => {
@@ -53,10 +53,17 @@ const ToastNotification = ({ text, type, duration = 3000 }) => {
         setIsOnSCreen(false);
     };
 
+    const forceClose = () => {
+        setIsOnSCreen(false);
+        setTimeout(() => {
+            forceHideToast();
+        }, 750);
+    };
+
     return (
         <div className={classes.toaster}>
             <div className={classes.toast} style={toastStyle}>
-                <img className={classes.close} src={closeIcon} alt="close icon" onClick={handleClose} />
+                <img className={classes.close} src={closeIcon} alt="close icon" onClick={forceClose} />
                 <div className={classes.colorDisplay} style={colorStyle} />
                 <img className={classes.icon} src={icons[type]} alt={`${type} icon`} />
                 <div className={classes.textDisplay}>
