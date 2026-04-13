@@ -6,6 +6,7 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import TransactionModal from "@/src/components/elements/modals/TransactionModal";
 import { useTransactions } from "@/src/hooks/useTransactions.jsx";
+import { ConfirmModalCtxProvider } from "@/src/contexts/ConfirmModalCtx";
 
 // Mocking enviroment variables
 jest.mock("@/src/constants", () => ({
@@ -56,7 +57,11 @@ const mockProps = {
 
 // Functon to create a transaction modal with context and props
 const renderTransactionModal = (props = mockProps) => {
-    return render(<TransactionModal {...props} />);
+    return render(
+        <ConfirmModalCtxProvider>
+            <TransactionModal {...props} />
+        </ConfirmModalCtxProvider>
+    );
 };
 
 // Test suite to test input changes

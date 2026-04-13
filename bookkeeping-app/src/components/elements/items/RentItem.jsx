@@ -5,6 +5,7 @@ import classes from "./RentItem.module.css";
 import { useToast } from "../../../contexts/ToastCtx";
 import { useConfirmModal } from "../../../contexts/ConfirmModalCtx";
 import RentPaymentsCtx from "../../../contexts/RentPaymentsCtx";
+import EntityDropdown from "../dropdowns/EntityDropdown";
 import Input from "../utilities/Input";
 
 const RentItem = ({ item, dayIndex, handleSaveRentPayment, pushLeft, pushUp, removeTemp }) => {

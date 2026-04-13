@@ -7,6 +7,7 @@ import { render, screen, fireEvent } from "@testing-library/react";
 
 import AccountItem from "@/src/components/elements/items/AccountItem";
 import AccountsCtx from "@/src/contexts/AccountsCtx";
+import { ConfirmModalCtxProvider } from "@/src/contexts/ConfirmModalCtx";
 
 // Mocking enviroment variables
 jest.mock("@/src/constants", () => ({
@@ -51,9 +52,11 @@ const mockAccount = {
 
 const renderAccountItem = (account = mockAccount) => {
     return render(
-        <MockAccountsCtxProvider>
-            <AccountItem account={account} />
-        </MockAccountsCtxProvider>
+        <ConfirmModalCtxProvider>
+            <MockAccountsCtxProvider>
+                <AccountItem account={account} />
+            </MockAccountsCtxProvider>
+        </ConfirmModalCtxProvider>
     );
 };
 

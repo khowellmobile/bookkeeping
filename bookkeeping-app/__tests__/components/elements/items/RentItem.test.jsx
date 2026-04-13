@@ -6,6 +6,7 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import RentItem from "@/src/components/elements/items/RentItem";
 import RentPaymentsCtx from "@/src/contexts/RentPaymentsCtx";
+import { ConfirmModalCtxProvider } from "@/src/contexts/ConfirmModalCtx";
 
 // Mocking enviroment variables
 jest.mock("@/src/constants", () => ({
@@ -68,16 +69,18 @@ const mockTempItem = {
 
 const renderRentItem = (item = mockItem) => {
     return render(
-        <MockRentPaymentsCtxProvider>
-            <RentItem
-                item={item}
-                dayIndex={0}
-                removeTemp={mockRemoveTemp}
-                handleSaveRentPayment={mockSavePayment}
-                pushLeft={false}
-                pushUp={false}
-            />
-        </MockRentPaymentsCtxProvider>
+        <ConfirmModalCtxProvider>
+            <MockRentPaymentsCtxProvider>
+                <RentItem
+                    item={item}
+                    dayIndex={0}
+                    removeTemp={mockRemoveTemp}
+                    handleSaveRentPayment={mockSavePayment}
+                    pushLeft={false}
+                    pushUp={false}
+                />
+            </MockRentPaymentsCtxProvider>
+        </ConfirmModalCtxProvider>
     );
 };
 
