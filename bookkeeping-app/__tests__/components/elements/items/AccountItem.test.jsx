@@ -7,6 +7,7 @@ import { render, screen, fireEvent } from "@testing-library/react";
 
 import AccountItem from "@/src/components/elements/items/AccountItem";
 import AccountsCtx from "@/src/contexts/AccountsCtx";
+import { ConfirmModalCtxProvider } from "@/src/contexts/ConfirmModalCtx";
 
 // Mocking enviroment variables
 jest.mock("@/src/constants", () => ({
@@ -34,7 +35,7 @@ jest.mock("@/src/components/elements/modals/AccountModal", () => ({ account, han
         Edit Modal for {account.name}
     </div>
 ));
-jest.mock("@/src/components/elements/modals/ConfirmationModal", () => ({ text, onConfirm, onCancel }) => (
+jest.mock("@/src/components/elements/modals/ConfirmModal", () => ({ text, onConfirm, onCancel }) => (
     <div data-testid="confirmation-modal">
         <button onClick={onConfirm}>Confirm Delete</button>
         <button onClick={onCancel}>Cancel Delete</button>
@@ -51,9 +52,11 @@ const mockAccount = {
 
 const renderAccountItem = (account = mockAccount) => {
     return render(
-        <MockAccountsCtxProvider>
-            <AccountItem account={account} />
-        </MockAccountsCtxProvider>
+        <ConfirmModalCtxProvider>
+            <MockAccountsCtxProvider>
+                <AccountItem account={account} />
+            </MockAccountsCtxProvider>
+        </ConfirmModalCtxProvider>
     );
 };
 

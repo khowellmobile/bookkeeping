@@ -6,6 +6,7 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import TransactionModal from "@/src/components/elements/modals/TransactionModal";
 import { useTransactions } from "@/src/hooks/useTransactions.jsx";
+import { ConfirmModalCtxProvider } from "@/src/contexts/ConfirmModalCtx";
 
 // Mocking enviroment variables
 jest.mock("@/src/constants", () => ({
@@ -26,7 +27,7 @@ jest.mock("@/src/components/elements/dropdowns/AccountDropdown.jsx", () => (prop
 jest.mock("@/src/components/elements/dropdowns/EntityDropdown.jsx", () => (props) => (
     <div data-testid="entity-dropdown" onClick={() => props.onChange({ id: 3, name: "New Entity" })} />
 ));
-jest.mock("@/src/components/elements/modals/ConfirmationModal.jsx", () => ({ text, onConfirm }) => (
+jest.mock("@/src/components/elements/modals/ConfirmModal.jsx", () => ({ text, onConfirm }) => (
     <div data-testid="confirmation-modal">
         <button data-testid="confirm-delete-action" onClick={onConfirm}>
             {text.confirm_txt}
@@ -56,7 +57,11 @@ const mockProps = {
 
 // Functon to create a transaction modal with context and props
 const renderTransactionModal = (props = mockProps) => {
-    return render(<TransactionModal {...props} />);
+    return render(
+        <ConfirmModalCtxProvider>
+            <TransactionModal {...props} />
+        </ConfirmModalCtxProvider>
+    );
 };
 
 // Test suite to test input changes

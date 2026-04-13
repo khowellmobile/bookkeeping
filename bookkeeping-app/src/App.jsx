@@ -4,6 +4,7 @@ import { Routes, Route } from "react-router-dom";
 
 import SplashPage from "./pages/SplashPage";
 import { ToastCtxProvider } from "./contexts/ToastCtx";
+import { ConfirmModalCtxProvider } from "./contexts/ConfirmModalCtx";
 import AuthenticatedApp from "./routing/AuthenticatedApp";
 import { PropertiesCtxProvider } from "./contexts/PropertiesCtx";
 import AccountActivatePage from "./pages/AccountActivatePage";
@@ -18,30 +19,32 @@ function App() {
 
     return (
         <ToastCtxProvider>
-            <Routes>
-                <Route
-                    path="/"
-                    element={
-                        <AuthCtxProvider>
-                            <SplashPage />
-                        </AuthCtxProvider>
-                    }
-                />
-                <Route path="/activate/:uid/:token" element={<AccountActivatePage />} />
-                <Route path="/password/reset/confirm/:uid/:token" element={<PasswordResetPage />} />
-                <Route
-                    path="/app/*"
-                    element={
-                        <AuthCtxProvider>
-                            <PropertiesCtxProvider>
-                                <AccountsCtxProvider>
-                                    <AuthenticatedApp />
-                                </AccountsCtxProvider>
-                            </PropertiesCtxProvider>
-                        </AuthCtxProvider>
-                    }
-                />
-            </Routes>
+            <ConfirmModalCtxProvider>
+                <Routes>
+                    <Route
+                        path="/"
+                        element={
+                            <AuthCtxProvider>
+                                <SplashPage />
+                            </AuthCtxProvider>
+                        }
+                    />
+                    <Route path="/activate/:uid/:token" element={<AccountActivatePage />} />
+                    <Route path="/password/reset/confirm/:uid/:token" element={<PasswordResetPage />} />
+                    <Route
+                        path="/app/*"
+                        element={
+                            <AuthCtxProvider>
+                                <PropertiesCtxProvider>
+                                    <AccountsCtxProvider>
+                                        <AuthenticatedApp />
+                                    </AccountsCtxProvider>
+                                </PropertiesCtxProvider>
+                            </AuthCtxProvider>
+                        }
+                    />
+                </Routes>
+            </ConfirmModalCtxProvider>
         </ToastCtxProvider>
     );
 }
