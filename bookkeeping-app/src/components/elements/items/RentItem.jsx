@@ -257,7 +257,10 @@ const RentItem = ({ item, dayIndex, handleSaveRentPayment, pushLeft, pushUp, rem
                                 <p>{errorText}</p>
                                 <div className={classes.buttons}>
                                     {!String(item.id).startsWith("temp") && (
-                                        <button className={`${isClicked && classes[inputFields.status]}`}>
+                                        <button
+                                            className={`${isClicked && classes[inputFields.status]}`}
+                                            onClick={handleDelete}
+                                        >
                                             Delete
                                         </button>
                                     )}
