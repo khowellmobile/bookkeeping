@@ -1,9 +1,8 @@
-import { useState, useRef } from "react";
+import { useRef } from "react";
 
 import classes from "./JournalsPage.module.css";
 import { useJournal } from "../hooks/useJournal";
-
-import ConfirmationModal from "../components/elements/modals/ConfirmationModal";
+import { useConfirmModal } from "../contexts/ConfirmModalCtx";
 import NoResultsDisplay from "../components/elements/utilities/NoResultsDisplay";
 import Input from "../components/elements/utilities/Input";
 import { JournalEntryItem } from "../components/elements/items/InputEntryItems";
@@ -24,24 +23,21 @@ const JournalsPage = () => {
         deleteJournal,
         saveInfo,
     } = useJournal();
+    const { showConfirmModal } = useConfirmModal();
 
     const scrollRef = useRef();
 
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [confirmAction, setConfirmAction] = useState({
-        type: null,
-        payload: null,
-    });
-
     const { name: journalName, date: journalDate, items: journalItems, activeJournal, isEditing } = state;
+
+    const discardChangesText = {
+        msg: "You have unsaved changes. Are you sure you want to discard them?",
+        confirm_txt: "Discard Changes",
+        cancel_txt: "Keep Editing",
+    };
 
     const handleHistoryClick = (index) => {
         if ((activeJournal === null || journalList[index]?.id !== activeJournal.id) && isJournalChanged) {
-            setIsModalOpen(true);
-            setConfirmAction({
-                type: "switch_active",
-                payload: index,
-            });
+            showConfirmModal(discardChangesText, () => setToJournal(index));
         } else if (activeJournal === null || journalList[index]?.id !== activeJournal.id) {
             setToJournal(index);
         }
@@ -49,75 +45,25 @@ const JournalsPage = () => {
 
     const handleNewEntryClick = () => {
         if (isJournalChanged) {
-            setIsModalOpen(true);
-            setConfirmAction({
-                type: "discard_and_new",
-                payload: null,
-            });
+            showConfirmModal(discardChangesText, resetJournal);
         } else {
             resetJournal();
         }
     };
 
     const handleDeleteClick = () => {
-        setIsModalOpen(true);
-        setConfirmAction({
-            type: "delete_entry",
-            payload: null,
-        });
-    };
-
-    const onConfirmModalAction = () => {
-        setIsModalOpen(false);
-        switch (confirmAction.type) {
-            case "switch_active":
-                setToJournal(confirmAction.payload);
-                return;
-            case "discard_and_new":
-                resetJournal();
-                return;
-            case "delete_entry":
-                deleteJournal(activeJournal.id);
-                resetJournal();
-                return;
-            default:
-        }
-    };
-
-    const onCancelModalAction = () => {
-        setIsModalOpen(false);
-        setConfirmAction({ type: null, payload: null });
-    };
-
-    const getModalText = () => {
-        switch (confirmAction.type) {
-            case "switch_active":
-            case "discard_and_new":
-                return {
-                    msg: "You have unsaved changes. Are you sure you want to discard them?",
-                    confirm_txt: "Discard Changes",
-                    cancel_txt: "Keep Editing",
-                };
-            case "delete_entry":
-                return {
-                    msg: "Are you sure you wish to delete this journal entry?",
-                    confirm_txt: "Delete",
-                    cancel_txt: "Cancel Deletion",
-                };
-            default:
-                return { msg: "", confirm_txt: "", cancel_txt: "" };
-        }
+        showConfirmModal(
+            {
+                msg: "Are you sure you wish to delete this journal entry?",
+                confirm_txt: "Delete",
+                cancel_txt: "Cancel Deletion",
+            },
+            () => { deleteJournal(activeJournal.id); resetJournal(); }
+        );
     };
 
     return (
         <>
-            {isModalOpen && confirmAction.type && (
-                <ConfirmationModal
-                    text={getModalText()}
-                    onConfirm={onConfirmModalAction}
-                    onCancel={onCancelModalAction}
-                />
-            )}
             <div className={classes.mainContainer}>
                 <div className={classes.journalContent}>
                     <div className={classes.journalHistory}>
@@ -155,7 +101,7 @@ const JournalsPage = () => {
                     <div className={classes.journalEntry}>
                         <section className={classes.header}>
                             {isEditing ? <h2>Edit an Entry</h2> : <h2>Make an Entry</h2>}
-                            <div className={classes.headerTools}>
+                            <div>
                                 <Button onClick={saveInfo} text={isEditing ? "Save Edits" : "Save Entry"} />
                                 <Button onClick={handleNewEntryClick} text={isEditing ? "New Entry" : "Clear Inputs"} />
                                 {isEditing && <Button onClick={handleDeleteClick} text={"Delete Entry"} />}

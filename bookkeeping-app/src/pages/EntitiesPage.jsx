@@ -7,15 +7,18 @@ import TransactionsCtx from "../contexts/TransactionsCtx";
 import penIcon from "../assets/pen-icon.svg";
 import TransactionItem from "../components/elements/items/TransactionItem";
 import AddEntityModal from "../components/elements/modals/AddEntityModal";
-import ConfirmationModal from "../components/elements/modals/ConfirmationModal";
+import { useConfirmModal } from "../contexts/ConfirmModalCtx";
 import SearchBox from "../components/elements/utilities/SearchBox";
 import NoResultsDisplay from "../components/elements/utilities/NoResultsDisplay";
 import Input from "../components/elements/utilities/Input";
 import Button from "../components/elements/utilities/Button";
+import { useTransactions } from "../hooks/useTransactions";
 
 const EntitiesPage = () => {
     const { ctxEntityList, ctxUpdateEntity, ctxActiveEntity, setCtxActiveEntity } = useContext(EntitiesCtx);
-    const { ctxTranList, setCtxTranList, setCtxFilterBy } = useContext(TransactionsCtx);
+    const { setCtxFilterBy } = useContext(TransactionsCtx);
+    const { tranList } = useTransactions();
+    const { showConfirmModal } = useConfirmModal();
 
     const initalInputState = {
         name: "",
@@ -79,12 +82,17 @@ const EntitiesPage = () => {
         );
     };
 
+    const discardChangesText = {
+        msg: "You have unsaved changes. Are you sure you want to discard them?",
+        confirm_txt: "Discard Changes",
+        cancel_txt: "Keep Editing",
+    };
+
     const handleEntitySwitch = (item) => {
         if (ctxActiveEntity && item.id !== ctxActiveEntity.id && isEntityChanged()) {
-            setIsConfirmModalOpen(true);
-            setConfirmAction({
-                type: "switch_active",
-                payload: item,
+            showConfirmModal(discardChangesText, () => {
+                setCtxActiveEntity(item);
+                setIsEditing(false);
             });
         } else {
             setCtxActiveEntity(item);
@@ -93,10 +101,18 @@ const EntitiesPage = () => {
 
     const handleCancelClick = () => {
         if (isEntityChanged()) {
-            setIsConfirmModalOpen(true);
-            setConfirmAction({
-                type: "cancel_edit",
-                payload: ctxActiveEntity,
+            showConfirmModal(discardChangesText, () => {
+                if (ctxActiveEntity) {
+                    setInputFields({
+                        name: ctxActiveEntity.name || "",
+                        company: ctxActiveEntity.company || "",
+                        address: ctxActiveEntity.address || "",
+                        created_at: ctxActiveEntity.created_at || "",
+                        phone_number: ctxActiveEntity.phone_number || "",
+                        email: ctxActiveEntity.email || "",
+                    });
+                }
+                setIsEditing(false);
             });
         } else {
             setIsEditing(false);
@@ -104,11 +120,17 @@ const EntitiesPage = () => {
     };
 
     const handleDeleteClick = () => {
-        setIsConfirmModalOpen(true);
-        setConfirmAction({
-            type: "delete_entity",
-            payload: null,
-        });
+        showConfirmModal(
+            {
+                msg: "Are you sure you wish to delete this Entity?",
+                confirm_txt: "Delete",
+                cancel_txt: "Cancel Deletion",
+            },
+            () => {
+                ctxUpdateEntity({ id: ctxActiveEntity.id, is_deleted: true });
+                setIsEditing(false);
+            }
+        );
     };
 
     const handleSaveClick = () => {
@@ -122,59 +144,6 @@ const EntitiesPage = () => {
             ctxUpdateEntity({ id: ctxActiveEntity.id, ...inputFields });
             setIsEditing(false);
             if (errorText !== "") setErrorText("");
-        }
-    };
-
-    const onConfirmModalAction = () => {
-        setIsConfirmModalOpen(false);
-        switch (confirmAction.type) {
-            case "switch_active":
-                setCtxActiveEntity(confirmAction.payload);
-                setIsEditing(false);
-                return;
-            case "delete_entity":
-                ctxUpdateEntity({ id: ctxActiveEntity.id, is_deleted: true });
-                setIsEditing(false);
-                return;
-            case "cancel_edit":
-                if (ctxActiveEntity) {
-                    setInputFields({
-                        name: ctxActiveEntity.name || "",
-                        company: ctxActiveEntity.company || "",
-                        address: ctxActiveEntity.address || "",
-                        created_at: ctxActiveEntity.created_at || "",
-                        phone_number: ctxActiveEntity.phone_number || "",
-                        email: ctxActiveEntity.email || "",
-                    });
-                }
-                setIsEditing(false);
-                return;
-            default:
-        }
-    };
-
-    const onCancelModalAction = () => {
-        setIsConfirmModalOpen(false);
-        setConfirmAction({ type: null, payload: null });
-    };
-
-    const getModalText = () => {
-        switch (confirmAction.type) {
-            case "switch_active":
-            case "cancel_edit":
-                return {
-                    msg: "You have unsaved changes. Are you sure you want to discard them?",
-                    confirm_txt: "Discard Changes",
-                    cancel_txt: "Keep Editing",
-                };
-            case "delete_entity":
-                return {
-                    msg: "Are you sure you wish to delete this Entity?",
-                    confirm_txt: "Delete",
-                    cancel_txt: "Cancel Deletion",
-                };
-            default:
-                return { msg: "", confirm_txt: "", cancel_txt: "" };
         }
     };
 
@@ -206,14 +175,6 @@ const EntitiesPage = () => {
     return (
         <>
             {isModalOpen && <AddEntityModal handleCloseModal={handleCloseModal} />}
-
-            {isConfirmModalOpen && confirmAction.type && (
-                <ConfirmationModal
-                    text={getModalText()}
-                    onConfirm={onConfirmModalAction}
-                    onCancel={onCancelModalAction}
-                />
-            )}
 
             <div className={classes.mainContainer}>
                 <SearchBox
@@ -319,10 +280,8 @@ const EntitiesPage = () => {
                             <p>Reconciled</p>
                         </div>
                         <div className={classes.listingItems}>
-                            {ctxTranList && ctxTranList.length > 0 ? (
-                                ctxTranList.map((transaction, index) => (
-                                    <TransactionItem vals={transaction} setPageTrans={setCtxTranList} key={index} />
-                                ))
+                            {tranList && tranList.length > 0 ? (
+                                tranList.map((transaction, index) => <TransactionItem vals={transaction} key={index} />)
                             ) : (
                                 <NoResultsDisplay
                                     mainText={"No Transactions to Load."}
@@ -338,4 +297,3 @@ const EntitiesPage = () => {
 };
 
 export default EntitiesPage;
-

@@ -93,8 +93,14 @@ const TransactionEntryItem = ({ vals, index, onFocus, onItemChange, scrollRef })
         }));
     };
 
-    const handleBlur = () => {
-        onItemChange(index, inputFields);
+    // Checks if changed focus target is still inside element
+    const handleBlur = (e) => {
+        const nextFocused = e.relatedTarget;
+        const stillInside = e.currentTarget.contains(nextFocused);
+
+        if (!stillInside) {
+            onItemChange(index, inputFields);
+        }
     };
 
     const checkAmount = (val) => {
@@ -131,6 +137,15 @@ const TransactionEntryItem = ({ vals, index, onFocus, onItemChange, scrollRef })
                 value={inputFields.type == "credit" ? inputFields.amount : ""}
                 onChange={valueChange}
                 isOptional={true}
+            />
+            <Input
+                type="blank"
+                name="blank"
+                value={""}
+                customStyle={{ backgroundColor: "var(--border-color)" }}
+                onChange={() => {}}
+                isOptional={true}
+                disabled={true}
             />
         </div>
     );

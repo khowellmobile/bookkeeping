@@ -60,7 +60,7 @@ const EntityEntryDropdown = ({ scrollRef, onChange, hasLeftBorder = false }) => 
     useEffect(() => {
         if (ctxEntityList) {
             const filtered = ctxEntityList.filter((entity) =>
-                entity.name.toLowerCase().includes(searchTerm.toLowerCase())
+                entity.name.toLowerCase().includes(searchTerm.toLowerCase()),
             );
             setFilteredEntitys(filtered);
         }

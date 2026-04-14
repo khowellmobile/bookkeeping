@@ -28,63 +28,25 @@ function AuthenticatedApp() {
         );
     };
 
-    const TransactionsWithContext = () => {
-        return (
-            <EntitiesCtxProvider>
-                <TransactionsCtxProvider>{wrapPage(TransactionsPage)}</TransactionsCtxProvider>
-            </EntitiesCtxProvider>
-        );
-    };
-
-    const RentsWithContext = () => {
-        return (
-            <EntitiesCtxProvider>
-                <RentPaymentsCtxProvider>{wrapPage(RentsPage)}</RentPaymentsCtxProvider>
-            </EntitiesCtxProvider>
-        );
-    };
-
-    const AccountsWithContext = () => {
-        return wrapPage(AccountsPage);
-    };
-
-    const JournalsWithContext = () => {
-        return wrapPage(JournalsPage);
-    };
-
-    const EntitiesWithContext = () => {
-        return (
-            <TransactionsCtxProvider>
-                <EntitiesCtxProvider>{wrapPage(EntitiesPage)}</EntitiesCtxProvider>
-            </TransactionsCtxProvider>
-        );
-    };
-
-    const ReportsWithContext = () => {
-        return wrapPage(ReportsPage);
-    };
-
-    const PropertiesWithContext = () => {
-        return wrapPage(PropertiesPage);
-    };
-
-    const HomePageWithContext = () => {
-        return <RentPaymentsCtxProvider>{wrapPage(HomePage)}</RentPaymentsCtxProvider>;
-    };
-
     return (
-        <Routes>
-            <Route path="/home" element={<HomePageWithContext />} />
-            <Route path="/transactions" element={<TransactionsWithContext />} />
-            <Route path="/rents" element={<RentsWithContext />} />
-            <Route path="/accounts" element={<AccountsWithContext />} />
-            <Route path="/journals" element={<JournalsWithContext />} />
-            <Route path="/entities" element={<EntitiesWithContext />} />
-            <Route path="/reports" element={<ReportsWithContext />} />
-            <Route path="/properties" element={<PropertiesWithContext />} />
-            <Route path="/support" element={wrapPage(SupportPage)} />
-            <Route path="/settings" element={wrapPage(SettingsPage)} />
-        </Routes>
+        <EntitiesCtxProvider>
+            <TransactionsCtxProvider>
+                <RentPaymentsCtxProvider>
+                    <Routes>
+                        <Route path="/home" element={wrapPage(HomePage)} />
+                        <Route path="/transactions" element={wrapPage(TransactionsPage)} />
+                        <Route path="/rents" element={wrapPage(RentsPage)} />
+                        <Route path="/accounts" element={wrapPage(AccountsPage)} />
+                        <Route path="/journals" element={wrapPage(JournalsPage)} />
+                        <Route path="/entities" element={wrapPage(EntitiesPage)} />
+                        <Route path="/reports" element={wrapPage(ReportsPage)} />
+                        <Route path="/properties" element={wrapPage(PropertiesPage)} />
+                        <Route path="/support" element={wrapPage(SupportPage)} />
+                        <Route path="/settings" element={wrapPage(SettingsPage)} />
+                    </Routes>
+                </RentPaymentsCtxProvider>
+            </TransactionsCtxProvider>
+        </EntitiesCtxProvider>
     );
 }
 

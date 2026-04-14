@@ -3,7 +3,7 @@ import { useState, useContext, useEffect } from "react";
 import classes from "./PropertiesPage.module.css";
 
 import PropertiesCtx from "../contexts/PropertiesCtx";
-import ConfirmationModal from "../components/elements/modals/ConfirmationModal";
+import { useConfirmModal } from "../contexts/ConfirmModalCtx";
 import penIcon from "../assets/pen-icon.svg";
 import AddPropertyModal from "../components/elements/modals/AddPropertyModal";
 import SearchBox from "../components/elements/utilities/SearchBox";
@@ -14,6 +14,7 @@ import Button from "../components/elements/utilities/Button";
 
 const PropertiesPage = () => {
     const { ctxPropertyList, ctxUpdateProperty, setCtxActiveProperty, ctxActiveProperty } = useContext(PropertiesCtx);
+    const { showConfirmModal } = useConfirmModal();
 
     const [activeProperty, setActiveProperty] = useState("");
     const [inputFields, setInputFields] = useState({
@@ -26,12 +27,7 @@ const PropertiesPage = () => {
     });
     const [errorText, setErrorText] = useState("");
     const [isEditing, setIsEditing] = useState(false);
-    const [isModalOpen, setIsModalOpen] = useState(false);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-    const [confirmAction, setConfirmAction] = useState({
-        type: null,
-        payload: null,
-    });
 
     // Setting fields to selected property
     const focusProperty = (property) => {
@@ -79,49 +75,17 @@ const PropertiesPage = () => {
         );
     };
 
-    const onConfirmModalAction = () => {
-        setIsModalOpen(false);
-        switch (confirmAction.type) {
-            case "switch_active":
-                focusProperty(confirmAction.payload);
-                return;
-            case "delete_entry":
-                ctxUpdateProperty({ id: activeProperty.id, is_deleted: true });
-                return;
-            default:
-        }
-    };
-
-    const onCancelModalAction = () => {
-        setIsModalOpen(false);
-        setConfirmAction({ type: null, payload: null });
-    };
-
-    const getModalText = () => {
-        switch (confirmAction.type) {
-            case "switch_active":
-                return {
-                    msg: "You have unsaved changes. Are you sure you want to discard them?",
-                    confirm_txt: "Discard Changes",
-                    cancel_txt: "Keep Editing",
-                };
-            case "delete_entry":
-                return {
-                    msg: "Are you sure you wish to delete this Property?",
-                    confirm_txt: "Delete",
-                    cancel_txt: "Cancel Deletion",
-                };
-            default:
-                return { msg: "", confirm_txt: "", cancel_txt: "" };
-        }
+    const discardChangesText = {
+        msg: "You have unsaved changes. Are you sure you want to discard them?",
+        confirm_txt: "Discard Changes",
+        cancel_txt: "Keep Editing",
     };
 
     const handlePropertyClick = (property) => {
         if (isPropertyChanged()) {
-            setIsModalOpen(true);
-            setConfirmAction({
-                type: "switch_active",
-                payload: property,
+            showConfirmModal(discardChangesText, () => {
+                focusProperty(property);
+                setIsEditing(false);
             });
         } else {
             focusProperty(property);
@@ -143,11 +107,17 @@ const PropertiesPage = () => {
     };
 
     const handleDeleteClick = () => {
-        setIsModalOpen(true);
-        setConfirmAction({
-            type: "delete_entry",
-            payload: null,
-        });
+        showConfirmModal(
+            {
+                msg: "Are you sure you wish to delete this Property?",
+                confirm_txt: "Delete",
+                cancel_txt: "Cancel Deletion",
+            },
+            () => {
+                ctxUpdateProperty({ id: activeProperty.id, is_deleted: true });
+                setIsEditing(false);
+            }
+        );
     };
 
     useEffect(() => {
@@ -182,14 +152,6 @@ const PropertiesPage = () => {
 
     return (
         <>
-            {isModalOpen && confirmAction.type && (
-                <ConfirmationModal
-                    text={getModalText()}
-                    onConfirm={onConfirmModalAction}
-                    onCancel={onCancelModalAction}
-                />
-            )}
-
             {isAddModalOpen && <AddPropertyModal handleCloseModal={() => setIsAddModalOpen(false)} />}
 
             <div className={classes.mainContainer}>

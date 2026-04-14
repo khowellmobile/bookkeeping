@@ -6,6 +6,7 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import AccountModal from "@/src/components/elements/modals/AccountModal";
 import AccountsCtx from "@/src/contexts/AccountsCtx";
+import { ConfirmModalCtxProvider } from "@/src/contexts/ConfirmModalCtx";
 
 // Mocking enviroment variables
 jest.mock("@/src/constants", () => ({
@@ -20,7 +21,7 @@ const MockAccountsCtxProvider = ({ children }) => (
 );
 
 // Mocking child components used within AccountModal
-jest.mock("@/src/components/elements/modals/ConfirmationModal.jsx", () => ({ text, onConfirm }) => (
+jest.mock("@/src/components/elements/modals/ConfirmModal.jsx", () => ({ text, onConfirm }) => (
     <div data-testid="confirmation-modal">
         <button data-testid="confirm-delete-action" onClick={onConfirm}>
             {text.confirm_txt}
@@ -49,9 +50,11 @@ const mockProps = {
 // Functon to create a account modal with context and props
 const renderAccountModal = (props = mockProps) => {
     return render(
-        <MockAccountsCtxProvider>
-            <AccountModal {...props} />
-        </MockAccountsCtxProvider>
+        <ConfirmModalCtxProvider>
+            <MockAccountsCtxProvider>
+                <AccountModal {...props} />
+            </MockAccountsCtxProvider>
+        </ConfirmModalCtxProvider>
     );
 };
 
