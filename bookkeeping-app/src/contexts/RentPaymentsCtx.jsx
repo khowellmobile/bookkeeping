@@ -44,17 +44,19 @@ export function RentPaymentsCtxProvider(props) {
             ? ["/api/rentPayments/", ctxActiveProperty.id, currentYear, currentMonth]
             : null;
 
-    const { data: ctxMonthPaymentList, isLoading, mutate } = useSWRImmutable(
-        swrKey,
-        ([path, propertyId, year, month]) =>
-            api.get(path, {
-                query: {
-                    property_id: propertyId,
-                    year,
-                    month,
-                    format_by_day: true,
-                },
-            })
+    const {
+        data: ctxMonthPaymentList,
+        isLoading,
+        mutate,
+    } = useSWRImmutable(swrKey, ([path, propertyId, year, month]) =>
+        api.get(path, {
+            query: {
+                property_id: propertyId,
+                year,
+                month,
+                format_by_day: true,
+            },
+        }),
     );
 
     const ctxAddPayment = async (paymentToAdd) => {
@@ -98,7 +100,9 @@ export function RentPaymentsCtxProvider(props) {
     const ctxUpdatePayment = async (updatedPayment) => {
         try {
             const updatedData = await api.put(`/api/rentPayments/${updatedPayment.id}/`, updatedPayment);
-            mutate((prev) => prev.map((pymt) => (pymt.id === updatedData.id ? updatedData : pymt)), false);
+            mutate((prev) =>
+                prev?.map((day) => day.map((payment) => (payment.id === updatedData.id ? updatedData : payment))),
+            );
             showToast("Payment updated", "success", 3000);
         } catch (error) {
             if (error instanceof ApiError) {

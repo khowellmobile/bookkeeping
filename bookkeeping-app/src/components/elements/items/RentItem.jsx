@@ -31,13 +31,18 @@ const RentItem = ({ item, dayIndex, handleSaveRentPayment, pushLeft, pushUp, rem
         left: pushLeft && isClicked ? "-11.6rem" : "0",
     };
 
-    const isChanged = useMemo(() => {
-        return (
-            inputFields.amount !== item.amount ||
-            inputFields.entity !== item.entity ||
-            inputFields.status !== item.status
-        );
-    }, [inputFields, item]);
+    const isChanged =
+        String(inputFields.amount) !== String(item.amount) ||
+        inputFields.status !== item.status ||
+        inputFields.entity?.id !== item.entity?.id;
+
+    useEffect(() => {
+        setInputFields({
+            status: item.status,
+            amount: item.amount,
+            entity: item.entity,
+        });
+    }, [item]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -115,7 +120,7 @@ const RentItem = ({ item, dayIndex, handleSaveRentPayment, pushLeft, pushUp, rem
                 } else {
                     ctxUpdatePayment({ id: item.id, is_deleted: true });
                 }
-            }
+            },
         );
     };
 
@@ -154,8 +159,6 @@ const RentItem = ({ item, dayIndex, handleSaveRentPayment, pushLeft, pushUp, rem
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, [isClicked, handleClose]);
-
-
 
     const validateInputs = useCallback(() => {
         let errTxt = "";
@@ -254,10 +257,7 @@ const RentItem = ({ item, dayIndex, handleSaveRentPayment, pushLeft, pushUp, rem
                                 <p>{errorText}</p>
                                 <div className={classes.buttons}>
                                     {!String(item.id).startsWith("temp") && (
-                                        <button
-                                            className={`${isClicked && classes[inputFields.status]}`}
-                                            onClick={handleDelete}
-                                        >
+                                        <button className={`${isClicked && classes[inputFields.status]}`}>
                                             Delete
                                         </button>
                                     )}
@@ -267,7 +267,6 @@ const RentItem = ({ item, dayIndex, handleSaveRentPayment, pushLeft, pushUp, rem
                                     >
                                         {String(item.id).startsWith("temp") ? "Cancel" : isChanged ? "Save" : "Close"}
                                     </button>
-
                                     {String(item.id).startsWith("temp") && (
                                         <button
                                             className={`${(isClicked && classes[inputFields.status]) || classes.stat0}`}
