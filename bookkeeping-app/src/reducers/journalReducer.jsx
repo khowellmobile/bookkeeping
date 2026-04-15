@@ -15,6 +15,12 @@ const createInitialJournalState = () => ({
     isEditing: false,
 });
 
+const cloneJournalItems = (items = []) =>
+    items.map((item) => ({
+        ...item,
+        account: item.account && typeof item.account === "object" ? { ...item.account } : item.account,
+    }));
+
 const initialJournalState = createInitialJournalState();
 
 function journalReducer(state, action) {
@@ -28,14 +34,19 @@ function journalReducer(state, action) {
         }
         case "ADD_ROW":
             return { ...state, items: [...state.items, { ...EMPTY_ITEM }] };
-        case "SET_ACTIVE":
+        case "SET_ACTIVE": {
+            const sourceItems = action.payload.journal_items || [];
             return {
                 name: action.payload.name,
                 date: action.payload.date,
-                items: action.payload.journal_items || [],
-                activeJournal: action.payload,
+                items: cloneJournalItems(sourceItems),
+                activeJournal: {
+                    ...action.payload,
+                    journal_items: cloneJournalItems(sourceItems),
+                },
                 isEditing: true,
             };
+        }
         case "TOGGLE_EDITING":
             return { ...state, isEditing: !state.isEditing };
         case "RESET":
