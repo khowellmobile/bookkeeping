@@ -14,6 +14,7 @@ const JournalsPage = () => {
         journalList,
         resetJournal,
         setToJournal,
+        cancelEdits,
         debitTotal,
         creditTotal,
         isJournalChanged,
@@ -58,7 +59,10 @@ const JournalsPage = () => {
                 confirm_txt: "Delete",
                 cancel_txt: "Cancel Deletion",
             },
-            () => { deleteJournal(activeJournal.id); resetJournal(); }
+            () => {
+                deleteJournal(activeJournal.id);
+                resetJournal();
+            },
         );
     };
 
@@ -102,6 +106,9 @@ const JournalsPage = () => {
                         <section className={classes.header}>
                             {isEditing ? <h2>Edit an Entry</h2> : <h2>Make an Entry</h2>}
                             <div>
+                                {isEditing && isJournalChanged && (
+                                    <Button onClick={cancelEdits} text={"Cancel Edits"} />
+                                )}
                                 <Button onClick={saveInfo} text={isEditing ? "Save Edits" : "Save Entry"} />
                                 <Button onClick={handleNewEntryClick} text={isEditing ? "New Entry" : "Clear Inputs"} />
                                 {isEditing && <Button onClick={handleDeleteClick} text={"Delete Entry"} />}

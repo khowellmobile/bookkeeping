@@ -68,6 +68,18 @@ export const useJournal = () => {
         [resetJournal, journalList],
     );
 
+    const cancelEdits = useCallback(() => {
+        if (!activeJournal) {
+            resetJournal();
+            return;
+        }
+
+        dispatch({
+            type: "SET_ACTIVE",
+            payload: activeJournal,
+        });
+    }, [activeJournal, resetJournal]);
+
     // Clear active journal on property change
     useEffect(() => {
         resetJournal();
@@ -247,6 +259,7 @@ export const useJournal = () => {
         journalList,
         resetJournal,
         setToJournal,
+        cancelEdits,
         debitTotal,
         creditTotal,
         isBalanced,
@@ -259,4 +272,3 @@ export const useJournal = () => {
         saveInfo,
     };
 };
-
