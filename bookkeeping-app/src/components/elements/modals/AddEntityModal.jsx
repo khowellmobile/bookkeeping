@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 
 import classes from "./AddModalStyle.module.css";
 
-import EntitiesCtx from "../../contexts/EntitiesCtx";
+import EntitiesCtx from "../../../contexts/EntitiesCtx";
 import BaseAddModal from "./BaseAddModal";
 import AddInputCluster from "../utilities/AddInputCluster";
 

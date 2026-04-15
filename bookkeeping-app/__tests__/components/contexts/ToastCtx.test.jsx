@@ -3,7 +3,7 @@
  *
  */
 import { render, screen, waitFor, fireEvent, act } from "@testing-library/react";
-import { ToastCtxProvider, useToast } from "@/src/components/contexts/ToastCtx";
+import { ToastCtxProvider, useToast } from "@/src/contexts/ToastCtx";
 
 jest.mock("@/src/components/elements/utilities/ToastNotification", () => {
     return ({ text, type, duration }) => (
@@ -157,3 +157,4 @@ describe("ToastCtxProvider manual hiding (hideToast)", () => {
         });
     });
 });
+

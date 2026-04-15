@@ -1,7 +1,7 @@
 import Button from "../utilities/Button";
-import classes from "./ConfirmationModal.module.css";
+import classes from "./ConfirmModal.module.css";
 
-const ConfirmationModal = ({ text, onConfirm, onCancel }) => {
+const ConfirmModal = ({ text, onConfirm, onCancel }) => {
     return (
         <div className={classes.modalOverlay}>
             <div className={classes.mainContainer}>
@@ -24,4 +24,4 @@ const ConfirmationModal = ({ text, onConfirm, onCancel }) => {
     );
 };
 
-export default ConfirmationModal;
+export default ConfirmModal;

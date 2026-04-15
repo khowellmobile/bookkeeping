@@ -1,16 +1,16 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import classes from "./TransactionModal.module.css";
-
-import TransactionsCtx from "../../contexts/TransactionsCtx.jsx";
 
 import AccountDropdown from "../dropdowns/AccountDropdown.jsx";
 import EntityDropdown from "../dropdowns/EntityDropdown.jsx";
-import ConfirmationModal from "./ConfirmationModal.jsx";
+import { useConfirmModal } from "../../../contexts/ConfirmModalCtx";
 import Input from "../utilities/Input.jsx";
 import Button from "../utilities/Button.jsx";
+import { useTransactions } from "../../../hooks/useTransactions.jsx";
 
 const TransactionModal = ({ vals, handleCloseModal }) => {
-    const { ctxUpdateTransaction } = useContext(TransactionsCtx);
+    const { updateTransaction } = useTransactions();
+    const { showConfirmModal } = useConfirmModal();
 
     const [inputFields, setInputFields] = useState({
         date: vals.date,
@@ -22,8 +22,6 @@ const TransactionModal = ({ vals, handleCloseModal }) => {
     });
     const [editedTransaction, setEditedTransaction] = useState({});
     const [errorText, setErrorText] = useState("");
-    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
     const handleValueChange = (event) => {
         const name = event.target.name;
@@ -63,13 +61,13 @@ const TransactionModal = ({ vals, handleCloseModal }) => {
 
     const handleDeleteClick = () => {
         setEditedTransaction((prev) => ({ ...prev, is_deleted: true }));
-        ctxUpdateTransaction({ id: vals.id, is_deleted: true });
+        updateTransaction({ id: vals.id, is_deleted: true });
         handleCloseModal();
     };
 
     const handleUpdateClick = () => {
         if (validateInputs()) {
-            ctxUpdateTransaction({ id: vals.id, ...editedTransaction });
+            updateTransaction({ id: vals.id, ...editedTransaction });
             handleCloseModal();
         }
     };
@@ -127,61 +125,33 @@ const TransactionModal = ({ vals, handleCloseModal }) => {
     const handleConfirmAction = (action) => {
         if (action == "closeEdit") {
             if (Object.keys(editedTransaction).length !== 0) {
-                setIsConfirmModalOpen(true);
+                showConfirmModal(
+                    {
+                        msg: "You have unsaved changes. Are you sure you want to discard them?",
+                        confirm_txt: "Discard Changes",
+                        cancel_txt: "Keep Editing",
+                    },
+                    handleCloseModal
+                );
             } else {
                 handleCloseModal();
             }
         } else if (action == "delete") {
-            setIsDeleteModalOpen(true);
+            showConfirmModal(
+                {
+                    msg: "Are you sure you wish to delete this transcation?",
+                    confirm_txt: "Delete",
+                    cancel_txt: "Cancel Deletion",
+                },
+                handleDeleteClick
+            );
         } else {
             console.error("Action not recognized");
         }
     };
 
-    const onConfirm = () => {
-        setIsConfirmModalOpen(false);
-        handleCloseModal();
-    };
-
-    const onCancel = () => {
-        setIsConfirmModalOpen(false);
-    };
-
-    const onConfirmDelete = () => {
-        handleDeleteClick();
-        setIsDeleteModalOpen(false);
-    };
-
-    const onCancelDelete = () => {
-        setIsDeleteModalOpen(false);
-    };
-
     return (
         <>
-            {isConfirmModalOpen && (
-                <ConfirmationModal
-                    text={{
-                        msg: "You have unsaved changes. Are you sure you want to discard them?",
-                        confirm_txt: "Discard Changes",
-                        cancel_txt: "Keep Editing",
-                    }}
-                    onConfirm={onConfirm}
-                    onCancel={onCancel}
-                />
-            )}
-
-            {isDeleteModalOpen && (
-                <ConfirmationModal
-                    text={{
-                        msg: "Are you sure you wish to delete this transcation?",
-                        confirm_txt: "Delete",
-                        cancel_txt: "Cancel Deletion",
-                    }}
-                    onConfirm={onConfirmDelete}
-                    onCancel={onCancelDelete}
-                />
-            )}
-
             <div className={classes.modalOverlay}>
                 <div className={classes.mainContainer}>
                     <h2>Edit Transaction</h2>

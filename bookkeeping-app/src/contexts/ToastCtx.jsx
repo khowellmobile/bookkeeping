@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useCallback, useEffect } from "react";
 
-import ToastNotification from "../elements/utilities/ToastNotification";
+import ToastNotification from "../components/elements/utilities/ToastNotification";
 
 const ToastCtx = createContext(null);
 
@@ -54,12 +54,24 @@ export const ToastCtxProvider = ({ children }) => {
         setToast((prev) => ({ ...prev, isVisible: false }));
     }, []);
 
+    const forceHideToast = () => {
+        setToast((prev) => ({ ...prev, isVisible: false }));
+        setToastQueue([]);
+    };
+
     const contextValue = { showToast, hideToast };
 
     return (
         <ToastCtx.Provider value={contextValue}>
             {children}
-            {toast.isVisible && <ToastNotification text={toast.text} type={toast.type} duration={toast.duration} />}
+            {toast.isVisible && (
+                <ToastNotification
+                    text={toast.text}
+                    type={toast.type}
+                    duration={toast.duration}
+                    forceHideToast={forceHideToast}
+                />
+            )}
         </ToastCtx.Provider>
     );
 };

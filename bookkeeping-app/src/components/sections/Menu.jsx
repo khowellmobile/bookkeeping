@@ -1,8 +1,5 @@
 import classes from "./Menu.module.css";
 
-import { useContext } from "react";
-import AuthCtx from "../contexts/AuthCtx";
-
 import CalendarIcon from "../../assets/calendar-icon.svg";
 import AccountsIcon from "../../assets/accounts-icon.svg";
 import EntitiesIcon from "../../assets/entities-icon.svg";
@@ -16,9 +13,10 @@ import SupportIcon from "../../assets/support-icon.svg";
 import UserIcon from "../../assets/user-icon-white.svg";
 
 import MenuLineItem from "../elements/items/MenuLineItem";
+import { useAuth } from "../../hooks/useAuth";
 
 const Menu = () => {
-    const { logoutUser } = useContext(AuthCtx);
+    const { logout } = useAuth();
 
     return (
         <div className={classes.mainContainer}>
@@ -42,7 +40,11 @@ const Menu = () => {
                 <MenuLineItem itemName="Journals" link="/app/journals" icon={<img src={JournalIcon} alt="Icon" />} />
                 <MenuLineItem itemName="Reports" link="/app/reports" icon={<img src={ReportsIcon} alt="Icon" />} />
                 <div className={classes.seperatorH}></div>
-                <MenuLineItem itemName="Properties" link="/app/properties" icon={<img src={PropertiesIcon} alt="Icon" />} />
+                <MenuLineItem
+                    itemName="Properties"
+                    link="/app/properties"
+                    icon={<img src={PropertiesIcon} alt="Icon" />}
+                />
                 <div className={classes.seperatorH}></div>
                 <MenuLineItem itemName="Support" link="/app/support" icon={<img src={SupportIcon} alt="Icon" />} />
                 <MenuLineItem itemName="Settings" link="/app/settings" icon={<img src={SettingsIcon} alt="Icon" />} />
@@ -52,7 +54,7 @@ const Menu = () => {
                 itemName="Logout"
                 link="/"
                 icon={<img src={UserIcon} alt="Icon" />}
-                onClick={logoutUser}
+                onClick={logout}
             />
         </div>
     );

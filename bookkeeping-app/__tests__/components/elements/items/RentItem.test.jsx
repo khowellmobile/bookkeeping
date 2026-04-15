@@ -5,7 +5,8 @@
 
 import { render, screen, fireEvent } from "@testing-library/react";
 import RentItem from "@/src/components/elements/items/RentItem";
-import RentPaymentsCtx from "@/src/components/contexts/RentPaymentsCtx";
+import RentPaymentsCtx from "@/src/contexts/RentPaymentsCtx";
+import { ConfirmModalCtxProvider } from "@/src/contexts/ConfirmModalCtx";
 
 // Mocking enviroment variables
 jest.mock("@/src/constants", () => ({
@@ -15,7 +16,7 @@ jest.mock("@/src/constants", () => ({
 
 // Mock useToast hook
 const mockShowToast = jest.fn();
-jest.mock("@/src/components/contexts/ToastCtx", () => ({
+jest.mock("@/src/contexts/ToastCtx", () => ({
     useToast: () => ({ showToast: mockShowToast }),
 }));
 
@@ -30,7 +31,7 @@ jest.mock("@/src/components/elements/dropdowns/EntityDropdown", () => ({ initalV
         </button>
     </div>
 ));
-jest.mock("@/src/components/elements/modals/ConfirmationModal", () => ({ text, onConfirm, onCancel }) => (
+jest.mock("@/src/components/elements/modals/ConfirmModal", () => ({ text, onConfirm, onCancel }) => (
     <div data-testid="confirmation-modal">
         <p>{text.msg}</p>
         <button data-testid="confirm-btn" onClick={onConfirm}>
@@ -68,16 +69,18 @@ const mockTempItem = {
 
 const renderRentItem = (item = mockItem) => {
     return render(
-        <MockRentPaymentsCtxProvider>
-            <RentItem
-                item={item}
-                dayIndex={0}
-                removeTemp={mockRemoveTemp}
-                handleSaveRentPayment={mockSavePayment}
-                pushLeft={false}
-                pushUp={false}
-            />
-        </MockRentPaymentsCtxProvider>
+        <ConfirmModalCtxProvider>
+            <MockRentPaymentsCtxProvider>
+                <RentItem
+                    item={item}
+                    dayIndex={0}
+                    removeTemp={mockRemoveTemp}
+                    handleSaveRentPayment={mockSavePayment}
+                    pushLeft={false}
+                    pushUp={false}
+                />
+            </MockRentPaymentsCtxProvider>
+        </ConfirmModalCtxProvider>
     );
 };
 
@@ -260,3 +263,4 @@ describe("RentItem functionality: Temporary Item (temp-ID)", () => {
         expect(mockSavePayment).not.toHaveBeenCalled();
     });
 });
+

@@ -2,7 +2,7 @@ import { useState, useContext, useEffect } from "react";
 
 import classes from "./RentsPage.module.css";
 
-import RentPaymentsCtx from "../components/contexts/RentPaymentsCtx";
+import RentPaymentsCtx from "../contexts/RentPaymentsCtx";
 import chevUpIcon from "../assets/chevron-up-icon.svg";
 import chevDownIcon from "../assets/chevron-down-icon.svg";
 import plusIcon from "../assets/plus-icon.svg";

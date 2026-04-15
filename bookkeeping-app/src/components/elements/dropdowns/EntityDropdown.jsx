@@ -1,7 +1,7 @@
 import classes from "./EntityDropdown.module.css";
 
 import { useState, useContext, useEffect, useRef } from "react";
-import EntitiesCtx from "../../contexts/EntitiesCtx";
+import EntitiesCtx from "../../../contexts/EntitiesCtx";
 
 import upChevIconB from "../../../assets/chevron-up-icon.svg";
 import downChevIconB from "../../../assets/chevron-down-icon.svg";
@@ -60,7 +60,7 @@ const EntityDropdown = ({ initalVal, onChange, altClass }) => {
                 setIsOffBotScreen(isOffScreenBottom);
             }
         } catch (error) {
-            console.log(error, "Safe to ignore");
+            /* console.log(error, "Safe to ignore"); */
         }
     };
 

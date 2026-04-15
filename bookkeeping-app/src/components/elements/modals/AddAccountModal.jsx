@@ -2,12 +2,12 @@ import { useContext, useEffect, useState } from "react";
 
 import classes from "./AddModalStyle.module.css";
 
-import AccountsCtx from "../../contexts/AccountsCtx";
 import BaseAddModal from "./BaseAddModal";
 import AddInputCluster from "../utilities/AddInputCluster";
 import upChevIcon from "../../../assets/chevron-up-icon.svg";
 import downChevIcon from "../../../assets/chevron-down-icon.svg";
 import NoResultsDisplay from "../utilities/NoResultsDisplay";
+import AccountsCtx from "../../../contexts/AccountsCtx";
 
 const AddAccountModal = ({ handleCloseModal }) => {
     const { ctxAddAccount, ctxGetNonPropertyAccounts } = useContext(AccountsCtx);
@@ -39,7 +39,7 @@ const AddAccountModal = ({ handleCloseModal }) => {
         inputFields.initial_balance !== "" ||
         inputFields.description !== "";
 
-    const accountTypes = ["Asset", "Bank", "Equity", "Liability", "Revenue", "Expense"];
+    const accountTypes = ["Asset", "Bank", "Equity", "Liability", "Revenue", "Expense", "Credit Card"];
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -50,15 +50,19 @@ const AddAccountModal = ({ handleCloseModal }) => {
     };
 
     const addAccount = async () => {
+        // Shifting credit card to match backend format
+        const type = inputFields.type == "Credit Card" ? "credit-card" : inputFields.type.toLowerCase();
         const accountToAdd = {
             ...inputFields,
-            type: inputFields.type.toLowerCase(),
+            type: type,
         };
 
         ctxAddAccount(accountToAdd);
     };
 
     const addExistingAccount = async (account) => {
+        // Shifting credit card to match backend format
+        account.type = account.type == "Credit Card" ? "credit-card" : account.type.toLowerCase();
         ctxAddAccount(account, true);
         handleCloseModal();
     };
