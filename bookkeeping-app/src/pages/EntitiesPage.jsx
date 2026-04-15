@@ -185,7 +185,7 @@ const EntitiesPage = () => {
                 />
                 <div className={classes.contentBox}>
                     <div className={classes.entityInfo}>
-                        <div className={`${classes.header} ${isEditing ? classes.editing : ""}`}>
+                        <div className={`${classes.header} ${isEditing ? classes.editing : ""}`} role="input-cluster">
                             <Input
                                 type="text"
                                 name="name"
@@ -208,6 +208,7 @@ const EntitiesPage = () => {
                                             className={classes.icon}
                                             alt="Icon"
                                             onClick={() => setIsEditing(true)}
+                                            data-testid="edit-entity-button"
                                         />
                                     )}
                                 </>
@@ -239,7 +240,12 @@ const EntitiesPage = () => {
                                     </div>
                                     <div className={classes.cluster}>
                                         <p>Added:</p>
-                                        <Input type="text" value={inputFields.created_at} disabled={true} />
+                                        <Input
+                                            type="text"
+                                            value={inputFields.created_at}
+                                            disabled={true}
+                                            onChange={() => {}}
+                                        />
                                     </div>
                                 </div>
                             </div>
