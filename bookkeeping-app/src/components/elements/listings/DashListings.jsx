@@ -2,8 +2,8 @@ import { useContext } from "react";
 
 import classes from "./DashListings.module.css";
 
-import AccountsCtx from "../../contexts/AccountsCtx.jsx";
-import PropertiesCtx from "../../contexts/PropertiesCtx.jsx";
+import AccountsCtx from "../../../contexts/AccountsCtx.jsx";
+import PropertiesCtx from "../../../contexts/PropertiesCtx.jsx";
 import { AccountListItem, PropertyListItem, ReportListItem } from "../items/DashListItems.jsx";
 import NoResultsDisplay from "../utilities/NoResultsDisplay.jsx";
 
@@ -111,7 +111,7 @@ const ReportListing = () => {
                 </div>
             </section>
             <section className={classes.items}>
-                {reportsData &&
+                {reportsData ? (
                     reportsData.map((report, index) => {
                         return (
                             <ReportListItem
@@ -121,7 +121,13 @@ const ReportListing = () => {
                                 key={index}
                             />
                         );
-                    })}
+                    })
+                ) : (
+                    <NoResultsDisplay
+                        mainText={"No report history to load."}
+                        guideText={"Have you chosen a Property?"}
+                    />
+                )}
             </section>
         </div>
     );

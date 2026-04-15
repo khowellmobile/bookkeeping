@@ -5,7 +5,7 @@
 
 import { render, screen, fireEvent, act } from "@testing-library/react";
 import AddPropertyModal from "@/src/components/elements/modals/AddPropertyModal";
-import PropertiesCtx from "@/src/components/contexts/PropertiesCtx";
+import PropertiesCtx from "@/src/contexts/PropertiesCtx";
 
 // Mocking enviroment variables
 jest.mock("@/src/constants", () => ({
@@ -212,3 +212,4 @@ describe("AddPropertyModal Validation (validateInputs)", () => {
         );
     });
 });
+

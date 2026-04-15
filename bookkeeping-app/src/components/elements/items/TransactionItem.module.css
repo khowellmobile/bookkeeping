@@ -4,7 +4,7 @@
     cursor: pointer;
 
     display: grid;
-    grid-template-columns: 0.5fr 1.25fr 1.25fr 1.75fr 0.75fr 0.5fr;
+    grid-template-columns: 0.5fr 1.25fr 1.25fr 1.5fr 0.5fr 0.5fr 0.5fr;
     align-items: center;
 }
 

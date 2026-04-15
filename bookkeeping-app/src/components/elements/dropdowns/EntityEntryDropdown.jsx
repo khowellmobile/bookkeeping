@@ -1,6 +1,6 @@
 import classes from "./EntityEntryDropdown.module.css";
 
-import EntitiesCtx from "../../contexts/EntitiesCtx";
+import EntitiesCtx from "../../../contexts/EntitiesCtx";
 
 import { useState, useContext, useEffect, useRef } from "react";
 import AddEntityModal from "../modals/AddEntityModal";
@@ -39,7 +39,7 @@ const EntityEntryDropdown = ({ scrollRef, onChange, hasLeftBorder = false }) => 
                 setIsOffScreenBottom(isOffScreenBottom);
             }
         } catch (error) {
-            console.log(error, "Safe to ignore");
+            /* console.log(error, "Safe to ignore"); */
         }
     };
 
@@ -48,8 +48,6 @@ const EntityEntryDropdown = ({ scrollRef, onChange, hasLeftBorder = false }) => 
             if (scrollRef.current) {
                 setIsExpanded(false);
                 setPxScroll(scrollRef.current.scrollTop);
-            } else {
-                console.log("scrollRef.current is null");
             }
         };
 
@@ -62,7 +60,7 @@ const EntityEntryDropdown = ({ scrollRef, onChange, hasLeftBorder = false }) => 
     useEffect(() => {
         if (ctxEntityList) {
             const filtered = ctxEntityList.filter((entity) =>
-                entity.name.toLowerCase().includes(searchTerm.toLowerCase())
+                entity.name.toLowerCase().includes(searchTerm.toLowerCase()),
             );
             setFilteredEntitys(filtered);
         }

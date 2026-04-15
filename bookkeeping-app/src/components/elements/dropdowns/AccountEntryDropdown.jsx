@@ -2,7 +2,7 @@ import { useState, useContext, useEffect, useRef } from "react";
 
 import classes from "./AccountEntryDropdown.module.css";
 
-import AccountsCtx from "../../contexts/AccountsCtx";
+import AccountsCtx from "../../../contexts/AccountsCtx";
 import AddAccountModal from "../modals/AddAccountModal";
 import Button from "../utilities/Button";
 
@@ -35,7 +35,7 @@ const AccountEntryDropdown = ({ accountVal, scrollRef, onChange, hasLeftBorder =
                 setIsOffScreenBottom(isOffScreenBottom);
             }
         } catch (error) {
-            console.log(error, "Safe to ignore");
+            /* console.log(error, "Safe to ignore"); */
         }
     };
 
@@ -49,8 +49,6 @@ const AccountEntryDropdown = ({ accountVal, scrollRef, onChange, hasLeftBorder =
             if (scrollRef.current) {
                 setIsExpanded(false);
                 setPxScroll(scrollRef.current.scrollTop);
-            } else {
-                console.log("scrollRef.current is null");
             }
         };
 

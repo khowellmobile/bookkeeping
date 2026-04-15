@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useContext } from "react";
 
 import classes from "./AccountDropdown.module.css";
 
-import AccountsCtx from "../../contexts/AccountsCtx";
+import AccountsCtx from "../../../contexts/AccountsCtx";
 import upChevIcon from "../../../assets/chevron-up-icon.svg";
 import downChevIcon from "../../../assets/chevron-down-icon.svg";
 
