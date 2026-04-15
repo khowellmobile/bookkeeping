@@ -29,7 +29,8 @@ const TransactionItem = ({ vals }) => {
                 <p>{vals.entity && vals.entity.name}</p>
                 <p>{vals.account && vals.account.name}</p>
                 <p>{unescapeHTML(vals.memo)}</p>
-                <p>{vals.type === "debit" ? `(${Number(vals.amount).toFixed(2)})` : Number(vals.amount).toFixed(2)}</p>
+                <p>{vals.type === "debit" ? Number(vals.amount).toFixed(2) : ""}</p>
+                <p>{vals.type === "credit" ? Number(vals.amount).toFixed(2) : ""}</p>
                 <p>{vals.is_reconciled ? "yes" : "no"}</p>
             </div>
         </>

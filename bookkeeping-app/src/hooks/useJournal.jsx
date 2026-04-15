@@ -68,6 +68,18 @@ export const useJournal = () => {
         [resetJournal, journalList],
     );
 
+    const cancelEdits = useCallback(() => {
+        if (!activeJournal) {
+            resetJournal();
+            return;
+        }
+
+        dispatch({
+            type: "SET_ACTIVE",
+            payload: activeJournal,
+        });
+    }, [activeJournal, resetJournal]);
+
     // Clear active journal on property change
     useEffect(() => {
         resetJournal();
@@ -214,10 +226,11 @@ export const useJournal = () => {
             journal_items: journal_items,
         };
 
+        const emptyError = !journal_items || journal_items.length === 0;
         const hasLineError = sendData.journal_items.some((item) => !isItemValid(item));
         const hasDateError = !isValidDateString(journalDate);
 
-        if (hasLineError || hasDateError || !isBalanced) {
+        if (emptyError || hasLineError || hasDateError || !isBalanced) {
             const message = "Invalid journal fields or unbalanced totals.";
             showToast(message, "error", 5000);
             return { ok: false, message };
@@ -246,6 +259,7 @@ export const useJournal = () => {
         journalList,
         resetJournal,
         setToJournal,
+        cancelEdits,
         debitTotal,
         creditTotal,
         isBalanced,
@@ -258,4 +272,3 @@ export const useJournal = () => {
         saveInfo,
     };
 };
-

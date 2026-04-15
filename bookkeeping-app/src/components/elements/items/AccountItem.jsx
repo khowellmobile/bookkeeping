@@ -6,16 +6,16 @@ import { useNavigate } from "react-router-dom";
 
 import AccountModal from "../modals/AccountModal";
 import ThreeDotsIcon from "../../../assets/three-dots-icon.svg";
-import ConfirmationModal from "../modals/ConfirmationModal";
+import { useConfirmModal } from "../../../contexts/ConfirmModalCtx";
 
 const AccountItem = ({ account }) => {
     const navigate = useNavigate();
 
     const { setCtxActiveAccount, ctxDeleteAccount } = useContext(AccountsCtx);
+    const { showConfirmModal } = useConfirmModal();
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isDropOpen, setIsDropOpen] = useState(false);
-    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
     const dropdownRef = useRef(null);
 
@@ -41,29 +41,20 @@ const AccountItem = ({ account }) => {
         };
     }, [isDropOpen, dropdownRef]);
 
-    const onConfirmDelete = () => {
-        ctxDeleteAccount(account.id);
-        setIsDeleteModalOpen(false);
-    };
-
-    const onCancelDelete = () => {
-        setIsDeleteModalOpen(false);
+    const handleDeleteClick = () => {
+        showConfirmModal(
+            {
+                msg: "Are you sure you wish to mark this Account inactive?",
+                confirm_txt: "Delete",
+                cancel_txt: "Cancel Deletion",
+            },
+            () => ctxDeleteAccount(account.id)
+        );
     };
 
     return (
         <>
             {isModalOpen && <AccountModal account={account} handleCloseModal={handleCloseModal} />}
-            {isDeleteModalOpen && (
-                <ConfirmationModal
-                    text={{
-                        msg: "Are you sure you wish to mark this Account inactive?",
-                        confirm_txt: "Delete",
-                        cancel_txt: "Cancel Deletion",
-                    }}
-                    onConfirm={onConfirmDelete}
-                    onCancel={onCancelDelete}
-                />
-            )}
 
             <div className={classes.mainContainer}>
                 <p>{account.name}</p>
@@ -86,7 +77,7 @@ const AccountItem = ({ account }) => {
                                 <p>Edit</p>
                             </div>
                             <div>
-                                <p onClick={() => setIsDeleteModalOpen(true)}>Mark Inactive</p>
+                                <p onClick={handleDeleteClick}>Mark Inactive</p>
                             </div>
                         </div>
                     )}
