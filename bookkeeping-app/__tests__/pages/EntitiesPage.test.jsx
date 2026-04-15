@@ -3,11 +3,32 @@
  *
  */
 
-import { render, screen, fireEvent, act, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { useState, useMemo } from "react";
 import EntitiesPage from "@/src/pages/EntitiesPage";
-import EntitiesCtx from "@/src/components/contexts/EntitiesCtx";
-import TransactionsCtx from "@/src/components/contexts/TransactionsCtx";
+import EntitiesCtx from "@/src/contexts/EntitiesCtx";
+import TransactionsCtx from "@/src/contexts/TransactionsCtx";
+import { ConfirmModalCtxProvider } from "@/src/contexts/ConfirmModalCtx";
+
+jest.mock("@/src/contexts/EntitiesCtx", () => {
+    const React = require("react");
+    return {
+        __esModule: true,
+        default: React.createContext({}),
+    };
+});
+jest.mock("@/src/contexts/TransactionsCtx", () => {
+    const React = require("react");
+    return {
+        __esModule: true,
+        default: React.createContext({}),
+    };
+});
+jest.mock("@/src/hooks/useTransactions", () => ({
+    useTransactions: () => ({
+        tranList: [],
+    }),
+}));
 
 // Mocking enviroment variables
 jest.mock("@/src/constants", () => ({
@@ -82,7 +103,7 @@ jest.mock("@/src/components/elements/modals/AddEntityModal", () => ({ handleClos
         Add Entity Modal
     </div>
 ));
-jest.mock("@/src/components/elements/modals/ConfirmationModal.jsx", () => ({ text, onConfirm, onCancel }) => (
+jest.mock("@/src/components/elements/modals/ConfirmModal", () => ({ text, onConfirm, onCancel }) => (
     <div data-testid="confirmation-modal">
         <button data-testid="confirm-action" onClick={onConfirm}>
             {text.confirm_txt}
@@ -128,11 +149,13 @@ jest.mock("@/src/components/elements/utilities/Button.jsx", () => ({ text, onCli
 // Functon to create an EntitiesPage with context
 const renderEntitiesPage = async () => {
     return render(
-        <MockTransactionsCtxProvider>
-            <MockEntitiesCtxProvider>
-                <EntitiesPage />
-            </MockEntitiesCtxProvider>
-        </MockTransactionsCtxProvider>
+        <ConfirmModalCtxProvider>
+            <MockTransactionsCtxProvider>
+                <MockEntitiesCtxProvider>
+                    <EntitiesPage />
+                </MockEntitiesCtxProvider>
+            </MockTransactionsCtxProvider>
+        </ConfirmModalCtxProvider>
     );
 };
 
