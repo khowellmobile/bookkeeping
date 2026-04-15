@@ -176,6 +176,7 @@ export const useTransactions = () => {
                     transaction.id === updatedData.id ? updatedData : transaction,
                 );
             }, false);
+            ctxRefetchAccounts(); // Ensures that ctxAccountList has new balances
             showToast("Transaction updated", "success", 3000);
         } catch (error) {
             if (error instanceof ApiError) {
