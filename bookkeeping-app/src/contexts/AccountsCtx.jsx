@@ -28,7 +28,7 @@ export function AccountsCtxProvider(props) {
     const propertyId = ctxActiveProperty?.id;
     const { data: ctxAccountList, mutate } = useSWRImmutable(
         propertyId && ctxAccessToken ? ["/api/accounts/", propertyId] : null,
-        ([path, id]) => api.get(path, { query: { property_id: id } })
+        ([path, id]) => api.get(path, { query: { property_id: id } }),
     );
 
     // exposing mutate to consuming components

@@ -36,7 +36,7 @@ const MockAccountsCtxProvider = ({ children, accounts = mockCtxAccountList }) =>
         () => ({
             ctxAccountList: accounts,
         }),
-        [accounts]
+        [accounts],
     );
 
     return <AccountsCtx.Provider value={mockedValue}>{children}</AccountsCtx.Provider>;
@@ -69,7 +69,7 @@ const renderAccountsPage = (accounts = mockCtxAccountList) => {
     return render(
         <MockAccountsCtxProvider accounts={accounts}>
             <AccountsPage />
-        </MockAccountsCtxProvider>
+        </MockAccountsCtxProvider>,
     );
 };
 

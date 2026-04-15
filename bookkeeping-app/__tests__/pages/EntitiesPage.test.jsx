@@ -71,7 +71,7 @@ const MockEntitiesCtxProvider = ({ children, initialActiveEntity = null }) => {
             ctxActiveEntity: ctxActiveEntity,
             setCtxActiveEntity: setCtxActiveEntity,
         }),
-        [ctxActiveEntity]
+        [ctxActiveEntity],
     );
 
     return <EntitiesCtx.Provider value={mockedValue}>{children}</EntitiesCtx.Provider>;
@@ -116,20 +116,19 @@ jest.mock("@/src/components/elements/modals/ConfirmModal", () => ({ text, onConf
 jest.mock(
     "@/src/components/elements/utilities/SearchBox",
     () =>
-        ({ itemName, items, onItemClick, onAddButtonClick }) =>
-            (
-                <div data-testid="search-box">
-                    <p>
-                        Search {itemName} Mock ({items.length} items)
-                    </p>
-                    <button onClick={onAddButtonClick}>Add New {itemName}</button>
-                    {items.map((item) => (
-                        <button key={item.id} data-testid={`search-item-${item.id}`} onClick={() => onItemClick(item)}>
-                            {item.name}
-                        </button>
-                    ))}
-                </div>
-            )
+        ({ itemName, items, onItemClick, onAddButtonClick }) => (
+            <div data-testid="search-box">
+                <p>
+                    Search {itemName} Mock ({items.length} items)
+                </p>
+                <button onClick={onAddButtonClick}>Add New {itemName}</button>
+                {items.map((item) => (
+                    <button key={item.id} data-testid={`search-item-${item.id}`} onClick={() => onItemClick(item)}>
+                        {item.name}
+                    </button>
+                ))}
+            </div>
+        ),
 );
 jest.mock("@/src/components/elements/utilities/NoResultsDisplay", () => ({ mainText, guideText }) => (
     <div data-testid="no-results-display">
@@ -155,7 +154,7 @@ const renderEntitiesPage = async () => {
                     <EntitiesPage />
                 </MockEntitiesCtxProvider>
             </MockTransactionsCtxProvider>
-        </ConfirmModalCtxProvider>
+        </ConfirmModalCtxProvider>,
     );
 };
 

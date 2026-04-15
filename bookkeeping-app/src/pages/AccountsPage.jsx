@@ -27,7 +27,7 @@ const AccountsPage = () => {
                 (account) =>
                     account.name.toLowerCase().includes(lowercasedSearchTerm) ||
                     account.type.toLowerCase().includes(lowercasedSearchTerm) ||
-                    account.description.toLowerCase().includes(lowercasedSearchTerm)
+                    account.description.toLowerCase().includes(lowercasedSearchTerm),
             );
             setFilteredAccounts(filtered);
         }
@@ -83,4 +83,3 @@ const AccountsPage = () => {
 };
 
 export default AccountsPage;
-

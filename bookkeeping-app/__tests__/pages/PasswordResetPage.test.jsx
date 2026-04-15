@@ -195,11 +195,11 @@ describe("PasswordResetPage api interactions", () => {
 
         await waitFor(() => {
             expect(
-                screen.getByText("There has been an error please wait a few moments and try again.")
+                screen.getByText("There has been an error please wait a few moments and try again."),
             ).toBeInTheDocument();
         });
         expect(consoleErrorSpy).toHaveBeenCalledWith(
-            expect.stringContaining("Confirmation Error: Error: HTTP error! status: 400")
+            expect.stringContaining("Confirmation Error: Error: HTTP error! status: 400"),
         );
     });
 
@@ -210,7 +210,7 @@ describe("PasswordResetPage api interactions", () => {
 
         await waitFor(() => {
             expect(
-                screen.getByText("There has been an error please wait a few moments and try again.")
+                screen.getByText("There has been an error please wait a few moments and try again."),
             ).toBeInTheDocument();
         });
         expect(consoleErrorSpy).toHaveBeenCalledWith("Confirmation Error: Error: Network connection lost");

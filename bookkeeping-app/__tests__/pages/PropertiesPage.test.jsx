@@ -62,7 +62,7 @@ const MockPropertiesCtxProvider = ({ children, initialActiveProperty = null }) =
             setCtxActiveProperty,
             ctxActiveProperty,
         }),
-        [ctxActiveProperty]
+        [ctxActiveProperty],
     );
 
     return <PropertiesCtx.Provider value={mockedValue}>{children}</PropertiesCtx.Provider>;
@@ -86,7 +86,7 @@ jest.mock(
                     </button>
                 ))}
             </div>
-        )
+        ),
 );
 jest.mock("@/src/components/elements/misc/RentInformation", () => () => (
     <div data-testid="rent-information">Rent Information</div>
@@ -98,7 +98,14 @@ jest.mock("@/src/components/elements/dropdowns/PropertyTypeDropdown", () => ({ v
     </div>
 ));
 jest.mock("@/src/components/elements/utilities/Input", () => ({ type, name, value, onChange, disabled }) => (
-    <input data-testid={`input-${name || type}`} type={type} name={name} value={value} onChange={onChange} disabled={disabled} />
+    <input
+        data-testid={`input-${name || type}`}
+        type={type}
+        name={name}
+        value={value}
+        onChange={onChange}
+        disabled={disabled}
+    />
 ));
 jest.mock("@/src/components/elements/utilities/Button", () => ({ text, onClick }) => (
     <button onClick={onClick}>{text}</button>
@@ -108,7 +115,7 @@ const renderPropertiesPage = (initialActiveProperty = null) => {
     return render(
         <MockPropertiesCtxProvider initialActiveProperty={initialActiveProperty}>
             <PropertiesPage />
-        </MockPropertiesCtxProvider>
+        </MockPropertiesCtxProvider>,
     );
 };
 

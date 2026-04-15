@@ -82,10 +82,12 @@ const getMockTransactionsReturn = (overrides = {}) => ({
 const renderTransactionsPage = (activeAccount = null) => {
     return render(
         <TransactionsCtx.Provider value={{ setCtxFilterBy: mockSetCtxFilterBy }}>
-            <AccountsCtx.Provider value={{ ctxActiveAccount: activeAccount, setCtxActiveAccount: mockSetCtxActiveAccount }}>
+            <AccountsCtx.Provider
+                value={{ ctxActiveAccount: activeAccount, setCtxActiveAccount: mockSetCtxActiveAccount }}
+            >
                 <TransactionsPage />
             </AccountsCtx.Provider>
-        </TransactionsCtx.Provider>
+        </TransactionsCtx.Provider>,
     );
 };
 
@@ -110,7 +112,7 @@ describe("TransactionsPage basic interactions", () => {
             getMockTransactionsReturn({
                 transToAdd: [{ memo: "Draft transaction" }],
                 filteredTransactions: [{ id: 11, memo: "Saved transaction" }],
-            })
+            }),
         );
         renderTransactionsPage({ id: 1, name: "Checking Account" });
     });

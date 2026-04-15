@@ -102,11 +102,11 @@ describe("AccountActivatePage api interactions", () => {
 
         await waitFor(() => {
             expect(
-                screen.getByText("There has been an error please wait a few moments and try again.")
+                screen.getByText("There has been an error please wait a few moments and try again."),
             ).toBeInTheDocument();
         });
         expect(consoleErrorSpy).toHaveBeenCalledWith(
-            expect.stringContaining("Activation Error: Error: HTTP error! status: 400")
+            expect.stringContaining("Activation Error: Error: HTTP error! status: 400"),
         );
     });
 
@@ -117,7 +117,7 @@ describe("AccountActivatePage api interactions", () => {
 
         await waitFor(() => {
             expect(
-                screen.getByText("There has been an error please wait a few moments and try again.")
+                screen.getByText("There has been an error please wait a few moments and try again."),
             ).toBeInTheDocument();
         });
         expect(consoleErrorSpy).toHaveBeenCalledWith("Activation Error: Error: Network connection lost");

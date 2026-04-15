@@ -47,7 +47,7 @@ const renderReportsPage = () => {
     return render(
         <AccountsCtx.Provider value={{ ctxAccountList: mockCtxAccountList }}>
             <ReportsPage />
-        </AccountsCtx.Provider>
+        </AccountsCtx.Provider>,
     );
 };
 

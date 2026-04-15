@@ -46,7 +46,7 @@ const MockRentPaymentsCtxProvider = ({
             setCtxActiveDate,
             isLoading: loading,
         }),
-        [paymentList, ctxActiveDate, loading]
+        [paymentList, ctxActiveDate, loading],
     );
 
     return <RentPaymentsCtx.Provider value={mockedValue}>{children}</RentPaymentsCtx.Provider>;
@@ -77,7 +77,7 @@ const renderRentsPage = (options = {}) => {
             loading={options.loading}
         >
             <RentsPage />
-        </MockRentPaymentsCtxProvider>
+        </MockRentPaymentsCtxProvider>,
     );
 };
 
