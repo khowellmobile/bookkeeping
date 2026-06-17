@@ -9,6 +9,7 @@ import plusIcon from "../assets/plus-icon.svg";
 import NoResultsDisplay from "../components/elements/utilities/NoResultsDisplay";
 import RentItem from "../components/elements/items/RentItem";
 import IsLoadingDisplay from "../components/elements/utilities/IsLoadingDisplay";
+import Button from "../components/elements/utilities/Button";
 
 const RentsPage = () => {
     const { ctxMonthPaymentList, ctxAddPayment, ctxActiveDate, setCtxActiveDate, isLoading } =
@@ -165,6 +166,9 @@ const RentsPage = () => {
                                 </div>
                             </div>
                         )}
+                    </div>
+                    <div className={classes.buttons}>
+                        <Button text={"Alternate View"} onClick={() => {}} />
                     </div>
                 </section>
                 <section className={classes.calendar}>

@@ -15,8 +15,8 @@
     flex-direction: column;
 }
 
-.mainContainer > .header {
-    height: 2.5rem;
+.header {
+    height: 3rem;
 
     display: flex;
     justify-content: space-between;
@@ -116,7 +116,7 @@
 
 .calendar {
     width: 100%;
-    height: calc(100% - 2.5rem);
+    height: calc(100% - 3rem);
 }
 
 .columnNames {
